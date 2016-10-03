@@ -29,6 +29,7 @@ def main(
     Qlow = np.zeros_like(DA)
     Q2 = np.zeros_like(DA)
 
+    arcpy.AddMessage('Adding Qlow and Q2 to network')
     # # # Add in regional curve equations here # # #
 
     if float(region) == 3: # box elder county
@@ -64,6 +65,7 @@ def main(
     del row
     del cursor
 
+    arcpy.AddMessage('Adding stream power to network')
     # calculate Qlow stream power
     arcpy.AddField_management(in_network, "iHyd_SPLow", "DOUBLE")
     cursor = arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_QLow", "iHyd_SPLow"])

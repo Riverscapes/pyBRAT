@@ -53,10 +53,13 @@ def main(
 
     arcpy.CopyFeatures_management(seg_network, out_network)
 
+    arcpy.AddMessage('Adding "iGeo" attributes to network')
     igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, midpoints, scratch)
 
+    arcpy.AddMessage('Adding "iVeg" attributes to network')
     iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, midpoint_buffer, midpoints, out_network, scratch)
 
+    arcpy.AddMessage('Adding "iPC" attributes to network')
     ipc_attributes(out_network, culvert, road, railroad, canal, valley_bottom, buf_30m, buf_100m, sm_midpoint_buffer, midpoints, landuse, scratch)
 
     arcpy.CheckInExtension('spatial')

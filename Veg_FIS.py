@@ -69,10 +69,10 @@ def main(
         streamside['preferred'] = fuzz.trimf(streamside.universe, [3, 4, 4])
 
         density['none'] = fuzz.trimf(density.universe, [0, 0, 0])
-        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1])
-        density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1, 4, 5])
-        density['frequent'] = fuzz.trapmf(density.universe, [4, 5, 12, 20])
-        density['pervasive'] = fuzz.trapmf(density.universe, [12, 20, 45, 45])
+        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1.5])
+        density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1.5, 4, 8])
+        density['frequent'] = fuzz.trapmf(density.universe, [4, 8, 12, 25])
+        density['pervasive'] = fuzz.trapmf(density.universe, [12, 25, 45, 45])
 
         # rules
         rule1 = ctrl.Rule(riparian['unsuitable'] & streamside['unsuitable'], density['none'])
@@ -170,10 +170,10 @@ def main(
         streamside['preferred'] = fuzz.trimf(streamside.universe, [3, 4, 4])
 
         density['none'] = fuzz.trimf(density.universe, [0, 0, 0])
-        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1])
-        density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1, 4, 5])
-        density['frequent'] = fuzz.trapmf(density.universe, [4, 5, 12, 20])
-        density['pervasive'] = fuzz.trapmf(density.universe, [12, 20, 45, 45])
+        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1.5])
+        density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1.5, 4, 8])
+        density['frequent'] = fuzz.trapmf(density.universe, [4, 8, 12, 25])
+        density['pervasive'] = fuzz.trapmf(density.universe, [12, 25, 45, 45])
 
         # rules
         rule1 = ctrl.Rule(riparian['unsuitable'] & streamside['unsuitable'], density['none'])
