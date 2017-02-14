@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        Conservation Restoration
 # Purpose:     Adds the conservation and restoration model to the BRAT capacity output
 #
@@ -7,23 +7,31 @@
 # Created:     09/2016
 # Copyright:   (c) Jordan 2016
 # Licence:     <your licence>
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 import arcpy
 import sys
 
-def main(in_network):
+
+def main(in_network,
+         out_network):
 
     arcpy.env.overwriteOutput = True
 
+    arcpy.CopyFeatures_management(in_network, out_network)
+
+    # check for oPBRC field and delete if exists
+    network_fields = [f.name for f in arcpy.ListFields(out_network)]
+    if "oPBRC" in network_fields:
+        arcpy.DeleteField_management(out_network, "oPBRC")
 
     LowConflict = 0.25
     IntConflict = 0.5
     HighConflict = 0.75
 
-    arcpy.AddField_management(in_network, "oPBRC", "TEXT", "", "", 60)
+    arcpy.AddField_management(out_network, "oPBRC", "TEXT", "", "", 60)
 
-    cursor = arcpy.da.UpdateCursor(in_network, ["oCC_EX", "oCC_PT", "oPC_Prob", "oPBRC"])
+    cursor = arcpy.da.UpdateCursor(out_network, ["oCC_EX", "oCC_PT", "oPC_Prob", "oPBRC"])
     for row in cursor:
 
         if row[0] == 0:  # no existing capacity
@@ -89,4 +97,5 @@ def main(in_network):
     return in_network
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(sys.argv[1],
+         sys.argv[2])

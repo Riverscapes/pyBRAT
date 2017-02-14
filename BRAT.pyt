@@ -1,11 +1,14 @@
 import os
 import arcpy
+import BRATProject
 import BRAT_table
+import BRAT_capacity_table
 import iHyd
 import Veg_FIS
 import Comb_FIS
 import Conflict_Potential
 import Conservation_Restoration
+
 
 class Toolbox(object):
     def __init__(self):
@@ -15,13 +18,125 @@ class Toolbox(object):
         self.alias = "BRAT Toolbox"
 
         # List of tool classes associated with this toolbox
-        self.tools = [BRAT_table_tool, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool]
+        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_capacity_table_tool, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool]
+
+
+class BRAT_project_tool(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "1 BRAT Project Builder"
+        self.description = "Gathers and structures the inputs for a BRAT project"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+        param0 = arcpy.Parameter(
+            displayName="Select Project Folder",
+            name="projPath",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input")
+
+        param1 = arcpy.Parameter(
+            displayName="Select existing vegetation datasets",
+            name="ex_veg",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input",
+            multiValue=True)
+
+        param2 = arcpy.Parameter(
+            displayName="Select historic vegetation datasets",
+            name="hist_veg",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input",
+            multiValue=True)
+
+        param3 = arcpy.Parameter(
+            displayName="Select drainage network datasets",
+            name="network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input",
+            multiValue=True)
+
+        param4 = arcpy.Parameter(
+            displayName="Select DEM inputs",
+            name="dem",
+            datatype="DERasterDataset",
+            parameterType="Required",
+            direction="Input",
+            multiValue=True)
+
+        param5 = arcpy.Parameter(
+            displayName="Select valley bottom datasets",
+            name="valley",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input",
+            multiValue=True)
+
+        param6 = arcpy.Parameter(
+            displayName="Select roads datasets",
+            name="road",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input",
+            multiValue=True)
+
+        param7 = arcpy.Parameter(
+            displayName="Select railroads datasets",
+            name="rr",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input",
+            multiValue=True)
+
+        param8 = arcpy.Parameter(
+            displayName="Select canals datasets",
+            name="canal",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input",
+            multiValue=True)
+
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8]
+
+    def isLicensed(self):
+        """Set whether tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(BRATProject)
+        BRATProject.main(p[0].valueAsText,
+                        p[1].valueAsText,
+                        p[2].valueAsText,
+                        p[3].valueAsText,
+                        p[4].valueAsText,
+                        p[5].valueAsText,
+                        p[6].valueAsText,
+                        p[7].valueAsText,
+                        p[8].valueAsText)
+        return
 
 
 class BRAT_table_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "BRAT Table"
+        self.label = "2 BRAT Table"
         self.description = "Prepares the input table to be used in the BRAT tools"
         self.canRunInBackground = False
 
@@ -72,60 +187,53 @@ class BRAT_table_tool(object):
         param5.filter.list = ["Polygon"]
 
         param6 = arcpy.Parameter(
-            displayName="Input Culvert Feature Class",
-            name="culvert",
+            displayName="Input Road Layer Feature Class",
+            name="road",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
+        param6.filter.list = ["Polyline"]
 
         param7 = arcpy.Parameter(
-            displayName="Input Road Layer Feature Class",
-            name="road",
+            displayName="Input Railroad Feature Class",
+            name="railroad",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
         param7.filter.list = ["Polyline"]
 
         param8 = arcpy.Parameter(
-            displayName="Input Railroad Feature Class",
-            name="railroad",
+            displayName="Input Canal Feature Class",
+            name="canal",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
         param8.filter.list = ["Polyline"]
 
         param9 = arcpy.Parameter(
-            displayName="Input Canal Feature Class",
-            name="canal",
-            datatype="DEFeatureClass",
-            parameterType="Optional",
-            direction="Input")
-        param9.filter.list = ["Polyline"]
-
-        param10 = arcpy.Parameter(
             displayName="Input Landuse Dataset",
             name="landuse",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param11 = arcpy.Parameter(
+        param10 = arcpy.Parameter(
             displayName="Output Network",
             name="out_network",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Output")
 
-        param12 = arcpy.Parameter(
+        param11 = arcpy.Parameter(
             displayName="Set Scratch Workspace",
             name="scratch",
             datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param12.filter.list = ["Local Database"]
-        param12.value = arcpy.env.scratchWorkspace
+        param11.filter.list = ["Local Database"]
+        param11.value = arcpy.env.scratchWorkspace
 
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -156,14 +264,105 @@ class BRAT_table_tool(object):
                         p[8].valueAsText,
                         p[9].valueAsText,
                         p[10].valueAsText,
-                        p[11].valueAsText,
-                        p[12].valueAsText)
+                        p[11].valueAsText)
         return
+
+
+class BRAT_capacity_table_tool(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "2 BRAT Table (Capacity)"
+        self.description = "Prepares the input table to be used in the BRAT tools"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+        param0 = arcpy.Parameter(
+            displayName="Input Segmented Network",
+            name="seg_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+        param0.filter.list = ["Polyline"]
+
+        param1 = arcpy.Parameter(
+            displayName="Input DEM",
+            name="DEM",
+            datatype="DERasterDataset",
+            parameterType="Required",
+            direction="Input")
+
+        param2 = arcpy.Parameter(
+            displayName="Input Drainage Area Raster",
+            name="FlowAcc",
+            datatype="DERasterDataset",
+            parameterType="Optional",
+            direction="Input")
+
+        param3 = arcpy.Parameter(
+            displayName="Input Coded Existing Vegetation Layer",
+            name="coded_veg",
+            datatype="DERasterDataset",
+            parameterType="Required",
+            direction="Input")
+
+        param4 = arcpy.Parameter(
+            displayName="Input Coded Historic Vegetation Layer",
+            name="coded_hist",
+            datatype="DERasterDataset",
+            parameterType="Required",
+            direction="Input")
+
+        param5 = arcpy.Parameter(
+            displayName="Output Network",
+            name="out_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Output")
+
+        param6 = arcpy.Parameter(
+            displayName="Set Scratch Workspace",
+            name="scratch",
+            datatype="DEWorkspace",
+            parameterType="Required",
+            direction="Input")
+        param6.filter.list = ["Local Database"]
+        param6.value = arcpy.env.scratchWorkspace
+
+        return [param0, param1, param2, param3, param4, param5, param6]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(BRAT_capacity_table)
+        BRAT_capacity_table.main(p[0].valueAsText,
+                        p[1].valueAsText,
+                        p[2].valueAsText,
+                        p[3].valueAsText,
+                        p[4].valueAsText,
+                        p[5].valueAsText,
+                        p[6].valueAsText)
+        return
+
 
 class iHyd_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "iHyd Attributes"
+        self.label = "3 iHyd Attributes"
         self.description = "Adds the hydrology attributes to the BRAT input table"
         self.canRunInBackground = False
 
@@ -221,7 +420,7 @@ class iHyd_tool(object):
 class Veg_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "BRAT Vegetation FIS"
+        self.label = "4 BRAT Vegetation FIS"
         self.description = "Runs the vegetation FIS on the BRAT input table"
         self.canRunInBackground = False
 
@@ -236,22 +435,29 @@ class Veg_FIS_tool(object):
         param0.filter.list = ["Polyline"]
 
         param1 = arcpy.Parameter(
-            displayName="FIS Type (PT or EX)",
-            name="fis_type",
-            datatype="GPString",
-            parameterType="Required",
+            displayName="Historic (select when running first time)",
+            name="pt_type",
+            datatype="GPBoolean",
+            parameterType="Optional",
             direction="Input")
 
         param2 = arcpy.Parameter(
+            displayName="Existing (select when running second time)",
+            name="ex_type",
+            datatype="GPBoolean",
+            parameterType="Optional",
+            direction="Input")
+
+        param3 = arcpy.Parameter(
             displayName="Set Scratch Workspace",
             name="scratch",
             datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param2.filter.list = ['Local Database']
-        param2.value = arcpy.env.scratchWorkspace
+        param3.filter.list = ['Local Database']
+        param3.value = arcpy.env.scratchWorkspace
 
-        return [param0, param1, param2]
+        return [param0, param1, param2, param3]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -261,6 +467,17 @@ class Veg_FIS_tool(object):
         """Modify the values and properties of parameters before internal
         validation is performed.  This method is called whenever a parameter
         has been changed."""
+
+        if parameters[1].value:
+            parameters[2].enabled = False
+        else:
+            parameters[2].enabled = True
+
+        if parameters[2].value:
+            parameters[1].enabled = False
+        else:
+            parameters[1].enabled = True
+
         return
 
     def updateMessages(self, parameters):
@@ -273,13 +490,14 @@ class Veg_FIS_tool(object):
         reload(Veg_FIS)
         Veg_FIS.main(p[0].valueAsText,
                      p[1].valueAsText,
-                     p[2].valueAsText)
+                     p[2].valueAsText,
+                     p[3].valueAsText)
         return
 
 class Comb_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "BRAT Combined FIS"
+        self.label = "5 BRAT Combined FIS"
         self.description = "Runs the combined FIS on the BRAT input table"
         self.canRunInBackground = False
 
@@ -294,37 +512,44 @@ class Comb_FIS_tool(object):
         param0.filter.list = ["Polyline"]
 
         param1 = arcpy.Parameter(
-            displayName="FIS Type (PT or EX)",
-            name="fis_type",
-            datatype="GPString",
-            parameterType="Required",
+            displayName="Historic (select when running first time)",
+            name="pt_type",
+            datatype="GPBoolean",
+            parameterType="Optional",
             direction="Input")
 
         param2 = arcpy.Parameter(
+            displayName="Existing (select when running second time)",
+            name="ex_type",
+            datatype="GPBoolean",
+            parameterType="Optional",
+            direction="Input")
+
+        param3 = arcpy.Parameter(
             displayName="Maximum DA Threshold (Square KM)",
             name = "max_DA_thresh",
             datatype="GPDouble",
             parameterType="Required",
             direction="Input")
 
-        param3 = arcpy.Parameter(
-            displayName = "Save Output Network (When running 'EX' Combined FIS)",
+        param4 = arcpy.Parameter(
+            displayName = "Save Output Network (When running 'Existing' Combined FIS)",
             name = "out_network",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Output")
-        param3.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
+        param4.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
 
-        param4 = arcpy.Parameter(
+        param5 = arcpy.Parameter(
             displayName="Set Scratch Workspace",
             name="scratch",
             datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param4.filter.list = ['Local Database']
-        param4.value = arcpy.env.scratchWorkspace
+        param5.filter.list = ['Local Database']
+        param5.value = arcpy.env.scratchWorkspace
 
-        return [param0, param1, param2, param3, param4]
+        return [param0, param1, param2, param3, param4, param5]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -334,6 +559,17 @@ class Comb_FIS_tool(object):
         """Modify the values and properties of parameters before internal
         validation is performed.  This method is called whenever a parameter
         has been changed."""
+
+        if parameters[1].value:
+            parameters[2].enabled = False
+        else:
+            parameters[2].enabled = True
+
+        if parameters[2].value:
+            parameters[1].enabled = False
+        else:
+            parameters[1].enabled = True
+
         return
 
     def updateMessages(self, parameters):
@@ -348,13 +584,14 @@ class Comb_FIS_tool(object):
                       p[1].valueAsText,
                       p[2].valueAsText,
                       p[3].valueAsText,
-                      p[4].valueAsText)
+                      p[4].valueAsText,
+                      p[5].valueAsText)
         return
 
 class Conflict_Potential_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "BRAT Conflict Potential"
+        self.label = "6 BRAT Conflict Potential"
         self.description = "Runs the Conflict Potential model on the BRAT output"
         self.canRunInBackground = False
 
@@ -413,14 +650,14 @@ class Conflict_Potential_tool(object):
 class Conservation_Restoration_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "BRAT Conservation Restoration"
+        self.label = "7 BRAT Conservation Restoration"
         self.description = "Runs the Conservation and Restoration model on the BRAT output"
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Select Combined FIS Output Network",
+            displayName="Select Conflict Output Network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",

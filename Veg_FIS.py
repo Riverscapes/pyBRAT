@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        Veg FIS
 # Purpose:     Runs the vegetation FIS for the BRAT input table
 #
@@ -7,7 +7,7 @@
 # Created:     09/2016
 # Copyright:   (c) Jordan 2016
 # Licence:     <your licence>
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 import arcpy
 import skfuzzy as fuzz
@@ -16,15 +16,24 @@ import numpy as np
 import os
 import sys
 
+
 def main(
     in_network,
-    fis_type,
+    pt_type,
+    ex_type,
     scratch):
 
     arcpy.env.overwriteOutput = True
 
+    network_fields = [f.name for f in arcpy.ListFields(in_network)]
+
     # fix any values outside of fis range
-    if fis_type == "PT":
+    if pt_type == "true":
+
+        # delete oVC_PT field if exists
+        if "oVC_PT" in network_fields:
+            arcpy.DeleteField_management(in_network, "oVC_PT")
+
         cursor = arcpy.da.UpdateCursor(in_network, ["iVeg_100PT", "iVeg_30PT"])
         for row in cursor:
             if row[0] < 0:
@@ -68,8 +77,8 @@ def main(
         streamside['suitable'] = fuzz.trimf(streamside.universe, [2, 3, 4])
         streamside['preferred'] = fuzz.trimf(streamside.universe, [3, 4, 4])
 
-        density['none'] = fuzz.trimf(density.universe, [0, 0, 0])
-        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1.5])
+        density['none'] = fuzz.trimf(density.universe, [0, 0, 0.1])
+        density['rare'] = fuzz.trapmf(density.universe, [0, 0.1, 0.5, 1.5])
         density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1.5, 4, 8])
         density['frequent'] = fuzz.trapmf(density.universe, [4, 8, 12, 25])
         density['pervasive'] = fuzz.trapmf(density.universe, [12, 25, 45, 45])
@@ -102,7 +111,8 @@ def main(
         rule25 = ctrl.Rule(riparian['preferred'] & streamside['preferred'], density['pervasive'])
 
         # FIS
-        veg_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20, rule21, rule22, rule23, rule24, rule25])
+        veg_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11,
+                                       rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20, rule21, rule22, rule23, rule24, rule25])
         veg_fis = ctrl.ControlSystemSimulation(veg_ctrl)
 
         out = np.zeros(len(riparian_array))
@@ -115,17 +125,21 @@ def main(
         # save the output text file then merge to shapefile
         fid = np.arange(0, len(out), 1)
         columns = np.column_stack((fid, out))
-        out_table = os.path.dirname(in_network) + '/oVC_PT_Table.txt'
-        np.savetxt(out_table, columns, delimiter=',', header='FID, oVC_PT', comments='')
+        out_table = os.path.dirname(in_network) + "/oVC_PT_Table.txt"
+        np.savetxt(out_table, columns, delimiter=",", header="FID, oVC_PT", comments="")
 
-        ovc_table = scratch + '/ovc_pt_table'
+        ovc_table = scratch + "/ovc_pt_table"
         arcpy.CopyRows_management(out_table, ovc_table)
-        arcpy.JoinField_management(in_network, 'FID', ovc_table, 'FID', 'oVC_PT')
+        arcpy.JoinField_management(in_network, "FID", ovc_table, "FID", "oVC_PT")
         arcpy.Delete_management(out_table)
 
         del out, fid, columns, out_table, ovc_table
 
-    elif fis_type == "EX":
+    elif ex_type == "true":
+
+        if "oVC_EX" in network_fields:
+            arcpy.DeleteField_management(in_network, "oVC_EX")
+
         cursor = arcpy.da.UpdateCursor(in_network, ["iVeg_100EX", "iVeg_30EX"])
         for row in cursor:
             if row[0] < 0:
@@ -169,8 +183,8 @@ def main(
         streamside['suitable'] = fuzz.trimf(streamside.universe, [2, 3, 4])
         streamside['preferred'] = fuzz.trimf(streamside.universe, [3, 4, 4])
 
-        density['none'] = fuzz.trimf(density.universe, [0, 0, 0])
-        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1.5])
+        density['none'] = fuzz.trimf(density.universe, [0, 0, 0.1])
+        density['rare'] = fuzz.trapmf(density.universe, [0, 0.1, 0.5, 1.5])
         density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1.5, 4, 8])
         density['frequent'] = fuzz.trapmf(density.universe, [4, 8, 12, 25])
         density['pervasive'] = fuzz.trapmf(density.universe, [12, 25, 45, 45])
@@ -203,7 +217,8 @@ def main(
         rule25 = ctrl.Rule(riparian['preferred'] & streamside['preferred'], density['pervasive'])
 
         # FIS
-        veg_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20, rule21, rule22, rule23, rule24, rule25])
+        veg_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11,
+                                       rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20, rule21, rule22, rule23, rule24, rule25])
         veg_fis = ctrl.ControlSystemSimulation(veg_ctrl)
 
         out = np.zeros(len(riparian_array))
@@ -216,19 +231,18 @@ def main(
         # save the output text file then merge to shapefile
         fid = np.arange(0, len(out), 1)
         columns = np.column_stack((fid, out))
-        out_table = os.path.dirname(in_network) + '/oVC_EX_Table.txt'
-        np.savetxt(out_table, columns, delimiter=',', header='FID, oVC_EX', comments='')
+        out_table = os.path.dirname(in_network) + "/oVC_EX_Table.txt"
+        np.savetxt(out_table, columns, delimiter=",", header="FID, oVC_EX", comments="")
 
-        ovc_table = scratch + '/ovc_ex_table'
+        ovc_table = scratch + "/ovc_ex_table"
         arcpy.CopyRows_management(out_table, ovc_table)
-        arcpy.JoinField_management(in_network, 'FID', ovc_table, 'FID', 'oVC_EX')
+        arcpy.JoinField_management(in_network, "FID", ovc_table, "FID", "oVC_EX")
         arcpy.Delete_management(out_table)
 
         del out, fid, columns, out_table, ovc_table
 
     else:
-        raise Exception("an fis type was specified that does not exist")
-
+        raise Exception("either historic or existing must be selected")
 
     return in_network
 
@@ -236,4 +250,5 @@ if __name__ == '__main__':
     main(
         sys.argv[1],
         sys.argv[2],
-        sys.argv[3])
+        sys.argv[3],
+        sys.argv[4])

@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        Comb_FIS
 # Purpose:     Runs the combined FIS for the BRAT input table
 #
@@ -7,7 +7,7 @@
 # Created:     09/2016
 # Copyright:   (c) Jordan 2016
 # Licence:     <your licence>
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 import arcpy
 import skfuzzy as fuzz
@@ -16,16 +16,24 @@ import numpy as np
 import os
 import sys
 
+
 def main(
     in_network,
-    fis_type,
+    pt_type,
+    ex_type,
     max_DA_thresh,
     out_network,
     scratch):
 
     arcpy.env.overwriteOutput = True
 
-    if fis_type == "PT":
+    network_fields = [f.name for f in arcpy.ListFields(in_network)]
+
+    if pt_type == "true":
+
+        # check for oCC_PT field and delete if exists
+        if "oCC_PT" in network_fields:
+            arcpy.DeleteField_management(in_network, "oCC_PT")
 
         # check that inputs are within range of fis (slope already taken care of)
         cursor = arcpy.da.UpdateCursor(in_network, ["oVC_PT", "iHyd_SP2", "iHyd_SPLow"])
@@ -88,8 +96,8 @@ def main(
         slope['probably'] = fuzz.trapmf(slope.universe, [0.12, 0.15, 0.17, 0.23])
         slope['cannot'] = fuzz.trapmf(slope.universe, [0.17, 0.23, 1, 1])
 
-        density['none'] = fuzz.trimf(density.universe, [0, 0, 0])
-        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1.5])
+        density['none'] = fuzz.trimf(density.universe, [0, 0, 0.1])
+        density['rare'] = fuzz.trapmf(density.universe, [0, 0.1, 0.5, 1.5])
         density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1.5, 4, 8])
         density['frequent'] = fuzz.trapmf(density.universe, [4, 8, 12, 25])
         density['pervasive'] = fuzz.trapmf(density.universe, [12, 25, 45, 45])
@@ -178,17 +186,21 @@ def main(
         # save the output text file
         fid = np.arange(0, len(out), 1)
         columns = np.column_stack((fid, out))
-        out_table = os.path.dirname(in_network) + '/oCC_PT_Table.txt'
-        np.savetxt(out_table, columns, delimiter=',', header='FID, oCC_PT', comments='')
+        out_table = os.path.dirname(in_network) + "/oCC_PT_Table.txt"
+        np.savetxt(out_table, columns, delimiter=",", header="FID, oCC_PT", comments="")
 
-        occ_table = scratch + '/occ_pt_table'
+        occ_table = scratch + "/occ_pt_table"
         arcpy.CopyRows_management(out_table, occ_table)
-        arcpy.JoinField_management(in_network, 'FID', occ_table, 'FID', 'oCC_PT')
+        arcpy.JoinField_management(in_network, "FID", occ_table, "FID", "oCC_PT")
         arcpy.Delete_management(out_table)
 
         del out, fid, columns, out_table, occ_table
 
-    elif fis_type == "EX":
+    elif ex_type == "true":
+
+        # check for oCC_EX field and delete if exists
+        if "oCC_EX" in network_fields:
+            arcpy.DeleteField_management(in_network, "oCC_EX")
 
         # check that inputs are within range of fis (slope already taken care of)
         cursor = arcpy.da.UpdateCursor(in_network, ["oVC_EX", "iHyd_SP2", "iHyd_SPLow"])
@@ -251,8 +263,8 @@ def main(
         slope['probably'] = fuzz.trapmf(slope.universe, [0.12, 0.15, 0.17, 0.23])
         slope['cannot'] = fuzz.trapmf(slope.universe, [0.17, 0.23, 1, 1])
 
-        density['none'] = fuzz.trimf(density.universe, [0, 0, 0])
-        density['rare'] = fuzz.trapmf(density.universe, [0, 0, 0.5, 1])
+        density['none'] = fuzz.trimf(density.universe, [0, 0, 0.1])
+        density['rare'] = fuzz.trapmf(density.universe, [0, 0.1, 0.5, 1])
         density['occasional'] = fuzz.trapmf(density.universe, [0.5, 1, 4, 5])
         density['frequent'] = fuzz.trapmf(density.universe, [4, 5, 12, 20])
         density['pervasive'] = fuzz.trapmf(density.universe, [12, 20, 45, 45])
@@ -341,12 +353,12 @@ def main(
         # save the output text file
         fid = np.arange(0, len(out), 1)
         columns = np.column_stack((fid, out))
-        out_table = os.path.dirname(in_network) + '/oCC_EX_Table.txt'
-        np.savetxt(out_table, columns, delimiter=',', header='FID, oCC_EX', comments='')
+        out_table = os.path.dirname(in_network) + "/oCC_EX_Table.txt"
+        np.savetxt(out_table, columns, delimiter=",", header="FID, oCC_EX", comments="")
 
-        occ_table = scratch + '/occ_ex_table'
+        occ_table = scratch + "/occ_ex_table"
         arcpy.CopyRows_management(out_table, occ_table)
-        arcpy.JoinField_management(in_network, 'FID', occ_table, 'FID', 'oCC_EX')
+        arcpy.JoinField_management(in_network, "FID", occ_table, "FID", "oCC_EX")
         arcpy.Delete_management(out_table)
 
         del out, fid, columns, out_table, occ_table
@@ -375,7 +387,7 @@ def main(
         arcpy.CopyFeatures_management(in_network, out_network)
 
     else:
-        raise Exception("an fis type was specified that does not exist")
+        raise Exception("either historic or existing must be selected")
 
     return
 
@@ -385,4 +397,5 @@ if __name__ == '__main__':
         sys.argv[2],
         sys.argv[3],
         sys.argv[4],
-        sys.argv[5])
+        sys.argv[5],
+        sys.argv[6])

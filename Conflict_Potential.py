@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        Conflict Probability
 # Purpose:     Adds potential for conflict to the BRAT capacity output
 #
@@ -7,12 +7,13 @@
 # Created:     09/2016
 # Copyright:   (c) Jordan 2016
 # Licence:     <your licence>
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 import arcpy
 import numpy as np
 import os
 import sys
+
 
 def main(
     in_network,
@@ -32,23 +33,10 @@ def main(
 
     arcpy.CopyFeatures_management(in_network, out_network)
 
-    #culvert conflict
-    culv_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_CulvX")
-    culv = np.asarray(culv_array, np.float64)
-
-    culv_prob = np.zeros_like(culv)
-
-    for i in range(len(culv)):
-        if culv[i] >= 0 and culv[i] <= CrossingLow:
-            culv_prob[i] = 0.9
-        elif culv[i] > CrossingLow and culv[i] <= CrossingHigh:
-            culv_prob[i] = -0.009889 * culv[i] + 0.99889
-        elif culv[i] > CrossingHigh:
-            culv_prob[i] = 0.01
-        else:
-            culv_prob[i] = 0.01
-
-    del culv_array, culv
+    # check for oPC_Prob field and delete if already exists
+    network_fields = [f.name for f in arcpy.ListFields(out_network)]
+    if "oPC_Prob" in network_fields:
+        arcpy.DeleteField_management(out_network, "oPC_Prob")
 
     # road crossing conflict
     roadx_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_RoadX")
@@ -134,17 +122,17 @@ def main(
         else:
             lu_prob[i] = 0.01
 
-    oPC_Prob = np.fmax(culv_prob, np.fmax(roadx_prob, np.fmax(roadad_prob, np.fmax(canal_prob, np.fmax(rr_prob, lu_prob)))))
+    oPC_Prob = np.fmax(roadx_prob, np.fmax(roadad_prob, np.fmax(canal_prob, np.fmax(rr_prob, lu_prob))))
 
     # save the output text file
     fid = np.arange(0, len(oPC_Prob), 1)
     columns = np.column_stack((fid, oPC_Prob))
-    out_table = os.path.dirname(in_network) + '/oPC_Prob_Table.txt'
-    np.savetxt(out_table, columns, delimiter=',', header='FID, oPC_Prob', comments='')
+    out_table = os.path.dirname(out_network) + "/oPC_Prob_Table.txt"
+    np.savetxt(out_table, columns, delimiter=",", header="FID, oPC_Prob", comments="")
 
-    opc_prob_table = scratch + '/opc_prob_table'
+    opc_prob_table = scratch + "/opc_prob_table"
     arcpy.CopyRows_management(out_table, opc_prob_table)
-    arcpy.JoinField_management(in_network, 'FID', opc_prob_table, 'FID', 'oPC_Prob')
+    arcpy.JoinField_management(out_network, "FID", opc_prob_table, "FID", "oPC_Prob")
     arcpy.Delete_management(out_table)
 
     return out_network
