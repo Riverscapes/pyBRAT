@@ -17,7 +17,7 @@ import sys
 
 def main(
     in_network,
-    out_network,
+    out_name,
     scratch):
 
     arcpy.env.overwriteOutput = True
@@ -31,6 +31,7 @@ def main(
     RRLow = 30
     RRHigh = 100
 
+    out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # check for oPC_Prob field and delete if already exists

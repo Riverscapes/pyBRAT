@@ -27,7 +27,7 @@ def main(
     railroad,
     canal,
     landuse,
-    out_network,
+    out_name,
     scratch):
 
     arcpy.env.overwriteOutput = True
@@ -91,28 +91,33 @@ def main(
         arcpy.Buffer_analysis(seg_network, buf_100m, "100 Meters", "", "FLAT", "NONE")
     else:
         buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
-    sm_midpoint_buffer = scratch + "/sm_midpoint_buffer"
-    arcpy.Buffer_analysis(midpoints, sm_midpoint_buffer, "30 Meters", "", "", "LIST", "ORIG_FID")
     midpoint_buffer = scratch + "/midpoint_buffer"
-    arcpy.Buffer_analysis(midpoints, midpoint_buffer, "100 Meters", "", "", "LIST", "ORIG_FID")
+    arcpy.Buffer_analysis(midpoints, midpoint_buffer, "100 Meters", "", "", "NONE")
 
+    j = 1
+    while os.path.exists(projPath + "/02_Analyses/Output_" + str(j)):
+        j += 1
+
+    os.mkdir(projPath + "/02_Analyses/Output_" + str(j))
+    out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name + ".shp"
     arcpy.CopyFeatures_management(seg_network, out_network)
 
     arcpy.AddMessage('Adding "iGeo" attributes to network')
-    igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, midpoints, scratch)
+    igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30m, scratch)
 
     arcpy.AddMessage('Adding "iVeg" attributes to network')
-    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, midpoint_buffer, midpoints, out_network, scratch)
+    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch)
 
     arcpy.AddMessage('Adding "iPC" attributes to network')
-    ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, sm_midpoint_buffer, midpoints, landuse, scratch)
+    ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch)
 
     arcpy.CheckInExtension("spatial")
 
     return
 
 
-def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, midpoints, scratch):
+def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30m, scratch):
+
     # if fields already exist, delete them
     network_fields = [f.name for f in arcpy.ListFields(out_network)]
     if "iGeo_ElMax" in network_fields:
@@ -146,22 +151,13 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, midpoi
         cursor.updateRow(row)
     del row
     del cursor
-    arcpy.DeleteField_management(out_network, "MID")
+    arcpy.DeleteField_management(out_network, "MIN")
     del zs_startpoint
 
     # get end elevation values
-    endpoints = scratch + "/endpoints"
-    arcpy.FeatureVerticesToPoints_management(out_network, endpoints, "END")
-    endpoint_fields = [f.name for f in arcpy.ListFields(endpoints)]
-    endpoint_fields.remove("OBJECTID")
-    endpoint_fields.remove("Shape")
-    endpoint_fields.remove("ORIG_FID")
-    arcpy.DeleteField_management(endpoints, endpoint_fields)
-    endpoint_buf = scratch + "/endpoint_buf"
-    arcpy.Buffer_analysis(endpoints, endpoint_buf, "50 Meters", "", "", "LIST", "ORIG_FID")
-    zs_endpoint = scratch + "/zs_endpoint"
-    ZonalStatisticsAsTable(endpoint_buf, "ORIG_FID", DEM, zs_endpoint, statistics_type="MINIMUM")
-    arcpy.JoinField_management(out_network, "FID", zs_endpoint, "ORIG_FID", "MIN")
+    zs_buf_30m = scratch + "/zs_buf_30m"
+    ZonalStatisticsAsTable(buf_30m, "ORIG_FID", DEM, zs_buf_30m, statistics_type="MINIMUM")
+    arcpy.JoinField_management(out_network, "FID", zs_buf_30m, "ORIG_FID", "MIN")
     arcpy.AddField_management(out_network, "iGeo_ElMin", "DOUBLE")
     cursor = arcpy.da.UpdateCursor(out_network, ["MIN", "iGeo_ElMin"])
     for row in cursor:
@@ -170,7 +166,7 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, midpoi
     del row
     del cursor
     arcpy.DeleteField_management(out_network, "MIN")
-    del zs_endpoint
+    del zs_buf_30m
 
     # add slope
     arcpy.AddField_management(out_network, "iGeo_Len", "DOUBLE")
@@ -183,7 +179,7 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, midpoi
         cursor.updateRow(row)
     del row
     del cursor
-    cursor = arcpy.da.UpdateCursor(out_network, "iGeo_Slope") # fix slope values of 0
+    cursor = arcpy.da.UpdateCursor(out_network, "iGeo_Slope")  # fix slope values of 0
     for row in cursor:
         if row[0] == 0.0:
             row[0] = 0.0001
@@ -202,8 +198,8 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, midpoi
     elif os.path.exists(os.path.dirname(DEM) + "/Flow"):
         pass
     else:
-        os.mkdir(projPath + os.path.dirname(DEM) + "/Flow")
-        arcpy.CopyRaster_management(FlowAcc, os.path.dirname(DEM) + "/Flow" + os.path.basename(FlowAcc))
+        os.mkdir(os.path.dirname(DEM) + "/Flow")
+        arcpy.CopyRaster_management(FlowAcc, os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc))
 
     if FlowAcc == None:
         DrAr = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
@@ -239,7 +235,7 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, midpoi
     return
 
 
-def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, midpoint_buffer, midpoints, out_network, scratch):
+def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch):
 
     # if fields already exist, delete them
     network_fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -313,7 +309,7 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, midpoint_buffer, m
     return
 
 
-def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, sm_midpoint_buffer, midpoints, landuse, scratch):
+def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch):
 
     # if fields already exist, delete them
     network_fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -339,10 +335,12 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         del cursor
 
     else:
-        roadx = scratch + '/roadx'
+        roadx = scratch + "/roadx"
         arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
+        roadx_mts = scratch + "/roadx_mts"
+        arcpy.MultipartToSinglepart_management(roadx, roadx_mts)
 
-        roadxcount = arcpy.GetCount_management(roadx)
+        roadxcount = arcpy.GetCount_management(roadx_mts)
         roadxct = int(roadxcount.getOutput(0))
         if roadxct < 1:
             arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
@@ -381,8 +379,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     else:
         road_subset = scratch + '/road_subset'
         arcpy.Clip_analysis(road, valley_bottom, road_subset)
+        road_mts = scratch + "/road_mts"
+        arcpy.MultipartToSinglepart_management(road_subset, road_mts)
 
-        roadcount = arcpy.GetCount_management(road_subset)
+        roadcount = arcpy.GetCount_management(road_mts)
         roadct = int(roadcount.getOutput(0))
         if roadct < 1:
             arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
@@ -395,7 +395,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         else:
             arcpy.env.extent = out_network
             ed_roadad = EucDistance(road_subset, "", 5)
-            zs_roadad = scratch = "/zs_roadad"
+            zs_roadad = scratch + "/zs_roadad"
             ZonalStatisticsAsTable(buf_30m, "ORIG_FID", ed_roadad, zs_roadad, statistics_type="MEAN") # might try mean here to make it less restrictive
             arcpy.JoinField_management(out_network, "FID", zs_roadad, "ORIG_FID", "MEAN")
             arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
@@ -421,8 +421,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     else:
         rr_subset = scratch + '/rr_subset'
         arcpy.Clip_analysis(railroad, valley_bottom, rr_subset)
+        rr_mts = scratch + "/rr_mts"
+        arcpy.MultipartToSinglepart_management(rr_subset, rr_mts)
 
-        rrcount = arcpy.GetCount_management(rr_subset)
+        rrcount = arcpy.GetCount_management(rr_mts)
         rrct = int(rrcount.getOutput(0))
         if rrct < 1:
             arcpy.AddField_management(out_network, "iPC_RR")
@@ -461,8 +463,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     else:
         canal_subset = scratch + '/canal_subset'
         arcpy.Clip_analysis(canal, valley_bottom, canal_subset)
+        canal_mts = scratch + "/canal_mts"
+        arcpy.MultipartToSinglepart_management(canal_subset, canal_mts)
 
-        canalcount = arcpy.GetCount_management(canal_subset)
+        canalcount = arcpy.GetCount_management(canal_mts)
         canalct = int(canalcount.getOutput(0))
         if canalct < 1:
             arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
@@ -505,6 +509,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
     return
 
+
 def calc_drain_area(DEM):
     DEMdesc = arcpy.Describe(DEM)
     height = DEMdesc.meanCellHeight
@@ -528,6 +533,12 @@ def calc_drain_area(DEM):
         DrainArea.save(DrArea_path)
 
     return
+
+def writexml(projPath):
+    """write the xml file for the project"""
+    if not os.path.exists(projPath + "/brat.xml"):
+        xmlfile = projPath + "/brat.xml"
+
 
 
 if __name__ == '__main__':

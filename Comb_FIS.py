@@ -22,7 +22,7 @@ def main(
     pt_type,
     ex_type,
     max_DA_thresh,
-    out_network,
+    out_name,
     scratch):
 
     arcpy.env.overwriteOutput = True
@@ -223,6 +223,15 @@ def main(
         del row
         del cursor
 
+        # correct for occ_pt greater than ovc_pt
+        cursor = arcpy.da.UpdateCursor(in_network, ["oCC_PT", "oVC_PT"])
+        for row in cursor:
+            if row[0] > row[1]:
+                row[1] = row[0]
+            cursor.updateRow(row)
+        del row
+        del cursor
+
         # get arrays for fields of interest
         ovcex_a = arcpy.da.FeatureClassToNumPyArray(in_network, "oVC_EX")
         ihydsp2_a = arcpy.da.FeatureClassToNumPyArray(in_network, "iHyd_SP2")
@@ -384,6 +393,7 @@ def main(
         del row
         del cursor
 
+        out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
         arcpy.CopyFeatures_management(in_network, out_network)
 
     else:
