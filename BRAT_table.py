@@ -13,10 +13,16 @@ import arcpy
 from arcpy.sa import *
 import os
 import sys
+import projectxml
+import datetime
+import uuid
 
 
 def main(
     projPath,
+    projName,
+    hucID,
+    hucName,
     seg_network,
     DEM,
     FlowAcc,
@@ -108,8 +114,16 @@ def main(
     arcpy.AddMessage('Adding "iVeg" attributes to network')
     iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch)
 
+    if FlowAcc == None:
+        DrAr = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
+    else:
+        DrAr = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
+
     arcpy.AddMessage('Adding "iPC" attributes to network')
     ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch)
+
+    writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, valley_bottom, landuse,
+             FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network)
 
     arcpy.CheckInExtension("spatial")
 
@@ -534,11 +548,308 @@ def calc_drain_area(DEM):
 
     return
 
-def writexml(projPath):
+
+def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, valley_bottom, landuse,
+             FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
     if not os.path.exists(projPath + "/brat.xml"):
+
+        # xml file
         xmlfile = projPath + "/brat.xml"
 
+        # initiate xml file creation
+        newxml = projectxml.ProjectXML(xmlfile, "BRAT", projName)
+
+        # add metadata
+        if not hucID == None:
+            newxml.addMeta("HUCID", hucID, newxml.project)
+        if not hucID == None:
+            idlist = [int(x) for x in str(hucID)]
+            if idlist[0] == 1 and idlist[1] == 7:
+                newxml.addMeta("Region", "CRB", newxml.project)
+        if not hucName == None:
+            newxml.addMeta("Watershed", hucName, newxml.project)
+
+        # add first realization
+        newxml.addBRATRealization("BRAT Realization 1", rid="RZ1", dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                  productVersion="3.0", guid=getUUID())
+
+        # add inputs
+        newxml.addProjectInput("Raster", "Existing Vegetation", coded_veg[coded_veg.find("01_Inputs"):], iid="EXVEG1", guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Existing Vegetation", ref="EXVEG1")
+        newxml.addProjectInput("Raster", "Historic Vegetation", coded_hist[coded_hist.find("01_Inputs"):], iid="HISTVEG1", guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Historic Vegetation", ref="HISTVEG1")
+        newxml.addProjectInput("Vector", "Segmented Network", seg_network[seg_network.find("01_Inputs"):], iid="NETWORK1", guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Network", ref="NETWORK1")
+        newxml.addProjectInput("DEM", "DEM", DEM[DEM.find("01_Inputs"):], iid="DEM1", guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "DEM", ref="DEM1")
+        newxml.addProjectInput("Vector", "Valley Bottom", valley_bottom[valley_bottom.find("01_Inputs"):], iid="VALLEY1", guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Valley", ref="VALLEY1")
+        newxml.addProjectInput("Raster", "Land Use", landuse[landuse.find("01_Inputs"):], iid="LU1", guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Land Use", ref="LU1")
+
+        # add optional inputs
+        if FlowAcc == None:
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Flow", name="Drainage Area", path=DrAr[DrAr.find("01_Inputs"):], guid=getUUID())
+        else:
+            newxml.addProjectInput("Raster", "Drainage Area", DrAr[DrAr.find("01_Inputs"):], iid="DA1", guid=getUUID())
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Flow", ref="DA1")
+        if not road == None:
+            newxml.addProjectInput("Vector", "Roads", road[road.find("01_Inputs"):], iid="ROAD1", guid=getUUID())
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Roads", ref="ROAD1")
+        if not railroad == None:
+            newxml.addProjectInput("Vector", "Railroads", railroad[railroad.find("01_Inputs"):], iid="RR1", guid=getUUID())
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Railroads", ref="RR1")
+        if not canal == None:
+            newxml.addProjectInput("Vector", "Canals", canal[canal.find("01_Inputs"):], iid="CANAL1", guid=getUUID())
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Canals", ref="CANAL1")
+
+        # add derived inputs
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="30m Buffer", path=buf_30m[buf_30m.find("01_Inputs"):], guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="100m Buffer", path=buf_100m[buf_100m.find("01_Inputs"):], guid=getUUID())
+
+        # add output
+        newxml.addOutput("Analysis", "Vector", "BRAT Input Table", out_network[out_network.find("02_Analyses"):], newxml.BRATRealizations[0], guid=getUUID())
+
+        # write xml to this point
+        newxml.write()
+
+    else:
+        # xml file
+        xmlfile = projPath + "/brat.xml"
+
+        #open existing xml
+        exxml = projectxml.ExistingXML(xmlfile)
+
+        bratr = exxml.rz.findall("BRAT")
+        bratrf = bratr[-1]
+        rname = bratrf.find("Name")
+        k = 2
+        while rname.text == "BRAT Realization" + str(k):
+            k += 1
+
+        # add additional realizations
+        exxml.addBRATRealization("BRAT Realization " + str(k), rid="RZ" + str(k),
+                                 dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), productVersion="3.0", guid=getUUID())
+
+        # add inputs
+        inputs = exxml.root.find("Inputs")
+
+        dems = inputs.findall("DEM")
+        demid = range(len(dems))
+        for i in range(len(dems)):
+            demid[i] = dems[i].get("id")
+        dempath = range(len(dems))
+        for i in range(len(dems)):
+            dempath[i] = dems[i].find("Path").text
+
+        for i in range(len(dempath)):
+            if os.path.abspath(dempath[i]) == os.path.abspath(DEM[DEM.find("01_Inputs"):]):
+                exxml.addBRATInput(exxml.BRATRealizations[0], "DEM", ref=str(demid[i]))
+
+        nlist = []
+        for j in dempath:
+            if os.path.abspath(DEM[DEM.find("01_Inputs"):]) == os.path.abspath(j):
+                nlist.append("yes")
+            else:
+                nlist.append("no")
+        if "yes" in nlist:
+            pass
+        else:
+            exxml.addProjectInput("DEM", "DEM", DEM[DEM.find("01_Inputs"):], iid="DEM" + str(k), guid=getUUID())
+            exxml.addBRATInput(exxml.BRATRealizations[0], "DEM", ref="DEM" + str(k))
+
+        raster = inputs.findall("Raster")
+        rasterid = range(len(raster))
+        for i in range(len(raster)):
+            rasterid[i] = raster[i].get("id")
+        rasterpath = range(len(raster))
+        for i in range(len(raster)):
+            rasterpath[i] = raster[i].find("Path").text
+
+        for i in range(len(rasterpath)):
+            if os.path.abspath(rasterpath[i]) == os.path.abspath(coded_veg[coded_veg.find("01_Inputs"):]):
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Existing Vegetation", ref=str(rasterid[i]))
+            elif os.path.abspath(rasterpath[i]) == os.path.abspath(coded_hist[coded_hist.find("01_Inputs"):]):
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Historic Vegetation", ref=str(rasterid[i]))
+            elif os.path.abspath(rasterpath[i]) == os.path.abspath(landuse[landuse.find("01_Inputs"):]):
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Land Use", ref=str(rasterid[i]))
+
+        if not FlowAcc == None:
+            for i in range(len(rasterpath)):
+                if os.path.abspath(rasterpath[i]) == os.path.abspath(DrAr[DrAr.find("01_Inputs"):]):
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Flow", ref=str(rasterid[i]))
+
+        nlist = []
+        for j in rasterpath:
+            if os.path.abspath(coded_veg[coded_veg.find("01_Inputs"):]) == os.path.abspath(j):
+                nlist.append("yes")
+            else:
+                nlist.append("no")
+        if "yes" in nlist:
+            pass
+        else:
+            exxml.addProjectInput("Raster", "Existing Vegetation", coded_veg[coded_veg.find("01_Inputs"):], iid="EXVEG" + str(k), guid=getUUID())
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Existing Vegetation", ref="EXVEG" + str(k))
+        nlist = []
+        for j in rasterpath:
+            if os.path.abspath(coded_hist[coded_hist.find("01_Inputs"):]) == os.path.abspath(j):
+                nlist.append("yes")
+            else:
+                nlist.append("no")
+        if "yes" in nlist:
+            pass
+        else:
+            exxml.addProjectInput("Raster", "Historic Vegetation", coded_hist[coded_hist.find("01_Inputs"):], iid="HISTVEG" + str(k), guid=getUUID())
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Historic Vegetation", ref="HISTVEG" + str(k))
+        nlist = []
+        for j in rasterpath:
+            if os.path.abspath(landuse[landuse.find("01_Inputs"):]) == os.path.abspath(j):
+                nlist.append("yes")
+            else:
+                nlist.append("no")
+        if "yes" in nlist:
+            pass
+        else:
+            exxml.addProjectInput("Raster", "Land Use", landuse[landuse.find("01_Inputs"):], iid="LU" + str(k), guid=getUUID())
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Land Use", ref="LU" + str(k))
+
+        if FlowAcc == None:
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Flow", "Drainage Area", DrAr[DrAr.find("01_Inputs"):],
+                               guid=getUUID())
+        else:
+            nlist = []
+            for j in rasterpath:
+                if os.path.abspath(DrAr[DrAr.find("01_Inputs")]) == os.path.abspath(j):
+                    nlist.append("yes")
+                else:
+                    nlist.append("no")
+            if "yes" in nlist:
+                pass
+            else:
+                flows = exxml.rz.findall(".//Flow")
+                flowpath = range(len(flows))
+                for i in range(len(flows)):
+                    if flows[i].find("Path").text:
+                        flowpath[i] = flows[i].find("Path").text
+                        if os.path.abspath(flowpath[i]) == os.path.abspath(DrAr[DrAr.find("01_Inputs"):]):
+                            flowguid = flows[i].attrib['guid']
+                            exxml.addBRATInput(exxml.BRATRealizations[0], "Flow", "Drainage Area", path=DrAr[DrAr.find("01_Inputs"):], guid=flowguid)
+                    else:
+                        pass
+
+        vector = inputs.findall("Vector")
+        vectorid = range(len(vector))
+        for i in range(len(vector)):
+            vectorid[i] = vector[i].get("id")
+        vectorpath = range(len(vector))
+        for i in range(len(vector)):
+            vectorpath[i] = vector[i].find("Path").text
+
+        for i in range(len(vectorpath)):
+            if os.path.abspath(vectorpath[i]) == os.path.abspath(seg_network[seg_network.find("01_Inputs"):]):
+                DN = exxml.root.findall(".//Network")
+                for x in range(len(DN)):
+                    if DN[x].attrib['ref'] == vectorid[i]:
+                        r = DN[x].findall(".//Buffer")
+                        buf30_guid = r[0].attrib['guid']
+                        buf100_guid = r[1].attrib['guid']
+                    else:
+                        r = []
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Network", ref=str(vectorid[i]))
+                if len(r) > 0:
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Buffer", "30m Buffer", path=buf_30m[buf_30m.find("01_Inputs"):], guid=buf30_guid)
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Buffer", "100m Buffer", path=buf_100m[buf_100m.find("01_Inputs"):], guid=buf100_guid)
+                else:
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Buffer", "30m Buffer", path=buf_30m[buf_30m.find("01_Inputs"):])
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Buffer", "100m Buffer", path=buf_100m[buf_100m.find("01_Inputs"):])
+            elif os.path.abspath(vectorpath[i]) == os.path.abspath(valley_bottom[valley_bottom.find("01_Inputs"):]):
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Valley", ref=str(vectorid[i]))
+            if not road == None:
+                if os.path.abspath(vectorpath[i]) == os.path.abspath(road[road.find("01_Inputs"):]):
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Roads", ref=str(vectorid[i]))
+            if not railroad == None:
+                if os.path.abspath(vectorpath[i]) == os.path.abspath(railroad[railroad.find("01_Inputs"):]):
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Railroads", ref=str(vectorid[i]))
+            if not canal == None:
+                if os.path.abspath(vectorpath[i]) == os.path.abspath(canal[canal.find("01_Inputs"):]):
+                    exxml.addBRATInput(exxml.BRATRealizations[0], "Canals", ref=str(vectorid[i]))
+
+        nlist = []
+        for j in vectorpath:
+            if os.path.abspath(seg_network[seg_network.find("01_Inputs"):]) == os.path.abspath(j):
+                nlist.append("yes")
+            else:
+                nlist.append("no")
+        if "yes" in nlist:
+            pass
+        else:
+            exxml.addProjectInput("Vector", "Segmented Network", seg_network[seg_network.find("01_Inputs"):], iid="NETWORK" + str(k), guid=getUUID())
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Network", ref="NETWORK" + str(k))
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Buffer", "30m Buffer",
+                               path=os.path.dirname(seg_network[seg_network.find("01_Inputs"):]) + "/Buffers/buffer_30m.shp", guid=getUUID())
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Buffer", "100m Buffer",
+                               path=os.path.dirname(seg_network[seg_network.find("01_Inputs"):]) + "/Buffers/buffer_100m.shp", guid=getUUID())
+        nlist = []
+        for j in vectorpath:
+            if os.path.abspath(valley_bottom[valley_bottom.find("01_Inputs"):]) == os.path.abspath(j):
+                nlist.append("yes")
+            else:
+                nlist.append("no")
+        if "yes" in nlist:
+            pass
+        else:
+            exxml.addProjectInput("Vector", "Valley Bottom", valley_bottom[valley_bottom.find("01_Inputs"):], iid="VALLEY" + str(k), guid=getUUID())
+            exxml.addBRATInput(exxml.BRATRealizations[0], "Valley", ref="VALLEY" + str(k))
+
+        if not road == None:
+            nlist = []
+            for j in vectorpath:
+                if os.path.abspath(road[road.find("01_Inputs"):]) == os.path.abspath(j):
+                    nlist.append("yes")
+                else:
+                    nlist.append("no")
+            if "yes" in nlist:
+                pass
+            else:
+                exxml.addProjectInput("Vector", "Roads", road[road.find("01_Inputs"):], iid="ROAD" + str(k), guid=getUUID())
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Roads", ref="ROAD" + str(k))
+
+        if not railroad == None:
+            nlist = []
+            for j in vectorpath:
+                if os.path.abspath(railroad[railroad.find("01_Inputs"):]) == os.path.abspath(j):
+                    nlist.append("yes")
+                else:
+                    nlist.append("no")
+            if "yes" in nlist:
+                pass
+            else:
+                exxml.addProjectInput("Vector", "Railroads", iid="RR" + str(k), guid=getUUID())
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Railroads", ref="RR" + str(k))
+
+        if not canal == None:
+            nlist = []
+            for j in vectorpath:
+                if os.path.abspath(canal[canal.find("01_Inputs"):]) == os.path.abspath(j):
+                    nlist.append("yes")
+                else:
+                    nlist.append("no")
+            if "yes" in nlist:
+                pass
+            else:
+                exxml.addProjectInput("Vector", "Canals", canal[canal.find("01_Inputs"):], iid="CANAL" + str(k), guid=getUUID())
+                exxml.addBRATInput(exxml.BRATRealizations[0], "Canals", ref="CANAL" + str(k))
+
+        # add output
+        exxml.addOutput("Analysis", "Vector", "BRAT Input Table", out_network[out_network.find("02_Analyses"):], exxml.BRATRealizations[0], guid=getUUID())
+
+        # write xml
+        exxml.write()
+
+
+def getUUID():
+    return str(uuid.uuid4()).upper()
 
 
 if __name__ == '__main__':
@@ -554,4 +865,8 @@ if __name__ == '__main__':
         sys.argv[9],
         sys.argv[10],
         sys.argv[11],
-        sys.argv[12])
+        sys.argv[12],
+        sys.argv[13],
+        sys.argv[14],
+        sys.argv[15],
+        sys.argv[16])

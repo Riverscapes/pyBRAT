@@ -15,9 +15,13 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
+import projectxml
+import uuid
+import xml.etree.ElementTree as ET
 
 
 def main(
+    projPath,
     in_network,
     pt_type,
     ex_type,
@@ -396,10 +400,42 @@ def main(
         out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
         arcpy.CopyFeatures_management(in_network, out_network)
 
+        addxmloutput(projPath, in_network, out_network)
+
     else:
         raise Exception("either historic or existing must be selected")
 
     return
+
+
+def addxmloutput(projPath, in_network, out_network):
+    """add the capacity output to the project xml file"""
+
+    # xml file
+    xmlfile = projPath + "/brat.xml"
+
+    # make sure xml file exists
+    if not os.path.exists(xmlfile):
+        raise Exception("xml file for project does not exist. Return to table builder tool.")
+
+    # open xml and add output
+    exxml = projectxml.ExistingXML(xmlfile)
+
+    realizations = exxml.rz.findall("BRAT")
+    for i in range(len(realizations)):
+        a = realizations[i].findall(".//Path")
+        for j in range(len(a)):
+            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find("02_Analyses"):]):
+                outrz = realizations[i]
+
+    exxml.addOutput("Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find("02_Analyses"):], outrz, guid=getUUID())
+
+    exxml.write()
+
+
+def getUUID():
+    return str(uuid.uuid4()).upper()
+
 
 if __name__ == '__main__':
     main(
@@ -408,4 +444,5 @@ if __name__ == '__main__':
         sys.argv[3],
         sys.argv[4],
         sys.argv[5],
-        sys.argv[6])
+        sys.argv[6],
+        sys.argv[7])

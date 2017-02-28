@@ -159,97 +159,118 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param1 = arcpy.Parameter(
+            displayName="Project Name",
+            name="projName",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input")
+
+        param2 = arcpy.Parameter(
+            displayName="Watershed HUC ID",
+            name="hucID",
+            datatype="GPDouble",
+            parameterType="Optional",
+            direction="Input")
+
+        param3 = arcpy.Parameter(
+            displayName = "Watershed Name",
+            name="hucName",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input")
+
+        param4 = arcpy.Parameter(
             displayName="Input Segmented Network",
             name="seg_network",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
-        param1.filter.list = ["Polyline"]
+        param4.filter.list = ["Polyline"]
 
-        param2 = arcpy.Parameter(
+        param5 = arcpy.Parameter(
             displayName="Input DEM",
             name="DEM",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param3 = arcpy.Parameter(
+        param6 = arcpy.Parameter(
             displayName="Input Drainage Area Raster",
             name="FlowAcc",
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
 
-        param4 = arcpy.Parameter(
+        param7 = arcpy.Parameter(
             displayName="Input Coded Existing Vegetation Layer",
             name="coded_veg",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param5 = arcpy.Parameter(
+        param8 = arcpy.Parameter(
             displayName="Input Coded Historic Vegetation Layer",
             name="coded_hist",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param6 = arcpy.Parameter(
+        param9 = arcpy.Parameter(
             displayName="Input Valley Bottom Polygon",
             name="valley_bottom",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
-        param6.filter.list = ["Polygon"]
+        param9.filter.list = ["Polygon"]
 
-        param7 = arcpy.Parameter(
+        param10 = arcpy.Parameter(
             displayName="Input Road Layer Feature Class",
             name="road",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param7.filter.list = ["Polyline"]
+        param10.filter.list = ["Polyline"]
 
-        param8 = arcpy.Parameter(
+        param11 = arcpy.Parameter(
             displayName="Input Railroad Feature Class",
             name="railroad",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param8.filter.list = ["Polyline"]
+        param11.filter.list = ["Polyline"]
 
-        param9 = arcpy.Parameter(
+        param12 = arcpy.Parameter(
             displayName="Input Canal Feature Class",
             name="canal",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param9.filter.list = ["Polyline"]
+        param12.filter.list = ["Polyline"]
 
-        param10 = arcpy.Parameter(
+        param13 = arcpy.Parameter(
             displayName="Input Landuse Dataset",
             name="landuse",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param11 = arcpy.Parameter(
+        param14 = arcpy.Parameter(
             displayName="Name BRAT Table Output",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
 
-        param12 = arcpy.Parameter(
+        param15 = arcpy.Parameter(
             displayName="Set Scratch Workspace",
             name="scratch",
             datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param12.filter.list = ["Local Database"]
-        param12.value = arcpy.env.scratchWorkspace
+        param15.filter.list = ["Local Database"]
+        param15.value = arcpy.env.scratchWorkspace
 
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -281,7 +302,10 @@ class BRAT_table_tool(object):
                         p[9].valueAsText,
                         p[10].valueAsText,
                         p[11].valueAsText,
-                        p[12].valueAsText)
+                        p[12].valueAsText,
+                        p[13].valueAsText,
+                        p[14].valueAsText,
+                        p[15].valueAsText)
         return
 
 
@@ -302,58 +326,79 @@ class BRAT_capacity_table_tool(object):
             direction="Input")
 
         param1 = arcpy.Parameter(
+            displayName="Project Name",
+            name="projName",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input")
+
+        param2 = arcpy.Parameter(
+            displayName="Watershed HUC ID",
+            name="hucID",
+            datatype="GPDouble",
+            parameterType="Optional",
+            direction="Input")
+
+        param3 = arcpy.Parameter(
+            displayName = "Watershed Name",
+            name="hucName",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input")
+
+        param4 = arcpy.Parameter(
             displayName="Input Segmented Network",
             name="seg_network",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
-        param1.filter.list = ["Polyline"]
+        param4.filter.list = ["Polyline"]
 
-        param2 = arcpy.Parameter(
+        param5 = arcpy.Parameter(
             displayName="Input DEM",
             name="DEM",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param3 = arcpy.Parameter(
+        param6 = arcpy.Parameter(
             displayName="Input Drainage Area Raster",
             name="FlowAcc",
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
 
-        param4 = arcpy.Parameter(
+        param7 = arcpy.Parameter(
             displayName="Input Coded Existing Vegetation Layer",
             name="coded_veg",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param5 = arcpy.Parameter(
+        param8 = arcpy.Parameter(
             displayName="Input Coded Historic Vegetation Layer",
             name="coded_hist",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param6 = arcpy.Parameter(
-            displayName="Output Network",
-            name="out_network",
-            datatype="DEFeatureClass",
+        param9 = arcpy.Parameter(
+            displayName="Output Name",
+            name="out_name",
+            datatype="GPString",
             parameterType="Required",
-            direction="Output")
+            direction="Input")
 
-        param7 = arcpy.Parameter(
+        param10 = arcpy.Parameter(
             displayName="Set Scratch Workspace",
             name="scratch",
             datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param7.filter.list = ["Local Database"]
-        param7.value = arcpy.env.scratchWorkspace
+        param10.filter.list = ["Local Database"]
+        param10.value = arcpy.env.scratchWorkspace
 
-        return [param0, param1, param2, param3, param4, param5, param6, param7]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -380,7 +425,10 @@ class BRAT_capacity_table_tool(object):
                         p[4].valueAsText,
                         p[5].valueAsText,
                         p[6].valueAsText,
-                        p[7].valueAsText)
+                        p[7].valueAsText,
+                        p[8].valueAsText,
+                        p[9].valueAsText,
+                        p[10].valueAsText)
         return
 
 
@@ -529,52 +577,59 @@ class Comb_FIS_tool(object):
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
+            displayName="Select Project Folder",
+            name="projPath",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input")
+
+        param1 = arcpy.Parameter(
             displayName="Input BRAT Network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
-        param0.filter.list = ["Polyline"]
+        param1.filter.list = ["Polyline"]
 
-        param1 = arcpy.Parameter(
+        param2 = arcpy.Parameter(
             displayName="Historic (select when running first time)",
             name="pt_type",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param2 = arcpy.Parameter(
+        param3 = arcpy.Parameter(
             displayName="Existing (select when running second time)",
             name="ex_type",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param3 = arcpy.Parameter(
+        param4 = arcpy.Parameter(
             displayName="Maximum DA Threshold (Square KM)",
             name = "max_DA_thresh",
             datatype="GPDouble",
             parameterType="Required",
             direction="Input")
 
-        param4 = arcpy.Parameter(
+        param5 = arcpy.Parameter(
             displayName = "Name Output Network (Saved when running 'Existing' Combined FIS)",
             name = "out_name",
             datatype="GPString",
             parameterType="Optional",
             direction="Input")
-        # param4.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
+        # param5.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
 
-        param5 = arcpy.Parameter(
+        param6 = arcpy.Parameter(
             displayName="Set Scratch Workspace",
             name="scratch",
             datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param5.filter.list = ['Local Database']
-        param5.value = arcpy.env.scratchWorkspace
+        param6.filter.list = ['Local Database']
+        param6.value = arcpy.env.scratchWorkspace
 
-        return [param0, param1, param2, param3, param4, param5]
+        return [param0, param1, param2, param3, param4, param5, param6]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -585,19 +640,19 @@ class Comb_FIS_tool(object):
         validation is performed.  This method is called whenever a parameter
         has been changed."""
 
-        if parameters[1].value:
+        if parameters[2].value:
+            parameters[3].enabled = False
+            parameters[5].enabled = False
+        else:
+            parameters[3].enabled = True
+            parameters[5].enabled = True
+
+        if parameters[3].value:
             parameters[2].enabled = False
-            parameters[4].enabled = False
+            parameters[5].enabled = True
         else:
             parameters[2].enabled = True
-            parameters[4].enabled = True
-
-        if parameters[2].value:
-            parameters[1].enabled = False
-            parameters[4].enabled = True
-        else:
-            parameters[1].enabled = True
-            parameters[4].enabled = False
+            parameters[5].enabled = False
 
         return
 
@@ -614,7 +669,8 @@ class Comb_FIS_tool(object):
                       p[2].valueAsText,
                       p[3].valueAsText,
                       p[4].valueAsText,
-                      p[5].valueAsText)
+                      p[5].valueAsText,
+                      p[6].valueAsText)
         return
 
 class Conflict_Potential_tool(object):
@@ -627,31 +683,38 @@ class Conflict_Potential_tool(object):
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
+            displayName="Select Project Folder",
+            name="projPath",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input")
+
+        param1 = arcpy.Parameter(
             displayName="Select Combined FIS Output Network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
-        param0.filter.list = ["Polyline"]
+        param1.filter.list = ["Polyline"]
 
-        param1 = arcpy.Parameter(
+        param2 = arcpy.Parameter(
             displayName = "Name Output Network",
             name = "out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        # param1.symbology = os.path.join(os.path.dirname(__file__), "oPC.lyr")
+        # param2.symbology = os.path.join(os.path.dirname(__file__), "oPC.lyr")
 
-        param2 = arcpy.Parameter(
+        param3 = arcpy.Parameter(
             displayName="Set Scratch Workspace",
             name="scratch",
             datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param2.filter.list = ['Local Database']
-        param2.value = arcpy.env.scratchWorkspace
+        param3.filter.list = ['Local Database']
+        param3.value = arcpy.env.scratchWorkspace
 
-        return [param0, param1, param2]
+        return [param0, param1, param2, param3]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -673,7 +736,8 @@ class Conflict_Potential_tool(object):
         reload(Conflict_Potential)
         Conflict_Potential.main(p[0].valueAsText,
                                 p[1].valueAsText,
-                                p[2].valueAsText)
+                                p[2].valueAsText,
+                                p[3].valueAsText)
         return
 
 class Conservation_Restoration_tool(object):
@@ -686,22 +750,29 @@ class Conservation_Restoration_tool(object):
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
+            displayName="Select Project Folder",
+            name="projPath",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input")
+
+        param1 = arcpy.Parameter(
             displayName="Select Conflict Output Network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
-        param0.filter.list = ["Polyline"]
+        param1.filter.list = ["Polyline"]
 
-        param1 = arcpy.Parameter(
+        param2 = arcpy.Parameter(
             displayName="Name Output Network",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        # param1.symbology = os.path.join(os.path.dirname(__file__), "oPBRC.lyr")
+        # param2.symbology = os.path.join(os.path.dirname(__file__), "oPBRC.lyr")
 
-        return [param0, param1]
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -722,5 +793,6 @@ class Conservation_Restoration_tool(object):
         """The source code of the tool."""
         reload(Conservation_Restoration)
         Conservation_Restoration.main(p[0].valueAsText,
-                                      p[1].valueAsText)
+                                      p[1].valueAsText,
+                                      p[2].valueAsText)
         return

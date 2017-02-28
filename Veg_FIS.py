@@ -244,7 +244,8 @@ def main(
     else:
         raise Exception("either historic or existing must be selected")
 
-    return in_network
+    return
+
 
 if __name__ == '__main__':
     main(

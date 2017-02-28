@@ -12,9 +12,11 @@
 import arcpy
 import sys
 import os
+import projectxml
+import uuid
 
 
-def main(in_network, out_name):
+def main(projPath, in_network, out_name):
 
     arcpy.env.overwriteOutput = True
 
@@ -95,8 +97,42 @@ def main(in_network, out_name):
     del row
     del cursor
 
+    addxmloutput(projPath, in_network, out_network)
+
     return out_network
+
+
+def addxmloutput(projPath, in_network, out_network):
+    """add the capacity output to the project xml file"""
+
+    # xml file
+    xmlfile = projPath + "/brat.xml"
+
+    # make sure xml file exists
+    if not os.path.exists(xmlfile):
+        raise Exception("xml file for project does not exist. Return to table builder tool.")
+
+    # open xml and add output
+    exxml = projectxml.ExistingXML(xmlfile)
+
+    realizations = exxml.rz.findall("BRAT")
+    for i in range(len(realizations)):
+        a = realizations[i].findall(".//Path")
+        for j in range(len(a)):
+            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find("02_Analyses"):]):
+                outrz = realizations[i]
+
+    exxml.addOutput("Analysis", "Vector", "BRAT Management Output", out_network[out_network.find("02_Analyses"):], outrz,
+                    guid=getUUID())
+
+    exxml.write()
+
+
+def getUUID():
+    return str(uuid.uuid4()).upper()
+
 
 if __name__ == '__main__':
     main(sys.argv[1],
-         sys.argv[2])
+         sys.argv[2],
+         sys.argv[3])
