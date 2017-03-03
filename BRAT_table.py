@@ -55,7 +55,7 @@ def main(
 
     if railroad is not None:
         rrSR = arcpy.Describe(railroad).spatialReference
-        if rrSR.type == "Project":
+        if rrSR.type == "Projected":
             pass
         else:
             raise Exception("Input railroads must have a projected coordinate system")

@@ -3,14 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="21bf6d5c-a5ee-4f2a-820b-ceb3db18b5cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BRAT.pyt" afterPath="$PROJECT_DIR$/BRAT.pyt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BRAT.pyt.xml" afterPath="$PROJECT_DIR$/BRAT.pyt.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BRAT_capacity_table.py" afterPath="$PROJECT_DIR$/BRAT_capacity_table.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BRAT_table.py" afterPath="$PROJECT_DIR$/BRAT_table.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Comb_FIS.py" afterPath="$PROJECT_DIR$/Comb_FIS.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Conflict_Potential.py" afterPath="$PROJECT_DIR$/Conflict_Potential.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Conservation_Restoration.py" afterPath="$PROJECT_DIR$/Conservation_Restoration.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Veg_FIS.py" afterPath="$PROJECT_DIR$/Veg_FIS.py" />
     </list>
     <ignored path="BRAT_arc.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,7 +26,7 @@
       <file leaf-file-name="BRAT_capacity_table.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/BRAT_capacity_table.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="616">
+            <state relative-caret-position="3523">
               <caret line="390" column="20" selection-start-line="390" selection-start-column="20" selection-end-line="390" selection-end-column="20" />
               <folding>
                 <element signature="e#379#391#0" expanded="true" />
@@ -42,11 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BRAT_table.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BRAT_table.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/BRAT_table.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="846" column="19" selection-start-line="846" selection-start-column="19" selection-end-line="846" selection-end-column="19" />
+            <state relative-caret-position="344">
+              <caret line="57" column="34" selection-start-line="57" selection-start-column="34" selection-end-line="57" selection-end-column="34" />
               <folding>
                 <element signature="e#379#391#0" expanded="true" />
               </folding>
@@ -88,10 +81,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Conservation_Restoration.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Conservation_Restoration.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Conservation_Restoration.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="803">
+            <state relative-caret-position="2108">
               <caret line="124" column="58" selection-start-line="124" selection-start-column="58" selection-end-line="124" selection-end-column="58" />
               <folding>
                 <element signature="e#410#422#0" expanded="true" />
@@ -103,7 +96,7 @@
       <file leaf-file-name="projectxml.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/projectxml.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6528">
+            <state relative-caret-position="6579">
               <caret line="387" column="66" selection-start-line="387" selection-start-column="66" selection-end-line="387" selection-end-column="66" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -115,7 +108,7 @@
       <file leaf-file-name="Conflict_Potential.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Conflict_Potential.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="548">
+            <state relative-caret-position="2822">
               <caret line="166" column="56" selection-start-line="166" selection-start-column="56" selection-end-line="166" selection-end-column="56" />
               <folding>
                 <element signature="e#390#402#0" expanded="true" />
@@ -127,7 +120,7 @@
       <file leaf-file-name="Veg_FIS.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Veg_FIS.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3226">
+            <state relative-caret-position="323">
               <caret line="19" column="9" selection-start-line="19" selection-start-column="9" selection-end-line="19" selection-end-column="9" />
               <folding>
                 <element signature="e#370#382#0" expanded="true" />
@@ -139,8 +132,8 @@
       <file leaf-file-name="Comb_FIS.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Comb_FIS.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="296">
-              <caret line="417" column="35" selection-start-line="417" selection-start-column="35" selection-end-line="417" selection-end-column="35" />
+            <state relative-caret-position="704">
+              <caret line="402" column="54" selection-start-line="402" selection-start-column="43" selection-end-line="402" selection-end-column="54" />
               <folding>
                 <element signature="e#369#381#0" expanded="true" />
               </folding>
@@ -172,13 +165,13 @@
         <option value="$PROJECT_DIR$/Comb_FIS.py" />
         <option value="$PROJECT_DIR$/Conflict_Potential.py" />
         <option value="$PROJECT_DIR$/Conservation_Restoration.py" />
-        <option value="$PROJECT_DIR$/BRAT_table.py" />
         <option value="$PROJECT_DIR$/BRAT_capacity_table.py" />
+        <option value="$PROJECT_DIR$/BRAT_table.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
+    <option name="x" value="-1688" />
     <option name="y" value="-8" />
     <option name="width" value="1696" />
     <option name="height" value="1026" />
@@ -233,7 +226,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../RCAT" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../My Tools/BRAT_versions/BRAT_current_v" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
@@ -385,7 +378,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
+    <frame x="-1688" y="-8" width="1696" height="1026" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -778,17 +771,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Conservation Restoration.py" />
-    <entry file="file://$PROJECT_DIR$/BRAT.pyt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13532">
-          <caret line="796" column="54" selection-start-line="796" selection-start-column="54" selection-end-line="796" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/projectxml.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6528">
+        <state relative-caret-position="6579">
           <caret line="387" column="66" selection-start-line="387" selection-start-column="66" selection-end-line="387" selection-end-column="66" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -806,26 +791,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BRAT_table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="846" column="19" selection-start-line="846" selection-start-column="19" selection-end-line="846" selection-end-column="19" />
-          <folding>
-            <element signature="e#379#391#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BRAT_capacity_table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="616">
-          <caret line="390" column="20" selection-start-line="390" selection-start-column="20" selection-end-line="390" selection-end-column="20" />
-          <folding>
-            <element signature="e#379#391#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/iHyd.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -838,7 +803,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Veg_FIS.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3226">
+        <state relative-caret-position="323">
           <caret line="19" column="9" selection-start-line="19" selection-start-column="9" selection-end-line="19" selection-end-column="9" />
           <folding>
             <element signature="e#370#382#0" expanded="true" />
@@ -846,19 +811,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Comb_FIS.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="417" column="35" selection-start-line="417" selection-start-column="35" selection-end-line="417" selection-end-column="35" />
-          <folding>
-            <element signature="e#369#381#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Conflict_Potential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
+        <state relative-caret-position="2822">
           <caret line="166" column="56" selection-start-line="166" selection-start-column="56" selection-end-line="166" selection-end-column="56" />
           <folding>
             <element signature="e#390#402#0" expanded="true" />
@@ -868,10 +823,48 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Conservation_Restoration.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="803">
+        <state relative-caret-position="2108">
           <caret line="124" column="58" selection-start-line="124" selection-start-column="58" selection-end-line="124" selection-end-column="58" />
           <folding>
             <element signature="e#410#422#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BRAT.pyt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13532">
+          <caret line="796" column="54" selection-start-line="796" selection-start-column="54" selection-end-line="796" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BRAT_capacity_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3523">
+          <caret line="390" column="20" selection-start-line="390" selection-start-column="20" selection-end-line="390" selection-end-column="20" />
+          <folding>
+            <element signature="e#379#391#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Comb_FIS.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="704">
+          <caret line="402" column="54" selection-start-line="402" selection-start-column="43" selection-end-line="402" selection-end-column="54" />
+          <folding>
+            <element signature="e#369#381#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BRAT_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="344">
+          <caret line="57" column="34" selection-start-line="57" selection-start-column="34" selection-end-line="57" selection-end-column="34" />
+          <folding>
+            <element signature="e#379#391#0" expanded="true" />
           </folding>
         </state>
       </provider>
