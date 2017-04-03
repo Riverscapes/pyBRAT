@@ -320,10 +320,10 @@ def calc_drain_area(DEM):
 
 def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, FlowAcc, DrAr, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
-    if not os.path.exists(projPath + "/brat.xml"):
+    if not os.path.exists(projPath + "/project.rs.xml"):
 
         # xml file
-        xmlfile = projPath + "/brat.xml"
+        xmlfile = projPath + "/project.rs.xml"
 
         # initiate xml file creation
         newxml = projectxml.ProjectXML(xmlfile, "BRAT", projName)
@@ -340,7 +340,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
 
         # add first realization
         newxml.addBRATRealization("BRAT Realization 1", rid="RZ1", dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                  productVersion="3.0", guid=getUUID())
+                                  productVersion="3.0.1", guid=getUUID())
 
         # add inputs
         newxml.addProjectInput("Raster", "Existing Vegetation", coded_veg[coded_veg.find("01_Inputs"):], iid="EXVEG1", guid=getUUID())
@@ -364,7 +364,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
         newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="100m Buffer", path=buf_100m[buf_100m.find("01_Inputs"):], guid=getUUID())
 
         # add output
-        newxml.addOutput("Analysis", "Vector", "BRAT Input Table", out_network[out_network.find("02_Analyses"):],
+        newxml.addOutput("BRAT Analysis", "Vector", "BRAT Input Table", out_network[out_network.find("02_Analyses"):],
                          newxml.BRATRealizations[0], guid=getUUID())
 
         # write xml to this point
@@ -372,7 +372,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
 
     else:
         # xml file
-        xmlfile = projPath + "/brat.xml"
+        xmlfile = projPath + "/project.rs.xml"
 
         #open existing xml
         exxml = projectxml.ExistingXML(xmlfile)
@@ -386,7 +386,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
 
         # add additional realizations
         exxml.addBRATRealization("BRAT Realization " + str(k), rid="RZ" + str(k),
-                                 dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), productVersion="3.0", guid=getUUID())
+                                 dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), productVersion="3.0.1", guid=getUUID())
 
         # add inputs
         inputs = exxml.root.find("Inputs")
@@ -524,7 +524,8 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
                                path=os.path.dirname(seg_network[seg_network.find("01_Inputs"):]) + "/Buffers/buffer_100m.shp", guid=getUUID())
 
         # add output
-        exxml.addOutput("Analysis", "Vector", "BRAT Input Table", out_network[out_network.find("02_Analyses"):], exxml.BRATRealizations[0], guid=getUUID())
+        exxml.addOutput("BRAT Analysis", "Vector", "BRAT Input Table",
+                        out_network[out_network.find("02_Analyses"):], exxml.BRATRealizations[0], guid=getUUID())
 
         # write xml to this point
         exxml.write()

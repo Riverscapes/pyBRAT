@@ -412,7 +412,7 @@ def addxmloutput(projPath, in_network, out_network):
     """add the capacity output to the project xml file"""
 
     # xml file
-    xmlfile = projPath + "/brat.xml"
+    xmlfile = projPath + "/project.rs.xml"
 
     # make sure xml file exists
     if not os.path.exists(xmlfile):
@@ -428,7 +428,8 @@ def addxmloutput(projPath, in_network, out_network):
             if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find("02_Analyses"):]):
                 outrz = realizations[i]
 
-    exxml.addOutput("Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find("02_Analyses"):], outrz, guid=getUUID())
+    exxml.addOutput("BRAT Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find("02_Analyses"):],
+                    outrz, guid=getUUID())
 
     exxml.write()
 
