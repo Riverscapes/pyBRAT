@@ -71,4 +71,4 @@ Source Code available on [GitHub](https://github.com/Riverscapes/pyBRAT)
 
 #### Interested in Helping?
 
-If you'd like to help improve BRAT and help UDWR better manage beavers, take part in monitoring beaver using our new [Beaver Monitoring App](https://extension.usu.edu/utahwaterwatch/htm/beaver-monitoring-app/) (developed by [EcoTech Solutions](http://www.ecotsolutions.com/) in Partnership with [Utah State University Extension](https://extension.usu.edu/utahwaterwatch/))!![BRAT_Banner_Web](assets/assets/Images/BRAT_Banner_Web.png)
+If you'd like to help improve BRAT and help UDWR better manage beavers, take part in monitoring beaver using our new [Beaver Monitoring App](https://extension.usu.edu/utahwaterwatch/htm/beaver-monitoring-app/) (developed by [EcoTech Solutions](http://www.ecotsolutions.com/) in Partnership with [Utah State University Extension](https://extension.usu.edu/utahwaterwatch/)).
