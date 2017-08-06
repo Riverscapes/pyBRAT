@@ -1,16 +1,16 @@
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-
+![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)
 
 Welcome to the BRAT website. The Beaver Restoration Assessment Tool is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
 
-![Beaver_EcosystemEngineer]({{ site.baseurl }}/images/Beaver_EcosystemEngineer.png)
+![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png)
 
 The BRAT models can be run with widely available existing data sets, and is used to identify opportunities,  potential conflicts and constraints through a mix of assessment of existing resources and scenario-based assessment of potential futures. The backbone to BRAT are spatial models that predict the capacity of riverscapes to support dam-building activity by beaver. These models were first tested in a pilot project in Utah and recently were extended to the entire state of Utah. In addition the decision support components were developed and tested as part of the statewide application (read [vision here](http://brat.joewheaton.org/home/vision)).
 
 For more information on beaver and workshops we occasionally teach, see [here](http://beaver.joewheaton.org/).
 
-[![State_Management]({{ site.baseurl }}/images/State_Management.png)]({{ site.baseurl }}/images/hr/State_Management.png)
+[![State_Management]({{ site.baseurl }}/assets/Images/State_Management.png)]({{ site.baseurl }}/assets/Images/hr/State_Management.png)
 
 ### Developers
 
@@ -44,13 +44,13 @@ Initial development of BRAT was funded through a [pilot project](http://etal.joe
 
 
 
-![WFF]({{ site.baseurl }}/images/WFF.jpg)
+![WFF]({{ site.baseurl }}/assets/Images/WFF.jpg)
 
 
 
 
 
-![gct-logo2]({{ site.baseurl }}/images/Utah_DWR.jpg)
+![gct-logo2]({{ site.baseurl }}/assets/Images/Utah_DWR.jpg)
 
 
 
@@ -64,11 +64,11 @@ BRAT development and implementation for the entire State of Utah was funded by t
 
 BRAT is well [documented](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model), open source, and available as an ArcGIS Toolbox [Beaver Restoration Assessment Tool (BRAT) toolbox v2.0](https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Courses/Beaver/Excercises/Homework_02/BRAT_2.0.zip).  For application in your region, some editing of the source code is required. Experienced GIS users can tweak the source code and run the model, or you contact us for bespoke runs. 
 
-![Bitbucket_Logo]({{ site.baseurl }}/images/Bitbucket_Logo.png)
+![Bitbucket_Logo]({{ site.baseurl }}/assets/Images/Bitbucket_Logo.png)
 Source Code available on [BitBucket](https://wheatonetal@bitbucket.org/etal_brat/brat_matlab.git)
 
 
 
 #### Interested in Helping?
 
-If you'd like to help improve BRAT and help UDWR better manage beavers, take part in monitoring beaver using our new [Beaver Monitoring App](https://extension.usu.edu/utahwaterwatch/htm/beaver-monitoring-app/) (developed by [EcoTech Solutions](http://www.ecotsolutions.com/) in Partnership with [Utah State University Extension](https://extension.usu.edu/utahwaterwatch/))!
+If you'd like to help improve BRAT and help UDWR better manage beavers, take part in monitoring beaver using our new [Beaver Monitoring App](https://extension.usu.edu/utahwaterwatch/htm/beaver-monitoring-app/) (developed by [EcoTech Solutions](http://www.ecotsolutions.com/) in Partnership with [Utah State University Extension](https://extension.usu.edu/utahwaterwatch/))!![BRAT_Banner_Web](assets/assets/Images/BRAT_Banner_Web.png)
