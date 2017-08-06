@@ -1,5 +1,7 @@
 [BRAT](http://brat.joewheaton.org/home)‎ > ‎
 
+![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)
+
 ### Vision
 
 ![Beaver_EcosystemEngineer]({{ site.baseurl }}/images/Beaver_EcosystemEngineer.png)
