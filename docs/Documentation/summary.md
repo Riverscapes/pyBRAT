@@ -6,13 +6,9 @@
 
 #### Topics
 
-- ​
+- Implementation: Beaver Restoration Assessment Tool (BRAT)
 
-  Implementation: Beaver Restoration Assessment Tool (BRAT)
-
-  - ​
-
-    The Beaver Restoration Assessment Tool (BRAT) - v 1.0
+  - The Beaver Restoration Assessment Tool (BRAT) - v 1.0
 
     - [1. Input Data Capture](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/1-input-data)
     - [2. Stream Network Geoprocessing](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/2-perennial-water-sources)
@@ -24,9 +20,7 @@
     - [8. Running BRAT Model](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/5-dams-persist-at-high-flows)
     - [9. Finalizing BRAT Outputs](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/6-putting-it-together-visualizing-output)
 
-  - ​
-
-    The Beaver Restoration Assessment Tool (BRAT) - v 2.0
+  - The Beaver Restoration Assessment Tool (BRAT) - v 2.0
 
     - [0- Computer Setup](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/0---computer-setup)
     - [1- Input Data](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/1-input-data)
@@ -36,9 +30,7 @@
     - [5- BRAT Vegetation FIS](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/5--brat-vegetation-fis)
     - [6- BRAT Combined FIS](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/6--brat-combined-fis)
 
-  - ​
-
-    Ungulate Capacity Model
+  - Ungulate Capacity Model
 
     - [1. Input Data](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/1-input-data)
     - [2. Vegetation Input Derivation](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/2-landcover-input-derivation)
@@ -47,3 +39,4 @@
     - [5. Running Probability of Ungulate Utilization FIS Model](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/5-running-ungulate-capacity-fis-model)
 
 - [Working with BRAT Outputs](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs)
+
