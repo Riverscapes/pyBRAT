@@ -61,4 +61,4 @@ Below we illustrate how you can use Zonal Statistics to clip and average your cl
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dUM7jOU8J2o" frameborder="0" allowfullscreen></iframe>
 
-<- [Back to Step 2]({{ site.baseurl }}/Documentation/matBRAT/2-StreamNetwork)        [Ahead to Step 4](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/4-dam-building-at-base-flow) ->
+<- [Back to Step 2]({{ site.baseurl }}/Documentation/matBRAT/2-StreamNetwork)        [Ahead to Step 4]({{ site.baseurl }}/Documentation/matBRAT/4-CalcUpstream) ->
