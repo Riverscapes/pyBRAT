@@ -16,7 +16,7 @@ Figure 1 -  Diagram showing NHD stream GIS processing tasks.
 
 
 
-### Task 1: Subset the NHD Stream Network to Perennial and Certain Artificial Path Streams
+## Task 1: Subset the NHD Stream Network to Perennial and Certain Artificial Path Streams
 
 [![PerennialSteps]({{ site.baseurl }}/assets/images/PerennialSteps.png)]({{ site.baseurl }}/assets/images/hr/PerennialSteps.png)
 
@@ -42,7 +42,7 @@ Figure 1 -  Diagram showing NHD stream GIS processing tasks.
 
 
 
-## **Task 3: Segment NHD Streams by 300 m Lengths **
+## Task 3: Segment NHD Streams by 300 m Lengths **
 
 - **Step 1:** Go to Customize - Toolbars - check COGO
 - **Step 2:**  Start **Editing** the dissolved NHD line
