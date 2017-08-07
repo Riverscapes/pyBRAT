@@ -1,4 +1,4 @@
-[BRAT](http://brat.joewheaton.org/home)‎ > ‎[Documentation](http://brat.joewheaton.org/home/documentation)‎ > ‎
+[BRAT]({{ site.baseurl }}/docs/index)‎ > ‎[Documentation]({{ site.baseurl }}/docs/documentation/documentation)‎ > ‎
 
 ### Implementation: Beaver Restoration Assessment Tool (BRAT)
 
@@ -6,29 +6,26 @@
 
 ## Introduction
 
-This documentation provides step-by-step instructions on manual implementation of the GIS and Fuzzy Inference System (FIS) processing tasks that were performed for the Utah statewide run of the Beaver Restoration Assessment Tool (BRAT), a decision support and planning tool for beaver management (Macfarlane et al. 2014 and 
-
-Macfarlane et al. 2016
-
-). 
+This documentation provides step-by-step instructions on manual implementation of the GIS and Fuzzy Inference System (FIS) processing tasks that were performed for the Utah statewide run of the Beaver Restoration Assessment Tool (BRAT), a decision support and planning tool for beaver management (Macfarlane et al. 2014 and Macfarlane et al. 2016). 
 
 The backbone to BRAT is a capacity model developed to assess the upper limits of riverscapes to support beaver dam-building activities. The beaver-dam building capacity model uses both existing and historic vegetation layers to show current capacity and historic capacity. 
 
 Capacity is estimated using readily available spatial data sets to evaluate five key lines of evidence: 
 
-> 1) a perennial water source, 
+​	1) a perennial water source, 
 
-> 2) availability of dam building materials, 
+​	2) availability of dam building materials, 
 
-> 3) ability to build a dam at baseflow, 
+​	3) ability to build a dam at baseflow, 
 
-> 4) likelihood of dams to withstand a typical flood, and 
+​	4) likelihood of dams to withstand a typical flood, and 
 
-> 5) likelihood that stream gradient would limit or completely eliminate dam building by beaver.
+​	5) likelihood that stream gradient would limit or completely eliminate dam building by beaver.
 
 The decision support and planning tool side of BRAT uses rule sets to account for the recovery potential of riparian habitat and human conflict with beaver dam building to segregate the stream network into various conservation and restoration zones. 
 
 By combining capacity and decision support approaches, researchers and resource managers have the information necessary to determine where and at what level reintroduction of beaver and/or conservation is appropriate. 
+
 **Beaver Restoration Assessment Tool (BRAT) v 1.0** consists of an innovative combination of vector and raster based geoprocessing along with FIS processing. The processing steps are described in the following pages. The manual uses Escalante and Weber watershed data as examples and you'll be required to obtain and process the specific data for your study area.
 
 **Beaver Restoration Assessment Tool (BRAT) v 2.0** consists of an ArcGIS Toolbox. The steps to use the ArcGIS Toolbox are described in the following pages. 
@@ -38,7 +35,7 @@ By combining capacity and decision support approaches, researchers and resource 
 #### Steps
 
 - The Beaver Restoration Assessment Tool (matBRAT) - v 1.0 to 2.03
-  - [1. Input Data Capture](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/1-input-data)
+  - [1. Input Data Capture]({{ site.baseurl }}/docs/Documentation/matBRAT/1-input-data)
   - [2. Stream Network Geoprocessing](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/2-perennial-water-sources)
   - [3. Vegetation Classification: Dam Building Material Preferences](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/3-wood-for-building-materials)
   - [4. Calculating Upstream Drainage Area](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/4-dam-building-at-base-flow)
