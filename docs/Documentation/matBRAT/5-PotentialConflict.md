@@ -61,11 +61,11 @@
 
 
 
-![Euclidean_distance](C:\Users\A00805535\Documents\GitHub\pyBRAT\docs\assets\Images\Euclidean_distance.PNG)
+![Euclidean_distance]({{ site.baseurl }}/assets/Images/Euclidean_distance.PNG)
 
 The output raster of canals should looks something like this (the UDWR Regions are shown for scale):
 
-![Euclidean_distance_raster](C:\Users\A00805535\Documents\GitHub\pyBRAT\docs\assets\Images\Euclidean_distance_raster.PNG)
+![Euclidean_distance_raster]({{ site.baseurl }}/assets/Images/Euclidean_distance_raster.PNG)
 
 Remember to repeat this step for each of the potential conflict layers that you have captured. 
 
