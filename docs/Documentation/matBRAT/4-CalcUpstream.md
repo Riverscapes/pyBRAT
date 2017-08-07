@@ -48,4 +48,4 @@ To capture the maximum flow accumulation value:
 * **Step 2**: Ran a maximum zonal statistics within that buffer.  
 * **Step 3**: This zonal statistics raster is then used to derive the flow accumulation value in Geospatial modeling. 
 
-<- [Back to Step 3]({{ site.baseurl }}/Documentation/matBRAT/3-VegetationClassification)        [Ahead to Step 5](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/potential-conflict) ->
+<- [Back to Step 3]({{ site.baseurl }}/Documentation/matBRAT/3-VegetationClassification)        [Ahead to Step 5]({{ site.baseurl }}/Documentation/matBRAT/5-PotentialConflict) ->
