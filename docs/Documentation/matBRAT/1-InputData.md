@@ -59,4 +59,4 @@ The matlab and FIS files for the beaver dam capacity, conflict potential and con
 
 Source Code available on [BitBucket](https://wheatonetal@bitbucket.org/etal_brat/brat_matlab.git)
 
-[Advance to Step 2 ](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/2-perennial-water-sources)->
+[Advance to Step 2 ]({{ site.baseurl }}/Documentation/matBRAT/2-StreamNetwork)->
