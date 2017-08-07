@@ -1,4 +1,4 @@
-[BRAT](http://brat.joewheaton.org/home)‎ > ‎
+[BRAT](http://http://brat.riverscapes.xyz/)‎ > ‎
 
 ![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)
 
@@ -8,11 +8,7 @@
 
 
 
-We see BRAT as a powerful research and restoration/conservation planning tool for questions relating to where in the landscape dam-building activity by beaver might be sustainable and at what sort of dam densities. At the heart of this is a 
-
-capacity model
-
-, that models the capacity of the landscape to support dam-building activity by beaver. What transforms BRAT from a simple capacity model to an assessment tool is its ability to combine: A) existing and historic capacity, B) riparian habitat condition and recovery potential and C) probabilities of potential conflict with humans into information that assigns stream segments to seven different beaver conservation and restoration categories. In addition the BRAT decision support and planning tool has the ability to:
+We see BRAT as a powerful research and restoration/conservation planning tool for questions relating to where in the landscape dam-building activity by beaver might be sustainable and at what sort of dam densities. At the heart of this is a capacity model, that models the capacity of the landscape to support dam-building activity by beaver. What transforms BRAT from a simple capacity model to an assessment tool is its ability to combine: A) existing and historic capacity, B) riparian habitat condition and recovery potential and C) probabilities of potential conflict with humans into information that assigns stream segments to seven different beaver conservation and restoration categories. In addition the BRAT decision support and planning tool has the ability to:
 
 - Combine with other layers that **limit **realization of capacity (e.g. grazing pressure)
 - Combine with **River Styles** to look at restoration potential (e.g. reconnection of floodplains in incised streams)
@@ -38,7 +34,10 @@ BRAT currently consists of an ArcGIS Toolbox. However, we think BRAT could be mo
 
 - A WebGIS application that would allow users to:
 
-- - Explore and visualize  BRAT runs for the Western US in a Google Maps interface
+  ​
+
+  * Explore and visualize  BRAT runs for the Western US in a Google Maps interface
+
   - Run and produce simple BRAT scenarios 
   - Export BRAT outputs as KML or shapefiles
 
