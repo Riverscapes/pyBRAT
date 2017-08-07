@@ -10,15 +10,15 @@
 
   - The Beaver Restoration Assessment Tool (BRAT) - v 1.0
 
-    - [1. Input Data Capture](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/1-input-data)
-    - [2. Stream Network Geoprocessing](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/2-perennial-water-sources)
-    - [3. Vegetation Classification: Dam Building Material Preferences](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/3-wood-for-building-materials)
-    - [4. Calculating Upstream Drainage Area](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/4-dam-building-at-base-flow)
-    - [5. Potential Conflict Layer Processing](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/potential-conflict)
-    - [6. Transfering Attributes onto the Stream Network](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/putting-attributes-on-stream-network)
-    - [7. Formatting BRAT Input Data](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/7-final-data-preparation)
-    - [8. Running BRAT Model](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/5-dams-persist-at-high-flows)
-    - [9. Finalizing BRAT Outputs](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/6-putting-it-together-visualizing-output)
+    - [1. Input Data Capture]({{ site.baseurl }}/Documentation/matBRAT/1-InputData)
+    - [2. Stream Network Geoprocessing]({{ site.baseurl }}/Documentation/matBRAT/2-StreamNetwork)
+    - [3. Vegetation Classification: Dam Building Material Preferences]({{ site.baseurl }}/Documentation/matBRAT/3-VegetationClassification)
+    - [4. Calculating Upstream Drainage Area]({{ site.baseurl }}/Documentation/matBRAT/4-dam-building-at-base-flow)
+    - [5. Potential Conflict Layer Processing]({{ site.baseurl }}/Documentation/matBRAT/potential-conflict)
+    - [6. Transfering Attributes onto the Stream Network]({{ site.baseurl }}/Documentation/matBRAT/putting-attributes-on-stream-network)
+    - [7. Formatting BRAT Input Data]({{ site.baseurl }}/Documentation/matBRAT/7-final-data-preparation)
+    - [8. Running BRAT Model]({{ site.baseurl }}/Documentation/matBRAT/5-dams-persist-at-high-flows)
+    - [9. Finalizing BRAT Outputs]({{ site.baseurl }}/Documentation/matBRAT/6-putting-it-together-visualizing-output)
 
   - The Beaver Restoration Assessment Tool (BRAT) - v 2.0
 
