@@ -71,4 +71,4 @@ Remember to repeat this step for each of the potential conflict layers that you 
 
 ​                                          
 
-​                                                                         <- [Back to Step 4]({{ site.baseurl }}/Documentation/matBRAT/4-CalcUpstream)       [Ahead to Step ](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/putting-attributes-on-stream-network)6 ->
+​                                                                         <- [Back to Step 4]({{ site.baseurl }}/Documentation/matBRAT/4-CalcUpstream)       [Ahead to Step 6]({{ site.baseurl }}/Documentation/matBRAT/6-TransferingAttributes) ->
