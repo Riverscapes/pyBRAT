@@ -151,4 +151,4 @@ Final 30m buffer with missing segments
 
 ------
 
-<- [Back to Step 1](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/1-input-data)        [Ahead to Step 3](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/3-wood-for-building-materials) ->
+<- [Back to Step 1]({{ site.baseurl }}/Documentation/matBRAT/1-InputData)        [Ahead to Step 3]({{ site.baseurl }}/Documentation/matBRAT/3-VegetationClassification) ->
