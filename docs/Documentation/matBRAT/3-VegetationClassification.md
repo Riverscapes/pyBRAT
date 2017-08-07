@@ -1,3 +1,7 @@
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.baseurl }})
+
+
+
 ### 3. Vegetation Classification: Dam Building Material Preferences
 
 Figure 2 shows how the LANDFIRE land cover data can be classified in terms of its suitability as beaver dam building material.
