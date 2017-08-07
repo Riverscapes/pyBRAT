@@ -1,3 +1,7 @@
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.baseurl }})
+
+
+
 ### 1. Input Data Capture
 
 ### The dam-building beaver capacity model requires:
