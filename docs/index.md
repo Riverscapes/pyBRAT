@@ -1,6 +1,6 @@
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.baseurl }})
 
 Welcome to the BRAT website. The Beaver Restoration Assessment Tool is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
 
