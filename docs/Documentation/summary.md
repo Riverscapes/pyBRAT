@@ -1,4 +1,4 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.baseurl }})
+[[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.baseurl }})]({{ site.baseurl }})
 
 
 
@@ -39,4 +39,3 @@
     - [5. Running Probability of Ungulate Utilization FIS Model](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/5-running-ungulate-capacity-fis-model)
 
 - [Working with BRAT Outputs](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs)
-
