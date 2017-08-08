@@ -40,4 +40,4 @@ Figure 6 - Your classified output should look something like the above for the E
 
 ------
 
-←Back to [1. Input Data]({{ site.baseurl }}/ Documentation/Ungulate/1-InputData)         Ahead to [3. Slope Input Derivation]({{ site.baseurl }}/Documentation/Ungulate/3-SlopeInput) →
+←Back to [1. Input Data]({{ site.baseurl }}/Documentation/Ungulate/1-InputData)         Ahead to [3. Slope Input Derivation]({{ site.baseurl }}/Documentation/Ungulate/3-SlopeInput) →
