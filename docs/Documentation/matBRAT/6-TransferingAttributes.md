@@ -189,4 +189,4 @@ We found this method to be a cost effective means for collecting actual dam coun
 
 - **Output:**  FInal_NHD_Perennial_BRATInput.shp 
 
-​                                                               <- [Back to Step 5]({{ site.baseurl }}/Documentation/matBRAT/5-PotentialConflict)        [Ahead to Step ]({{ site.baseurl }}/Documentation.matBRAT/7-FormattingBRATInputData) ->
+​                                                               <- [Back to Step 5]({{ site.baseurl }}/Documentation/matBRAT/5-PotentialConflict)        [Ahead to Step 7]({{ site.baseurl }}/Documentation.matBRAT/7-FormattingBRATInputData) ->
