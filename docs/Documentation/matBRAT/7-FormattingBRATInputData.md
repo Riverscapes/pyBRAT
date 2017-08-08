@@ -14,9 +14,9 @@
 
 - **Step 1:** Open Final_NHD_From_GIS.csv in Excel
 - **Step 2:** Make a column named Slope and make a formula to calculate channel slope (ElevMAX-ElevMIN)/Length for all entries.
-- **Step 3: **If dam counts are not available, leave all cells for "e_DamCt" blank.
-- **Step 3:** Previously, calculations to convert the DrainMAX column to square kilometers were required, but with the DEM to Flow Accumulation tool, this is no longer necessary.
-- **Step 4**: Format the table as follows for FIS input:
+- **Step 3:** If dam counts are not available, leave all cells for "e_DamCt" blank.
+- **Step 4:** Previously, calculations to convert the DrainMAX column to square kilometers were required, but with the DEM to Flow Accumulation tool, this is no longer necessary.
+- **Step 5**: Format the table as follows for FIS input:
 
 Format the table  with columns A-S, as shown below:
 
@@ -31,4 +31,5 @@ Format the table  with columns A-S, as shown below:
 - - Final_NHD_BRAT_Input.csv
 
   <- [Back to Step 6]({{ site.baseurl }}/Documentation/matBRAT/6-TransferingAttributes)        [Ahead to Step 8]({{ site.baseurl }}/Documentation/matBRAT/8-RunningBRATInputModel) ->
+
 
