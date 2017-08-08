@@ -14,7 +14,7 @@ Figure 2. Diagram showing LANDFIRE land cover data classification for the beaver
 
 ### Task 1: Classify LANDFIRE Land Cover Data
 
-- **Step 1: **Make a copy of your vegetation type layer (e.g.  `US_120evt`) as a new raster (we suggest using *.img or *.tif; e.g. `LANDFIRE_EVT.img`) in the same coordinate system as your drainage network layer. 
+- **Step 1:** Make a copy of your vegetation type layer (e.g.  `US_120evt`) as a new raster (we suggest using *.img or *.tif; e.g. `LANDFIRE_EVT.img`) in the same coordinate system as your drainage network layer. 
 
 
 - **Step 2**: Load your vegetation type raster and add a field called “*VEG_CODE*” representing dam-building material preferences (0-4) (Table 1). 
@@ -40,7 +40,7 @@ Below is a video that details the process used in step 3 to classify the LANDFIR
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/wg5fOX1yaTA" frameborder="0" allowfullscreen></iframe>
 
-- Step 4: To create a raster that we can calculate zonal statistics from, we need a raster that has our new ''VEG_CODE' as its value field. Use the "Lookup" command to generate a new raster (e.g. 120evt_Look_Up_Code.img) with “VEG_CODE” as the “lookup” field. Perform this step twice, once for Existing (US 120 evt) vegetation and once for Potential (US 120 bps) vegetation.
+- **Step 4:** To create a raster that we can calculate zonal statistics from, we need a raster that has our new ''VEG_CODE' as its value field. Use the "Lookup" command to generate a new raster (e.g. 120evt_Look_Up_Code.img) with “VEG_CODE” as the “lookup” field. Perform this step twice, once for Existing (US 120 evt) vegetation and once for Potential (US 120 bps) vegetation.
 
 ![3A]({{ site.baseurl }}/assets/Images/3A.png)
 
@@ -60,5 +60,7 @@ Below is a video that details the process used in step 3 to classify the LANDFIR
 Below we illustrate how you can use Zonal Statistics to clip and average your classified vegetation raster into your buffered areas:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dUM7jOU8J2o" frameborder="0" allowfullscreen></iframe>
+
+
 
 <- [Back to Step 2]({{ site.baseurl }}/Documentation/matBRAT/2-StreamNetwork)        [Ahead to Step 4]({{ site.baseurl }}/Documentation/matBRAT/4-CalcUpstream) ->
