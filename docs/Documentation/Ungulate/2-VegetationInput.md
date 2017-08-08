@@ -33,7 +33,7 @@ O - Unsuitable - LANDFIRE land cover = Cropland, developed, roads, barren, or wa
 
 Figure 6 - Your classified output should look something like the above for the Escalante (click on image for larger view).
 
-**Output file: **
+**Output file:**
 
 - Grazing_Veg_Capacity.img 
 - Grazing_Veg_Capacity.asc
