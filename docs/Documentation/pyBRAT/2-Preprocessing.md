@@ -9,7 +9,7 @@ Some preprocessing is necessary before running the tools in the BRAT toolbox.
 
 2. Classify the vegetation rasters according to suitability of dam building material.
 
-![veg_code]({{ site.baseurl }}/assets/images/veg_code.png)
+![veg_code]({{ site.baseurl }}/assets/Images/veg_code.png)
 
 - Add a field (type short int) to the landfire EVT raster and call it "VEG_CODE"
 - Begin editing the EVT raster, and give each field a "VEG_CODE" value from 0 to 4 according to the chart above.  Save the edits and stop editing.  
