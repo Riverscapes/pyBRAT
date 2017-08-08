@@ -7,8 +7,8 @@
 ### Task 1: Deriving Upstream Drainage Area
 
 - **Step 1:** Clip the DEM to the watershed or your area of interest 
+  * Use the "Extract by Mask" command.  Note: make sure that the extent of the DEM when clipped covers the entire watershed or watersheds of the stream network that you are using to ensure accurate flow accumulation values.   
 
-- - Use the "Extract by Mask" command.  Note: make sure that the extent of the DEM when clipped covers the entire watershed or watersheds of the stream network that you are using to ensure accurate flow accumulation values.   
 
 
 - **Step 2**: In the BRAT toolbox downloaded previously (see bottom of [Stream Network Geoprocessing](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/2-perennial-water-sources) page), open the "DEM to Flow Accumulation" script tool.  
@@ -23,20 +23,16 @@
 
 
 - **Output**: 
-
-- - `DrainArea_sqkm.img `
+  - `DrainArea_sqkm.img `
 
 
 - **Step 4**: Calculate maximum flow accumulation within the 100 m buffer using Zonal Statistics. 
-
-- - *Spatial Analyst Tools > Zonal Statistics*. 
-
-
-- - The dialog box prompts you to input the 100 m stream buffer and the flow accumulation raster created in the last step. The output should be named something that designates the grid as the maximum zonal statistic of the flow accumulation raster. 
-
+  * *Spatial Analyst Tools > Zonal Statistics*. 
+  * The dialog box prompts you to input the 100 m stream buffer and the flow accumulation raster created in the last step. The output should be named something that designates the grid as the maximum zonal statistic of the flow accumulation raster. 
 - **Output**: 
+  * `(watershed_name)_100m_ZS_Max_FAC.img `
 
-- - `(watershed_name)_100m_ZS_Max_FAC.img `
+
 
 ## Task 2: Capture Maximum Flow Accumulation Values on the Stream Network
 
