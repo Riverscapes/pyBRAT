@@ -19,10 +19,10 @@
 
 
 
-**Task 2: Use the Euclidean Distance command to calculate distance to water sources **
+**Task 2: Use the Euclidean Distance command to calculate distance to water sources**
 
 - **Step 1: **Load the input layer, generated in the previous task: NHD_Lakes_Perennial_Streams
-- **Step 2: **Assign an output grid name
+- **Step 2:** Assign an output grid name
 
 ![Euclidean_Distance (1)]({{ site.baseurl }}/assets/Images/Euclidean_Distance1.png)
 
