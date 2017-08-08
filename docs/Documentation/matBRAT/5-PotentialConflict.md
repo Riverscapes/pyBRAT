@@ -56,7 +56,7 @@
 - **Step 1: **Generate Euclidean Distance Rasters for each of your potential conflict layers (adjacent roads, railroads, culverts, stream/road crossings, and canals using "Euclidean Distance" (ArcToolbox under Spatial Analyst Tools -> Distance). 
 - - Use an output cell size of 5 meters for adjacent roads (this smaller pixel value helps to better gauge potential conflict in areas where roads are within 30 meters of the stream center line). 
   - An output cell size of 30 meters is appropreate for the remaining conflict layers (railroads, culverts, stream crossings and canals).
-  - ** **Assign an output grid name
+  - Assign an output grid name
 - The example below uses canal data:
 
 
