@@ -36,7 +36,7 @@ Note: GME does **NOT** work with Geodatabases or with rasters that are stored in
 
 - - Click on the **Geospatial Modeling** Icon and run the software. 
 
-  - - Note GME is stand along software that is run outside of ArcGIS. You must close ArcGIS in order to run GME.![3C]({{ site.baseurl }}/assets/Images/3C.png)
+    - Note GME is stand along software that is run outside of ArcGIS. You must close ArcGIS in order to run GME.![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
 - The following tool "isectlinerst" (Intersect Lines With Raster) will do the trick. 
 
@@ -48,7 +48,7 @@ Note: GME does **NOT** work with Geodatabases or with rasters that are stored in
 
 
 
-- For the **in** use Final_NHD_Perennial.shp for the **raster*** *use the Digital Elevation Model and for the **prefix** use Elev.
+- For the **in** use Final_NHD_Perennial.shp for the **raster**use the Digital Elevation Model and for the **prefix** use Elev.
 
 
 - **Step 5**: For the output shapefile: Final_NHD_Perennial.shp **remove** the field with the suffix LWM **Length Weighted Mean** (LWM). 
@@ -111,7 +111,7 @@ Again use the "*isectlinerst" * tool.
 
 - **Step 1**: Transfer euclidean distance raster values to the stream network
 
-- - Once again use the Geospatial Modeling Environment software. ![3C]({{ site.baseurl }}/assets/Images/3C.png)
+  - Once again use the Geospatial Modeling Environment software. ![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
 And yet again use the "*isectlinerst" * tool. 
 
@@ -135,11 +135,9 @@ Conduct this step a total of five times
 
 - For each run** keep** the MAX field 
 
-- - 6th for the **in** use Final_NHD_Perennial.shp for the raster use LandUse.img and for the prefix use LU.
-  - 7th for the **in** use Final_NHD_Perennial.shp for the raster use Ownership.img and for the prefix use Own.
-
-
-- - **Note:** You must close Arcmap and reopen the program to view GME assigned attributes on Final_NHD_Perennial.shp railroads
+  - 6th for the **in** use Final_NHD_Perennial.shp for the raster use LandUse.img and for the prefix use LU.
+  - 7th for the **in** use Final_NHD_Perennial.shp for the raster use Ownership.img and for the prefix use Own. 
+  - **Note:** You must close Arcmap and reopen the program to view GME assigned attributes on Final_NHD_Perennial.shp railroads
 
 
 
