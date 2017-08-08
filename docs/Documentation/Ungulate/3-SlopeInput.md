@@ -13,7 +13,7 @@
 
 Your slope analysis should look something like the above.
 
-**Output files: **
+**Output files:**
 
 - Ungulate_Capacity_Slope.img 
 - Ungulate_Capacity_Slope.asc 
