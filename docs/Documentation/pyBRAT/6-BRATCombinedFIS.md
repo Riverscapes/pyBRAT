@@ -4,7 +4,7 @@
 
 After running the Vegetation FIS, you can run the "BRAT Combined FIS" tool.  This fuzzy inference system predicts the capacity of stream reaches to support dam building activity based on 4 inputs: 1) the output of the vegetation FIS 2) the low (base) flow stream power, 3) the high flow (Q2) stream power, and 4) the slope of the reach.  This tool like the vegetation FIS tool, must be run twice, once based on historic vegetation and once based on existing vegetation.
 
-![comb_fis]({{ site.baseurl }}/assets/images/comb_fis.PNG)
+![comb_fis]({{ site.baseurl }}/assets/Images/comb_fis.PNG)
 
 Inputs and Parameters:
 
@@ -16,5 +16,5 @@ Inputs and Parameters:
 
 "Location_BRAT_Capacity.shp") that will have the new fields "oCC_PT" and "oCC_EX."  When the tool finishes running the second time it should automatically add the output to the map and symbolize the "oCC_EX" field, which represents the existing capacity to support dam building activity.
 
-[![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
+[![output]({{ site.baseurl }}/assets/Images/output.PNG)]({{ site.baseurl }}/assets/Images/hr/output.PNG)
 
