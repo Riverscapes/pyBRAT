@@ -6,7 +6,7 @@
 
 - **Step 1:** Open the attribute table of Final_NHD_Perennial_BRATInput.shp and export data.
 
-![Export_1]({{ site.baseurl }}/assets/images/Export_1.png)
+![Export_1]({{ site.baseurl }}/assets/Images/Export_1.png)
 
 - **Step 2:** Export and save as a .csv file (Final_NHD_From_GIS.csv)
 
@@ -20,11 +20,11 @@
 
 Format the table  with columns A-S, as shown below:
 
-![Capture3]({{ site.baseurl }}/assets/images/Capture3.PNG)
+![Capture3]({{ site.baseurl }}/assets/Images/Capture3.PNG)
 
-![Capture]({{ site.baseurl }}/assets/images/Capture.PNG)
+![Capture]({{ site.baseurl }}/assets/Images/Capture.PNG)
 
-![Attribute_Table_Statewide]({{ site.baseurl }}/assets/images/Attribute_Table_Statewide.png)
+![Attribute_Table_Statewide]({{ site.baseurl }}/assets/Images/Attribute_Table_Statewide.png)
 
 - **Output (save as)**: 
 
