@@ -1,4 +1,4 @@
-[![BRAT_Banner_Web]({{ site.url }}/assets/Images/BRAT_Banner_Web.png)]({{ site.baseurl }})
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 
 
