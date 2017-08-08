@@ -14,11 +14,11 @@
 - **Step 2**: In the BRAT toolbox downloaded previously (see bottom of [Stream Network Geoprocessing](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/2-perennial-water-sources) page), open the "DEM to Flow Accumulation" script tool.  
 
 
-![fig4](C:\Users\A00805535\Documents\GitHub\pyBRAT\docs\assets\Images\fig4.PNG)
+![fig4]({{ site.baseurl }}/assets/Images/fig4.PNG)
 
 - **Step 3**: Run the tool using the two required inputs: 1. Set the workspace for the tool to run in.  A subfolder containing the DEM to be used is generally a good workspace.  2. The input DEM that has been clipped to the watersheds of interest.  The tool will produce a flow accumulation raster where the values of each cell have already been converted to square kilometers. The figure below shows the output, which looks like a standard flow accumulation, but with values in square kilometers.  The raster will be stored in the designated workspace and can be added to ArcMap after the tool has run.
 
-![fig](C:\Users\A00805535\Documents\GitHub\pyBRAT\docs\assets\Images\fig.PNG)
+![fig]({{ site.baseurl }}/assets/Images/fig.PNG)
 
 
 
