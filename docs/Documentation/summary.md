@@ -22,13 +22,13 @@
 
   - The Beaver Restoration Assessment Tool (BRAT) - v 2.0
 
-    - [0- Computer Setup](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/0---computer-setup)
-    - [1- Input Data](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/1-input-data)
-    - [2- Preprocessing](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/2--preprocessing)
-    - [3- BRAT Table Tool](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/3--brat-table-tool)
-    - [4- iHyd Attributes](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/4--ihyd-attributes)
-    - [5- BRAT Vegetation FIS](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/5--brat-vegetation-fis)
-    - [6- BRAT Combined FIS](http://brat.joewheaton.org/home/documentation/manual-implementation/the-beaver-restoration-assessment-tool-brat---v-2-0/6--brat-combined-fis)
+    - [0- Computer Setup]({{ site.baseurl }}/Documentation/pyBRAT/0-ComputerSetup)
+    - [1- Input Data]({{ site.baseurl }}/Documentation/pyBRAT/1-InputData)
+    - [2- Preprocessing]({{ site.baseurl }}/Documentation/pyBRAT/)
+    - [3- BRAT Table Tool]({{ site.baseurl }}/Documentation/pyBRAT/3-BRATTableTool)
+    - [4- iHyd Attributes]({{ site.baseurl }}/Documentation/pyBRAT/4-iHydAttributes)
+    - [5- BRAT Vegetation FIS]({{ site.baseurl }}/Documentation/pyBRAT/5-BRATVegetationFIS)
+    - [6- BRAT Combined FIS]({{ site.baseurl }}/Documentation/pyBRAT/6-BRATCombinedFIS)
 
   - Ungulate Capacity Model
 
