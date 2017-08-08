@@ -20,5 +20,5 @@ Your slope analysis should look something like the above.
 
 ------
 
-← Back to  [2. Vegetation Input Derivation]({{ site.baseurl }}/Documentation/Ungulate/2-VegetationInput)           Ahead to [4. Distance to Water Source Input - Derivation]({ site.baseurl }}/Documentation/Ungulate/4-DistanceToWater) →
+← Back to  [2. Vegetation Input Derivation]({{ site.baseurl }}/Documentation/Ungulate/2-VegetationInput)           Ahead to [4. Distance to Water Source Input - Derivation]({{ site.baseurl }}/Documentation/Ungulate/4-DistanceToWater) →
 
