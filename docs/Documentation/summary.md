@@ -32,10 +32,11 @@
 
   - Ungulate Capacity Model
 
-    - [1. Input Data](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/1-input-data)
-    - [2. Vegetation Input Derivation](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/2-landcover-input-derivation)
-    - [3. Slope Input Derivation](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/3-slope-input-derivation)
-    - [4. Distance to Water Source Input - Derivation](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/4-distance-to-water-source-input---derivation)
-    - [5. Running Probability of Ungulate Utilization FIS Model](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/5-running-ungulate-capacity-fis-model)
+    - [1. Input Data]({{ site.baseurl}}/Documentation/Ungulate/1-InputData)
+    - [2. Vegetation Input Derivation]({{ site.baseurl}}/Documentation/Ungulate/2-VegetationInput)
+    - [3. Slope Input Derivation]({{ site.baseurl}}/Documentation/Ungulate/3-SlopeInput)
+    - [4. Distance to Water Source Input - Derivation]({{ site.baseurl}}/Documentation/Ungulate/4-DistanceToWater)
+    - [5. Running Probability of Ungulate Utilization FIS Model]({{ site.baseurl}}/Documentation/Ungulate/5RunningProbability)
 
-- [Working with BRAT Outputs](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs)
+- [Working with BRAT Outputs]({{ site.baseurl}}/Documentation/WorkingWithBRATOutputs)
+
