@@ -4,7 +4,7 @@
 
 The first step in using the BRAT toolbox is to generate the input table associated with the segmented stream network.
 
-![table_tool]({{ site.baseurl }}/assets/images/table_tool.PNG)
+![table_tool]({{ site.baseurl }}/assets/Images/table_tool.PNG)
 
 *The BRAT Table tool interface*
 
