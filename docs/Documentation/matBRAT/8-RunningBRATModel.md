@@ -66,4 +66,4 @@ Note: The FIS code adds the pre-fix BRAT to the output table name.
 
 
 
-> > > > > <- [Back to Step 7]({{ site.baseurl }}/Documentation/matBRAT/7-FormattingBRATInputData)        [Ahead to Step 9](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/6-putting-it-together-visualizing-output) ->
+> > > > > <- [Back to Step 7]({{ site.baseurl }}/Documentation/matBRAT/7-FormattingBRATInputData)        [Ahead to Step 9]({{ site.baseurl }}/Documentation/matBRAT/9-FinalizingBRATOutputs) ->
