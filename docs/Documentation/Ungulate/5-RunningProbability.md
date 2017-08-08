@@ -4,7 +4,7 @@
 
 **Task 1: Run the Probability of Ungulate Utilization (grazing capacity) three input FIS**
 
-- **Step 1: **Click on the **MATLAB R2012a** icon to start the program.
+- **Step 1: ** Click on the **MATLAB R2012a** icon to start the program.
 
 ![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
@@ -36,7 +36,7 @@ The below dialog box should open and prompt you to load water source input raste
 
 ![Ungulate%20dist_water]({{ site.baseurl }}/assets/Images/Ungulate%20dist_water.png)
 
-- **Step 7: **Path to the GrazingCapacityFIS and selected the distance_to_water.asc
+- **Step 7:** Path to the GrazingCapacityFIS and selected the distance_to_water.asc
 
 The FIS should now start calculating… this may take a several minutes.
 
