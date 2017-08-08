@@ -1,10 +1,8 @@
-[BRAT](http://http://brat.riverscapes.xyz)‎ > ‎
-
-![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### Vision
 
-![Beaver_EcosystemEngineer]({{ site.baseurl }}/images/Beaver_EcosystemEngineer.png)
+![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/images/Beaver_EcosystemEngineer.png)
 
 
 
