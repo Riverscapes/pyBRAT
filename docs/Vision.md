@@ -1,4 +1,4 @@
-[BRAT](http://http://brat.riverscapes.xyz/)‎ > ‎
+[BRAT](http://http://brat.riverscapes.xyz)‎ > ‎
 
 ![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)
 
@@ -32,7 +32,7 @@ BRAT and its sister [R-CAT](http://etal.joewheaton.org/rcat), can be used to pla
 
 BRAT currently consists of an ArcGIS Toolbox. However, we think BRAT could be more useful to managers, practitioners and researchers if we could deploy it as:
 
-- A WebGIS application that would allow users to:​
+- A WebGIS application that would allow users to:
 
   * Explore and visualize  BRAT runs for the Western US in a Google Maps interface
 
