@@ -54,7 +54,7 @@ Figure 5 .Methodological illustration of inputs (1-3) and output for the combine
 - **Step 7**: Select the correct regional curve 
 
 
-- **Step 8 **(If working outside of Utah ): At the present time, the FIS is set-up to run stream power calculations for Utah and Southeast Idaho obtained from USGS StreamStats Regional Regression Equations.  If you are working outside this area you'll need to obtain and add the appropriate QP80, Q2, and Q25 stream power equations to the fRegionalCurves.m file.  You can find regional curves for most parts of the US on the [USGS's National Streamflow Statistics Website](http://water.usgs.gov/osw/programs/nss/pubs.html).
+- **Step 8** (If working outside of Utah ): At the present time, the FIS is set-up to run stream power calculations for Utah and Southeast Idaho obtained from USGS StreamStats Regional Regression Equations.  If you are working outside this area you'll need to obtain and add the appropriate QP80, Q2, and Q25 stream power equations to the fRegionalCurves.m file.  You can find regional curves for most parts of the US on the [USGS's National Streamflow Statistics Website](http://water.usgs.gov/osw/programs/nss/pubs.html).
 
 ![Matlab_6]({{ site.baseurl }}/assets/Images/Matlab_6.PNG)
 
