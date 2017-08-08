@@ -6,7 +6,7 @@ To add the "iHyd" or hydrologic attributes to the input table you created in the
 
 For each area that you want to add a regression for a block of code must be added in the appropriate place.
 
-![ihyd_code]({{ site.baseurl }}/assets/images/ihyd_code.PNG)
+![ihyd_code]({{ site.url }}/assets/images/ihyd_code.PNG)
 
 The code block should follow this format:
 
@@ -28,11 +28,11 @@ elif float(region) == 24: #oregon region 5
 
 the script would then look like this:
 
-![ihyd_code2]({{ site.baseurl }}/assets/images/ihyd_code2.PNG)
+![ihyd_code2]({{ site.url }}/assets/images/ihyd_code2.PNG)
 
 After any necessary regressions have been entered, save the changes to the script, and then update the toolbox in ArcMap by right clicking on it and clicking "refresh".  The iHyd Attributes tool can now be run.
 
-![iHyd]({{ site.baseurl }}/assets/images/iHyd.PNG)
+![iHyd]({{ site.url }}/assets/images/iHyd.PNG)
 
 Inputs and Parameters:
 
