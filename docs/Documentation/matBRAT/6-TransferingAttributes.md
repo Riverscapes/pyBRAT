@@ -12,7 +12,7 @@
 
 
 
-![GME]({{ site.baseurl }}/assets/images/GME.png)
+![GME]({{ site.baseurl }}/assets/Images/GME.png)
 
 GMES has dependencies on R and ArcGIS. Therefore, select the download that matches the version of R or ArcGIS you are running. 
 
@@ -24,25 +24,25 @@ GMES has dependencies on R and ArcGIS. Therefore, select the download that match
 2. You must use the `setup.exe` program, not the `gme.msi` program, to install GME. 
 3. GME is a stand-alone program that can be started from the* Windows Start button --> Programs --> SpatialEcolog*y. 
 
-- **Step 3**: Click on the Geospatial Modeling Icon and run the software.![3C]({{ site.baseurl }}/assets/images/3C.png)
+- **Step 3**: Click on the Geospatial Modeling Icon and run the software.![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
 Note: GME does **NOT** work with Geodatabases or with rasters that are stored in Geodatabases. Transferring values to the NHD require both shapefiles to also be in the same projection.
 
 
 
-![3D]({{ site.baseurl }}/assets/images/3D.png)
+![3D]({{ site.baseurl }}/assets/Images/3D.png)
 
 - **Step 4**: Transfer raster DEM elevations to your stream network
 
 - - Click on the **Geospatial Modeling** Icon and run the software. 
 
-  - - Note GME is stand along software that is run outside of ArcGIS. You must close ArcGIS in order to run GME.![3C]({{ site.baseurl }}/assets/images/3C.png)
+  - - Note GME is stand along software that is run outside of ArcGIS. You must close ArcGIS in order to run GME.![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
 - The following tool "isectlinerst" (Intersect Lines With Raster) will do the trick. 
 
 
 
-![3J]({{ site.baseurl }}/assets/images/3J.png)
+![3J]({{ site.baseurl }}/assets/Images/3J.png)
 
 - For “prefix” use “Elev” for elevation and extract values from your DEM (e.g. 10 m USGS DEM). 
 
@@ -56,13 +56,13 @@ Note: GME does **NOT** work with Geodatabases or with rasters that are stored in
 ##Task 2:  Transfer Dam-building Material Preference Values to Stream Network
 
 - **Step 1**: Transfer raster dam-building material preference values to your stream network 
-- Use the Geospatial Modeling Environment software again. ![3C]({{ site.baseurl }}/assets/images/3C.png)
+- Use the Geospatial Modeling Environment software again. ![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
 - Use the "isectlinerst" command
 
 
 
-![3E]({{ site.baseurl }}/assets/images/3E.png)
+![3E]({{ site.baseurl }}/assets/Images/3E.png)
 
 > **Conduct this step a total of four times.**
 
@@ -75,13 +75,13 @@ Note: GME does **NOT** work with Geodatabases or with rasters that are stored in
 
 - **Step 2**: For the output shapefile: Final_NHD_Perennial.shp remove the fields with the suffix MIN, MAX, END. **Keep** the field with the suffix **Length Weighted Mean** (LWM). LWM is calculated by multiplying the length of each segment by the raster cell value of that segment, summing this value across all segments, and finally dividing that sum by the total length of the polyline:
 
-![Step5Eq]({{ site.baseurl }}/assets/images/Step5Eq.png)
+![Step5Eq]({{ site.baseurl }}/assets/Images/Step5Eq.png)
 
 where l is the length of a segment, v is the value of the raster cell for that segment, and L is the total line length.
 
 Below is what the resulting feature class attribute table should look like (click on for larger version). Do the same for the 30m buffer data.
 
-![3F]({{ site.baseurl }}/assets/images/3F.png)
+![3F]({{ site.baseurl }}/assets/Images/3F.png)
 
 The above generated tables (30 m and 100 m) become inputs for the VEG FIS model.
 
@@ -95,11 +95,11 @@ The video below highlights how to use GME to get the vegetation values onto the 
 
 - **Step 1**: Transfer upslope drainage area to the stream network
 
-- - Once again use the Geospatial Modeling Environment software. ![3C]({{ site.baseurl }}/assets/images/3C.png)
+- - Once again use the Geospatial Modeling Environment software. ![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
 Again use the "*isectlinerst" * tool. 
 
-![3J]({{ site.baseurl }}/assets/images/3J.png)
+![3J]({{ site.baseurl }}/assets/Images/3J.png)
 
 
 
@@ -111,11 +111,11 @@ Again use the "*isectlinerst" * tool.
 
 - **Step 1**: Transfer euclidean distance raster values to the stream network
 
-- - Once again use the Geospatial Modeling Environment software. ![3C]({{ site.baseurl }}/assets/images/3C.png)
+- - Once again use the Geospatial Modeling Environment software. ![3C]({{ site.baseurl }}/assets/Images/3C.png)
 
 And yet again use the "*isectlinerst" * tool. 
 
-![3J]({{ site.baseurl }}/assets/images/3J.png)
+![3J]({{ site.baseurl }}/assets/Images/3J.png)
 
 
 
@@ -158,14 +158,14 @@ We found this method to be a cost effective means for collecting actual dam coun
 
 - **Step 1**: Convert the KMZ file to a layer file using *Conversion - Layer to KML*
 
-![DamCounts]({{ site.baseurl }}/assets/images/DamCounts.PNG)
+![DamCounts]({{ site.baseurl }}/assets/Images/DamCounts.PNG)
 
 - **Output**: `(watershed_name)_DamCounts.shp`
 
 
 - **Step 2**: Change the projection of the output shapefile to the projection you are working (i.e. UTM or other).  Use *Data Management - Project*
 
-![project]({{ site.baseurl }}/assets/images/project.PNG)
+![project]({{ site.baseurl }}/assets/Images/project.PNG)
 
 
 
@@ -173,11 +173,11 @@ We found this method to be a cost effective means for collecting actual dam coun
 
 
 
-![near]({{ site.baseurl }}/assets/images/near.PNG)
+![near]({{ site.baseurl }}/assets/Images/near.PNG)
 
 - **Step 4:**  Use *Analysis-Frequency *to determine the count of dams on the stream segments.  Choose the NEAR_FID field for Frequency.  The output is a table with a count of Near FIDs.  
 
-![frequency]({{ site.baseurl }}/assets/images/frequency.PNG)
+![frequency]({{ site.baseurl }}/assets/Images/frequency.PNG)
 
 
 
