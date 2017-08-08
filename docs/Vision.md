@@ -2,7 +2,7 @@
 
 ### Vision
 
-![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/images/Beaver_EcosystemEngineer.png)
+![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png)
 
 
 
