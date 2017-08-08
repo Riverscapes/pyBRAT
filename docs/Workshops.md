@@ -1,4 +1,4 @@
-[BRAT](http://brat.joewheaton.org/home)‎ > ‎[Workshops](http://brat.joewheaton.org/home/workshops)‎ > ‎
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### April 2013 - Logan
 
