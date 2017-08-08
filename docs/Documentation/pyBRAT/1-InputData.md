@@ -16,20 +16,20 @@ Existing, readily and freely available GIS datasets from GIS data clearinghouses
 * [NHD](http://nhd.usgs.gov/) for a *drainage network layer & hydrography data*
   * [National Hydrography Dataset](https://viewer.nationalmap.gov/basic/) (NHD) 
 
-![national_map]({{ site.baseurl }}/assets/images/national_map.PNG)
+![national_map]({{ site.baseurl }}/assets/Images/national_map.PNG)
 
 - [Landfire](http://www.landfire.gov/) for *Vegetation Type raster data*
 
 - - Download both Us_140evt (existing vegetation type) and us_140bps (potential vegetation type)
   - us_130 can be used if 140 is not yet available for your study area
 
-![landfire]({{ site.baseurl }}/assets/images/landfire.PNG)
+![landfire]({{ site.baseurl }}/assets/Images/landfire.PNG)
 
 Note: The potential vegetation layer (biophysical settings (BpS)) represents the vegetation that may have been dominant on the landscape prior to Euro-American settlement and is based on both the current biophysical environment and an approximation of the historical disturbance regime. 
 
 [USGS Digital Elevation (DEM) data](https://viewer.nationalmap.gov/basic/) for *Digital Elevation Model (DEM)*Download USGS NED  10 m DEM data
 
-![national_map_dem]({{ site.baseurl }}/assets/images/national_map_dem.PNG)
+![national_map_dem]({{ site.baseurl }}/assets/Images/national_map_dem.PNG)
 
 * [USGS StreamStats](http://streamstats.usgs.gov/) or [USGS National Streamflow Statistics](http://water.usgs.gov/osw/programs/nss/pubs.html) for: 
   * *Baseflow regional regression equations (e.g. PQ80 for month with lowest flows)*
