@@ -1,4 +1,4 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.baseurl }})
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 7. Formatting BRAT Input Data
 
@@ -30,4 +30,5 @@ Format the table  with columns A-S, as shown below:
 
 - - Final_NHD_BRAT_Input.csv
 
-  <- [Back to Step 6]({{ site.baseurl }}/Documentation/matBRAT/6-TransferingAttributes)        [Ahead to Step ](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model/5-dams-persist-at-high-flows)8 ->
+  <- [Back to Step 6]({{ site.baseurl }}/Documentation/matBRAT/6-TransferingAttributes)        [Ahead to Step 8]({{ site.baseurl }}/Documentation/matBRAT/8-RunningBRATInputModel) ->
+
