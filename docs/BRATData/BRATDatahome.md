@@ -6,7 +6,7 @@ BRAT has been run by [ETAL](http://etal.joewheaton.org/) for watersheds in Wyomi
 
 #### Areas Run as Part of UDWR Utah BRAT
 
-[![Figure_8_HUCs_StreamLine]({{ site.baseurl }}assets/Images/Figure_8_HUCs_StreamLine.png)]({{ site.baseurl }}/assets/Images/hr/Figure_8_HUCs_StreamLine.png)
+[![Figure_8_HUCs_StreamLine]({{ site.baseurl }}/assets/Images/Figure_8_HUCs_StreamLine.png)]({{ site.baseurl }}/assets/Images/hr/Figure_8_HUCs_StreamLine.png)
 
 
 
