@@ -6,7 +6,7 @@
 
 - **Step 1:** Use the "Polygon to Line" command:![polygon_to_line]({{ site.baseurl }}/assets/Images/polygon_to_line.png)
 
-**Output: **
+**Output:**
 
 - NHD_Lakes_As_Polyline.shp
 
@@ -15,7 +15,7 @@
 
 ![Merge]({{ site.baseurl }}/assets/Images/Merge.png)
 
-**Output: **NHD_Lakes_Perennial_Streams.shp
+**Output:** NHD_Lakes_Perennial_Streams.shp
 
 
 
