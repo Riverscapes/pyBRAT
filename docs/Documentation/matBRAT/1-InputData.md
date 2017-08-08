@@ -22,7 +22,7 @@
  * Download both stream,  water body, area data
 
 
-![NHD]({{ site.url }}/docs/assets/Images/NHD.png)
+![NHD]({{ site.url }}/assets/Images/NHD.png)
 
 * [Landfire](http://www.landfire.gov/) for *Vegetation Type raster data
   * Download both Us_120evt (existing vegetation type) and us_120bps (potential vegetation type)
