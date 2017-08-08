@@ -4,7 +4,7 @@
 
 **Task 1: Create a project area slope map**
 
-- **Step 1: **Open the 10 m DEM in ArcMap
+- **Step 1:** Open the 10 m DEM in ArcMap
 - **Step 2:** Generate a slope map using the "Slope Tool" (ArcToolbox under Spatial Analyst Tools -> Surface). Use the Percent option for the output measurement.
 - **Step 3**: Use "Extract by Mask" with your project area boundary to confine the slope map to the project area.
 - **Step 4:** Use the "Raster to ASCII" command to convert the .img raster to an ASCII raster format for use in MATLAB.
