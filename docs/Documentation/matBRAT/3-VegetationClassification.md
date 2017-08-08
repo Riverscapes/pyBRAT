@@ -6,7 +6,7 @@
 
 Figure 2 shows how the LANDFIRE land cover data can be classified in terms of its suitability as beaver dam building material.
 
-![LANDFIRE_Statewide]({{ site.baseurl }}/assets/images/LANDFIRE_Statewide.png)
+![LANDFIRE_Statewide]({{ site.baseurl }}/assets/Images/LANDFIRE_Statewide.png)
 
 Figure 2. Diagram showing LANDFIRE land cover data classification for the beaver dam capacity model
 
@@ -42,7 +42,7 @@ Below is a video that details the process used in step 3 to classify the LANDFIR
 
 - Step 4: To create a raster that we can calculate zonal statistics from, we need a raster that has our new ''VEG_CODE' as its value field. Use the "Lookup" command to generate a new raster (e.g. 120evt_Look_Up_Code.img) with “VEG_CODE” as the “lookup” field. Perform this step twice, once for Existing (US 120 evt) vegetation and once for Potential (US 120 bps) vegetation.
 
-![3A]({{ site.baseurl }}/assets/images/3A.png)
+![3A]({{ site.baseurl }}/assets/Images/3A.png)
 
 - **Step 5:** Perform Zonal Statistics on both the 30 m and 100 m buffers.  Using the "Zonal Statistics" command (ArcToolbox under Spatial Analyst Tools -> zonal).
 
@@ -50,7 +50,7 @@ Below is a video that details the process used in step 3 to classify the LANDFIR
 - - Statistics type: Mean
   - Conduct this step a total of four times.
 
-![3B]({{ site.baseurl }}/assets/images/3B.png)
+![3B]({{ site.baseurl }}/assets/Images/3B.png)
 
 - 1st: Use `Buf_100m_Seg_300m_NHD_Perennial` as the zone data. Use the LANDFIRE land cover     (Existing) `Us_120evt_Look_Up_Code.img` as the input value raster.
 - 2nd: Use `Buf_30m_Seg_300m_NHD_Perennial` as the zone data. Use the LANDFIRE land cover       (Existing) `Us_120evt_Look_Up_Code.img` as the input value raster.
