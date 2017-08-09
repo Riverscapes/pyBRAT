@@ -1,4 +1,4 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images//BRAT_Banner_Web.png)]({{ site.baseurl }})
+[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images//BRAT_Banner_Web.png)]({{ site.url }})
 
 ### Implementation: Beaver Restoration Assessment Tool (BRAT)
 
