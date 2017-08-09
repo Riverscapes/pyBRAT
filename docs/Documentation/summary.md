@@ -6,9 +6,9 @@
 
 #### Topics
 
-- Implementation: Beaver Restoration Assessment Tool (BRAT)
+- [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
 
-  - The Beaver Restoration Assessment Tool (BRAT) - v 1.0
+  - The Beaver Restoration Assessment Tool (matBRAT) - v 1.0 to 2.03
 
     - [1. Input Data Capture]({{ site.baseurl }}/Documentation/matBRAT/1-InputData)
     - [2. Stream Network Geoprocessing]({{ site.baseurl }}/Documentation/matBRAT/2-StreamNetwork)
@@ -20,7 +20,7 @@
     - [8. Running BRAT Model]({{ site.baseurl }}/Documentation/matBRAT/8-RunningBRATModel)
     - [9. Finalizing BRAT Outputs]({{ site.baseurl }}/Documentation/matBRAT/9-FinalizingBRATOutputs)
 
-  - The Beaver Restoration Assessment Tool (BRAT) - v 2.0
+  - The Beaver Restoration Assessment Tool (pyBRAT) - v 2.0
 
     - [0- Computer Setup]({{ site.baseurl }}/Documentation/pyBRAT/0-ComputerSetup)
     - [1- Input Data]({{ site.baseurl }}/Documentation/pyBRAT/1-InputData)
