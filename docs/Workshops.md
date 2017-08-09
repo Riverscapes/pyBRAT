@@ -91,9 +91,9 @@ If you are joining us remotely for the Background & Theory Portion (9:00 - 10:30
 
 This workshop was made possible by [Wilburforce](http://www.wilburforce.org/) and the efforts of Mary O'Brien at the [Grand Canyon Trust](http://www.grandcanyontrust.org/). Thanks to Enid Kelly and Wes James for assisting with set up.
 
-![gct-logo2]({{ site.baseurl }}/images/gct-logo2.gif)
+![gct-logo2]({{ site.baseurl }}/assets/images/gct-logo2.gif)
 
-![logo-wilburforce]({{ site.baseurl }}/images/logo-wilburforce.gif)
+![logo-wilburforce]({{ site.baseurl }}/assets/images/logo-wilburforce.gif)
 
 
 

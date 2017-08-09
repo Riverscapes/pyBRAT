@@ -17,7 +17,7 @@ Contents
 
 The capacity model outputs use the following color scheme to bin the output data (note each ≤250 m reach has a specific continuous dam density output). Existing capacity output is found in the *OCC_EX field and potential (historic) capacity is found in the* *oCC_PT field. In areas that we have actual dam counts the*translated capacity dam count are found in (*mCC_EX_CT or mCC_PT_CT) fields*: 
 
-![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/images/Legend_BRAT_DamDensity_WIDE.png)
+![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Legend_BRAT_DamDensity_WIDE.png)
 
 
 
@@ -25,7 +25,7 @@ The conflict potential model output (*oPC_Prob*) uses the following color scheme
 
 
 
-![Legend_BRAT_ConflictProb]({{ site.baseurl }}/images/Legend_BRAT_ConflictProb.png)
+![Legend_BRAT_ConflictProb]({{ site.baseurl }}/assets/images/Legend_BRAT_ConflictProb.png)
 
 
 
@@ -33,7 +33,7 @@ The preliminary management output layer (*oPBRC*) uses the following color schem
 
 
 
-![Legend_BRAT_ManagementZones]({{ site.baseurl }}/images/Legend_BRAT_ManagementZones.png)
+![Legend_BRAT_ManagementZones]({{ site.baseurl }}/assets/images/Legend_BRAT_ManagementZones.png)
 
 
 
@@ -41,7 +41,7 @@ The preliminary management output layer (*oPBRC*) uses the following color schem
 
 Here is the table of all the outputs that appear in the BRAT KMZs and feature class attribute tables.
 
-![Attribute_Table_Statewide]({{ site.baseurl }}/images/Attribute_Table_Statewide.png)
+![Attribute_Table_Statewide]({{ site.baseurl }}/assets/images/Attribute_Table_Statewide.png)
 
 
 

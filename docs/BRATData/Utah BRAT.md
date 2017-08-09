@@ -16,7 +16,7 @@ The data is organized into Statewide coverage (Utah only), coverages for whole a
 
 The [existing](http://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f) and [historic](http://databasin.org/datasets/de794b6c01fe4dbb9dd934b8d9c04d0d) BRAT capacity model estimates can be found on Data Basin:
 
-[![BRAT_DataBasin]({{ site.baseurl }}/images/BRAT_DataBasin.png)](https://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f)
+[![BRAT_DataBasin]({{ site.baseurl }}/assets/images/BRAT_DataBasin.png)](https://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f)
 
 The above data are based on:
 
