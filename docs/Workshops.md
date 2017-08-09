@@ -97,5 +97,5 @@ This workshop was made possible by [Wilburforce](http://www.wilburforce.org/) an
 
 
 
-Subpages (3): [1. Getting NHD Data](http://brat.joewheaton.org/home/workshops/april-2013---logan/1-getting-nhd-data) [2. Getting DEM Data](http://brat.joewheaton.org/home/workshops/april-2013---logan/2-getting-dem-data) [3. Getting Vegetation Data](http://brat.joewheaton.org/home/workshops/april-2013---logan/3-getting-vegetation-data)
+Subpages (3): [1. Getting NHD Data]({{ site.baseurl }}/Workshops/1-GettingNHDData) [2. Getting DEM Data]({{ site.baseurl }}/Workshops/2-GettingDEMData) [3. Getting Vegetation Data]({{ site.baseurl }}/Workshops/3-GettingVegetationData)
 
