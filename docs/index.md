@@ -9,7 +9,7 @@
 * [Working with BRAT Outputs]({{ site.baseurl }}/Documentation/WorkingWithBRATOutputs)
 * [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
 
-[Workshops]({{ site.baseurl }}/Workshops)
+[Workshops](https://riverscapes.github.io/matBRAT/Workshops)
 
 [BRAT Data]({{ site.baseurl }}/BRATData/BRATDatahome)
 
