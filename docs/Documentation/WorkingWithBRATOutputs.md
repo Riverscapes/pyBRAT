@@ -10,13 +10,7 @@ run BRAT themselves, but instead download BRAT outputs and interact with them. I
 
 Contents
 
-1. [The BRAT Default Legends](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs#TOC-The-BRAT-Default-Legends)
-2. [What do all those attribute fields correspond to?](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs#TOC-What-do-all-those-attribute-fields-correspond-to-)
-3. [Visualizing BRAT Outputs in Web GIS Portal on DataBasin](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs#TOC-Visualizing-BRAT-Outputs-in-Web-GIS-Portal-on-DataBasin)
-4. [Downloading & Visualizing BRAT Outputs in Google Earth](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs#TOC-Downloading-Visualizing-BRAT-Outputs-in-Google-Earth)
-5. [Downloading & Visualizing BRAT Outputs in ArcGIS](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs#TOC-Downloading-Visualizing-BRAT-Outputs-in-ArcGIS)
-6. [Running Queries of BRAT Data in ArcGIS](http://brat.joewheaton.org/home/documentation/working-with-brat-outputs#TOC-Running-Queries-of-BRAT-Data-in-ArcGIS)
-
+[TOC]
 
 
 ### The BRAT Default Legends
