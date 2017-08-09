@@ -6,11 +6,14 @@
 
 [Documentation]({{ site.baseurl }}/Documentation/summary)
 
+* [Working with BRAT Outputs]({{ site.baseurl }}/Documentation/WorkingWithBRATOutputs)
+* [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
+
 [Workshops]({{ site.baseurl }}/Workshops)
 
 [BRAT Data]({{ site.baseurl }}/BRATData/BRATDatahome)
 
-​	[Escalante Pilot Project](http://etal.joewheaton.org/projects/past-projects/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat)
+* [Escalante Pilot Project](http://etal.joewheaton.org/projects/past-projects/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat)
 
 
 
