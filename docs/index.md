@@ -77,7 +77,7 @@ BRAT development and implementation for the entire State of Utah was funded by t
 
 ### Source Code
 
-BRAT is well [documented](http://brat.joewheaton.org/home/documentation/manual-implementation/beaver-dam-capacity-model), open source, and available as an ArcGIS Toolbox [Beaver Restoration Assessment Tool (BRAT) toolbox v2.0](https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Courses/Beaver/Excercises/Homework_02/BRAT_2.0.zip).  For application in your region, some editing of the source code is required. Experienced GIS users can tweak the source code and run the model, or you contact us for bespoke runs. 
+BRAT is well [documented](/Documentation/Summary), open source, and available as an ArcGIS Toolbox [in this pyBRAT repo](https://github.com/Riverscapes/pyBRAT).  For application in your region, some editing of the `[ihyd.py](https://github.com/Riverscapes/pyBRAT/blob/master/iHyd.py)`source code is required (see [here](http://brat.riverscapes.xyz/Documentation/pyBRAT/4-iHydAttributes) for instructions). Experienced GIS users can tweak the source code and run the model, or you contact us at the [Wheaton ET-AL lab](http://etal.joewheaton.org) to set up a contract for bespoke runs. 
 
 ![github]({{ site.baseurl }}/assets/Images//github.png)
 Source Code available on [GitHub](https://github.com/Riverscapes/pyBRAT)
