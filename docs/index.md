@@ -1,23 +1,6 @@
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-[Vision]({{ site.baseurl }}/Vision)
-
-[Documentation]({{ site.baseurl }}/Documentation/summary)
-
-* [Working with BRAT Outputs]({{ site.baseurl }}/Documentation/WorkingWithBRATOutputs)
-* [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
-
-[Workshops](https://riverscapes.github.io/matBRAT/Workshops)
-
-[BRAT Data]({{ site.baseurl }}/BRATData/BRATDatahome)
-
-* [Escalante Pilot Project](http://etal.joewheaton.org/projects/past-projects/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat)
-
-
-
 Welcome to the BRAT website. The Beaver Restoration Assessment Tool is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
-
-
 
 ![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/Images//Beaver_EcosystemEngineer.png)
 
