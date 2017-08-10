@@ -1,3 +1,7 @@
+---
+Title
+---
+
 [![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 0- Computer Setup
