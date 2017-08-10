@@ -1,7 +1,5 @@
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images//BRAT_Banner_Web.png)]({{ site.baseurl }})
-
 [Vision]({{ site.baseurl }}/Vision)
 
 [Documentation]({{ site.baseurl }}/Documentation/summary)
