@@ -1,10 +1,15 @@
 ---
+<<<<<<< HEAD
 Title
 ---
 
 [![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 3- BRAT Table Tool
+=======
+title: 3- BRAT Table Tool
+---
+>>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 The first step in using the BRAT toolbox is to generate the input table associated with the segmented stream network.
 

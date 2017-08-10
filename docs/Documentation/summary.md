@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 Title
 ---
 
@@ -9,6 +10,10 @@ Title
 ### Documentation
 
 #### Topics
+=======
+title: Documentation Topics
+---
+>>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 - [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
 

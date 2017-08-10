@@ -1,1 +1,27 @@
-theme: jekyll-theme-modernist
+# Site settings
+title: BRAT
+description: > # this means to ignore newlines until "baseurl:"
+  Some site description will go here
+url: http://brat.riverscapes.xyz/
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "default"
+
+
+layouts_dir:  src/_layouts
+includes_dir: src/_includes
+
+exclude:
+  - src
+  - LICENSE
+  - README.md
+  - _config.yml

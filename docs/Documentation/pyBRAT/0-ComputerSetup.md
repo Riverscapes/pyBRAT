@@ -1,10 +1,15 @@
 ---
+<<<<<<< HEAD
 Title
 ---
 
 [![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 0- Computer Setup
+=======
+title: 0 - Computer Setup
+---
+>>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 In order to use the [Beaver Restoration Assessment Tool (BRAT) toolbox v2.0](https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Courses/Beaver/Excercises/Homework_02/BRAT_2.0.zip), your computer needs to have ArcGIS version 10.1 or later installed, and needs an additional python module to what is automatically installed with ArcGIS (the scikit-fuzzy) python module.  The video below provides instructions on setting up your computer after ArcGIS is installed.
 

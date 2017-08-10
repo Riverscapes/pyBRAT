@@ -1,10 +1,15 @@
 ---
+<<<<<<< HEAD
 Title
 ---
 
 [![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 4- iHyd Attributes
+=======
+title: 4- iHyd Attributes
+---
+>>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 To add the "iHyd" or hydrologic attributes to the input table you created in the previous step, regressions for predicting stream flow must first be obtained.  This information can be found at https://water.usgs.gov/osw/streamstats/.  Once you have the regressions for both typical low flow and a typical 2-year flood, you must modify the script of the iHyd Attributes tool.  To do so, open the iHyd.py file (found inside the toolbox) in a python text editor.  Pyscripter works well.
 
@@ -45,4 +50,3 @@ Inputs and Parameters:
 - **Set Scratch Workspace**: choose a file geodatabase to dump intermediate files. The default is ArcMap's default GDB.
 
 [Continue to Step 5]({{ site.baseurl }}/Documentation/pyBRAT/5-BRATVegetationFIS) ->
-

@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 Title
 ---
 
@@ -7,6 +8,10 @@ Title
 ### Implementation: Beaver Restoration Assessment Tool (BRAT)
 
 
+=======
+title: Implementation: Beaver Restoration Assessment Tool (BRAT)
+---
+>>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 ## Introduction
 

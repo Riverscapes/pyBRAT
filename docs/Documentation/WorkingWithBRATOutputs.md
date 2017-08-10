@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 Title
 ---
 
@@ -15,7 +16,12 @@ run BRAT themselves, but instead download BRAT outputs and interact with them. I
 Contents
 
 [TOC]
+=======
+title: Working with BRAT Outputs
+---
+>>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
+The majority of users of BRAT will not actually run BRAT themselves, but instead download BRAT outputs and interact with them. In the videos tutorials below, we walk you through various ways to interact with the outputs of BRAT. We cover options in order from simplest to most complex. 
 
 ### The BRAT Default Legends
 
