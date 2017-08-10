@@ -1,17 +1,8 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
+---
+title: Working with BRAT Outputs
+---
 
-### Working with BRAT Outputs
-
-
-
-The majority of users of BRAT will not actually 
-
-run BRAT themselves, but instead download BRAT outputs and interact with them. In the videos tutorials below, we walk you through various ways to interact with the outputs of BRAT. We cover options in order from simplest to most complex. 
-
-Contents
-
-[TOC]
-
+The majority of users of BRAT will not actually run BRAT themselves, but instead download BRAT outputs and interact with them. In the videos tutorials below, we walk you through various ways to interact with the outputs of BRAT. We cover options in order from simplest to most complex. 
 
 ### The BRAT Default Legends
 

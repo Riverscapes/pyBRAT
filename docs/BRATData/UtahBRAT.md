@@ -1,6 +1,6 @@
- [![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-###Utah BRAT
+---
+title: Utah BRAT
+---
 
 Data from the UDWR Utah BRAT project is available for download on [Utah's AGRC website](http://gis.utah.gov/data/bioscience-overview/). You can also download manually Arc Shapefiles, layerfiles, geodatabsaes and/or KMZs from:
 

@@ -1,6 +1,6 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-### 2- Preprocessing
+---
+title: 2- Preprocessing
+---
 
 Some preprocessing is necessary before running the tools in the BRAT toolbox.
 

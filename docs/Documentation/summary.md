@@ -1,10 +1,6 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-
-
-### Documentation
-
-#### Topics
+---
+title: Documentation Topics
+---
 
 - [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
 

@@ -1,10 +1,8 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-### Vision
+---
+title: Vision
+---
 
 ![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png)
-
-
 
 We see BRAT as a powerful research and restoration/conservation planning tool for questions relating to where in the landscape dam-building activity by beaver might be sustainable and at what sort of dam densities. At the heart of this is a capacity model, that models the capacity of the landscape to support dam-building activity by beaver. What transforms BRAT from a simple capacity model to an assessment tool is its ability to combine: A) existing and historic capacity, B) riparian habitat condition and recovery potential and C) probabilities of potential conflict with humans into information that assigns stream segments to seven different beaver conservation and restoration categories. In addition the BRAT decision support and planning tool has the ability to:
 

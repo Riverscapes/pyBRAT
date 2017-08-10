@@ -1,6 +1,6 @@
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-### 1- Input Data
+---
+title: 1 - Input Data
+---
 
 ### The dam-building beaver capacity model requires:
 
