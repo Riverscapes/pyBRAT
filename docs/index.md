@@ -77,12 +77,12 @@ BRAT development and implementation for the entire State of Utah was funded by t
 
 ### Source Code
 
-BRAT is well [documented](/Documentation/Summary), open source, and available as an ArcGIS Toolbox [in this pyBRAT repo](https://github.com/Riverscapes/pyBRAT).  For application in your region, some editing of the `[ihyd.py](https://github.com/Riverscapes/pyBRAT/blob/master/iHyd.py)`source code is required (see [here](http://brat.riverscapes.xyz/Documentation/pyBRAT/4-iHydAttributes) for instructions). Experienced GIS users can tweak the source code and run the model, or you contact us at the [Wheaton ET-AL lab](http://etal.joewheaton.org) to set up a contract for bespoke runs. 
+BRAT 3.x is well [documented](/Documentation/Summary), open source, and available as an ArcGIS Toolbox [in this pyBRAT repo](https://github.com/Riverscapes/pyBRAT).  For application in your region, some editing of the `[ihyd.py](https://github.com/Riverscapes/pyBRAT/blob/master/iHyd.py)`source code is required (see [here](http://brat.riverscapes.xyz/Documentation/pyBRAT/4-iHydAttributes) for instructions). Experienced GIS users can tweak the source code and run the model, or you contact us at the [Wheaton ET-AL lab](http://etal.joewheaton.org) to set up a contract for bespoke runs. 
 
 ![github]({{ site.baseurl }}/assets/Images//github.png)
 Source Code available on [GitHub](https://github.com/Riverscapes/pyBRAT)
 
-
+The Matlab versions of BRAT (matBRAT 1.0 to [2.3](https://github.com/Riverscapes/matBRAT/releases/latest)) source code are available at [https://github.com/Riverscapes/matBRAT](https://github.com/Riverscapes/matBRAT), with full documentation at: [https://riverscapes.github.io/matBRAT/](https://riverscapes.github.io/matBRAT/).
 
 #### Interested in Helping?
 
