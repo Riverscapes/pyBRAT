@@ -20,20 +20,7 @@
   <header>
     <!-- <div id="topbarnav" class="row"></div> -->
     <div class="text-center callout large">
-
-      <img src="/assets/Images/BRAT_Banner_Web.png" alt="BRAT">
-      {% if page.url == "/" %}
-      <h1>{{ site.title }}</h1>
-        {% if page.subtitle %}
-          <h3 class="post-subtitle subheader">{{ site.description }}</h3>    
-        {% endif %}
-      {% else %}
-      <h4 class="subheader"><a href="/">{{ site.title }}</a></h4>   
-      <h1>{{ page.title }}</h1>
-        {% if page.subtitle %}
-          <h3 class="post-subtitle subheader">{{ page.subtitle }}</h3>    
-        {% endif %}    
-      {% endif %}
+      <a href="{{ site.url }}"><img src="/assets/Images/BRAT_Banner_Web.png" alt="BRAT"></a>
     </div>
   </header>
 
