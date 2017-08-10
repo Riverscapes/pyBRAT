@@ -59,17 +59,17 @@ Initial development of BRAT was funded through a [pilot project](http://etal.joe
 
 
 
-![WFF]({{ site.baseurl }}/assets/Images//WFF.jpg)
+[![WFF]({{ site.baseurl }}/assets/Images//WFF.jpg)](http://www.waltonfamilyfoundation.org/)
 
 
 
 
 
-![gct-logo2]({{ site.baseurl }}/assets/Images//Utah_DWR.jpg)
+[![gct-logo2]({{ site.baseurl }}/assets/Images//Utah_DWR.jpg)](https://wildlife.utah.gov/)
 
 
 
-BRAT development and implementation for the entire State of Utah was funded by the Utah Division of Natural Resources (USU Award No. 130940).
+BRAT development and implementation for the entire State of Utah was funded by the [Utah Division of Wildlife Resources](https://wildlife.utah.gov/)  (USU Award No. 130940).
 
 
 
