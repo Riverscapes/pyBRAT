@@ -37,14 +37,16 @@ BRAT data for the state of Utah can be download at the [Utah AGRC](http://gis.ut
 
 Initial development of BRAT was funded through a [pilot project](http://etal.joewheaton.org/projects/past-projects/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat) granted to Utah State University (USU Award Control No. 120353) from the [Grand Canyon Trust](http://www.grandcanyontrust.org/) based on a grant from the [Walton Family Foundation](http://www.waltonfamilyfoundation.org/). 
 
-<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/Images/WFF.jpg" alt="WFF"></a></div>
-<div class="float-left"><a href="https://wildlife.utah.gov"><img src="/assets/Images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
+<div>
+	<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/Images/WFF.jpg" alt="WFF"></a></div>
+	<div class="float-left"><a href="https://wildlife.utah.gov"><img src="/assets/Images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
+</div>
 
 BRAT development and implementation for the entire State of Utah was funded by the [Utah Division of Wildlife Resources](https://wildlife.utah.gov/)  (USU Award No. 130940).
 
 ### Source Code
 
-<div class="float-right"><a href ="https://github.com/Riverscapes/pyBRAT"><img src="/assets/Images/github.png)" alt="github"></a></div>
+<div class="float-right"><a href ="https://github.com/Riverscapes/pyBRAT"><img src="/assets/Images/github.png" alt="github"></a></div>
 BRAT 3.x is well [documented](/Documentation/Summary), open source, and available as an ArcGIS Toolbox [in this pyBRAT repo](https://github.com/Riverscapes/pyBRAT).  For application in your region, some editing of the [ihyd.py](https://github.com/Riverscapes/pyBRAT/blob/master/iHyd.py) source code is required (see [here](http://brat.riverscapes.xyz/Documentation/pyBRAT/4-iHydAttributes) for instructions). Experienced GIS users can tweak the source code and run the model, or you contact us at the [Wheaton ET-AL lab](http://etal.joewheaton.org) to set up a contract for bespoke runs. 
 
 The Matlab versions of BRAT (matBRAT 1.0 to [2.3](https://github.com/Riverscapes/matBRAT/releases/latest)) source code are available at [https://github.com/Riverscapes/matBRAT](https://github.com/Riverscapes/matBRAT), with full documentation at: [https://riverscapes.github.io/matBRAT/](https://riverscapes.github.io/matBRAT/).
