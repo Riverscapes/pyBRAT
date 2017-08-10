@@ -19,10 +19,6 @@ For more information on beaver and workshops we occasionally teach, see [here](h
 
 BRAT data for the state of Utah can be download at the [Utah AGRC](http://gis.utah.gov/data/bioscience-overview/) or from [Databasin](http://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f).
 
-
-
-
-
 ### Publications & Reports:
 
 - Macfarlane W.W. , Wheaton J.M.**, **Bouwes N., Jensen M., Gilbert J.T., Hough-Snee N., and Shivick J. 2015. [Modeling the capacity of riverscapes to support beaver dams](https://www.researchgate.net/publication/285590037_Modeling_the_capacity_of_riverscapes_to_support_beaver_dams). Geomorphology. DOI: [10.1016/j.geomorph.2015.11.019](http://dx.doi.org/10.1016/j.geomorph.2015.11.019).
@@ -30,8 +26,6 @@ BRAT data for the state of Utah can be download at the [Utah AGRC](http://gis.ut
 - Wheaton JM and Macfarlane WW. 2014. [The Utah Beaver Restoration Assessment Tool: A Decision Support & Planning Tool – Manager Brief](http://etal.usu.edu/Downloads/BRAT/UTAH_BRAT_Management%20Brief.pdf), Ecogeomorphology and Topographic Analysis Lab, Utah State University, Prepared for Utah Division of Wildlife Resources, Logan, UT, 16 pp. 
 - Macfarlane WW and Wheaton JM. 2013. [Modeling the Capacity of Riverscapes to Support Dam-Building Beaver - Case Study: Escalante River Watershed](http://etal.usu.edu/GCT/BRAT_Final_Report.pdf), Final Report Prepared for Grand Canyon Trust and the Walton Family Foundation, Logan, UT, 78 pp.
 - Wheaton JM. 2013. [Scoping Study and Recommendations for an Adaptive Beaver Management Plan](http://etal.usu.edu/Reports/Beaver_Management_Plan_Recc_Park_City_%20Report_FINAL.pdf). Prepared for Park City  Municipal Corporation. Logan, Utah, 30 pp.  DOI: [10.6084/m9.figshare.903648](http://dx.doi.org/10.6084/m9.figshare.903648).
-
-
 
 ### Financial Support
 
@@ -53,6 +47,6 @@ BRAT 3.x is well [documented](/Documentation/Summary), open source, and availabl
 
 The Matlab versions of BRAT (matBRAT 1.0 to [2.3](https://github.com/Riverscapes/matBRAT/releases/latest)) source code are available at [https://github.com/Riverscapes/matBRAT](https://github.com/Riverscapes/matBRAT), with full documentation at: [https://riverscapes.github.io/matBRAT/](https://riverscapes.github.io/matBRAT/).
 
-#### Interested in Helping?
+### Interested in Helping?
 
 If you'd like to help improve BRAT and help UDWR better manage beavers, take part in monitoring beaver using our new [Beaver Monitoring App](https://extension.usu.edu/utahwaterwatch/htm/beaver-monitoring-app/) (developed by [EcoTech Solutions](http://www.ecotsolutions.com/) in Partnership with [Utah State University Extension](https://extension.usu.edu/utahwaterwatch/)).
