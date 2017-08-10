@@ -37,10 +37,8 @@ BRAT data for the state of Utah can be download at the [Utah AGRC](http://gis.ut
 
 Initial development of BRAT was funded through a [pilot project](http://etal.joewheaton.org/projects/past-projects/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat) granted to Utah State University (USU Award Control No. 120353) from the [Grand Canyon Trust](http://www.grandcanyontrust.org/) based on a grant from the [Walton Family Foundation](http://www.waltonfamilyfoundation.org/). 
 
-<div>
-<div class="float-left"><a href ="http://www.waltonfamilyfoundation.org"><img src="/assets/Images/WFF.jpg)" alt="WFF"></a></div>
-<div class="float-left"><a href ="https://wildlife.utah.gov"><img src="/assets/Images/Utah_DWR.jpg)" alt="gct-logo2"></a></div>
-</div>
+<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/Images/WFF.jpg)" alt="WFF"></a></div>
+<div class="float-left"><a href="https://wildlife.utah.gov"><img src="/assets/Images/Utah_DWR.jpg)" alt="gct-logo2"></a></div>
 
 BRAT development and implementation for the entire State of Utah was funded by the [Utah Division of Wildlife Resources](https://wildlife.utah.gov/)  (USU Award No. 130940).
 
