@@ -23,7 +23,7 @@ BRAT has been run by [ETAL](http://etal.joewheaton.org/) for watersheds in Wyomi
 
 #### Available BRAT Data
 
-- [Utah BRAT]({{ site.baseurl }}/BRATData/UtahBRAT)
+- [Utah BRAT]({{ site.baseurl }}/BRAT_Data/UtahBRAT)
 
 
 
