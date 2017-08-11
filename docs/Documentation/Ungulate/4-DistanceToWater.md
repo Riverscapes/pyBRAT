@@ -1,8 +1,6 @@
 ---
-Title
+title: Distance To Water
 ---
-
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 4. Distance to Water Source Input - Derivation
 
@@ -55,6 +53,3 @@ Your euclidean distance should look something like the above.
 ------
 
 ← [Back to ](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/goog_2007911975)[3. Slope Input Derivation ]({{ site.baseurl}}/Documentation/Ungulate/3-SlopeInput)        Ahead to [5. Running Probability of Ungulate Utilization FIS Model]({{ site.baseurl}}/Documentation/Ungulate/5-RunningProbability) →
-
-
-

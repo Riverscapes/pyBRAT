@@ -1,8 +1,6 @@
 ---
-Title
+title: Running Probability
 ---
-
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 5. Running Probability of Ungulate Utilization FIS Model
 

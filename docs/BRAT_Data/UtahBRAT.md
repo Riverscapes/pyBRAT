@@ -1,26 +1,12 @@
 ---
-<<<<<<< HEAD:docs/BRATData/UtahBRAT.md
-Title
----
-
- [![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-###Utah BRAT
-=======
 title: Utah BRAT
 ---
->>>>>>> bd658760559364a5a587a4629f372a3fb419fa24:docs/BRAT_Data/UtahBRAT.md
 
 Data from the UDWR Utah BRAT project is available for download on [Utah's AGRC website](http://gis.utah.gov/data/bioscience-overview/). You can also download manually Arc Shapefiles, layerfiles, geodatabsaes and/or KMZs from:
 
  [https://usu.box.com/v/UtahBRATData](https://usu.box.com/v/UtahBRATData)
 
 The data is organized into Statewide coverage (Utah only), coverages for whole area (shown at right) [by Hydrologic Regions](https://usu.box.com/v/GeohydrologicRegion)(as shown below) and, coverages by UDWR Management Regions.  
-
-
-
-
-
 
 
 The [existing](http://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f) and [historic](http://databasin.org/datasets/de794b6c01fe4dbb9dd934b8d9c04d0d) BRAT capacity model estimates can be found on Data Basin:

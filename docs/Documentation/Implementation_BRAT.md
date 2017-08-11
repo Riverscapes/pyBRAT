@@ -1,17 +1,6 @@
 ---
-<<<<<<< HEAD
-Title
----
-
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images//BRAT_Banner_Web.png)]({{ site.url }})
-
-### Implementation: Beaver Restoration Assessment Tool (BRAT)
-
-
-=======
 title: Implementation: Beaver Restoration Assessment Tool (BRAT)
 ---
->>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 ## Introduction
 

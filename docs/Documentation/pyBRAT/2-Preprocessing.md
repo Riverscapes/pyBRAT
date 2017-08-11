@@ -1,15 +1,6 @@
 ---
-<<<<<<< HEAD
-Title
----
-
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-### 2- Preprocessing
-=======
 title: 2- Preprocessing
 ---
->>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 Some preprocessing is necessary before running the tools in the BRAT toolbox.
 

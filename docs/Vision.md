@@ -1,14 +1,6 @@
 ---
-title: Your Title
----
-
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
-
-### Vision
-=======
 title: Vision
 ---
->>>>>>> bd658760559364a5a587a4629f372a3fb419fa24
 
 ![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png)
 

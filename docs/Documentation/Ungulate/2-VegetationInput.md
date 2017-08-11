@@ -1,8 +1,6 @@
 ---
-Title
+title: Vegetation Input
 ---
-
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 2. Vegetation Input Derivation
 

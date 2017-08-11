@@ -1,8 +1,6 @@
 ---
-Title
+title: Slope Input Derivation
 ---
-
-[![BRAT_Banner_Web]({{ site.baseurl }}/assets/Images/BRAT_Banner_Web.png)]({{ site.url }})
 
 ### 3. Slope Input Derivation
 
