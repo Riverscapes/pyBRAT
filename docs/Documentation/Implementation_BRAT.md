@@ -1,5 +1,5 @@
 ---
-title: Implementation: Beaver Restoration Assessment Tool (BRAT)
+title: Implementation - Beaver Restoration Assessment Tool (BRAT)
 ---
 
 ## Introduction
