@@ -2,8 +2,6 @@
 title: Implementation - Beaver Restoration Assessment Tool (BRAT)
 ---
 
-## Introduction
-
 This documentation provides step-by-step instructions on manual implementation of the GIS and Fuzzy Inference System (FIS) processing tasks that were performed for the Utah statewide run of the Beaver Restoration Assessment Tool (BRAT), a decision support and planning tool for beaver management (Macfarlane et al. 2014 and Macfarlane et al. 2016). 
 
 The backbone to BRAT is a capacity model developed to assess the upper limits of riverscapes to support beaver dam-building activities. The beaver-dam building capacity model uses both existing and historic vegetation layers to show current capacity and historic capacity. 
@@ -27,8 +25,6 @@ By combining capacity and decision support approaches, researchers and resource 
 **Beaver Restoration Assessment Tool (BRAT) v 1.0** consists of an innovative combination of vector and raster based geoprocessing along with FIS processing. The processing steps are described in the following pages. The manual uses Escalante and Weber watershed data as examples and you'll be required to obtain and process the specific data for your study area.
 
 **Beaver Restoration Assessment Tool (BRAT) v 2.0** consists of an ArcGIS Toolbox. The steps to use the ArcGIS Toolbox are described in the following pages. 
-
-
 
 #### Steps
 
