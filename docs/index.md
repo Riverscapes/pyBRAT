@@ -1,3 +1,6 @@
+---
+title: Home
+---
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
 <div class="float-right"><img src="{{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png" alt="Beaver_EcosystemEngineer"/></div>
