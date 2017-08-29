@@ -1,5 +1,5 @@
 ---
-title: Ungulate
+title: Input Data
 ---
 
 ### 1. Input Data
