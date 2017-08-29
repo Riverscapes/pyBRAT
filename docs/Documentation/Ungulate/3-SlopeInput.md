@@ -1,5 +1,5 @@
 ---
-title: Slope Input Derivation
+title: 3-Slope Input Derivation
 ---
 
 ### 3. Slope Input Derivation

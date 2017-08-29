@@ -1,5 +1,5 @@
 ---
-title: Vegetation Input
+title: 2-Vegetation Input
 ---
 
 ### 2. Vegetation Input Derivation
