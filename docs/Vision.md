@@ -1,5 +1,6 @@
 ---
 title: Vision
+weight: 1
 ---
 
 ![Beaver_EcosystemEngineer]({{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png)
