@@ -10,6 +10,25 @@
       <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/app.css">
       <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/custom.css">
       <script src="https://use.fontawesome.com/586b1e1322.js"></script>
+
+      <link rel="apple-touch-icon" sizes="57x57" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-57x57.png">
+      <link rel="apple-touch-icon" sizes="60x60" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-60x60.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="76x76" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-76x76.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-114x114.png">
+      <link rel="apple-touch-icon" sizes="120x120" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-120x120.png">
+      <link rel="apple-touch-icon" sizes="144x144" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-144x144.png">
+      <link rel="apple-touch-icon" sizes="152x152" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-152x152.png">
+      <link rel="apple-touch-icon" sizes="180x180" href="{{ site.baseurl }}/assets/images/favicons/apple-icon-180x180.png">
+      <link rel="icon" type="image/png" sizes="192x192"  href="{{ site.baseurl }}/assets/images/favicons/android-icon-192x192.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/assets/images/favicons/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="96x96" href="{{ site.baseurl }}/assets/images/favicons/favicon-96x96.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">
+      <link rel="manifest" href="{{ site.baseurl }}/assets/images/favicons/manifest.json">
+      <meta name="msapplication-TileColor" content="#ffffff">
+      <meta name="msapplication-TileImage" content="{{ site.baseurl }}/assets/images/favicons/ms-icon-144x144.png">
+      <meta name="theme-color" content="#ffffff">
+
       <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
@@ -17,30 +36,29 @@
 
   <body>
 
+  <div id="topbarnav"></div>
   <header>
-    <!-- <div id="topbarnav" class="row"></div> -->
     <div class="text-center callout large">
-      <a href="{{ site.url }}"><img src="/assets/Images/BRAT_Banner_Web.png" alt="BRAT"></a>
+    <a href="{{ site.url }}"><img src="/assets/Images/BRAT_Banner_Web.png" alt="BRAT"></a>
     </div>
   </header>
 
   <div id="inner" class="row">
-    <div class="large-4 columns">
-      {% include sidenav.html %}
-    </div>
-    <div class="large-8 columns">
-      <h1>{{ page.title }}</h1> 
+    <div id="main" class="large-8 columns large-push-4">
+      {% if page.url != "/" %}
+        <h1>{{ page.title }}</h1>
+      {% endif %} 
       <section>{{ content }}</section>
     </div>
+    <div id="sidebar" class="large-4 columns large-pull-8">
+        {% include sidenav.html %}
+      </div>
   </div>
 
     {% include footer.html %}
     {% include navigation.html context="/" %}
 
-    <script src="{{ site.baseurl }}/assets/js/jquery.min.js"></script>
-    <script src="{{ site.baseurl }}/assets/js/foundation.min.js"></script>
-    <script src="{{ site.baseurl }}/assets/js/app.js"></script>
-    <script src="{{ site.baseurl }}/assets/js/toc.js"></script>
+    <script src="{{ site.baseurl }}/assets/js/dist.js"></script>
 
   </body>
 

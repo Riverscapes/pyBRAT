@@ -87,32 +87,6 @@ header {
 
 }
 
-.top-bar{
-  // Links in gereral
-  a { color: #DDDDDD; }
-  a:hover, a:focus { color: white; }
-
-  // The little triangle
-  .dropdown.menu>li.is-dropdown-submenu-parent>a::after{ 
-    border-color: white transparent transparent;
-  }
-  .is-dropdown-submenu{ border: 1px solid #555555; }
-
-  // first level links:
-  .horizontal-nav>ul.menu>li>a{
-    text-transform: uppercase;
-    font-weight: bold;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    text-shadow: 3px 3px 3px rgba(0,0,0,0.7);
-    color: white;
-    &:hover, &:focus {
-      border: 1px solid white;
-      background: rgba(0,0,0,0.1);      
-    }
-  }
-}
-
 #toc {
     display: block;
     padding: 1.25rem; 
@@ -131,7 +105,38 @@ header {
     li.toc-h4 { padding-left: 3rem; font-size: 0.7rem; }
     li.toc-h5 { padding-left: 4rem; font-size: 0.6rem; }
 }
+#topbarnav a { color: white; }
+.top-bar {
+  &, & ul { background-color: #333333; }
+  .menu .menu-text { color: white; }
+  .dropdown.menu a { color: white; }
+  .dropdown.menu>li.is-dropdown-submenu-parent>a::after{
+    border-color: white transparent transparent;
+  }
+  .is-dropdown-submenu {
+    border: 1px solid #666666;
+  }
+  .is-dropdown-submenu .is-dropdown-submenu-parent.opens-right>a::after{
+    border-color: transparent transparent transparent white;
+  }
+}
 
+#sidebar {
+  .title-bar {
+    background: $secondary-color;
+    position: relative;
+  }
+  #menuCtls {
+    margin-bottom: 0;
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    span { border-bottom: none; }
+    .button{
+      padding: 0.45em 0.5em;
+    }  
+  }  
+}
 
 #sidenav {
   display: block;
@@ -144,37 +149,51 @@ header {
     font-size: 95%;
   }
   li a {
-    padding: 0.3rem 1rem;
+    padding: 0.3rem 1rem 0.3rem 1rem;
     line-height: 1.2;
   }
   li>a:before{
-    @extend .fa, .fa-file-text;
     color: $primary-color;
     display: block;
     position: relative;
     left: -4px;
     float: left;
   }
+  li.branch > a > i.icon {
+    @extend .fa;
+    @extend .fa-folder;
+    padding-right: 0.3rem;
+  }
+  li.leaf > a > i.icon {
+    @extend .fa;
+    padding-right: 0.3rem;
+  }
+  li.leaf.home > a > i.icon { @extend .fa-home; }
+  li.leaf.page > a > i.icon { @extend .fa-file-text; }
+  li.leaf a:hover {
+    text-decoration: underline;
+  }
   a.menuActive {
-    &:before{
-      color: black;
-    }
+    &:before{ color: black; }
     font-weight: bold;
     color: black;
   }
   li.is-accordion-submenu-parent{
     &>a{
-      &:before{
-        @extend .fa, .fa-folder;
-        color: #444444;
-      }
+      &:before{ color: #444444; }
       color: #444444;      
     }
+    &>a.reallink{
+      &:hover{ text-decoration: underline; }
+      &:before{
+        color:  $primary-color;
+      }
+      color: $primary-color;    
+    }
   }
-  #menuCtls {
-    margin: 0;
-    position: relative;
-    float: right;    
+  .submenu-toggle {
+    width: 20px;
+    height: 20px;
   }
 }
 
