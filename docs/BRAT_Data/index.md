@@ -1,5 +1,6 @@
 ---
 title: Brat Data
+weight: 3
 ---
 
 BRAT has been run by [ETAL](http://etal.joewheaton.org/) for watersheds in Wyoming, Idaho, Colorado, New Mexico, Oregon, Arizona, New York and Washington, and by others elsewhere. 
