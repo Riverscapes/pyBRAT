@@ -1,18 +1,18 @@
-{% if page.url != "/" %}
-<div id="toc"></div>
+{% if site.settings.autoPageContents.active %}
+	{% if page.url != "/" or site.settings.autoPageContents.onHome %}
+	<div class="title-bar">
+		<div class="title-bar-title"><i class="fa fa-file-text"></i> Page Contents</div>		
+	</div>
+	<div id="toc"></div>
+	{% endif %}
 {% endif %}
 
-<div id="sidenav">
-	<div id="menuCtls" class="button-group tiny">
-	  <span id="expand" class="button secondary fa fa-plus"></span>
-	  <span id="contract" class="button secondary fa fa-minus"></span>
+<div class="title-bar">
+	<div class="title-bar-title"><i class="fa fa-sitemap"></i> Site Contents
+		<div id="menuCtls" class="button-group tiny show-for-medium">
+				<span id="expand" class="button primary fa fa-plus has-tip top" data-tooltip title="Expand all items" aria-haspopup="true" data-disable-hover="false" ></span>
+				<span id="contract" class="button primary fa fa-minus has-tip top" data-tooltip title="Contract all items" aria-haspopup="true" data-disable-hover="false" ></span>
+			</div>	
 	</div>
-	<h4><span class="fa fa-sitemap"></span> Site Contents:</h4>
 </div>
-
-<div class="callout">
-    <h4 class=""><span class="fa fa-leaf"></span>Useful Links</h4>
-    <ul class="nav card-text">
-      <li><a href="http://etal.joewheaton.org">Fluvial Habitats Center</a></li>
-    </ul>
-</div>
+<div id="sidenav"></div>
