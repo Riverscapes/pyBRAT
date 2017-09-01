@@ -1,5 +1,6 @@
 ---
 title: Documentation Topics
+weight: 2
 ---
 
 - [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
