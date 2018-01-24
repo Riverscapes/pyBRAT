@@ -1,30 +1,23 @@
 ---
-title: Documentation Topics
+title: Running pyBRAT
 ---
+## Topics Covered
 
-- [Implementation: Beaver Restoration Assessment Tool (BRAT)]({{ site.baseurl }}/Documentation/Implementation_BRAT)
+This documentation provides detailed instructions on running pyBRAT v 2.0 including:
+- Computer setup
+- Where to get input data
+- Preprocessing input data
+- Running the BRAT Arc Toolbox scripts
 
-  - [The Beaver Restoration Assessment Tool (matBRAT) - v 1.0 to 2.03](https://riverscapes.github.io/matBRAT/)
+If you are interested in running the older Matlab version of BRAT you can find the matBRAT documentation [here](https://riverscapes.github.io/matBRAT/).
 
-    ​
+## Prerequisites
 
-  - The Beaver Restoration Assessment Tool (pyBRAT) - v 3.0
+Running BRAT requires a good working knowledge of ArcGIS.  Users should have ArcGIS 10.1 or greater already installed, including the Spatial Analyst Extension.
 
-    - [0- Computer Setup]({{ site.baseurl }}/Documentation/pyBRAT/0-ComputerSetup)
-    - [1- Input Data]({{ site.baseurl }}/Documentation/pyBRAT/1-InputData)
-    - [2- Preprocessing]({{ site.baseurl }}/Documentation/pyBRAT/)
-    - [3- BRAT Table Tool]({{ site.baseurl }}/Documentation/pyBRAT/3-BRATTableTool)
-    - [4- iHyd Attributes]({{ site.baseurl }}/Documentation/pyBRAT/4-iHydAttributes)
-    - [5- BRAT Vegetation FIS]({{ site.baseurl }}/Documentation/pyBRAT/5-BRATVegetationFIS)
-    - [6- BRAT Combined FIS]({{ site.baseurl }}/Documentation/pyBRAT/6-BRATCombinedFIS)
 
-  - Ungulate Capacity Model
 
-    - [1. Input Data]({{ site.baseurl}}/Documentation/Ungulate/1-InputData)
-    - [2. Vegetation Input Derivation]({{ site.baseurl}}/Documentation/Ungulate/2-VegetationInput)
-    - [3. Slope Input Derivation]({{ site.baseurl}}/Documentation/Ungulate/3-SlopeInput)
-    - [4. Distance to Water Source Input - Derivation]({{ site.baseurl}}/Documentation/Ungulate/4-DistanceToWater)
-    - [5. Running Probability of Ungulate Utilization FIS Model]({{ site.baseurl}}/Documentation/Ungulate/5RunningProbability)
 
-- [Working with BRAT Outputs]({{ site.baseurl}}/Documentation/WorkingWithBRATOutputs)
+
+
 

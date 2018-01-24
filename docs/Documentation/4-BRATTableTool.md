@@ -1,5 +1,5 @@
 ---
-title: 3- BRAT Table Tool
+title: Step 4 - BRAT Table Tool
 ---
 
 The first step in using the BRAT toolbox is to generate the input table associated with the segmented stream network.
@@ -29,4 +29,4 @@ Inputs:
 
 Click OK to run the tool.
 
-[Continue to Step 4]({{ site.baseurl }}/Documenation/pyBRAT/4-iHydAttributes) ->
+[Continue to Step 5]({{ site.baseurl }}/Documenation/5-iHydAttributes) ->

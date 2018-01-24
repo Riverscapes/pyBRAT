@@ -9,7 +9,19 @@ title: Home
 
 Welcome to the pyBRAT website. The Beaver Restoration Assessment Tool (BRAT) is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
 
-The BRAT models can be run with widely available existing data sets, and is used to identify opportunities,  potential conflicts and constraints through a mix of assessment of existing resources and scenario-based assessment of potential futures. The backbone to BRAT are spatial models that predict the capacity of riverscapes to support dam-building activity by beaver. These models were first tested in a pilot project in Utah and recently were extended to the entire state of Utah. In addition the decision support components were developed and tested as part of the statewide application (read [vision here](http://brat.joewheaton.org/home/vision)).
+The BRAT model can be run with widely available existing data sets, and is used to identify opportunities,  potential conflicts and constraints through a mix of assessment of existing resources and scenario-based assessment of potential futures. The backbone to BRAT are **spatial models that predict the capacity of riverscapes to support dam-building activity by beaver**. The beaver-dam building capacity model uses both existing and historic vegetation layers to show current capacity and historic capacity. 
+
+Capacity is estimated using readily available spatial data sets to evaluate five key lines of evidence: 
+
+1. a perennial water source
+2. availability of dam building materials
+3. ability to build a dam at baseflow
+4. likelihood of dams to withstand a typical flood
+5. likelihood that stream gradient would limit or completely eliminate dam building by beaver.
+
+The **decision support and planning tool side of BRAT** uses rule sets to account for the recovery potential of riparian habitat and human conflict with beaver dam building to segregate the stream network into various conservation and restoration zones. 
+
+By combining capacity and decision support approaches, researchers and resource managers have the information necessary to determine where and at what level reintroduction of beaver and/or conservation is appropriate. 
 
 For more information on beaver and workshops we occasionally teach, see [here](http://beaver.joewheaton.org/).
 
