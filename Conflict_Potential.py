@@ -25,6 +25,7 @@ def main(
 
     arcpy.env.overwriteOutput = True
 
+    # setting constant values (presumably)
     CrossingLow = 10
     CrossingHigh = 100
     AdjLow = 10

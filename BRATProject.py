@@ -63,7 +63,12 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     for x in range(len(innetwork)):
         if not os.path.exists("Network_" + str(i)):
             os.mkdir("Network_" + str(i))
-        arcpy.Copy_management(innetwork[x], "Network_" + str(i) + "/" + os.path.basename(innetwork[x]))
+        try:
+            arcpy.Copy_management(innetwork[x], "Network_" + str(i) + "/" + os.path.basename(innetwork[x]))
+        except arcpy.ExecuteError:
+            errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no spaces or "
+                            + "other non-standard characters in the path")
+            raise Exception(errorMessage)
         i += 1
 
     # add the DEM inputs to the project
@@ -73,7 +78,13 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     for x in range(len(inDEM)):
         if not os.path.exists("DEM_" + str(i)):
             os.mkdir("DEM_" + str(i))
-        arcpy.CopyRaster_management(inDEM[x], "DEM_" + str(i) + "/" + os.path.basename(inDEM[x]))
+
+        try:
+            arcpy.CopyRaster_management(inDEM[x], "DEM_" + str(i) + "/" + os.path.basename(inDEM[x]))
+        except arcpy.ExecuteError:
+            errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no spaces or "
+                            + "other non-standard characters in the path")
+            raise Exception(errorMessage)
         i += 1
 
     # add landuse raster to the project
@@ -89,7 +100,13 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
                     src = string.replace(inlanduse[x], "'", "")
                     shutil.copytree(src, "Land_Use_" + str(i) + "/" + os.path.basename(inlanduse[x]))
             else:
-                arcpy.CopyRaster_management(inlanduse[x], "Land_Use_" + str(i) + "/" + os.path.basename(inlanduse[x]))
+                try:
+                    arcpy.CopyRaster_management(inlanduse[x], "Land_Use_" + str(i) + "/" +
+                                                os.path.basename(inlanduse[x]))
+                except arcpy.ExecuteError:
+                    errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no "
+                                    + "spaces or other non-standard characters in the path")
+                    raise Exception(errorMessage)
 
     # add the conflict inputs to the project
     if valley is not None:
@@ -99,7 +116,13 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
         for x in range(len(invalley)):
             if not os.path.exists("Valley_" + str(i)):
                 os.mkdir("Valley_" + str(i))
-            arcpy.Copy_management(invalley[x], "Valley_" + str(i) + "/" + os.path.basename(invalley[x]))
+            try:
+                arcpy.Copy_management(invalley[x], "Valley_" + str(i) + "/" + os.path.basename(invalley[x]))
+            except arcpy.ExecuteError:
+                errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no "
+                                + "spaces or other non-standard characters in the path")
+                raise Exception(errorMessage)
+
             i += 1
 
     # add road layers to the project
@@ -110,7 +133,13 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
         for x in range(len(inroad)):
             if not os.path.exists("Roads_" + str(i)):
                 os.mkdir("Roads_" + str(i))
-            arcpy.Copy_management(inroad[x], "Roads_" + str(i) + "/" + os.path.basename(inroad[x]))
+            try:
+                arcpy.Copy_management(inroad[x], "Roads_" + str(i) + "/" + os.path.basename(inroad[x]))
+            except arcpy.ExecuteError:
+                errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no "
+                                + "spaces or other non-standard characters in the path")
+                raise Exception(errorMessage)
+
             i += 1
 
     # add railroad layers to the project
@@ -121,7 +150,12 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
         for x in range(len(inrr)):
             if not os.path.exists("Railroads_" + str(i)):
                 os.mkdir("Railroads_" + str(i))
-            arcpy.Copy_management(inrr[x], "Railroads_" + str(i) + "/" + os.path.basename(inrr[x]))
+            try:
+                arcpy.Copy_management(inrr[x], "Railroads_" + str(i) + "/" + os.path.basename(inrr[x]))
+            except arcpy.ExecuteError:
+                errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no "
+                                + "spaces or other non-standard characters in the path")
+                raise Exception(errorMessage)
 
     # add canal layers to the project
     if canal is not None:
@@ -131,7 +165,12 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
         for x in range(len(incanal)):
             if not os.path.exists("Canals_" + str(i)):
                 os.mkdir("Canals_" + str(i))
-            arcpy.Copy_management(incanal[x], "Canals_" + str(i) + "/" + os.path.basename(incanal[x]))
+            try:
+                arcpy.Copy_management(incanal[x], "Canals_" + str(i) + "/" + os.path.basename(incanal[x]))
+            except arcpy.ExecuteError:
+                errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no "
+                                + "spaces or other non-standard characters in the path")
+                raise Exception(errorMessage)
 
     else:
         pass
