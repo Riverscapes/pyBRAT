@@ -100,6 +100,7 @@ def main(
     midpoint_buffer = scratch + "/midpoint_buffer"
     arcpy.Buffer_analysis(midpoints, midpoint_buffer, "100 Meters", "", "", "NONE")
 
+    # iterates until it gets to an output that doesn't exist
     j = 1
     while os.path.exists(projPath + "/02_Analyses/Output_" + str(j)):
         j += 1
@@ -224,6 +225,14 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30
 
     drarea_zs = scratch + "/drarea_zs"
     ZonalStatisticsAsTable(midpoint_buffer, "ORIG_FID", DrArea, drarea_zs, statistics_type="MAXIMUM")
+
+    # The table starts the count at 1, but the output network starts at 0
+    # We need to take one away from the ORIG_FID field so that they properly merge
+    cursor = arcpy.da.UpdateCursor(drarea_zs, ["ORIG_FID"])
+    for row in cursor:
+        row[0] -= 1
+        cursor.updateRow(row)
+
     arcpy.JoinField_management(out_network, "FID", drarea_zs, "ORIG_FID", "MAX")
 
     arcpy.AddField_management(out_network, "iGeo_DA", "DOUBLE")
@@ -324,7 +333,6 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 
 
 def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch):
-
     # if fields already exist, delete them
     network_fields = [f.name for f in arcpy.ListFields(out_network)]
     if "iPC_RoadX" in network_fields:
@@ -398,6 +406,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
         roadcount = arcpy.GetCount_management(road_mts)
         roadct = int(roadcount.getOutput(0))
+
         if roadct < 1:
             arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
             cursor = arcpy.da.UpdateCursor(out_network, "iPC_RoadAd")

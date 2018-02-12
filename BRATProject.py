@@ -171,7 +171,6 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
                 errorMessage = ("Failed to copy network data. Check that the input exists, and that there are no "
                                 + "spaces or other non-standard characters in the path")
                 raise Exception(errorMessage)
-
     else:
         pass
 
