@@ -417,7 +417,8 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             del cursor
         else:
             arcpy.env.extent = out_network
-            ed_roadad = EucDistance(road_subset, "", 5)
+            ed_roadad = EucDistance(road_subset)
+            ed_roadad.save()
             zs_roadad = scratch + "/zs_roadad"
             ZonalStatisticsAsTable(buf_30m, "ORIG_FID", ed_roadad, zs_roadad, statistics_type="MEAN") # might try mean here to make it less restrictive
             arcpy.JoinField_management(out_network, "FID", zs_roadad, "ORIG_FID", "MEAN")

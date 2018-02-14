@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="21bf6d5c-a5ee-4f2a-820b-ceb3db18b5cc" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BRATProject.py" afterPath="$PROJECT_DIR$/BRATProject.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BRAT_table.py" afterPath="$PROJECT_DIR$/BRAT_table.py" />
     </list>
     <ignored path="BRAT_arc.iws" />
@@ -40,7 +39,7 @@
         <entry file="file://$PROJECT_DIR$/BRAT_table.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="363">
-              <caret line="431" column="36" lean-forward="true" selection-start-line="431" selection-start-column="36" selection-end-line="431" selection-end-column="36" />
+              <caret line="419" column="47" lean-forward="false" selection-start-line="419" selection-start-column="47" selection-end-line="419" selection-end-column="47" />
               <folding>
                 <element signature="e#379#391#0" expanded="true" />
               </folding>
@@ -198,8 +197,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -763,7 +762,7 @@
     <entry file="file://$PROJECT_DIR$/BRAT_table.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="363">
-          <caret line="431" column="36" lean-forward="true" selection-start-line="431" selection-start-column="36" selection-end-line="431" selection-end-column="36" />
+          <caret line="419" column="47" lean-forward="false" selection-start-line="419" selection-start-column="47" selection-end-line="419" selection-end-column="47" />
           <folding>
             <element signature="e#379#391#0" expanded="true" />
           </folding>
