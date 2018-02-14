@@ -31,12 +31,15 @@ For more information on beaver and workshops we occasionally teach, see [here](h
 
 [Wally Macfarlane](http://etal.joewheaton.org/people/researchers-technicians/Wally), [Joe Wheaton](http://joewheaton.org/),  [Martha Jensen](http://etal.joewheaton.org/people/where-are-they-now/former-researchers/martha-jensen), Taylor Dudunake & [Jordan Gilbert](http://etal.joewheaton.org/people/researchers-technicians/jordan-gilbert) of Utah State University's [Ecogeomorphology & Topographic Analysis Lab](http://etal.joewheaton.org/)
 
+## Releases
+
+If you are wishing to run the latest version of pyBRAT, you can download the ArcGIS Toolbox and associated files from the  [PyBRAT releases](https://github.com/Riverscapes/pyBRAT/releases/latest) page on GitHub.  
+
 ## Source Code
 
-<div class="float-right"><a href ="https://github.com/Riverscapes/pyBRAT"><img src="/assets/Images/github.png" alt="github"></a></div>
-BRAT 3.x is well [documented](/Documentation/Summary), open source, and available as an ArcGIS Toolbox [in this pyBRAT repo](https://github.com/Riverscapes/pyBRAT).  For application in your region, some editing of the [ihyd.py](https://github.com/Riverscapes/pyBRAT/blob/master/iHyd.py) source code is required (see [here](http://brat.riverscapes.xyz/Documentation/pyBRAT/4-iHydAttributes) for instructions). Experienced GIS users can tweak the source code and run the model, or you contact us at the [Wheaton ET-AL lab](http://etal.joewheaton.org) to set up a contract for bespoke runs. 
+For those wishing to tweak the source code, the open source version of pyBRAT is available in the [pyBRAT repo](https://github.com/Riverscapes/pyBRAT) on GitHub. 
 
-The Matlab versions of BRAT (matBRAT 1.0 to [2.3](https://github.com/Riverscapes/matBRAT/releases/latest)) source code are available at [https://github.com/Riverscapes/matBRAT](https://github.com/Riverscapes/matBRAT), with full documentation at: [https://riverscapes.github.io/matBRAT/](https://riverscapes.github.io/matBRAT/).
+The Matlab versions of BRAT source code are available from the [matBRAT repo](https://github.com/Riverscapes/matBRAT) on GitHub.  The matBRAT code is a legacy version of BRAT, which is no longer maintained.  For the most current BRAT models use the pyBRAT code.
 
 ## Publications & Reports
 
