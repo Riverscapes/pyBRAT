@@ -261,16 +261,7 @@ class BRAT_table_tool(object):
             parameterType="Required",
             direction="Input")
 
-        param15 = arcpy.Parameter(
-            displayName="Set Scratch Workspace",
-            name="scratch",
-            datatype="DEWorkspace",
-            parameterType="Required",
-            direction="Input")
-        param15.filter.list = ["Local Database"]
-        param15.value = arcpy.env.scratchWorkspace
-
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -304,8 +295,7 @@ class BRAT_table_tool(object):
                         p[11].valueAsText,
                         p[12].valueAsText,
                         p[13].valueAsText,
-                        p[14].valueAsText,
-                        p[15].valueAsText)
+                        p[14].valueAsText)
         return
 
 

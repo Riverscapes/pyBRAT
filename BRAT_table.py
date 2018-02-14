@@ -33,13 +33,15 @@ def main(
     railroad,
     canal,
     landuse,
-    out_name,
-    scratch):
+    out_name):
 
+
+    scratch = 'in_memory'
+    arcpy.env.workspace = scratch
     arcpy.env.overwriteOutput = True
     arcpy.CheckOutExtension("spatial")
 
-    # check that inputs are projected here
+    # check that inputs are projected
     networkSR = arcpy.Describe(seg_network).spatialReference
     if networkSR.type == "Projected":
         pass
@@ -59,6 +61,7 @@ def main(
             pass
         else:
             raise Exception("Input railroads must have a projected coordinate system")
+
     if canal is not None:
         canalSR = arcpy.Describe(canal).spatialReference
         if canalSR.type == "Projected":
@@ -74,63 +77,86 @@ def main(
 
     # check that input network doesn't have field "objectid" already
     seg_network_fields = [f.name for f in arcpy.ListFields(seg_network)]
-    if "OBJECTID" in seg_network_fields:
-        raise Exception("Input network cannot have field 'OBJECTID', delete this field")
 
-    # set buffers for analyses
+    # add flowline segment id field ('SegID') for more 'stable' joining
+    if 'SegID' not in seg_network_fields:
+        arcpy.AddField_management(seg_network, 'SegID', 'SHORT')
+        with arcpy.da.UpdateCursor(seg_network, ['FID', 'SegID']) as cursor:
+            for row in cursor:
+                row[1] = row[0]
+                cursor.updateRow(row)
+
+    # create buffers for analyses
+    # if 'Buffers' folder doesn't exist, create it
     if not os.path.exists(os.path.dirname(seg_network) + "/Buffers"):
         os.mkdir(os.path.dirname(seg_network) + "/Buffers")
+    # create segment midpoints
     midpoints = scratch + "/midpoints"
     arcpy.FeatureVerticesToPoints_management(seg_network, midpoints, "MID")
-    midpoint_fields = [f.name for f in arcpy.ListFields(midpoints)]
-    midpoint_fields.remove("OBJECTID")
-    midpoint_fields.remove("Shape")
-    midpoint_fields.remove("ORIG_FID")
-    arcpy.DeleteField_management(midpoints, midpoint_fields)
+    # remove unwanted fields from midpoints
+    fields = arcpy.ListFields(midpoints)
+    arcpy.AddMessage(fields)
+    keep = ['SegID']
+    drop = []
+
+    for field in fields:
+        if not field.required and field.name not in keep and field.type <> 'Geometry':
+            drop.append(field.name)
+    if len(drop) > 0:
+        arcpy.DeleteField_management(midpoints, drop)
+
+    # create midpoint 30 m buffer
+    midpoint_buffer = scratch + "/midpoint_buffer"
+    arcpy.Buffer_analysis(midpoints, midpoint_buffer, "100 Meters", "", "", "NONE")
+    # if network 30 meter buffer doesn't exist, create it
     if not os.path.exists(os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"):
         buf_30m = os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"
         arcpy.Buffer_analysis(seg_network, buf_30m, "30 Meters", "", "FLAT", "NONE")
     else:
         buf_30m = os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"
+    # if network 100 meter buffer doesn't exist, create it
     if not os.path.exists(os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"):
         buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
         arcpy.Buffer_analysis(seg_network, buf_100m, "100 Meters", "", "FLAT", "NONE")
     else:
         buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
-    midpoint_buffer = scratch + "/midpoint_buffer"
-    arcpy.Buffer_analysis(midpoints, midpoint_buffer, "100 Meters", "", "", "NONE")
 
+
+    # name and create output folder
     j = 1
     while os.path.exists(projPath + "/02_Analyses/Output_" + str(j)):
         j += 1
-
     os.mkdir(projPath + "/02_Analyses/Output_" + str(j))
+
+    # copy input segment network to output
     out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name + ".shp"
     arcpy.CopyFeatures_management(seg_network, out_network)
 
+    # run geo attributes function
     arcpy.AddMessage('Adding "iGeo" attributes to network')
-    igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30m, scratch)
+    igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch)
 
+    # run vegetation attributes function
     arcpy.AddMessage('Adding "iVeg" attributes to network')
     iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch)
 
-    if FlowAcc == None:
-        DrAr = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
-    else:
-        DrAr = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
-
+    # run ipc attributes function
     arcpy.AddMessage('Adding "iPC" attributes to network')
     ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch)
 
+    # fun write xml function
+    arcpy.AddMessage('Writing project xml')
+    if FlowAcc is None:
+        DrAr = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
+    else:
+        DrAr = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
     writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, valley_bottom, landuse,
              FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network)
 
     arcpy.CheckInExtension("spatial")
 
-    return
 
-
-def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30m, scratch):
+def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
 
     # if fields already exist, delete them
     network_fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -145,68 +171,103 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30
     if "iGeo_DA" in network_fields:
         arcpy.DeleteField_management(out_network, "iGeo_DA")
 
-    # get start elevation values
-    startpoints = scratch + "/startpoints"
-    arcpy.FeatureVerticesToPoints_management(out_network, startpoints, "START")
-    startpoint_fields = [f.name for f in arcpy.ListFields(startpoints)]
-    startpoint_fields.remove("OBJECTID")
-    startpoint_fields.remove("Shape")
-    startpoint_fields.remove("ORIG_FID")
-    arcpy.DeleteField_management(startpoints, startpoint_fields)
-    startpoint_buf = scratch + "/startpoint_buf"
-    arcpy.Buffer_analysis(startpoints, startpoint_buf, "50 Meters", "", "", "LIST", "ORIG_FID")
-    zs_startpoint = scratch + "/zs_startpoint"
-    ZonalStatisticsAsTable(startpoint_buf, "ORIG_FID", DEM, zs_startpoint, statistics_type="MINIMUM")
-    arcpy.JoinField_management(out_network, "FID", zs_startpoint, "ORIG_FID", "MIN")
-    arcpy.AddField_management(out_network, "iGeo_ElMax", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MIN", "iGeo_ElMax"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
-    arcpy.DeleteField_management(out_network, "MIN")
-    del zs_startpoint
+    # add flowline segment id field ('SegID') for more 'stable' joining
+    if 'SegID' not in network_fields:
+        arcpy.AddField_management(out_network, 'SegID', 'SHORT')
+        with arcpy.da.UpdateCursor(out_network, ['FID', 'SegID']) as cursor:
+            for row in cursor:
+                row[1] = row[0]
+                cursor.updateRow(row)
 
-    # get end elevation values
-    zs_buf_30m = scratch + "/zs_buf_30m"
-    ZonalStatisticsAsTable(buf_30m, "ORIG_FID", DEM, zs_buf_30m, statistics_type="MINIMUM")
-    arcpy.JoinField_management(out_network, "FID", zs_buf_30m, "ORIG_FID", "MIN")
-    arcpy.AddField_management(out_network, "iGeo_ElMin", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MIN", "iGeo_ElMin"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
-    arcpy.DeleteField_management(out_network, "MIN")
-    del zs_buf_30m
+    # function to attribute start/end elevation (dem z) to each flowline segment
+    def zSeg(vertexType, outField):
+        # create start/end points for each flowline segment
+        tmp_pts = arcpy.FeatureVerticesToPoints_management(out_network, os.path.join(scratch, 'tmp_pts'), vertexType)
+        # create 50 meter buffer around each start/end point
+        tmp_buff = arcpy.Buffer_analysis(tmp_pts, os.path.join(scratch, 'tmp_buff'), '30 Meters')
+        # get min dem z value within each buffer
+        # note: zonal stats as table does not support overlapping polygons so we will check which
+        #       segment buffers output was produced for and which we need to run tool on again
+        zTbl = arcpy.sa.ZonalStatisticsAsTable(tmp_buff, 'SegID', DEM, os.path.join(scratch, 'zTbl'), 'DATA', 'MINIMUM')
+        # get list of segment buffers where zonal stats tool produced output
+        haveZList = [row[0] for row in arcpy.da.SearchCursor(zTbl, 'SegID')]
+        # create dictionary to hold all segment buffer min dem z values
+        zDict = {}
+        # add min dem z values to dictionary
+        with arcpy.da.SearchCursor(zTbl, ['SegID', 'MIN']) as cursor:
+            for row in cursor:
+                zDict[row[0]] = row[1]
+        # create list of overlapping buffer segments (i.e., where zonal stats tool did not produce output)
+        needZList = []
+        with arcpy.da.SearchCursor(tmp_buff, ['SegID']) as cursor:
+            for row in cursor:
+                if row[0] not in haveZList:
+                    needZList.append(row[0])
+        # run zonal stats until we have output for each overlapping buffer segment
+        while(True):
+            # create tuple of segment ids where still need dem z values
+            needZ = ()
+            for seg in needZList:
+                if seg not in needZ:
+                    needZ += (seg, )
+            # use the segment id tuple to create selection query and run zonal stats tool
+            if len(needZ) == 1:
+                quer = '"SegID" = ' + str(needZ[0])
+            else:
+                quer = '"SegID" IN ' + str(needZ)
+            tmp_buff_lyr = arcpy.MakeFeatureLayer_management(tmp_buff, 'tmp_buff_lyr')
+            arcpy.SelectLayerByAttribute_management(tmp_buff_lyr, 'NEW_SELECTION', quer)
+            stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'SegID', DEM, os.path.join(scratch, 'stat'), 'DATA', 'MINIMUM')
+            # add segment z values from zonal stats table to main dictionary
+            with arcpy.da.SearchCursor(stat, ['SegID', 'MIN']) as cursor:
+                for row in cursor:
+                    zDict[row[0]] = row[1]
+            # create list of segments that were run and remove from 'need to run' list
+            haveZList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'SegID')]
+            for seg in haveZList2:
+                needZList.remove(seg)
+            # if need to run list is empty exit while loop
+            if len(needZList) == 0:
+                break
+
+        arcpy.AddField_management(out_network, outField, "DOUBLE")
+        with arcpy.da.UpdateCursor(out_network, ['SegID', outField]) as cursor:
+            for row in cursor:
+                try:
+                    aKey = row[0]
+                    row[1] = zDict[aKey]
+                    cursor.updateRow(row)
+                except:
+                    pass
+
+        arcpy.Delete_management(stat)
+        arcpy.Delete_management(zTbl)
+        arcpy.Delete_management(tmp_pts)
+        arcpy.Delete_management(tmp_buff)
+
+    # run zSeg function for start/end of each network segment
+    zSeg('START', 'iGeo_ElMax')
+    zSeg('END', 'iGeo_ElMin')
+
 
     # add slope
     arcpy.AddField_management(out_network, "iGeo_Len", "DOUBLE")
     arcpy.CalculateField_management(out_network, "iGeo_Len", '!shape.length@meters!', "PYTHON_9.3")
     arcpy.AddField_management(out_network, "iGeo_Slope", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["iGeo_ElMax", "iGeo_ElMin", "iGeo_Len", "iGeo_Slope"])
-    for row in cursor:
-        index = (abs(row[0] - row[1]))/row[2]
-        row[3] = index
-        cursor.updateRow(row)
-    del row
-    del cursor
-    cursor = arcpy.da.UpdateCursor(out_network, "iGeo_Slope")  # fix slope values of 0
-    for row in cursor:
-        if row[0] == 0.0:
-            row[0] = 0.0001
-        elif row[0] > 1.0:
-            row[0] = 0.5
-        else:
-            pass
-        cursor.updateRow(row)
-    del row
-    del cursor
+    with arcpy.da.UpdateCursor(out_network, ["iGeo_ElMax", "iGeo_ElMin", "iGeo_Len", "iGeo_Slope"]) as cursor:
+        for row in cursor:
+            row[3] = (abs(row[0] - row[1]))/row[2]
+            cursor.updateRow(row)
+    with arcpy.da.UpdateCursor(out_network, "iGeo_Slope") as cursor: # fix slope values of 0
+        for row in cursor:
+            if row[0] == 0.0:
+                row[0] = 0.0001
+            else:
+                pass
+            cursor.updateRow(row)
 
     # get DA values
-    if FlowAcc == None:
+    if FlowAcc is None:
         arcpy.AddMessage("calculating drainage area")
         calc_drain_area(DEM)
     elif os.path.exists(os.path.dirname(DEM) + "/Flow"):
@@ -215,39 +276,26 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30
         os.mkdir(os.path.dirname(DEM) + "/Flow")
         arcpy.CopyRaster_management(FlowAcc, os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc))
 
-    if FlowAcc == None:
-        DrAr = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
-        DrArea = Raster(DrAr)
+    if FlowAcc is None:
+        DrArea = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
     else:
-        DrAr = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
-        DrArea = Raster(DrAr)
+        DrArea = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
 
     drarea_zs = scratch + "/drarea_zs"
-    ZonalStatisticsAsTable(midpoint_buffer, "ORIG_FID", DrArea, drarea_zs, statistics_type="MAXIMUM")
-    arcpy.JoinField_management(out_network, "FID", drarea_zs, "ORIG_FID", "MAX")
+    ZonalStatisticsAsTable(midpoint_buffer, "SegID", DrArea, drarea_zs, 'DATA', "MAXIMUM")
+    arcpy.JoinField_management(out_network, "SegID", drarea_zs, "SEGID", "MAX")
 
     arcpy.AddField_management(out_network, "iGeo_DA", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MAX", "iGeo_DA"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
-    cursor = arcpy.da.UpdateCursor(out_network, "iGeo_DA")
-    for row in cursor:
-        if row[0] == 0:
-            row[0] = 0.1
+    with arcpy.da.UpdateCursor(out_network, ["MAX", "iGeo_DA"]) as cursor:
+        for row in cursor:
+            if row[0] == 0:
+                row[1] = 0.1
+            else:
+                row[1] = row[0]
             cursor.updateRow(row)
 
-        else:
-            pass
-    del row
-    del cursor
     arcpy.DeleteField_management(out_network, "MAX")
     del drarea_zs
-
-    return
-
 
 def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch):
 
@@ -265,62 +313,52 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
     # get iVeg_VT100EX
     veg_lookup = Lookup(coded_veg, "VEG_CODE")
     ex_100_zs = scratch + "/ex_100_zs"
-    ZonalStatisticsAsTable(buf_100m, "ORIG_FID", veg_lookup, ex_100_zs, statistics_type="MEAN")
-    arcpy.JoinField_management(out_network, "FID", ex_100_zs, "ORIG_FID", "MEAN")
+    ZonalStatisticsAsTable(buf_100m, "SegID", veg_lookup, ex_100_zs, 'DATA', "MEAN")
+    arcpy.JoinField_management(out_network, "SegID", ex_100_zs, "SEGID", "MEAN")
     arcpy.AddField_management(out_network, "iVeg_100EX", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_100EX"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
+    with arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_100EX"]) as cursor:
+        for row in cursor:
+            row[1] = row[0]
+            cursor.updateRow(row)
     arcpy.DeleteField_management(out_network, "MEAN")
     del ex_100_zs
 
     # get iVeg_30EX
     ex_30_zs = scratch + "/ex_30_zs"
-    ZonalStatisticsAsTable(buf_30m, "ORIG_FID", veg_lookup, ex_30_zs, statistics_type="MEAN")
-    arcpy.JoinField_management(out_network, "FID", ex_30_zs, "ORIG_FID", "MEAN")
+    ZonalStatisticsAsTable(buf_30m, "SegID", veg_lookup, ex_30_zs, 'DATA', "MEAN")
+    arcpy.JoinField_management(out_network, "SegID", ex_30_zs, "SEGID", "MEAN")
     arcpy.AddField_management(out_network, "iVeg_30EX", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_30EX"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
+    with arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_30EX"]) as cursor:
+        for row in cursor:
+            row[1] = row[0]
+            cursor.updateRow(row)
     arcpy.DeleteField_management(out_network, "MEAN")
     del ex_30_zs, veg_lookup
 
     # get iVeg_100PT
     hist_veg_lookup = Lookup(coded_hist, "VEG_CODE")
     pt_100_zs = scratch + "/pt_100_zs"
-    ZonalStatisticsAsTable(buf_100m, "ORIG_FID", hist_veg_lookup, pt_100_zs, statistics_type="MEAN")
-    arcpy.JoinField_management(out_network, "FID", pt_100_zs, "ORIG_FID", "MEAN")
+    ZonalStatisticsAsTable(buf_100m, "SegID", hist_veg_lookup, pt_100_zs, 'DATA', "MEAN")
+    arcpy.JoinField_management(out_network, "SegID", pt_100_zs, "SEGID", "MEAN")
     arcpy.AddField_management(out_network, "iVeg_100PT", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_100PT"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
+    with arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_100PT"]) as cursor:
+        for row in cursor:
+            row[1] = row[0]
+            cursor.updateRow(row)
     arcpy.DeleteField_management(out_network, "MEAN")
     del pt_100_zs
 
     # get iVeg_30PT
     pt_30_zs = scratch + "/pt_30_zs"
-    ZonalStatisticsAsTable(buf_30m, "ORIG_FID", hist_veg_lookup, pt_30_zs, statistics_type="MEAN")
-    arcpy.JoinField_management(out_network, "FID", pt_30_zs, "ORIG_FID", "MEAN")
+    ZonalStatisticsAsTable(buf_30m, "SegID", hist_veg_lookup, pt_30_zs, 'DATA', "MEAN")
+    arcpy.JoinField_management(out_network, "SegID", pt_30_zs, "SEGID", "MEAN")
     arcpy.AddField_management(out_network, "iVeg_30PT", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_30PT"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
+    with arcpy.da.UpdateCursor(out_network, ["MEAN", "iVeg_30PT"]) as cursor:
+        for row in cursor:
+            row[1] = row[0]
+            cursor.updateRow(row)
     arcpy.DeleteField_management(out_network, "MEAN")
     del pt_30_zs, hist_veg_lookup
-
-    return
 
 
 def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch):
@@ -339,15 +377,12 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         arcpy.DeleteField_management(out_network, "iPC_LU")
 
     # get iPC_RoadX
-    if road == None:
+    if road is None:
         arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
-        cursor = arcpy.da.UpdateCursor(out_network, "iPC_RoadX")
-        for row in cursor:
-            row[0] = 10000.0
-            cursor.updateRow(row)
-        del row
-        del cursor
-
+        with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
     else:
         roadx = scratch + "/roadx"
         arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
@@ -358,38 +393,31 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         roadxct = int(roadxcount.getOutput(0))
         if roadxct < 1:
             arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
-            cursor = arcpy.da.UpdateCursor(out_network, "iPC_RoadX")
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
         else:
             arcpy.env.extent = out_network
             ed_roadx = EucDistance(roadx, "", 5)
             zs_roadx = scratch + "/zs_roadx"
-            ZonalStatisticsAsTable(buf_30m, "ORIG_FID", ed_roadx, zs_roadx, statistics_type="MINIMUM")
-            arcpy.JoinField_management(out_network, "FID", zs_roadx, "ORIG_FID", "MIN")
+            ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadx, zs_roadx, 'DATA', "MINIMUM")
+            arcpy.JoinField_management(out_network, "SegID", zs_roadx, "SEGID", "MIN")
             arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
-            cursor = arcpy.da.UpdateCursor(out_network, ["MIN", "iPC_RoadX"])
-            for row in cursor:
-                row[1] = row[0]
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, ["MIN", "iPC_RoadX"]) as cursor:
+                for row in cursor:
+                    row[1] = row[0]
+                    cursor.updateRow(row)
             arcpy.DeleteField_management(out_network, "MIN")
             del ed_roadx, zs_roadx
 
     # iPC_RoadAd
-    if road == None:
+    if road is None:
         arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
-        cursor = arcpy.da.UpdateCursor(out_network, "iPC_RoadAd")
-        for row in cursor:
-            row[0] = 10000.0
-            cursor.updateRow(row)
-        del row
-        del cursor
-
+        with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
     else:
         road_subset = scratch + '/road_subset'
         arcpy.Clip_analysis(road, valley_bottom, road_subset)
@@ -400,38 +428,31 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         roadct = int(roadcount.getOutput(0))
         if roadct < 1:
             arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
-            cursor = arcpy.da.UpdateCursor(out_network, "iPC_RoadAd")
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
         else:
             arcpy.env.extent = out_network
             ed_roadad = EucDistance(road_subset, "", 5)
             zs_roadad = scratch + "/zs_roadad"
-            ZonalStatisticsAsTable(buf_30m, "ORIG_FID", ed_roadad, zs_roadad, statistics_type="MEAN") # might try mean here to make it less restrictive
-            arcpy.JoinField_management(out_network, "FID", zs_roadad, "ORIG_FID", "MEAN")
+            ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadad, zs_roadad, 'DATA', "MEAN") # might try mean here to make it less restrictive
+            arcpy.JoinField_management(out_network, "SegID", zs_roadad, "SEGID", "MEAN")
             arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
-            cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_RoadAd"])
-            for row in cursor:
-                row[1] = row[0]
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_RoadAd"]) as cursor:
+                for row in cursor:
+                    row[1] = row[0]
+                    cursor.updateRow(row)
             arcpy.DeleteField_management(out_network, "MEAN")
             del ed_roadad, zs_roadad
 
     # iPC_RR
-    if railroad == None:
+    if railroad is None:
         arcpy.AddField_management(out_network, "iPC_RR", "DOUBLE")
-        cursor = arcpy.da.UpdateCursor(out_network, "iPC_RR")
-        for row in cursor:
-            row[0] = 10000.0
-            cursor.updateRow(row)
-        del row
-        del cursor
-
+        with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
     else:
         rr_subset = scratch + '/rr_subset'
         arcpy.Clip_analysis(railroad, valley_bottom, rr_subset)
@@ -442,38 +463,31 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         rrct = int(rrcount.getOutput(0))
         if rrct < 1:
             arcpy.AddField_management(out_network, "iPC_RR")
-            cursor = arcpy.da.UpdateCursor(out_network, "iPC_RR")
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
         else:
             arcpy.env.extent = out_network
             ed_rr = EucDistance(rr_subset, "", 30)
             zs_rr = scratch + "/zs_rr"
-            ZonalStatisticsAsTable(buf_30m, "ORIG_FID", ed_rr, zs_rr, statistics_type="MEAN")
-            arcpy.JoinField_management(out_network, "FID", zs_rr, "ORIG_FID", "MEAN")
+            ZonalStatisticsAsTable(buf_30m, "SegID", ed_rr, zs_rr, 'DATA', "MEAN")
+            arcpy.JoinField_management(out_network, "SegID", zs_rr, "SEGID", "MEAN")
             arcpy.AddField_management(out_network, "iPC_RR", "DOUBLE")
-            cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_RR"])
-            for row in cursor:
-                row[1] = row[0]
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_RR"]) as cursor:
+                for row in cursor:
+                    row[1] = row[0]
+                    cursor.updateRow(row)
             arcpy.DeleteField_management(out_network, "MEAN")
             del ed_rr, zs_rr
 
     #iPC_Canal
-    if canal == None:
+    if canal is None:
         arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
-        cursor = arcpy.da.UpdateCursor(out_network, "iPC_Canal")
-        for row in cursor:
-            row[0] = 10000.0
-            cursor.updateRow(row)
-        del row
-        del cursor
-
+        with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
     else:
         canal_subset = scratch + '/canal_subset'
         arcpy.Clip_analysis(canal, valley_bottom, canal_subset)
@@ -484,44 +498,36 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         canalct = int(canalcount.getOutput(0))
         if canalct < 1:
             arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
-            cursor = arcpy.da.UpdateCursor(out_network, "iPC_Canal")
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
         else:
             arcpy.env.extent = out_network
             ed_canal = EucDistance(canal_subset, "", 30)
             zs_canal = scratch + "/zs_canal"
-            ZonalStatisticsAsTable(buf_30m, "ORIG_FID", ed_canal, zs_canal, statistics_type="MEAN")
-            arcpy.JoinField_management(out_network, "FID", zs_canal, "ORIG_FID", "MEAN")
+            ZonalStatisticsAsTable(buf_30m, "SegID", ed_canal, zs_canal, 'DATA', "MEAN")
+            arcpy.JoinField_management(out_network, "SegID", zs_canal, "SEGID", "MEAN")
             arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
-            cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_Canal"])
-            for row in cursor:
-                row[1] = row[0]
-                cursor.updateRow(row)
-            del row
-            del cursor
+            with arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_Canal"]) as cursor:
+                for row in cursor:
+                    row[1] = row[0]
+                    cursor.updateRow(row)
             arcpy.DeleteField_management(out_network, "MEAN")
             del ed_canal, zs_canal
 
     # iPC_LU
     lu_landuse = Lookup(landuse, "CODE")
     zs_landuse = scratch + "/zs_landuse"
-    ZonalStatisticsAsTable(buf_100m, "ORIG_FID", lu_landuse, zs_landuse, statistics_type="MEAN")
-    arcpy.JoinField_management(out_network, "FID", zs_landuse, "ORIG_FID", "MEAN")
+    ZonalStatisticsAsTable(buf_100m, "SegID", lu_landuse, zs_landuse, 'DATA', "MEAN")
+    arcpy.JoinField_management(out_network, "SegID", zs_landuse, "SEGID", "MEAN")
     arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_LU"])
-    for row in cursor:
-        row[1] = row[0]
-        cursor.updateRow(row)
-    del row
-    del cursor
+    with arcpy.da.UpdateCursor(out_network, ["MEAN", "iPC_LU"]) as cursor:
+        for row in cursor:
+            row[1] = row[0]
+            cursor.updateRow(row)
     arcpy.DeleteField_management(out_network, "MEAN")
     del lu_landuse, zs_landuse
-
-    return
 
 
 def calc_drain_area(DEM):
@@ -532,9 +538,9 @@ def calc_drain_area(DEM):
     resolution = int(res)
 
     # derive a flow accumulation raster from input DEM and covert to units of square kilometers
-    filled_DEM = Fill(DEM, "")
-    flow_direction = FlowDirection(filled_DEM, "NORMAL", "")
-    flow_accumulation = FlowAccumulation(flow_direction, "", "FLOAT")
+    filled_DEM = Fill(DEM)
+    flow_direction = FlowDirection(filled_DEM)
+    flow_accumulation = FlowAccumulation(flow_direction)
     DrainArea = flow_accumulation * resolution / 1000000
 
     if os.path.exists(os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"):
@@ -545,9 +551,6 @@ def calc_drain_area(DEM):
         os.mkdir(os.path.dirname(DEM) + "/Flow")
         DrArea_path = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
         DrainArea.save(DrArea_path)
-
-    return
-
 
 def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, valley_bottom, landuse,
              FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
@@ -869,5 +872,4 @@ if __name__ == '__main__':
         sys.argv[12],
         sys.argv[13],
         sys.argv[14],
-        sys.argv[15],
-        sys.argv[16])
+        sys.argv[15])
