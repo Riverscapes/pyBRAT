@@ -228,7 +228,6 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30
 
     # The table starts the count at 1, but the output network starts at 0
     # We need to take one away from the ORIG_FID field so that they properly merge
-    # This is redundant after fixing the
     cursor = arcpy.da.UpdateCursor(drarea_zs, ["ORIG_FID"])
     for row in cursor:
         row[0] -= 1
