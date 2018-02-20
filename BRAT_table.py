@@ -228,6 +228,7 @@ def igeo_attributes(projPath, out_network, DEM, FlowAcc, midpoint_buffer, buf_30
 
     # The table starts the count at 1, but the output network starts at 0
     # We need to take one away from the ORIG_FID field so that they properly merge
+    # This is redundant after fixing the
     cursor = arcpy.da.UpdateCursor(drarea_zs, ["ORIG_FID"])
     for row in cursor:
         row[0] -= 1
@@ -419,7 +420,6 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         else:
             arcpy.env.extent = out_network
             ed_roadad = EucDistance(road_subset, cell_size=10)  # For some reason, setting cell_size=5 gives bad output
-            ed_roadad.save()
             zs_roadad = scratch + "/zs_roadad"
             ZonalStatisticsAsTable(buf_30m, "ORIG_FID", ed_roadad, zs_roadad, statistics_type="MEAN") # might try mean here to make it less restrictive
             arcpy.JoinField_management(out_network, "FID", zs_roadad, "ORIG_FID", "MEAN")
