@@ -35,7 +35,6 @@ def main(
     landuse,
     out_name):
 
-
     scratch = 'in_memory'
     arcpy.env.workspace = scratch
     arcpy.env.overwriteOutput = True
@@ -105,17 +104,11 @@ def main(
     # create midpoint 100 m buffer
     midpoint_buffer = arcpy.Buffer_analysis(midpoints, scratch + "/midpoint_buffer", "100 Meters")
     # create network 30 m buffer
-    if not os.path.exists(os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"):
-        buf_30m = os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"
-        arcpy.Buffer_analysis(seg_network, buf_30m, "30 Meters", "", "FLAT")
-    else:
-        buf_30m = os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"
+    buf_30m = os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"
+    arcpy.Buffer_analysis(seg_network, buf_30m, "30 Meters", "", "FLAT")
     # create network 100 m buffer
-    if not os.path.exists(os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"):
-        buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
-        arcpy.Buffer_analysis(seg_network, buf_100m, "100 Meters", "", "FLAT", "NONE")
-    else:
-        buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
+    buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
+    arcpy.Buffer_analysis(seg_network, buf_100m, "100 Meters", "", "FLAT", "NONE")
 
     # name and create output folder
     j = 1
@@ -187,6 +180,7 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
                 row[1] = row[0]
                 cursor.updateRow(row)
 
+
     # function to attribute start/end elevation (dem z) to each flowline segment
     def zSeg(vertexType, outField):
         # create start/end points for each flowline segment
@@ -212,7 +206,7 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
                 if row[0] not in haveZList:
                     needZList.append(row[0])
         # run zonal stats until we have output for each overlapping buffer segment
-        while(True):
+        while len(needZList) > 0:
             # create tuple of segment ids where still need dem z values
             needZ = ()
             for seg in needZList:
@@ -249,9 +243,10 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
                     pass
 
         # delete temp fcs, tbls, etc.
-        items = [stat, zTbl, tmp_pts, tmp_buff]
+        items = [zTbl, tmp_pts, tmp_buff]
         for item in items:
             arcpy.Delete_management(item)
+        zDict.clear()
 
     # run zSeg function for start/end of each network segment
     zSeg('START', 'iGeo_ElMax')
@@ -400,9 +395,9 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             arcpy.env.extent = out_network
             # calculate euclidean distance from road-stream crossings
             ed_roadx = EucDistance(roadx, "", 5) # cell size of 5 m
-            arcpy.CopyRaster_management(ed_roadx, r'C:\Users\SaraBangen\Desktop\Et_Al_17050202_BRAT\tmp_ed_roadx.tif')
             # get minimum distance from road-stream crossings within 30 m buffer of each network segment
             roadxTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadx, scratch + "/roadxTbl", 'DATA', "MINIMUM")
+            arcpy.CopyRows_management(roadxTbl, r'C:\Users\SaraBangen\Desktop\BradenCheck\tmp_roadxTbl.dbf')
             # populate flowline network min distance 'iPC_RoadX' field
             dictJoinField(roadxTbl, 'MIN', out_network, "iPC_RoadX")
             # delete temp fcs, tbls, etc.
