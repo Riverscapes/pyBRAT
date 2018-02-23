@@ -37,4 +37,7 @@
 ehthumbs.db
 Thumbs.db
 
+# Other files #
+######################
 _site
+*.xml
