@@ -130,7 +130,7 @@ def main(
 
     # run ipc attributes function
     arcpy.AddMessage('Adding "iPC" attributes to network')
-    ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch)
+    ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
     # fun write xml function
     arcpy.AddMessage('Writing project xml')
@@ -356,7 +356,7 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
         arcpy.Delete_management(item)
 
 
-def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch):
+def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath):
 
     # if fields already exist, delete them
     network_fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -371,6 +371,77 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     if "iPC_LU" in network_fields:
         arcpy.DeleteField_management(out_network, "iPC_LU")
 
+    # get iPC_RoadX
+    from shutil import rmtree
+    tempDir = projPath + '\Temp'
+
+    if os.path.exists(tempDir):
+        rmtree(tempDir)
+    os.mkdir(tempDir)
+
+    arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
+    if road is None:
+        with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
+    else:
+        roadx = tempDir + "\\roadx.shp"
+        arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
+        roadx_mts = tempDir + "\\roadx_mts.shp"
+        arcpy.MultipartToSinglepart_management(roadx, roadx_mts)
+
+        roadxcount = arcpy.GetCount_management(roadx_mts)
+        roadxct = int(roadxcount.getOutput(0))
+        if roadxct < 1:
+            with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
+        else:
+            arcpy.env.extent = out_network
+            # calculate euclidean distance from road-stream crossings
+            ed_roadx = EucDistance(roadx, cell_size=5)  # cell size of 5 m
+            # get minimum distance from road-stream crossings within 30 m buffer of each network segment
+            roadxTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadx, scratch + "/roadxTbl", 'DATA', "MINIMUM")
+            # populate flowline network min distance 'iPC_RoadX' field
+            dictJoinField(roadxTbl, 'MIN', out_network, "iPC_RoadX")
+            # delete temp fcs, tbls, etc.
+            items = [ed_roadx, roadxTbl]
+            for item in items:
+                arcpy.Delete_management(item)
+
+    # iPC_RoadAd
+    arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
+    if road is None:
+        with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
+    else:
+        road_subset = arcpy.Clip_analysis(road, valley_bottom, tempDir + '\\road_subset.shp')
+        road_mts = arcpy.MultipartToSinglepart_management(road_subset, tempDir + "\\road_mts.shp")
+        roadcount = arcpy.GetCount_management(road_mts)
+        roadct = int(roadcount.getOutput(0))
+        if roadct < 1:
+            with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
+        else:
+            arcpy.env.extent = out_network
+            ed_roadad = EucDistance(road_subset, "", 5)
+            roadadjTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadad, scratch + "/roadadjTbl", 'DATA',
+                                                "MEAN")  # might try mean here to make it less restrictive
+            # populate flowline network adjacent road distance "iPC_RoadAd" field
+            dictJoinField(roadadjTbl, 'MEAN', out_network, "iPC_RoadAd")
+            items = [ed_roadad, roadadjTbl]
+            for item in items:
+                arcpy.Delete_management(item)
+    rmtree(tempDir)
+    """
+    This is the section of code that stores intermediary data in memory. In ArcMap 10.6, that crashes the program,
+    so we're getting rid of it for now, and using a temp dir instead
     # get iPC_RoadX
     arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
     if road is None:
@@ -430,6 +501,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             items = [ed_roadad, roadadjTbl]
             for item in items:
                 arcpy.Delete_management(item)
+    """ ##The code that supports in memory scratch spaces
 
     # iPC_RR
     arcpy.AddField_management(out_network, "iPC_RR")
@@ -699,6 +771,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
             else:
                 flows = exxml.rz.findall(".//Flow")
                 flowpath = range(len(flows))
+                #arcpy.AddMessage(flows)
                 for i in range(len(flows)):
                     if flows[i].find("Path").text:
                         flowpath[i] = flows[i].find("Path").text
