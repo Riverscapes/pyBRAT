@@ -93,7 +93,6 @@ def main(
     midpoints = arcpy.FeatureVerticesToPoints_management(seg_network, scratch + "/midpoints", "MID")
     # remove unwanted fields from midpoints
     fields = arcpy.ListFields(midpoints)
-    arcpy.AddMessage(fields)
     keep = ['SegID']
     drop = []
     for field in fields:
@@ -771,15 +770,13 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
             else:
                 flows = exxml.rz.findall(".//Flow")
                 flowpath = range(len(flows))
-                #arcpy.AddMessage(flows)
                 for i in range(len(flows)):
-                    if flows[i].find("Path").text:
+                    if flows[i].find("Path") and flows[i].find("Path").text:
                         flowpath[i] = flows[i].find("Path").text
                         if os.path.abspath(flowpath[i]) == os.path.abspath(DrAr[DrAr.find("01_Inputs"):]):
                             flowguid = flows[i].attrib['guid']
                             exxml.addBRATInput(exxml.BRATRealizations[0], "Flow", "Drainage Area", path=DrAr[DrAr.find("01_Inputs"):], guid=flowguid)
-                    else:
-                        pass
+
 
         vector = inputs.findall("Vector")
         vectorid = range(len(vector))
