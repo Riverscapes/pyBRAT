@@ -394,10 +394,9 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         else:
             arcpy.env.extent = out_network
             # calculate euclidean distance from road-stream crossings
-            ed_roadx = EucDistance(roadx, "", 5) # cell size of 5 m
+            ed_roadx = EucDistance(roadx, cell_size=5)  # cell size of 5 m
             # get minimum distance from road-stream crossings within 30 m buffer of each network segment
             roadxTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadx, scratch + "/roadxTbl", 'DATA', "MINIMUM")
-            arcpy.CopyRows_management(roadxTbl, r'C:\Users\SaraBangen\Desktop\BradenCheck\tmp_roadxTbl.dbf')
             # populate flowline network min distance 'iPC_RoadX' field
             dictJoinField(roadxTbl, 'MIN', out_network, "iPC_RoadX")
             # delete temp fcs, tbls, etc.
