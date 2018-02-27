@@ -16,6 +16,7 @@ import sys
 import projectxml
 import datetime
 import uuid
+import FindBraidedNetwork
 
 
 def main(
@@ -130,6 +131,9 @@ def main(
     # run ipc attributes function
     arcpy.AddMessage('Adding "iPC" attributes to network')
     ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
+
+    # find braided reaches
+    FindBraidedNetwork.main(out_network)
 
     # fun write xml function
     arcpy.AddMessage('Writing project xml')
@@ -437,6 +441,61 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             items = [ed_roadad, roadadjTbl]
             for item in items:
                 arcpy.Delete_management(item)
+
+    # iPC_RR
+    arcpy.AddField_management(out_network, "iPC_RR")
+    if railroad is None:
+        with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
+    else:
+        rr_subset = arcpy.Clip_analysis(railroad, valley_bottom, tempDir + '\\rr_subset.shp')
+        rr_mts = arcpy.MultipartToSinglepart_management(rr_subset, tempDir + "\\rr_mts.shp")
+        rrcount = arcpy.GetCount_management(rr_mts)
+        rrct = int(rrcount.getOutput(0))
+        if rrct < 1:
+
+            with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
+        else:
+            arcpy.env.extent = out_network
+            ed_rr = EucDistance(rr_subset, "", 30)
+            rrTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_rr, tempDir + "/rrTable", 'DATA', "MEAN")
+            dictJoinField(rrTbl, 'MEAN', out_network, "iPC_RR")
+            items = [ed_rr, rrTbl]
+            for item in items:
+                arcpy.Delete_management(item)
+
+    # iPC_Canal
+    arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
+    if canal is None:
+        with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
+    else:
+        canal_subset = arcpy.Clip_analysis(canal, valley_bottom, tempDir + '\\canal_subset.shp')
+        canal_mts = arcpy.MultipartToSinglepart_management(canal_subset, tempDir + "\\canal_mts.shp")
+
+        canalcount = arcpy.GetCount_management(canal_mts)
+        canalct = int(canalcount.getOutput(0))
+        if canalct < 1:
+            with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
+                for row in cursor:
+                    row[0] = 10000.0
+                    cursor.updateRow(row)
+        else:
+            arcpy.env.extent = out_network
+            ed_canal = EucDistance(canal_subset, "", 30)
+            canalTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_canal, scratch + "/canalTbl", 'DATA', "MEAN")
+            dictJoinField(canalTbl, 'MEAN', out_network, "iPC_Canal")
+            items = [ed_canal, canalTbl]
+            for item in items:
+                arcpy.Delete_management(item)
+
     rmtree(tempDir)
     """
     This is the section of code that stores intermediary data in memory. In ArcMap 10.6, that crashes the program,
@@ -500,7 +559,6 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             items = [ed_roadad, roadadjTbl]
             for item in items:
                 arcpy.Delete_management(item)
-    """ ##The code that supports in memory scratch spaces
 
     # iPC_RR
     arcpy.AddField_management(out_network, "iPC_RR")
@@ -554,7 +612,8 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             dictJoinField(canalTbl, 'MEAN', out_network, "iPC_Canal")
             items = [ed_canal, canalTbl]
             for item in items:
-                arcpy.Delete_management(item)
+                arcpy.Delete_management(item)   
+    """ ##The code that supports in memory scratch spaces
 
     # iPC_LU
     arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
