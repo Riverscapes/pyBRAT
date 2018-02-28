@@ -1,19 +1,20 @@
-﻿# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Name:        Find Braided Reaches in Stream Network                         #
-# Purpose:     Find Braided Reaches as part of network preprocessing steps.   #
-#                                                                             #
-# Author:      Kelly Whitehead (kelly@southforkresearch.org)                  #
-#              Jesse Langdon                                                  #
-#              South Fork Research, Inc                                       #
-#              Seattle, Washington                                            #
-#                                                                             #
-# Created:     2014-Sept-30                                                   #
-# Version:     2.0 beta                                                       #
-# Modified:    2017-Feb-16                                                    #
-#                                                                             #
-# Copyright:   (c) Kelly Whitehead, Jesse Langdon 2017                        #
-#                                                                             #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+﻿# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Name:             Find Braided Reaches in Stream Network                          #
+# Purpose:          Find Braided Reaches as part of network preprocessing steps.    #
+#                                                                                   #
+# Author:           Kelly Whitehead (kelly@southforkresearch.org)                   #
+#                   Jesse Langdon                                                   #
+#                   South Fork Research, Inc                                        #
+#                   Seattle, Washington                                             #
+#                                                                                   #
+# Created:          2014-Sept-30                                                    #
+# Version:          2.0 beta                                                        #
+# Modified:         2017-Feb-16                                                     #
+# Documentation:    http://gnat.riverscapes.xyz/                                    #
+#                                                                                   #
+# Copyright:        (c) Kelly Whitehead, Jesse Langdon 2017                         #
+#                                                                                   #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #!/usr/bin/env python
 
 # Import modules
