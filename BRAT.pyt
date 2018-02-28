@@ -582,44 +582,21 @@ class Comb_FIS_tool(object):
         param1.filter.list = ["Polyline"]
 
         param2 = arcpy.Parameter(
-            displayName="Historic (select when running first time)",
-            name="pt_type",
-            datatype="GPBoolean",
-            parameterType="Optional",
-            direction="Input")
-
-        param3 = arcpy.Parameter(
-            displayName="Existing (select when running second time)",
-            name="ex_type",
-            datatype="GPBoolean",
-            parameterType="Optional",
-            direction="Input")
-
-        param4 = arcpy.Parameter(
             displayName="Maximum DA Threshold (Square KM)",
             name = "max_DA_thresh",
             datatype="GPDouble",
             parameterType="Required",
             direction="Input")
 
-        param5 = arcpy.Parameter(
-            displayName = "Name Output Network (Saved when running 'Existing' Combined FIS)",
+        param3 = arcpy.Parameter(
+            displayName = "Name Output Network",
             name = "out_name",
             datatype="GPString",
-            parameterType="Optional",
-            direction="Input")
-        # param5.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
-
-        param6 = arcpy.Parameter(
-            displayName="Set Scratch Workspace",
-            name="scratch",
-            datatype="DEWorkspace",
             parameterType="Required",
             direction="Input")
-        param6.filter.list = ['Local Database']
-        param6.value = arcpy.env.scratchWorkspace
+        # param3.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
 
-        return [param0, param1, param2, param3, param4, param5, param6]
+        return [param0, param1, param2, param3]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -629,21 +606,6 @@ class Comb_FIS_tool(object):
         """Modify the values and properties of parameters before internal
         validation is performed.  This method is called whenever a parameter
         has been changed."""
-
-        if parameters[2].value:
-            parameters[3].enabled = False
-            parameters[5].enabled = False
-        else:
-            parameters[3].enabled = True
-            parameters[5].enabled = True
-
-        if parameters[3].value:
-            parameters[2].enabled = False
-            parameters[5].enabled = True
-        else:
-            parameters[2].enabled = True
-            parameters[5].enabled = False
-
         return
 
     def updateMessages(self, parameters):
@@ -657,10 +619,7 @@ class Comb_FIS_tool(object):
         Comb_FIS.main(p[0].valueAsText,
                       p[1].valueAsText,
                       p[2].valueAsText,
-                      p[3].valueAsText,
-                      p[4].valueAsText,
-                      p[5].valueAsText,
-                      p[6].valueAsText)
+                      p[3].valueAsText)
         return
 
 class Conflict_Potential_tool(object):
