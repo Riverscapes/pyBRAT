@@ -497,30 +497,7 @@ class Veg_FIS_tool(object):
             direction="Input")
         param0.filter.list = ["Polyline"]
 
-        param1 = arcpy.Parameter(
-            displayName="Historic (select when running first time)",
-            name="pt_type",
-            datatype="GPBoolean",
-            parameterType="Optional",
-            direction="Input")
-
-        param2 = arcpy.Parameter(
-            displayName="Existing (select when running second time)",
-            name="ex_type",
-            datatype="GPBoolean",
-            parameterType="Optional",
-            direction="Input")
-
-        param3 = arcpy.Parameter(
-            displayName="Set Scratch Workspace",
-            name="scratch",
-            datatype="DEWorkspace",
-            parameterType="Required",
-            direction="Input")
-        param3.filter.list = ['Local Database']
-        param3.value = arcpy.env.scratchWorkspace
-
-        return [param0, param1, param2, param3]
+        return [param0]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -530,17 +507,6 @@ class Veg_FIS_tool(object):
         """Modify the values and properties of parameters before internal
         validation is performed.  This method is called whenever a parameter
         has been changed."""
-
-        if parameters[1].value:
-            parameters[2].enabled = False
-        else:
-            parameters[2].enabled = True
-
-        if parameters[2].value:
-            parameters[1].enabled = False
-        else:
-            parameters[1].enabled = True
-
         return
 
     def updateMessages(self, parameters):
@@ -551,10 +517,7 @@ class Veg_FIS_tool(object):
     def execute(self, p, messages):
         """The source code of the tool."""
         reload(Veg_FIS)
-        Veg_FIS.main(p[0].valueAsText,
-                     p[1].valueAsText,
-                     p[2].valueAsText,
-                     p[3].valueAsText)
+        Veg_FIS.main(p[0].valueAsText)
         return
 
 class Comb_FIS_tool(object):
