@@ -77,18 +77,18 @@ def main(
             del item
 
         # create antecedent (input) and consequent (output) objects to hold universe variables and membership functions
-        ovc = ctrl.Antecedent(np.arange(0, 45, 0.5), 'input1')
+        ovc = ctrl.Antecedent(np.arange(0, 45, 0.01), 'input1')
         sp2 = ctrl.Antecedent(np.arange(0, 10000, 1), 'input2')
         splow = ctrl.Antecedent(np.arange(0, 10000, 1), 'input3')
-        slope = ctrl.Antecedent(np.arange(0, 1, 0.001), 'input4')
-        density = ctrl.Consequent(np.arange(0, 45, 0.5), 'result')
+        slope = ctrl.Antecedent(np.arange(0, 1, 0.0001), 'input4')
+        density = ctrl.Consequent(np.arange(0, 45, 0.01), 'result')
 
         # build membership functions for each antecedent and consequent object
-        ovc['none'] = fuzz.trapmf(ovc.universe, [0, 0, 0, 0.0001])
-        ovc['rare'] = fuzz.trapmf(ovc.universe, [0, 0.0001, 0.5, 1])
-        ovc['occasional'] = fuzz.trapmf(ovc.universe, [0.5, 1, 4, 5])
-        ovc['frequent'] = fuzz.trapmf(ovc.universe, [4, 5, 12, 20])
-        ovc['pervasive'] = fuzz.trapmf(ovc.universe, [12, 20, 45, 45])
+        ovc['none'] = fuzz.trimf(ovc.universe, [0, 0, 0.1])
+        ovc['rare'] = fuzz.trapmf(ovc.universe, [0, 0.1, 0.5, 1.5])
+        ovc['occasional'] = fuzz.trapmf(ovc.universe, [0.5, 1.5, 4, 8])
+        ovc['frequent'] = fuzz.trapmf(ovc.universe, [4, 8, 12, 25])
+        ovc['pervasive'] = fuzz.trapmf(ovc.universe, [12, 25, 45, 45])
 
         sp2['persists'] = fuzz.trapmf(sp2.universe, [0, 0, 1000, 1200])
         sp2['breach'] = fuzz.trimf(sp2.universe, [1000, 1200, 1600])
@@ -114,57 +114,57 @@ def main(
         rule1 = ctrl.Rule(ovc['none'], density['none'])
         rule2 = ctrl.Rule(splow['cannot'], density['none'])
         rule3 = ctrl.Rule(slope['cannot'], density['none'])
-        rule4 = ctrl.Rule(ovc['rare'] & sp2['persists'] & splow['can'], density['rare'])
-        rule5 = ctrl.Rule(ovc['occasional'] & sp2['persists'] & splow['can'], density['occasional'])
+        rule4 = ctrl.Rule(ovc['rare'] & sp2['persists'] & splow['can'] & ~slope['cannot'], density['rare'])
+        rule5 = ctrl.Rule(ovc['occasional'] & sp2['persists'] & splow['can'] & ~slope['cannot'], density['occasional'])
         rule6 = ctrl.Rule(ovc['frequent'] & sp2['persists'] & splow['can'] & slope['can'], density['frequent'])
         rule7 = ctrl.Rule(ovc['frequent'] & sp2['persists'] & splow['can'] & slope['probably'], density['occasional'])
         rule8 = ctrl.Rule(ovc['pervasive'] & sp2['persists'] & splow['can'] & slope['flat'], density['pervasive'])
         rule9 = ctrl.Rule(ovc['pervasive'] & sp2['persists'] & splow['can'] & slope['can'], density['pervasive'])
         rule10 = ctrl.Rule(ovc['pervasive'] & sp2['persists'] & splow['can'] & slope['probably'], density['occasional'])
-        rule11 = ctrl.Rule(ovc['rare'] & sp2['breach'] & splow['can'], density['rare'])
-        rule12 = ctrl.Rule(ovc['occasional'] & sp2['breach'] & splow['can'], density['occasional'])
+        rule11 = ctrl.Rule(ovc['rare'] & sp2['breach'] & splow['can'] & ~slope['cannot'], density['rare'])
+        rule12 = ctrl.Rule(ovc['occasional'] & sp2['breach'] & splow['can'] & ~slope['cannot'], density['occasional'])
         rule13 = ctrl.Rule(ovc['frequent'] & sp2['breach'] & splow['can'] & slope['can'], density['frequent'])
         rule14 = ctrl.Rule(ovc['frequent'] & sp2['breach'] & splow['can'] & slope['probably'], density['occasional'])
         rule15 = ctrl.Rule(ovc['pervasive'] & sp2['breach'] & splow['can'] & slope['flat'], density['occasional'])
         rule16 = ctrl.Rule(ovc['pervasive'] & sp2['breach'] & splow['can'] & slope['can'], density['frequent'])
         rule17 = ctrl.Rule(ovc['pervasive'] & sp2['breach'] & splow['can'] & slope['probably'], density['occasional'])
-        rule18 = ctrl.Rule(ovc['rare'] & sp2['oblowout'] & splow['can'], density['rare'])
-        rule19 = ctrl.Rule(ovc['occasional'] & sp2['oblowout'] & splow['can'], density['occasional'])
+        rule18 = ctrl.Rule(ovc['rare'] & sp2['oblowout'] & splow['can'] & ~slope['cannot'], density['rare'])
+        rule19 = ctrl.Rule(ovc['occasional'] & sp2['oblowout'] & splow['can'] & ~slope['cannot'], density['occasional'])
         rule20 = ctrl.Rule(ovc['frequent'] & sp2['oblowout'] & splow['can'] & slope['can'], density['frequent'])
         rule21 = ctrl.Rule(ovc['frequent'] & sp2['oblowout'] & splow['can'] & slope['probably'], density['occasional'])
         rule22 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['can'] & slope['flat'], density['occasional'])
         rule23 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['can'] & slope['can'], density['frequent'])
         rule24 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['can'] & slope['probably'], density['occasional'])
-        rule25 = ctrl.Rule(ovc['rare'] & sp2['blowout'] & splow['can'], density['none'])
-        rule26 = ctrl.Rule(ovc['occasional'] & sp2['blowout'] & splow['can'], density['rare'])
+        rule25 = ctrl.Rule(ovc['rare'] & sp2['blowout'] & splow['can'] & ~slope['cannot'], density['none'])
+        rule26 = ctrl.Rule(ovc['occasional'] & sp2['blowout'] & splow['can'] & ~slope['cannot'], density['rare'])
         rule27 = ctrl.Rule(ovc['frequent'] & sp2['blowout'] & splow['can'] & slope['can'], density['rare'])
         rule28 = ctrl.Rule(ovc['frequent'] & sp2['blowout'] & splow['can'] & slope['probably'], density['none'])
         rule29 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['can'] & slope['flat'], density['rare'])
         rule30 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['can'] & slope['can'], density['occasional'])
         rule31 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['can'] & slope['probably'], density['rare'])
-        rule32 = ctrl.Rule(ovc['rare'] & sp2['breach'] & splow['probably'], density['rare'])
-        rule33 = ctrl.Rule(ovc['occasional'] & sp2['breach'] & splow['probably'], density['occasional'])
+        rule32 = ctrl.Rule(ovc['rare'] & sp2['breach'] & splow['probably'] & ~slope['cannot'], density['rare'])
+        rule33 = ctrl.Rule(ovc['occasional'] & sp2['breach'] & splow['probably'] & ~slope['cannot'], density['occasional'])
         rule34 = ctrl.Rule(ovc['frequent'] & sp2['breach'] & splow['probably'] & slope['can'], density['frequent'])
         rule35 = ctrl.Rule(ovc['frequent'] & sp2['breach'] & splow['probably'] & slope['probably'], density['occasional'])
         rule36 = ctrl.Rule(ovc['pervasive'] & sp2['breach'] & splow['probably'] & slope['flat'], density['occasional'])
         rule37 = ctrl.Rule(ovc['pervasive'] & sp2['breach'] & splow['probably'] & slope['can'], density['frequent'])
         rule38 = ctrl.Rule(ovc['pervasive'] & sp2['breach'] & splow['probably'] & slope['probably'], density['occasional'])
-        rule39 = ctrl.Rule(ovc['rare'] & sp2['oblowout'] & splow['probably'], density['rare'])
-        rule40 = ctrl.Rule(ovc['occasional'] & sp2['oblowout'] & splow['probably'], density['occasional'])
+        rule39 = ctrl.Rule(ovc['rare'] & sp2['oblowout'] & splow['probably'] & ~slope['cannot'], density['rare'])
+        rule40 = ctrl.Rule(ovc['occasional'] & sp2['oblowout'] & splow['probably'] & ~slope['cannot'], density['occasional'])
         rule41 = ctrl.Rule(ovc['frequent'] & sp2['oblowout'] & splow['probably'] & slope['can'], density['occasional'])
         rule42 = ctrl.Rule(ovc['frequent'] & sp2['oblowout'] & splow['probably'] & slope['probably'], density['rare'])
         rule43 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['probably'] & slope['flat'], density['occasional'])
         rule44 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['probably'] & slope['can'], density['frequent'])
         rule45 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['probably'] & slope['probably'], density['occasional'])
-        rule46 = ctrl.Rule(ovc['rare'] & sp2['blowout'] & splow['probably'], density['none'])
-        rule47 = ctrl.Rule(ovc['occasional'] & sp2['blowout'] & splow['probably'], density['rare'])
+        rule46 = ctrl.Rule(ovc['rare'] & sp2['blowout'] & splow['probably'] & ~slope['cannot'], density['none'])
+        rule47 = ctrl.Rule(ovc['occasional'] & sp2['blowout'] & splow['probably'] & ~slope['cannot'], density['rare'])
         rule48 = ctrl.Rule(ovc['frequent'] & sp2['blowout'] & splow['probably'] & slope['can'], density['rare'])
         rule49 = ctrl.Rule(ovc['frequent'] & sp2['blowout'] & splow['probably'] & slope['probably'], density['none'])
         rule50 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['probably'] & slope['flat'], density['rare'])
         rule51 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['probably'] & slope['can'], density['occasional'])
         rule52 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['probably'] & slope['probably'], density['rare'])
-        rule53 = ctrl.Rule(ovc['rare'] & sp2['persists'] & splow['probably'], density['rare'])
-        rule54 = ctrl.Rule(ovc['occasional'] & sp2['persists'] & splow['probably'], density['rare'])
+        rule53 = ctrl.Rule(ovc['rare'] & sp2['persists'] & splow['probably'] & ~slope['cannot'], density['rare'])
+        rule54 = ctrl.Rule(ovc['occasional'] & sp2['persists'] & splow['probably'] & ~slope['cannot'], density['rare'])
         rule55 = ctrl.Rule(ovc['frequent'] & sp2['persists'] & splow['probably'] & slope['flat'], density['occasional'])
         rule56 = ctrl.Rule(ovc['frequent'] & sp2['persists'] & splow['probably'] & slope['can'], density['frequent'])
         rule57 = ctrl.Rule(ovc['frequent'] & sp2['persists'] & splow['probably'] & slope['probably'], density['occasional'])
@@ -174,7 +174,7 @@ def main(
         rule61 = ctrl.Rule(ovc['frequent'] & sp2['oblowout'] & splow['probably'] & slope['flat'], density['occasional'])
         rule62 = ctrl.Rule(ovc['frequent'] & sp2['blowout'] & splow['can'] & slope['flat'], density['rare'])
         rule63 = ctrl.Rule(ovc['frequent'] & sp2['blowout'] & splow['probably'] & slope['flat'], density['rare'])
-        rule64 = ctrl.Rule(ovc['pervasive'] & sp2['persists'] & splow['probably'], density['frequent'])
+        rule64 = ctrl.Rule(ovc['pervasive'] & sp2['persists'] & splow['probably'] & ~slope['cannot'], density['frequent'])
         rule65 = ctrl.Rule(ovc['frequent'] & sp2['persists'] & splow['can'] & slope['flat'], density['occasional'])
 
         comb_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20, rule21, rule22, rule23, rule24, rule25, rule26, rule27, rule28, rule29, rule30,
@@ -228,12 +228,15 @@ def main(
         # (i.e., combined fis value should not be greater than the vegetation capacity)
         # set occ_* to 0 if the drainage area is greater than the user defined threshold
         # this enforces a stream size threshold above which beaver dams won't persist and/or won't be built
-        with arcpy.da.UpdateCursor(in_network, [out_field, veg_field, 'iGeo_DA']) as cursor:
+        # todo: see about changing occ_* to 0 if output falls fully in 'none' category
+        #       will have to hardcode value
+
+        with arcpy.da.UpdateCursor(in_network, [out_field, veg_field, 'iGeo_DA', 'iGeo_Slope']) as cursor:
             for row in cursor:
                 if row[0] > row[1]:
                     row[0] = row[1]
                 if row[2] >= float(max_DA_thresh):
-                    row[0] = 0
+                    row[0] = 0.0
                 cursor.updateRow(row)
 
     # run the combined fis function for both potential and existing
