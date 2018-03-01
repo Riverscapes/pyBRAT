@@ -222,6 +222,7 @@ def main(
         arcpy.Delete_management(out_table)
         arcpy.Delete_management(occ_table)
         del columns
+        del out
 
         # update combined capacity (occ_*) values in stream network
         # correct for occ_* greater than ovc_* as vegetation is most limiting factor in model

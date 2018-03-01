@@ -158,6 +158,7 @@ def main(in_network):
         arcpy.Delete_management(out_table)
         arcpy.Delete_management(ovc_table)
         del columns
+        del out
 
     # run the combined fis function for both potential and existing
     combFIS('pt')
