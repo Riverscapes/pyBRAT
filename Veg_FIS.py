@@ -65,9 +65,9 @@ def main(in_network):
             del item
 
         # create antecedent (input) and consequent (output) objects to hold universe variables and membership functions
-        riparian = ctrl.Antecedent(np.arange(0, 4, 0.05), 'input1')
-        streamside = ctrl.Antecedent(np.arange(0, 4, 0.05), 'input2')
-        density = ctrl.Consequent(np.arange(0, 45, 0.5), 'result')
+        riparian = ctrl.Antecedent(np.arange(0, 4, 0.01), 'input1')
+        streamside = ctrl.Antecedent(np.arange(0, 4, 0.01), 'input2')
+        density = ctrl.Consequent(np.arange(0, 45, 0.01), 'result')
 
         # build membership functions for each antecedent and consequent object
         riparian['unsuitable'] = fuzz.trapmf(riparian.universe, [0, 0, 0.1, 1])
