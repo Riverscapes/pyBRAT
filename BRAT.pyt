@@ -8,6 +8,7 @@ import Veg_FIS
 import Comb_FIS
 import Conflict_Potential
 import Conservation_Restoration
+import BRAT_Braid_Handler
 
 
 class Toolbox(object):
@@ -18,7 +19,7 @@ class Toolbox(object):
         self.alias = "BRAT Toolbox"
 
         # List of tool classes associated with this toolbox
-        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_capacity_table_tool, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool]
+        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_capacity_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool]
 
 
 class BRAT_project_tool(object):
@@ -296,6 +297,44 @@ class BRAT_table_tool(object):
                         p[12].valueAsText,
                         p[13].valueAsText,
                         p[14].valueAsText)
+        return
+
+
+class BRAT_braid_handler(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "2.5 BRAT Braid Handler"
+        self.description = "Gives braided streams the appropriate values, once mainstems have been identifies in the stream"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+        param0 = arcpy.Parameter(
+            displayName="Input BRAT Network",
+            name="inputNetwork",
+            datatype="DEShapefile",
+            parameterType="Required",
+            direction="Input")
+        return [param0]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        BRAT_Braid_Handler.main(p[0].valueAsText)
         return
 
 
