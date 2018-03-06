@@ -39,9 +39,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     for x in range(len(inex_veg)):
         if not os.path.exists("Ex_Veg_" + str(i)):
             os.mkdir("Ex_Veg_" + str(i))
-        if not os.path.exists("Ex_Veg_" + str(i) + "/" + os.path.basename(inex_veg[x])):
-            src = string.replace(inex_veg[x], "'", "")
-            shutil.copytree(src, "Ex_Veg_" + str(i) + "/" + os.path.basename(inex_veg[x]))
+        arcpy.CopyRaster_management(inex_veg[x], "Ex_Veg_" + str(i) + "/" + os.path.basename(inex_veg[x]))
         i += 1
 
     # add the historic veg inputs to project
@@ -51,9 +49,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     for x in range(len(inhist_veg)):
         if not os.path.exists("Hist_Veg_" + str(i)):
             os.mkdir("Hist_Veg_" + str(i))
-        if not os.path.exists("Hist_Veg_" + str(i) + "/" + os.path.basename(inhist_veg[x])):
-            src = string.replace(inhist_veg[x], "'", "")
-            shutil.copytree(src, "Hist_Veg_" + str(i) + "/" + os.path.basename(inhist_veg[x]))
+        arcpy.CopyRaster_management(inhist_veg[x], "Hist_Veg_" + str(i) + "/" + os.path.basename(inhist_veg[x]))
         i += 1
 
     # add the network inputs to project
@@ -84,12 +80,8 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
         for x in range(len(inlanduse)):
             if not os.path.exists("Land_Use_" + str(i)):
                 os.mkdir("Land_Use_" + str(i))
-            if os.path.basename(inlanduse[x]).endswith("evt"):
-                if not os.path.exists("Land_Use_" + str(i) + "/" + os.path.basename(inlanduse[x])):
-                    src = string.replace(inlanduse[x], "'", "")
-                    shutil.copytree(src, "Land_Use_" + str(i) + "/" + os.path.basename(inlanduse[x]))
-            else:
-                arcpy.CopyRaster_management(inlanduse[x], "Land_Use_" + str(i) + "/" + os.path.basename(inlanduse[x]))
+            arcpy.CopyRaster_management(inlanduse[x], "Land_Use_" + str(i) + "/" + os.path.basename(inlanduse[x]))
+            i += 1
 
     # add the conflict inputs to the project
     if valley is not None:
@@ -122,6 +114,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
             if not os.path.exists("Railroads_" + str(i)):
                 os.mkdir("Railroads_" + str(i))
             arcpy.Copy_management(inrr[x], "Railroads_" + str(i) + "/" + os.path.basename(inrr[x]))
+            i += 1
 
     # add canal layers to the project
     if canal is not None:
@@ -132,6 +125,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
             if not os.path.exists("Canals_" + str(i)):
                 os.mkdir("Canals_" + str(i))
             arcpy.Copy_management(incanal[x], "Canals_" + str(i) + "/" + os.path.basename(incanal[x]))
+            i += 1
 
     else:
         pass
