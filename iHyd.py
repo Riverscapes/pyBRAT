@@ -17,22 +17,36 @@ import sys
 
 def main(
     in_network,
-    region,
-    scratch):
+    region):
+
+    scratch = 'in_memory'
 
     arcpy.env.overwriteOutput = True
 
+    # create segid array for joining output to input network
+    segid_np = arcpy.da.FeatureClassToNumPyArray(in_network, "SegID")
+    segid = np.asarray(segid_np, np.int64)
+
+    # create array for input network drainage area ("iGeo_DA")
     DA_array = arcpy.da.FeatureClassToNumPyArray(in_network, "iGeo_DA")
     DA = np.asarray(DA_array, np.float32)
+
+    # convert drainage area (in square kilometers) to square miles
+    # note: this assumes that streamflow equations are in US customary units (e.g., inches, feet)
     DAsqm = np.zeros_like(DA)
     DAsqm = DA * 0.3861021585424458
 
+    # create Qlow and Q2
     Qlow = np.zeros_like(DA)
     Q2 = np.zeros_like(DA)
 
-    arcpy.AddMessage("Adding Qlow and Q2 to network")
-    # # # Add in regional curve equations here # # #
+    arcpy.AddMessage("Adding Qlow and Q2 to network...")
 
+    if region is None:
+        region = 0
+
+    # --regional curve equations for Qlow (baseflow) and Q2 (annual peak streamflow)--
+    # # # Add in regional curve equations here # # #
     if float(region) == 101:  # example 1 (box elder county)
         Qlow = 0.019875 * (DAsqm ** 0.6634) * (10 ** (0.6068 * 2.04))
         Q2 = 14.5 * DAsqm ** 0.328
@@ -42,59 +56,70 @@ def main(
         Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
 
     elif float(region) == 24:  # oregon region 5
-        Qlow = 1.31397 * (10 ** -20.5528) * (DAsqm ** 0.9225) * (16.7 ** 3.1868) * (6810 ** 3.8546)
-        Q2 = 1.06994 * (10 ** -9.3221) * (DAsqm ** 0.9418) * (16.7 ** 2.692) * (6810 ** 1.5663)
+        Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
+        Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
 
     else:
-        raise Exception("region value is out of range")
+        Qlow = (1.29265*10**-20.0945) * (DAsqm ** 0.9143) * (18.0 ** 2.6626) * (4730**3.9409)
+        Q2 = (1.04647*10**-3.9067) * (DAsqm ** 1.0143) * (18.0 ** 2.6456)
 
-    fid = np.arange(0, len(DA), 1)
-    columns = np.column_stack((fid, Qlow))
-    columns2 = np.column_stack((columns, Q2))
-    out_table = os.path.dirname(in_network) + "/ihyd_Q_Table.txt"
-    np.savetxt(out_table, columns2, delimiter=",", header="FID, iHyd_QLow, iHyd_Q2", comments="")
+    # save segid, Qlow, Q2 as single table
+    columns = np.column_stack((segid, Qlow, Q2))
+    tmp_table = os.path.dirname(in_network) + "/ihyd_Q_Table.txt"
+    np.savetxt(tmp_table, columns, delimiter = ",", header = "SegID, iHyd_QLow, iHyd_Q2", comments = "")
+    ihyd_table = scratch + "/ihyd_table"
+    arcpy.CopyRows_management(tmp_table, ihyd_table)
 
-    ihyd_q_table = scratch + "/ihyd_q_table"
-    arcpy.CopyRows_management(out_table, ihyd_q_table)
-    arcpy.JoinField_management(in_network, "FID", ihyd_q_table, "FID", ["iHyd_QLow", "iHyd_Q2"])
-    arcpy.Delete_management(out_table)
+    # join Qlow and Q2 output to the flowline network
+    # create empty dictionary to hold input table field values
+    tblDict = {}
+    # add values to dictionary
+    with arcpy.da.SearchCursor(ihyd_table, ['SegID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
+        for row in cursor:
+            tblDict[row[0]] = [row[1], row[2]]
+    # populate flowline network out field
+    arcpy.AddField_management(in_network, "iHyd_QLow", 'DOUBLE')
+    arcpy.AddField_management(in_network, "iHyd_Q2", 'DOUBLE')
+    with arcpy.da.UpdateCursor(in_network, ['SegID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
+        for row in cursor:
+            try:
+                aKey = row[0]
+                row[1] = tblDict[aKey][0]
+                row[2] = tblDict[aKey][1]
+                cursor.updateRow(row)
+            except:
+                pass
+    tblDict.clear()
 
-    # make sure Q2 is greater than Qlow
-    cursor = arcpy.da.UpdateCursor(in_network, ["iHyd_QLow", "iHyd_Q2"])
-    for row in cursor:
-        if row[1] < row[0]:
-            row[1] = row[0] + 5
-        else:
-            pass
-        cursor.updateRow(row)
-    del row
-    del cursor
+    # delete temporary table
+    arcpy.Delete_management(tmp_table)
 
-    arcpy.AddMessage("Adding stream power to network")
-    # calculate Qlow stream power
+    # check that Q2 is greater than Qlow
+    # if not, re-calculate Q2 as Qlow + 0.001
+    with arcpy.da.UpdateCursor(in_network, ["iHyd_QLow", "iHyd_Q2"]) as cursor:
+        for row in cursor:
+            if row[1] < row[0]:
+                row[1] = row[0] + 0.001
+            else:
+                pass
+            cursor.updateRow(row)
+
+    arcpy.AddMessage("Adding stream power to network...")
+
+    # calculate Qlow and Q2 stream power
+    # where stream power = density of water (1000 kg/m3) * acceleration due to gravity (9.80665 m/s2) * discharge (m3/s) * channel slope
+    # note: we assume that discharge ("iHyd_QLow", "iHyd_Q2") was calculated in cubic feet per second and handle conversion to cubic
+    #       meters per second (e.g., "iHyd_QLow" * 0.028316846592
     arcpy.AddField_management(in_network, "iHyd_SPLow", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_QLow", "iHyd_SPLow"])
-    for row in cursor:
-        index = (1000 * 9.80665) * row[0] * (row[1] * 0.028316846592)
-        row[2] = index
-        cursor.updateRow(row)
-    del row
-    del cursor
-
-    # calculate Q2 stream power
     arcpy.AddField_management(in_network, "iHyd_SP2", "DOUBLE")
-    cursor = arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_Q2", "iHyd_SP2"])
-    for row in cursor:
-        index = (1000 * 9.80665) * row[0] * (row[1] * 0.028316846592)
-        row[2] = index
-        cursor.updateRow(row)
-    del row
-    del cursor
+    with arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_QLow", "iHyd_SPLow", "iHyd_Q2", "iHyd_SP2"]) as cursor:
+        for row in cursor:
+            row[2] = (1000 * 9.80665) * row[0] * (row[1] * 0.028316846592)
+            row[4] = (1000 * 9.80665) * row[0] * (row[3] * 0.028316846592)
+            cursor.updateRow(row)
 
-    return in_network
 
 if __name__ == '__main__':
     main(
         sys.argv[1],
-        sys.argv[2],
-        sys.argv[3])
+        sys.argv[2])
