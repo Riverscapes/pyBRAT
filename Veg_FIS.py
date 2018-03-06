@@ -21,8 +21,8 @@ def main(in_network):
 
     scratch = 'in_memory'
 
-    # combined fis function
-    def combFIS(model_run):
+    # vegetation capacity fis function
+    def vegFIS(model_run):
 
         arcpy.env.overwriteOutput = True
 
@@ -154,15 +154,33 @@ def main(in_network):
                     pass
         tblDict.clear()
 
+        # calculate defuzzified centroid value for density 'none' MF group
+        # this will be used to re-classify output values that fall in this group
+        # important: will need to update the array (x) and MF values (mfx) if the
+        #            density 'none' values are changed in the model
+        x = np.arange(0, 45, 0.01)
+        mfx = fuzz.trimf(x, [0, 0, 0.1])
+        defuzz_centroid = fuzz.defuzz(x, mfx, 'centroid')
+
+        # update vegetation capacity (ovc_*) values in stream network
+        # set ovc_* to 0 if output falls fully in 'none' category
+
+        with arcpy.da.UpdateCursor(in_network, [out_field]) as cursor:
+            for row in cursor:
+                if row[0] == defuzz_centroid:
+                    row[0] = 0.0
+                cursor.updateRow(row)
+
         # delete temporary tables and arrays
         arcpy.Delete_management(out_table)
         arcpy.Delete_management(ovc_table)
-        del columns
-        del out
+        items = [columns, out, x, mfx, defuzz_centroid]
+        for item in items:
+            del item
 
     # run the combined fis function for both potential and existing
-    combFIS('pt')
-    combFIS('ex')
+    vegFIS('pt')
+    vegFIS('ex')
 
 
 if __name__ == '__main__':
