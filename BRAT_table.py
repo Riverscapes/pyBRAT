@@ -36,10 +36,11 @@ def main(
     landuse,
     out_name):
 
+
     scratch = 'in_memory'
-    arcpy.env.workspace = scratch
+    #arcpy.env.workspace = scratch
     arcpy.env.overwriteOutput = True
-    arcpy.CheckOutExtension("spatial")
+    arcpy.CheckOutExtension("Spatial")
 
     # --check input projections--
     networkSR = arcpy.Describe(seg_network).spatialReference
@@ -128,14 +129,15 @@ def main(
     arcpy.AddMessage('Adding "iVeg" attributes to network')
     iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch)
 
-    # run ipc attributes function
-    arcpy.AddMessage('Adding "iPC" attributes to network')
-    ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
+    # run ipc attributes function if conflict layers are defined by user
+    if road is not None and railroad is not None and canal is not None and valley_bottom is not None:
+        arcpy.AddMessage('Adding "iPC" attributes to network')
+        ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
     # find braided reaches
     FindBraidedNetwork.main(out_network)
 
-    # fun write xml function
+    # run write xml function
     arcpy.AddMessage('Writing project xml')
     if FlowAcc is None:
         DrAr = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
@@ -147,6 +149,7 @@ def main(
     arcpy.CheckInExtension("spatial")
 
 
+# dictionary join field function
 def dictJoinField(inTbl, inTblField, outFC, outFCField):
     # create empty dictionary to hold input table field values
     tblDict = {}
@@ -166,6 +169,8 @@ def dictJoinField(inTbl, inTblField, outFC, outFCField):
     tblDict.clear()
 
 
+# geo attributes function
+# calculates min and max elevation, length, slope, and drainage area for each flowline segment
 def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
 
     # if fields already exist, delete them
@@ -234,7 +239,7 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
             # if need to run list is empty exit while loop
             if len(needZList) == 0:
                 break
-
+        # add outField to stream network and assign value from dictionary
         arcpy.AddField_management(out_network, outField, "DOUBLE")
         with arcpy.da.UpdateCursor(out_network, ['SegID', outField]) as cursor:
             for row in cursor:
@@ -273,6 +278,7 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
     if FlowAcc is None:
         arcpy.AddMessage("calculating drainage area")
         calc_drain_area(DEM)
+    # todo: try and figure out what this elif is doing
     elif os.path.exists(os.path.dirname(DEM) + "/Flow"):
         pass
     else:
@@ -283,7 +289,7 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
         DrArea = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
     else:
         DrArea = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
-
+    # Todo: check this bc it seems wrong to pull from midpoint buffer
     daTbl = ZonalStatisticsAsTable(midpoint_buffer, "SegID", DrArea, scratch + "/daTbl", 'DATA', "MAXIMUM")
 
     # add drainage area 'iGeo_DA' field to flowline network
@@ -303,18 +309,16 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
         arcpy.Delete_management(item)
 
 
+# vegetation attributes function
+# calculates both existing and potential mean vegetation value within 30 m and 100 m buffer of each stream segment
 def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch):
 
     # if fields already exist, delete them
-    network_fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "iVeg_100EX" in network_fields:
-        arcpy.DeleteField_management(out_network, "iVeg_100EX")
-    if "iVeg_30EX" in network_fields:
-        arcpy.DeleteField_management(out_network, "iVeg_30EX")
-    if "iVeg_100PT" in network_fields:
-        arcpy.DeleteField_management(out_network, "iVeg_100PT")
-    if "iVeg_30PT" in network_fields:
-        arcpy.DeleteField_management(out_network, "iVeg_30PT")
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    drop = ["iVeg_100EX", "iVeg_30EX", "iVeg_100PT", "iVeg_30PT"]
+    for field in fields:
+        if field in drop:
+            arcpy.DeleteField_management(out_network, field)
 
     # --existing vegetation values--
     veg_lookup = Lookup(coded_veg, "VEG_CODE")
@@ -359,52 +363,47 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
         arcpy.Delete_management(item)
 
 
+# conflict potential function
+# calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
 def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath):
 
-    # if fields already exist, delete them
-    network_fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "iPC_RoadX" in network_fields:
-        arcpy.DeleteField_management(out_network, "iPC_RoadX")
-    if "iPC_RoadAd" in network_fields:
-        arcpy.DeleteField_management(out_network, "iPC_RoadAd")
-    if "iPC_RR" in network_fields:
-        arcpy.DeleteField_management(out_network, "iPC_RR")
-    if "iPC_Canal" in network_fields:
-        arcpy.DeleteField_management(out_network, "iPC_Canal")
-    if "iPC_LU" in network_fields:
-        arcpy.DeleteField_management(out_network, "iPC_LU")
-
-    # get iPC_RoadX
+    # create temp directory
     from shutil import rmtree
     tempDir = projPath + '\Temp'
-
     if os.path.exists(tempDir):
         rmtree(tempDir)
     os.mkdir(tempDir)
 
-    arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
-    if road is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
+    # if fields already exist, delete them
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    drop = ["iPC_RoadX", "iPC_RoadAd", "iPC_RR", "iPC_Canal", "iPC_LU"]
+    for field in fields:
+        if field in drop:
+            arcpy.DeleteField_management(out_network, field)
+
+    # calculate minimum distance from road-stream crossings ('iPC_RoadX')
+    if road is not None:
+        arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
         roadx = tempDir + "\\roadx.shp"
+        # create points at road-stream intersections
         arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
+        # get count of road-stream intersections
         roadx_mts = tempDir + "\\roadx_mts.shp"
         arcpy.MultipartToSinglepart_management(roadx, roadx_mts)
-
         roadxcount = arcpy.GetCount_management(roadx_mts)
         roadxct = int(roadxcount.getOutput(0))
+        # if there are no road-stream crossings, set 'iPC_RoadsX' to high value (10000 m)
         if roadxct < 1:
             with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
                 for row in cursor:
                     row[0] = 10000.0
                     cursor.updateRow(row)
+        # if there are road-stream crossings, calculate distance
         else:
+            # set extent to the stream network
             arcpy.env.extent = out_network
             # calculate euclidean distance from road-stream crossings
-            ed_roadx = EucDistance(roadx, cell_size=5)  # cell size of 5 m
+            ed_roadx = EucDistance(roadx, cell_size = 5)  # cell size of 5 m
             # get minimum distance from road-stream crossings within 30 m buffer of each network segment
             roadxTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadx, scratch + "/roadxTbl", 'DATA', "MINIMUM")
             # populate flowline network min distance 'iPC_RoadX' field
@@ -414,84 +413,95 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             for item in items:
                 arcpy.Delete_management(item)
 
-    # iPC_RoadAd
-    arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
-    if road is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
+    # calculate mean distance from adjacent roads ('iPC_RoadAd')
+    # here we only care about roads in the valley bottom
+    if road is not None:
+        arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
+        # clip roads to the valley bottom
         road_subset = arcpy.Clip_analysis(road, valley_bottom, tempDir + '\\road_subset.shp')
+        # get count of roads in the valley bottom
         road_mts = arcpy.MultipartToSinglepart_management(road_subset, tempDir + "\\road_mts.shp")
         roadcount = arcpy.GetCount_management(road_mts)
         roadct = int(roadcount.getOutput(0))
+        # if there are no roads in the valley bottom, set 'iPC_RoadsAd' to high value (10000 m)
         if roadct < 1:
             with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
                 for row in cursor:
                     row[0] = 10000.0
                     cursor.updateRow(row)
+        # if there are roads in the valley bottom, calculate distance
         else:
+            # set extent to the stream network
             arcpy.env.extent = out_network
-            ed_roadad = EucDistance(road_subset, "", 5)
-            roadadjTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadad, scratch + "/roadadjTbl", 'DATA',
-                                                "MEAN")  # might try mean here to make it less restrictive
+            # calculate euclidean distance from roads in the valley bottom
+            ed_roadad = EucDistance(road_subset, cell_size = 5) # cell size of 5 m
+            # get mean distance from roads in the valley bottom within 30 m buffer of each network segment
+            roadadjTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadad, scratch + "/roadadjTbl", 'DATA', "MEAN")  # might try mean here to make it less restrictive
             # populate flowline network adjacent road distance "iPC_RoadAd" field
             dictJoinField(roadadjTbl, 'MEAN', out_network, "iPC_RoadAd")
+            # delete temp fcs, tbls, etc.
             items = [ed_roadad, roadadjTbl]
             for item in items:
                 arcpy.Delete_management(item)
 
-    # iPC_RR
-    arcpy.AddField_management(out_network, "iPC_RR")
-    if railroad is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
+    # calculate mean distance from railroads ('iPC_RR')
+    # here we only care about railroads in the valley bottom
+    if railroad is not None:
+        arcpy.AddField_management(out_network, "iPC_RR")
+        # clip railroads to the valley bottom
         rr_subset = arcpy.Clip_analysis(railroad, valley_bottom, tempDir + '\\rr_subset.shp')
+        # get count of railroads in the valley bottom
         rr_mts = arcpy.MultipartToSinglepart_management(rr_subset, tempDir + "\\rr_mts.shp")
         rrcount = arcpy.GetCount_management(rr_mts)
         rrct = int(rrcount.getOutput(0))
+        # if there are not railroads in the valley bottom, set 'iPC_RR' to high value (10000 m)
         if rrct < 1:
-
             with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
                 for row in cursor:
                     row[0] = 10000.0
                     cursor.updateRow(row)
+        # if there are railroads in the valley bottom calculate distance
         else:
+            # set extent to the flowline network
             arcpy.env.extent = out_network
-            ed_rr = EucDistance(rr_subset, "", 30)
+            # calculate distance from railroads in the valley bottom
+            ed_rr = EucDistance(rr_subset, cell_size = 5)  # cell size of 5 m
+            # get mean distance from railroads in the valley bottom within 30 m buffer of each network segment
             rrTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_rr, tempDir + "/rrTable", 'DATA', "MEAN")
+            # populate flowline network railroad distance "iPC_RR" field
             dictJoinField(rrTbl, 'MEAN', out_network, "iPC_RR")
+            # delete temp fcs, tbls, etc.
             items = [ed_rr, rrTbl]
             for item in items:
                 arcpy.Delete_management(item)
 
-    # iPC_Canal
-    arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
-    if canal is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
+    # calculate mean distance from canals ('iPC_Canal')
+    # here we only care about canals in the valley bottom
+    if canal is not None:
+        arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
+        # clip canals to the valley bottom
         canal_subset = arcpy.Clip_analysis(canal, valley_bottom, tempDir + '\\canal_subset.shp')
+        # get count of canals in the valley bottom
         canal_mts = arcpy.MultipartToSinglepart_management(canal_subset, tempDir + "\\canal_mts.shp")
-
         canalcount = arcpy.GetCount_management(canal_mts)
         canalct = int(canalcount.getOutput(0))
+        # if there are not canals in the valley bottom, set 'iPC_Canal' to high value (10000 m)
         if canalct < 1:
             with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
                 for row in cursor:
                     row[0] = 10000.0
                     cursor.updateRow(row)
+        # if there are canals in the valley bottom, calculate distance
         else:
+            # set extent to the stream network
             arcpy.env.extent = out_network
-            ed_canal = EucDistance(canal_subset, "", 30)
+            # calculate euclidean distance from canals in the valley bottom
+            ed_canal = EucDistance(canal_subset, cell_size = 5)  # cell size of 5 m
+            # get mean distance from canals in the valley bottom within 30 m buffer of each network segment
             canalTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_canal, scratch + "/canalTbl", 'DATA', "MEAN")
+            # populate flowline network canal distance "iPC_Canal" field
             dictJoinField(canalTbl, 'MEAN', out_network, "iPC_Canal")
+            # delete temp fcs, tbls, etc.
             items = [ed_canal, canalTbl]
             for item in items:
                 arcpy.Delete_management(item)
@@ -615,40 +625,55 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                 arcpy.Delete_management(item)   
     """ ##The code that supports in memory scratch spaces
 
-    # iPC_LU
-    arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
-    lu_landuse = Lookup(landuse, "CODE")
-    landuseTbl = ZonalStatisticsAsTable(buf_100m, "SegID", lu_landuse, scratch + "/landuseTbl", 'DATA', "MEAN")
-    dictJoinField(landuseTbl, 'MEAN', out_network, "iPC_LU")
-    items = [lu_landuse, landuseTbl]
-    for item in items:
-        arcpy.Delete_management(item)
+    # calculate mean landuse value ('iPC_LU')
+    if landuse is not None:
+        arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
+        # create raster with just landuse code values
+        lu_landuse = Lookup(landuse, "CODE")
+        # calculate mean landuse value within 100 m buffer of each network segment
+        landuseTbl = ZonalStatisticsAsTable(buf_100m, "SegID", lu_landuse, scratch + "/landuseTbl", 'DATA', "MEAN")
+        # populate flowline network mean landuse value "iPC_LU" field
+        dictJoinField(landuseTbl, 'MEAN', out_network, "iPC_LU")
+        # delete temp fcs, tbls, etc.
+        items = [lu_landuse, landuseTbl]
+        for item in items:
+            arcpy.Delete_management(item)
+
+    # clear the environment extent setting
+    arcpy.ClearEnvironment("extent")
 
 
+# calculate drainage area function
 def calc_drain_area(DEM):
 
-    DEMdesc = arcpy.Describe(DEM)
-    height = DEMdesc.meanCellHeight
-    width = DEMdesc.meanCellWidth
-    res = height * width
-    resolution = int(res)
+    #  define raster environment settings
+    desc = arcpy.Describe(DEM)
+    arcpy.env.extent = desc.Extent
+    arcpy.env.outputCoordinateSystem = desc.SpatialReference
+    arcpy.env.cellSize = desc.meanCellWidth
 
-    # derive a flow accumulation raster from input DEM and covert to units of square kilometers
-    filled_DEM = Fill(DEM)
-    flow_direction = FlowDirection(filled_DEM)
-    flow_accumulation = FlowAccumulation(flow_direction)
-    DrainArea = flow_accumulation * resolution / 1000000
+    #  calculate cell area for use in drainage area calcultion
+    height = desc.meanCellHeight
+    width = desc.meanCellWidth
+    cellArea = height * width
 
+    # derive drainage area raster (in square km) from input DEM
+    # note: draiange area calculation assumes input dem is in meters
+    filled_DEM = Fill(DEM) # fill sinks in dem
+    flow_direction = FlowDirection(filled_DEM) # calculate flow direction
+    flow_accumulation = FlowAccumulation(flow_direction) # calculate flow accumulattion
+    DrainArea = flow_accumulation * cellArea / 1000000 # calculate drainage area in square kilometers
+
+    # save drainage area raster
     if os.path.exists(os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"):
         arcpy.Delete_management(os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif")
-        DrArea_path = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
-        DrainArea.save(DrArea_path)
+        arcpy.CopyRaster_management(DrainArea, os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif")
     else:
         os.mkdir(os.path.dirname(DEM) + "/Flow")
-        DrArea_path = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
-        DrainArea.save(DrArea_path)
+        arcpy.CopyRaster_management(DrainArea, os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif")
 
 
+# write xml function
 def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, valley_bottom, landuse,
              FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
@@ -661,18 +686,18 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
         newxml = projectxml.ProjectXML(xmlfile, "BRAT", projName)
 
         # add metadata
-        if not hucID == None:
+        if hucID is not None:
             newxml.addMeta("HUCID", hucID, newxml.project)
-        if not hucID == None:
+        if hucID is not None:
             idlist = [int(x) for x in str(hucID)]
             if idlist[0] == 1 and idlist[1] == 7:
                 newxml.addMeta("Region", "CRB", newxml.project)
-        if not hucName == None:
+        if hucName is not None:
             newxml.addMeta("Watershed", hucName, newxml.project)
 
         # add first realization
         newxml.addBRATRealization("BRAT Realization 1", rid="RZ1", dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                  productVersion="3.0.1", guid=getUUID())
+                                  productVersion="3.0.3", guid=getUUID())
 
         # add inputs
         newxml.addProjectInput("Raster", "Existing Vegetation", coded_veg[coded_veg.find("01_Inputs"):], iid="EXVEG1", guid=getUUID())
@@ -683,24 +708,26 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
         newxml.addBRATInput(newxml.BRATRealizations[0], "Network", ref="NETWORK1")
         newxml.addProjectInput("DEM", "DEM", DEM[DEM.find("01_Inputs"):], iid="DEM1", guid=getUUID())
         newxml.addBRATInput(newxml.BRATRealizations[0], "DEM", ref="DEM1")
-        newxml.addProjectInput("Vector", "Valley Bottom", valley_bottom[valley_bottom.find("01_Inputs"):], iid="VALLEY1", guid=getUUID())
-        newxml.addBRATInput(newxml.BRATRealizations[0], "Valley", ref="VALLEY1")
-        newxml.addProjectInput("Raster", "Land Use", landuse[landuse.find("01_Inputs"):], iid="LU1", guid=getUUID())
-        newxml.addBRATInput(newxml.BRATRealizations[0], "Land Use", ref="LU1")
 
         # add optional inputs
-        if FlowAcc == None:
+        if FlowAcc is None:
             newxml.addBRATInput(newxml.BRATRealizations[0], "Flow", name="Drainage Area", path=DrAr[DrAr.find("01_Inputs"):], guid=getUUID())
         else:
             newxml.addProjectInput("Raster", "Drainage Area", DrAr[DrAr.find("01_Inputs"):], iid="DA1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Flow", ref="DA1")
-        if not road == None:
+        if landuse is not None:
+            newxml.addProjectInput("Raster", "Land Use", landuse[landuse.find("01_Inputs"):], iid="LU1", guid=getUUID())
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Land Use", ref="LU1")
+        if valley_bottom is not None:
+            newxml.addProjectInput("Vector", "Valley Bottom", valley_bottom[valley_bottom.find("01_Inputs"):], iid="VALLEY1", guid=getUUID())
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Valley", ref="VALLEY1")
+        if road is not None:
             newxml.addProjectInput("Vector", "Roads", road[road.find("01_Inputs"):], iid="ROAD1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Roads", ref="ROAD1")
-        if not railroad == None:
+        if railroad is not None:
             newxml.addProjectInput("Vector", "Railroads", railroad[railroad.find("01_Inputs"):], iid="RR1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Railroads", ref="RR1")
-        if not canal == None:
+        if canal is not None:
             newxml.addProjectInput("Vector", "Canals", canal[canal.find("01_Inputs"):], iid="CANAL1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Canals", ref="CANAL1")
 
@@ -775,7 +802,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
             elif os.path.abspath(rasterpath[i]) == os.path.abspath(landuse[landuse.find("01_Inputs"):]):
                 exxml.addBRATInput(exxml.BRATRealizations[0], "Land Use", ref=str(rasterid[i]))
 
-        if not FlowAcc == None:
+        if FlowAcc is not None:
             for i in range(len(rasterpath)):
                 if os.path.abspath(rasterpath[i]) == os.path.abspath(DrAr[DrAr.find("01_Inputs"):]):
                     exxml.addBRATInput(exxml.BRATRealizations[0], "Flow", ref=str(rasterid[i]))
@@ -814,7 +841,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
             exxml.addProjectInput("Raster", "Land Use", landuse[landuse.find("01_Inputs"):], iid="LU" + str(k), guid=getUUID())
             exxml.addBRATInput(exxml.BRATRealizations[0], "Land Use", ref="LU" + str(k))
 
-        if FlowAcc == None:
+        if FlowAcc is None:
             exxml.addBRATInput(exxml.BRATRealizations[0], "Flow", "Drainage Area", DrAr[DrAr.find("01_Inputs"):],
                                guid=getUUID())
         else:
@@ -864,13 +891,13 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
                     exxml.addBRATInput(exxml.BRATRealizations[0], "Buffer", "100m Buffer", path=buf_100m[buf_100m.find("01_Inputs"):])
             elif os.path.abspath(vectorpath[i]) == os.path.abspath(valley_bottom[valley_bottom.find("01_Inputs"):]):
                 exxml.addBRATInput(exxml.BRATRealizations[0], "Valley", ref=str(vectorid[i]))
-            if not road == None:
+            if road is not None:
                 if os.path.abspath(vectorpath[i]) == os.path.abspath(road[road.find("01_Inputs"):]):
                     exxml.addBRATInput(exxml.BRATRealizations[0], "Roads", ref=str(vectorid[i]))
-            if not railroad == None:
+            if railroad is not None:
                 if os.path.abspath(vectorpath[i]) == os.path.abspath(railroad[railroad.find("01_Inputs"):]):
                     exxml.addBRATInput(exxml.BRATRealizations[0], "Railroads", ref=str(vectorid[i]))
-            if not canal == None:
+            if canal is not None:
                 if os.path.abspath(vectorpath[i]) == os.path.abspath(canal[canal.find("01_Inputs"):]):
                     exxml.addBRATInput(exxml.BRATRealizations[0], "Canals", ref=str(vectorid[i]))
 
@@ -901,7 +928,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
             exxml.addProjectInput("Vector", "Valley Bottom", valley_bottom[valley_bottom.find("01_Inputs"):], iid="VALLEY" + str(k), guid=getUUID())
             exxml.addBRATInput(exxml.BRATRealizations[0], "Valley", ref="VALLEY" + str(k))
 
-        if not road == None:
+        if road is not None:
             nlist = []
             for j in vectorpath:
                 if os.path.abspath(road[road.find("01_Inputs"):]) == os.path.abspath(j):
@@ -914,7 +941,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
                 exxml.addProjectInput("Vector", "Roads", road[road.find("01_Inputs"):], iid="ROAD" + str(k), guid=getUUID())
                 exxml.addBRATInput(exxml.BRATRealizations[0], "Roads", ref="ROAD" + str(k))
 
-        if not railroad == None:
+        if railroad is not None:
             nlist = []
             for j in vectorpath:
                 if os.path.abspath(railroad[railroad.find("01_Inputs"):]) == os.path.abspath(j):
@@ -927,7 +954,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
                 exxml.addProjectInput("Vector", "Railroads", iid="RR" + str(k), guid=getUUID())
                 exxml.addBRATInput(exxml.BRATRealizations[0], "Railroads", ref="RR" + str(k))
 
-        if not canal == None:
+        if canal is not None:
             nlist = []
             for j in vectorpath:
                 if os.path.abspath(canal[canal.find("01_Inputs"):]) == os.path.abspath(j):
