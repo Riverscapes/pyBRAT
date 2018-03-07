@@ -25,13 +25,13 @@ class BRAT_project_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Step 1. BRAT Project Builder"
-        self.description = "Gathers and structures the inputs for a BRAT project"
+        self.description = "Gathers inputs and creates folder structure for a BRAT project"
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Select Project Folder",
+            displayName="Select project folder",
             name="projPath",
             datatype="DEFolder",
             parameterType="Required",
@@ -146,20 +146,20 @@ class BRAT_table_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Step 2. BRAT Table"
-        self.description = "Prepares the input table to be used in the BRAT tools"
+        self.description = "Calculates, for each stream network segment, the attributes needed to run the BRAT tools"
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Select Project Folder",
+            displayName="Select project folder",
             name="projPath",
             datatype="DEFolder",
             parameterType="Required",
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Project Name",
+            displayName="Project name",
             name="projName",
             datatype="GPString",
             parameterType="Optional",
@@ -173,14 +173,14 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param3 = arcpy.Parameter(
-            displayName = "Watershed Name",
+            displayName = "Watershed name",
             name="hucName",
             datatype="GPString",
             parameterType="Optional",
             direction="Input")
 
         param4 = arcpy.Parameter(
-            displayName="Input Segmented Network",
+            displayName="Input segmented network",
             name="seg_network",
             datatype="DEShapefile",
             parameterType="Required",
@@ -195,28 +195,28 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param6 = arcpy.Parameter(
-            displayName="Input Drainage Area Raster",
+            displayName="Input drainage area raster",
             name="FlowAcc",
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
 
         param7 = arcpy.Parameter(
-            displayName="Input Coded Existing Vegetation Raster",
+            displayName="Input coded existing vegetation raster",
             name="coded_veg",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
         param8 = arcpy.Parameter(
-            displayName="Input Coded Historic Vegetation Raster",
+            displayName="Input coded historic vegetation raster",
             name="coded_hist",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
         param9 = arcpy.Parameter(
-            displayName="Input Valley Bottom Polygon",
+            displayName="Input valley bottom polygon",
             name="valley_bottom",
             datatype="DEFeatureClass",
             parameterType="Optional",
@@ -224,7 +224,7 @@ class BRAT_table_tool(object):
         param9.filter.list = ["Polygon"]
 
         param10 = arcpy.Parameter(
-            displayName="Input Road Layer Feature Class",
+            displayName="Input roads feature class",
             name="road",
             datatype="DEFeatureClass",
             parameterType="Optional",
@@ -232,7 +232,7 @@ class BRAT_table_tool(object):
         param10.filter.list = ["Polyline"]
 
         param11 = arcpy.Parameter(
-            displayName="Input Railroad Feature Class",
+            displayName="Input railroads feature class",
             name="railroad",
             datatype="DEFeatureClass",
             parameterType="Optional",
@@ -240,7 +240,7 @@ class BRAT_table_tool(object):
         param11.filter.list = ["Polyline"]
 
         param12 = arcpy.Parameter(
-            displayName="Input Canal Feature Class",
+            displayName="Input canal feature class",
             name="canal",
             datatype="DEFeatureClass",
             parameterType="Optional",
@@ -248,14 +248,14 @@ class BRAT_table_tool(object):
         param12.filter.list = ["Polyline"]
 
         param13 = arcpy.Parameter(
-            displayName="Input Landuse Raster",
+            displayName="Input landuse raster",
             name="landuse",
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
 
         param14 = arcpy.Parameter(
-            displayName="Name BRAT Table Output",
+            displayName="Name BRAT table output feature class",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
@@ -303,13 +303,13 @@ class BRAT_braid_handler(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Step 3. BRAT Braid Handler"
-        self.description = "Gives braided streams the appropriate values, once mainstems have been identified in the stream network."
+        self.description = "In development and currently non-operational. Gives braided streams the appropriate values, once mainstems have been identified in the stream network."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Input BRAT Network",
+            displayName="Input BRAT network",
             name="inputNetwork",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -340,14 +340,14 @@ class BRAT_braid_handler(object):
 class iHyd_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 4. iHyd Attributes"
-        self.description = "Adds the hydrology attributes to the BRAT input table"
+        self.label = "Step 4. iHyd Streamflow Attributes"
+        self.description = "Calculates, for each stream network segment, discharge (in cubic meters per second) and stream power for both baseflow and annual peak streamflows"
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Input BRAT Network",
+            displayName="Input BRAT network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -355,7 +355,7 @@ class iHyd_tool(object):
         param0.filter.list = ["Polyline"]
 
         param1 = arcpy.Parameter(
-            displayName="Select Hydrologic Region",
+            displayName="Select hydrologic region",
             name="region",
             datatype="GPDouble",
             parameterType="Optional",
@@ -388,14 +388,14 @@ class iHyd_tool(object):
 class Veg_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 5. BRAT Vegetation FIS"
-        self.description = "Runs the vegetation FIS on the BRAT input table"
+        self.label = "Step 5. BRAT Vegetation Dam Capacity Model"
+        self.description = "Calculates dam capacity, for each stream network segment, based solely on vegetation.  Capacity is calculated separately for existing and potential (i.e., historic) vegetation type."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Input BRAT Network",
+            displayName="Input BRAT network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -428,21 +428,21 @@ class Veg_FIS_tool(object):
 class Comb_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 6. BRAT Combined FIS"
-        self.description = "Runs the combined FIS on the BRAT input table"
+        self.label = "Step 6. BRAT Combined Dam Capacity Model"
+        self.description = "Calculates dam capacity, for each stream network segment, based on vegetation dam capacity estimates, baseflow stream power, annual peak stream power, and slope.  Capacity is calculated separetly for existing and potential (i.e., history) vegetation."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Select Project Folder",
+            displayName="Select project folder",
             name="projPath",
             datatype="DEFolder",
             parameterType="Required",
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Input BRAT Network",
+            displayName="Input BRAT network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -450,14 +450,14 @@ class Comb_FIS_tool(object):
         param1.filter.list = ["Polyline"]
 
         param2 = arcpy.Parameter(
-            displayName="Maximum DA Threshold (Square KM)",
+            displayName="Maximum DA threshold (in square kilometers)",
             name = "max_DA_thresh",
             datatype="GPDouble",
             parameterType="Required",
             direction="Input")
 
         param3 = arcpy.Parameter(
-            displayName = "Name Output Network",
+            displayName = "Name combined capacity model output feature class",
             name = "out_name",
             datatype="GPString",
             parameterType="Required",
@@ -494,20 +494,20 @@ class Conflict_Potential_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Step 7. BRAT Conflict Potential"
-        self.description = "Runs the Conflict Potential model on the BRAT output"
+        self.description = "Calculates, for each stream network segment, the potential for human-beaver conflict based on landuse and distance from roads, railroads, canals.  Note: this tool can only be run if the user provides the conflict layers."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Select Project Folder",
+            displayName="Select project folder",
             name="projPath",
             datatype="DEFolder",
             parameterType="Required",
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Select Combined FIS Output Network",
+            displayName="Select combined dam capacity output network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -515,7 +515,7 @@ class Conflict_Potential_tool(object):
         param1.filter.list = ["Polyline"]
 
         param2 = arcpy.Parameter(
-            displayName = "Name Output Network",
+            displayName = "Name conflict potential model output network",
             name = "out_name",
             datatype="GPString",
             parameterType="Required",
@@ -560,21 +560,21 @@ class Conflict_Potential_tool(object):
 class Conservation_Restoration_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 8. BRAT Conservation Restoration"
-        self.description = "Runs the Conservation and Restoration model on the BRAT output"
+        self.label = "Step 8. BRAT Conservation and Restoration Model"
+        self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, potential (i.e., historic) dam capacity, and human-beaver conflict potential score"
         self.canRunInBackground = False
 
     def getParameterInfo(self):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
-            displayName="Select Project Folder",
+            displayName="Select project folder",
             name="projPath",
             datatype="DEFolder",
             parameterType="Required",
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Select Conflict Output Network",
+            displayName="Select conflict model output network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -582,7 +582,7 @@ class Conservation_Restoration_tool(object):
         param1.filter.list = ["Polyline"]
 
         param2 = arcpy.Parameter(
-            displayName="Name Output Network",
+            displayName="Name conservation restoration model output feature class",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
