@@ -6,26 +6,29 @@ title: Step 2 - Input Data
 
 The requisite inputs to the capacity model include:
 - A drainage network layer and associated hydrography
-- Approximation of valley bottom
 - Vegetation type raster data
 - Digital Elevation Model (DEM)
-- Streamflow (base and high) information throughout drainage network
+- Streamflow (baseflow and peak flow) information throughout drainage network
 
-Existing, readily and freely available datasets from GIS data clearinghouses can be used as model inputs.
+Existing, readily and freely available datasets from GIS data clearinghouses can be used as model inputs.  Just make sure all input data are projected in the same coordinate system prior to running the BRAT model.
 
 ### Drainage Network
 
-We generally use the National Hydrograph Dataset [(NHD)](https://viewer.nationalmap.gov/basic/) for the drainage network and associated hydrography data.
+We use the National Hydrograph Dataset [(NHD)](https://viewer.nationalmap.gov/basic/) for the drainage network and associated hydrography data.  The NHD layers required to run BRAT include the stream flowline, waterbody and area feature classes.
 
 ![national_map]({{ site.baseurl }}/assets/Images/national_map.PNG)
 
-### Valley Bottom
-
-
-
 ### Vegetation Raster
 
-We typically use  [Landfire](http://www.landfire.gov/) for the vegetation raster data input.  Download both 'us_140evt' (existing vegetation type) and 'us_140bps' (potential/historic vegetation type).  If 'us_140' is not yet available for your study area you can use 'us_130'.
+You will need 2 separate vegetation rasters:
+- Existing vegetation raster
+- Historic (i.e., potential) vegetation raster
+
+We typically use  [Landfire](http://www.landfire.gov/) for the vegetation raster inputs.  If using Landfire, download:
+- 'us_140evt' (existing vegetation type) 
+- 'us_140bps' (potential/historic vegetation type)  
+
+Note: If 'us_140' is not yet available for your study area you can use 'us_130'.
 
 Note: The potential vegetation layer (biophysical settings, bps) represents the vegetation that may have been dominant on the landscape prior to Euro-American settlement and is based on both the current biophysical environment and an approximation of the historical disturbance regime. 
 
@@ -45,13 +48,14 @@ If you need base and high flow estimations for your stream network, regional reg
 
 ## Potential Conflict Model Inputs
 
-The requisite inputs to the potential conflic model include:
+The requisite inputs to the potential conflict model include:
+- Approximation of the valley bottom
 - Detailed roads layer
 - Railroads layer
-- *Canals*
-- *Land use raster*
+- Canals layer
+- Landuse raster
 
-*Denotes inputs that are the same as the capacity model inputs*
+### Valley Bottom Layer
 
 ### Roads Layer
 
@@ -67,6 +71,6 @@ Canals can be extracted from the NHD Flowline layer (our recommended drainage ne
 
 ### Land Use Raster
 
-If no accurate land use layer exits for you study are you can use the Landfire evt raster.
+If no accurate land use layer exits for you study are you can use the Landfire existing vegetation type raster (e.g., 'us_140evt').
 
-[Continue to Step 3]({{ site.baseurl }}/Documentation/3-Preprocessing) ->
+[Continue to Step 3]({{ site.baseurl }}/Documentation/3-Preprocessing)
