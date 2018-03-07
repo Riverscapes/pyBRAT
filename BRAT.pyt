@@ -2,7 +2,6 @@ import os
 import arcpy
 import BRATProject
 import BRAT_table
-import BRAT_capacity_table
 import iHyd
 import Veg_FIS
 import Comb_FIS
@@ -19,13 +18,13 @@ class Toolbox(object):
         self.alias = "BRAT Toolbox"
 
         # List of tool classes associated with this toolbox
-        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_capacity_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool]
+        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool]
 
 
 class BRAT_project_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "1 BRAT Project Builder"
+        self.label = "Step 1. BRAT Project Builder"
         self.description = "Gathers and structures the inputs for a BRAT project"
         self.canRunInBackground = False
 
@@ -41,7 +40,7 @@ class BRAT_project_tool(object):
         param1 = arcpy.Parameter(
             displayName="Select existing vegetation datasets",
             name="ex_veg",
-            datatype="DEFolder",
+            datatype="DERasterDataset",
             parameterType="Required",
             direction="Input",
             multiValue=True)
@@ -49,7 +48,7 @@ class BRAT_project_tool(object):
         param2 = arcpy.Parameter(
             displayName="Select historic vegetation datasets",
             name="hist_veg",
-            datatype="DEFolder",
+            datatype="DERasterDataset",
             parameterType="Required",
             direction="Input",
             multiValue=True)
@@ -146,7 +145,7 @@ class BRAT_project_tool(object):
 class BRAT_table_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "2 BRAT Table"
+        self.label = "Step 2. BRAT Table"
         self.description = "Prepares the input table to be used in the BRAT tools"
         self.canRunInBackground = False
 
@@ -183,7 +182,7 @@ class BRAT_table_tool(object):
         param4 = arcpy.Parameter(
             displayName="Input Segmented Network",
             name="seg_network",
-            datatype="DEFeatureClass",
+            datatype="DEShapefile",
             parameterType="Required",
             direction="Input")
         param4.filter.list = ["Polyline"]
@@ -203,14 +202,14 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param7 = arcpy.Parameter(
-            displayName="Input Coded Existing Vegetation Layer",
+            displayName="Input Coded Existing Vegetation Raster",
             name="coded_veg",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
         param8 = arcpy.Parameter(
-            displayName="Input Coded Historic Vegetation Layer",
+            displayName="Input Coded Historic Vegetation Raster",
             name="coded_hist",
             datatype="DERasterDataset",
             parameterType="Required",
@@ -220,7 +219,7 @@ class BRAT_table_tool(object):
             displayName="Input Valley Bottom Polygon",
             name="valley_bottom",
             datatype="DEFeatureClass",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
         param9.filter.list = ["Polygon"]
 
@@ -249,10 +248,10 @@ class BRAT_table_tool(object):
         param12.filter.list = ["Polyline"]
 
         param13 = arcpy.Parameter(
-            displayName="Input Landuse Dataset",
+            displayName="Input Landuse Raster",
             name="landuse",
             datatype="DERasterDataset",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
 
         param14 = arcpy.Parameter(
@@ -303,8 +302,8 @@ class BRAT_table_tool(object):
 class BRAT_braid_handler(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "2.5 BRAT Braid Handler"
-        self.description = "Gives braided streams the appropriate values, once mainstems have been identifies in the stream"
+        self.label = "Step 3. BRAT Braid Handler"
+        self.description = "Gives braided streams the appropriate values, once mainstems have been identified in the stream network."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
@@ -312,7 +311,7 @@ class BRAT_braid_handler(object):
         param0 = arcpy.Parameter(
             displayName="Input BRAT Network",
             name="inputNetwork",
-            datatype="DEShapefile",
+            datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
         return [param0]
@@ -338,133 +337,10 @@ class BRAT_braid_handler(object):
         return
 
 
-class BRAT_capacity_table_tool(object):
-    def __init__(self):
-        """Define the tool (tool name is the name of the class)."""
-        self.label = "2 BRAT Table (Capacity)"
-        self.description = "Prepares the input table to be used in the BRAT tools"
-        self.canRunInBackground = False
-
-    def getParameterInfo(self):
-        """Define parameter definitions"""
-        param0 = arcpy.Parameter(
-            displayName="Select Project Folder",
-            name="projPath",
-            datatype="DEFolder",
-            parameterType="Required",
-            direction="Input")
-
-        param1 = arcpy.Parameter(
-            displayName="Project Name",
-            name="projName",
-            datatype="GPString",
-            parameterType="Optional",
-            direction="Input")
-
-        param2 = arcpy.Parameter(
-            displayName="Watershed HUC ID",
-            name="hucID",
-            datatype="GPDouble",
-            parameterType="Optional",
-            direction="Input")
-
-        param3 = arcpy.Parameter(
-            displayName = "Watershed Name",
-            name="hucName",
-            datatype="GPString",
-            parameterType="Optional",
-            direction="Input")
-
-        param4 = arcpy.Parameter(
-            displayName="Input Segmented Network",
-            name="seg_network",
-            datatype="DEFeatureClass",
-            parameterType="Required",
-            direction="Input")
-        param4.filter.list = ["Polyline"]
-
-        param5 = arcpy.Parameter(
-            displayName="Input DEM",
-            name="DEM",
-            datatype="DERasterDataset",
-            parameterType="Required",
-            direction="Input")
-
-        param6 = arcpy.Parameter(
-            displayName="Input Drainage Area Raster",
-            name="FlowAcc",
-            datatype="DERasterDataset",
-            parameterType="Optional",
-            direction="Input")
-
-        param7 = arcpy.Parameter(
-            displayName="Input Coded Existing Vegetation Layer",
-            name="coded_veg",
-            datatype="DERasterDataset",
-            parameterType="Required",
-            direction="Input")
-
-        param8 = arcpy.Parameter(
-            displayName="Input Coded Historic Vegetation Layer",
-            name="coded_hist",
-            datatype="DERasterDataset",
-            parameterType="Required",
-            direction="Input")
-
-        param9 = arcpy.Parameter(
-            displayName="Output Name",
-            name="out_name",
-            datatype="GPString",
-            parameterType="Required",
-            direction="Input")
-
-        param10 = arcpy.Parameter(
-            displayName="Set Scratch Workspace",
-            name="scratch",
-            datatype="DEWorkspace",
-            parameterType="Required",
-            direction="Input")
-        param10.filter.list = ["Local Database"]
-        param10.value = arcpy.env.scratchWorkspace
-
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10]
-
-    def isLicensed(self):
-        """Set whether the tool is licensed to execute."""
-        return True
-
-    def updateParameters(self, parameters):
-        """Modify the values and properties of parameters before internal
-        validation is performed.  This method is called whenever a parameter
-        has been changed."""
-        return
-
-    def updateMessages(self, parameters):
-        """Modify the messages created by internal validation for each tool
-        parameter.  This method is called after internal validation."""
-        return
-
-    def execute(self, p, messages):
-        """The source code of the tool."""
-        reload(BRAT_capacity_table)
-        BRAT_capacity_table.main(p[0].valueAsText,
-                        p[1].valueAsText,
-                        p[2].valueAsText,
-                        p[3].valueAsText,
-                        p[4].valueAsText,
-                        p[5].valueAsText,
-                        p[6].valueAsText,
-                        p[7].valueAsText,
-                        p[8].valueAsText,
-                        p[9].valueAsText,
-                        p[10].valueAsText)
-        return
-
-
 class iHyd_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "3 iHyd Attributes"
+        self.label = "Step 4. iHyd Attributes"
         self.description = "Adds the hydrology attributes to the BRAT input table"
         self.canRunInBackground = False
 
@@ -482,19 +358,10 @@ class iHyd_tool(object):
             displayName="Select Hydrologic Region",
             name="region",
             datatype="GPDouble",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
 
-        param2 = arcpy.Parameter(
-            displayName="Set Scratch Workspace",
-            name="scratch",
-            datatype="DEWorkspace",
-            parameterType="Required",
-            direction="Input")
-        param2.filter.list = ['Local Database']
-        param2.value = arcpy.env.scratchWorkspace
-
-        return [param0, param1, param2]
+        return [param0, param1]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -515,14 +382,13 @@ class iHyd_tool(object):
         """The source code of the tool."""
         reload(iHyd)
         iHyd.main(p[0].valueAsText,
-                  p[1].valueAsText,
-                  p[2].valueAsText)
+                  p[1].valueAsText)
         return
 
 class Veg_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "4 BRAT Vegetation FIS"
+        self.label = "Step 5. BRAT Vegetation FIS"
         self.description = "Runs the vegetation FIS on the BRAT input table"
         self.canRunInBackground = False
 
@@ -562,7 +428,7 @@ class Veg_FIS_tool(object):
 class Comb_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "5 BRAT Combined FIS"
+        self.label = "Step 6. BRAT Combined FIS"
         self.description = "Runs the combined FIS on the BRAT input table"
         self.canRunInBackground = False
 
@@ -627,7 +493,7 @@ class Comb_FIS_tool(object):
 class Conflict_Potential_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "6 BRAT Conflict Potential"
+        self.label = "Step 7. BRAT Conflict Potential"
         self.description = "Runs the Conflict Potential model on the BRAT output"
         self.canRunInBackground = False
 
@@ -694,7 +560,7 @@ class Conflict_Potential_tool(object):
 class Conservation_Restoration_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "7 BRAT Conservation Restoration"
+        self.label = "Step 8. BRAT Conservation Restoration"
         self.description = "Runs the Conservation and Restoration model on the BRAT output"
         self.canRunInBackground = False
 
