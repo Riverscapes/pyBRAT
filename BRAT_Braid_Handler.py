@@ -11,6 +11,8 @@
 import arcpy
 from StreamObjects import Cluster, BraidStream
 
+cluster_id = 0 # Provides a consistent way to refer to clusters, that give more information that a UUID
+
 
 def main(inputNetwork):
     """
@@ -53,13 +55,16 @@ def addStreamToClusters(clusters, polyline, id, drainageArea):
     connectedClusters = findConnectedClusters(clusters, newStream)
 
     if len(connectedClusters) == 0:
-        newCluster = Cluster(newStream)
+        global cluster_id # Allows us to modify cluster_id, so it always keeps count properly
+        newCluster = Cluster(cluster_id)
+        cluster_id += 1
         clusters.append(newCluster)
     elif len(connectedClusters) == 1:
         i = connectedClusters[0]
         clusters[i].addStream(newStream)
     elif len(connectedClusters) == 2:
-        mergeClusters(clusters, connectedClusters, newStream)
+        #TODO remove clusters and merge them
+        new_cluster = mergeClusters(clusters, connectedClusters, newStream)
 
 
 
@@ -102,17 +107,15 @@ def isInCluster(stream, cluster):
     return False
 
 
-def mergeClusters(clusters, connectedClusters, newStream):
+def mergeClusters(clusterOne, clusterTwo, newStream):
     """
-    Merges two clusters together if a new stream connects them
-    :param clusters: A list of clusters
-    :param connectedClusters: A list containing the indexes we're worried about
-    :param newStream: The stream that connects the two clusters
-    :return: None
+    Merges two clusters and a new stream and returns them up
+    :param clusterOne: The first cluster to merge
+    :param clusterTwo: The second cluster to merge
+    :param newStream: The new stream that connects them
+    :return: A new merged stream
     """
-    clusterOne = clusters.pop(connectedClusters[0])
-    clusterTwo = clusters.pop(connectedClusters[1])
-    
+    #TODO Complete mergeClusters
 
 
 def handleClusters(inputNetwork, clusters):
