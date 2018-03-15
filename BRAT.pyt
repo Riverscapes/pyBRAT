@@ -522,16 +522,7 @@ class Conflict_Potential_tool(object):
             direction="Input")
         # param2.symbology = os.path.join(os.path.dirname(__file__), "oPC.lyr")
 
-        param3 = arcpy.Parameter(
-            displayName="Set Scratch Workspace",
-            name="scratch",
-            datatype="DEWorkspace",
-            parameterType="Required",
-            direction="Input")
-        param3.filter.list = ['Local Database']
-        param3.value = arcpy.env.scratchWorkspace
-
-        return [param0, param1, param2, param3]
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -553,8 +544,7 @@ class Conflict_Potential_tool(object):
         reload(Conflict_Potential)
         Conflict_Potential.main(p[0].valueAsText,
                                 p[1].valueAsText,
-                                p[2].valueAsText,
-                                p[3].valueAsText)
+                                p[2].valueAsText)
         return
 
 class Conservation_Restoration_tool(object):
