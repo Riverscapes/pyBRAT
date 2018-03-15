@@ -9,10 +9,9 @@
 
 class Cluster:
     def __init__(self, given_id):
-
-        #TODO Make sure this is up to snuff
         """
-        :param given_id:
+        The constructor for our Cluster class
+        :param given_id: The identifier for our cluster, used in the equal function
         """
         self.streams = []
         self.endpoints = []
@@ -27,8 +26,22 @@ class Cluster:
         self.maxDA = max(newStream.drainageArea, self.maxDA)
 
 
+    def merge(self, cluster_one, cluster_two):
+        """
+        Takes the data from two clusters and combines them in this cluster
+        :param cluster_one: The first Cluster to merge
+        :param cluster_two: The second Cluster to merge
+        :return:
+        """
+        if len(self.streams) != 0 or len(self.endpoints) != 0 or self.maxDA !=0: # we want this cluster to be empty
+            raise Exception("Trying to merge on a cluster that isn't empty!")
+
+        self.streams = cluster_one.streams + cluster_two.streams
+        self.endpoints = cluster_one.endpoints + cluster_two.endpoints
+        self.maxDA = max(cluster_one.maxDA, cluster_two.maxDA)
+
+
     def __eq__(self, other):
-        #Todo write equal for clusters
         if isinstance(other, Cluster):
             return False
         else:

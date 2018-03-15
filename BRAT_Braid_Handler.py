@@ -23,6 +23,9 @@ def main(inputNetwork):
 
     clusters = findClusters(inputNetwork)
 
+    for cluster in clusters:
+        arcpy.AddMessage("Cluster " + str(cluster.id))
+
     handleClusters(inputNetwork, clusters)
 
 
@@ -35,23 +38,23 @@ def findClusters(inputNetwork):
     clusters = []
     fields = ['SHAPE@', 'SegID', 'iGeo_DA', 'IsBraided']
     with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
-        for polyline, id, drainageArea, isBraided in cursor:
+        for polyline, stream_id, drainageArea, isBraided in cursor:
             if isBraided:
-                addStreamToClusters(clusters, polyline, id, drainageArea)
+                addStreamToClusters(clusters, polyline, stream_id, drainageArea)
 
     return clusters
 
 
-def addStreamToClusters(clusters, polyline, id, drainageArea):
+def addStreamToClusters(clusters, polyline, stream_id, drainageArea):
     """
     Adds the stream to the list of clusters that we have
     :param clusters: A list of clusters
     :param polyline: The geoprocessing object that contains a bunch of points we need
-    :param id: The stream's ID, which we'll use to compare against the original stream when it comes time to update it
+    :param stream_id: The stream's ID, which we'll use to compare against the original stream when it comes time to update it
     :param drainageArea: The stream's drainage area
     :return: None
     """
-    newStream = BraidStream(polyline, id, drainageArea)
+    newStream = BraidStream(polyline, stream_id, drainageArea)
     connectedClusters = findConnectedClusters(clusters, newStream)
 
     if len(connectedClusters) == 0:
@@ -64,7 +67,13 @@ def addStreamToClusters(clusters, polyline, id, drainageArea):
         clusters[i].addStream(newStream)
     elif len(connectedClusters) == 2:
         #TODO remove clusters and merge them
-        new_cluster = mergeClusters(clusters, connectedClusters, newStream)
+        cluster_one = clusters[connectedClusters[0]]
+        cluster_two = clusters[connectedClusters[1]]
+        new_cluster = mergeClusters(cluster_one, cluster_two, newStream)
+
+        clusters.remove(cluster_one)
+        clusters.remove(cluster_two)
+        clusters.append(new_cluster)
 
 
 
@@ -89,7 +98,7 @@ def isInCluster(stream, cluster):
     Returns true if the stream is connected to the cluster, false otherwise
     :param stream: The stream we care about
     :param cluster: The cluster we're examining
-    :return:
+    :return: Boolean
     """
     streamEndpoints = []
 
@@ -107,15 +116,24 @@ def isInCluster(stream, cluster):
     return False
 
 
-def mergeClusters(clusterOne, clusterTwo, newStream):
+def mergeClusters(cluster_one, cluster_two, new_stream):
     """
     Merges two clusters and a new stream and returns them up
-    :param clusterOne: The first cluster to merge
-    :param clusterTwo: The second cluster to merge
-    :param newStream: The new stream that connects them
+    :param cluster_one: The first cluster to merge
+    :param cluster_two: The second cluster to merge
+    :param new_stream: The new stream that connects them
     :return: A new merged stream
     """
-    #TODO Complete mergeClusters
+    global cluster_id  # Allows us to modify cluster_id, so it always keeps count properly
+    new_cluster = Cluster(cluster_id)
+    cluster_id += 1
+
+    new_cluster.merge(cluster_one, cluster_two)
+
+    new_cluster.addStream(new_stream)
+
+    return new_cluster
+
 
 
 def handleClusters(inputNetwork, clusters):
