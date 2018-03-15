@@ -41,6 +41,19 @@ class Cluster:
         self.maxDA = max(cluster_one.maxDA, cluster_two.maxDA)
 
 
+    def containsStream(self, given_stream):
+        """
+        Returns True if the stream given is inside the cluster, False if otherwise
+        :param given_stream: The stream ID that we want to check
+        :return: Boolean
+        """
+        for stream in self.streams:
+            if stream.id == given_stream:
+                return True
+
+        return False
+
+
     def __eq__(self, other):
         if isinstance(other, Cluster):
             return False

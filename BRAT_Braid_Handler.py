@@ -23,7 +23,19 @@ def main(inputNetwork):
     arcpy.AddMessage("Finding clusters...")
     clusters = findClusters(inputNetwork)
 
-    arcpy.AddMessage(str(len(clusters)))
+    arcpy.AddMessage("Adding clusterID to the input network...")
+
+    listFields = arcpy.ListFields(inputNetwork, "ClusterID")
+    if len(listFields) is not 1:
+        arcpy.AddField_management(inputNetwork, "ClusterID", "SHORT", "", "", "", "", "NULLABLE")
+    arcpy.CalculateField_management(inputNetwork, "ClusterID", -1, "PYTHON")
+
+    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', 'ClusterID']) as cursor:
+        for row in cursor:
+            for cluster in clusters:
+                if cluster.containsStream(row[0]):
+                    row[1] = cluster.id
+            cursor.updateRow(row)
 
     handleClusters(inputNetwork, clusters)
 
@@ -70,10 +82,8 @@ def addStreamToClusters(clusters, polyline, stream_id, drainageArea):
         cluster_two = clusters[connectedClusters[1]]
         new_cluster = mergeClusters(cluster_one, cluster_two, newStream)
 
-        arcpy.AddMessage(len(clusters))
         clusters.remove(cluster_one)
         clusters.remove(cluster_two)
-        arcpy.AddMessage(len(clusters))
         clusters.append(new_cluster)
 
 
