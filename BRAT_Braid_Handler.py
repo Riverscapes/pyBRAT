@@ -20,11 +20,10 @@ def main(inputNetwork):
     :param inputNetwork: The stream network that we want to give mainstem values
     :return: None
     """
-
+    arcpy.AddMessage("Finding clusters...")
     clusters = findClusters(inputNetwork)
 
-    for cluster in clusters:
-        arcpy.AddMessage("Cluster " + str(cluster.id))
+    arcpy.AddMessage(str(len(clusters)))
 
     handleClusters(inputNetwork, clusters)
 
@@ -59,20 +58,22 @@ def addStreamToClusters(clusters, polyline, stream_id, drainageArea):
 
     if len(connectedClusters) == 0:
         global cluster_id # Allows us to modify cluster_id, so it always keeps count properly
-        newCluster = Cluster(cluster_id)
+        new_cluster = Cluster(cluster_id)
         cluster_id += 1
-        clusters.append(newCluster)
+        new_cluster.addStream(newStream)
+        clusters.append(new_cluster)
     elif len(connectedClusters) == 1:
         i = connectedClusters[0]
         clusters[i].addStream(newStream)
     elif len(connectedClusters) == 2:
-        #TODO remove clusters and merge them
         cluster_one = clusters[connectedClusters[0]]
         cluster_two = clusters[connectedClusters[1]]
         new_cluster = mergeClusters(cluster_one, cluster_two, newStream)
 
+        arcpy.AddMessage(len(clusters))
         clusters.remove(cluster_one)
         clusters.remove(cluster_two)
+        arcpy.AddMessage(len(clusters))
         clusters.append(new_cluster)
 
 
