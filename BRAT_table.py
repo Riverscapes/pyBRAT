@@ -118,7 +118,11 @@ def main(
     os.mkdir(projPath + "/02_Analyses/Output_" + str(j))
 
     # copy input segment network to output folder
-    out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name + ".shp"
+    if out_name.endswith('.shp'):
+        out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name
+    else:
+        out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name + ".shp"
+
     arcpy.CopyFeatures_management(seg_network, out_network)
 
     # run geo attributes function

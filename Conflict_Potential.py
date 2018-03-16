@@ -45,7 +45,11 @@ def main(
         b = y1 - (m * x1) # calculate y-intercept
         return [m, b]
 
-    out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+    if out_name.endswith('.shp'):
+        out_network = os.path.dirname(in_network) + "/" + out_name
+    else:
+        out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # check for oPC_Prob field and delete if already exists
@@ -144,21 +148,6 @@ def main(
         del rr_array, rr, m, b
     else:
         rr_prob = np.zeros_like(segid_array)
-    # # land use conflict
-    # lu_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_LU")
-    # lu = np.asarray(lu_array, np.float64)
-    #
-    # lu_prob = np.zeros_like(lu)
-    #
-    # for i in range(len(lu)):
-    #     if lu[i] >= 2:
-    #         lu_prob[i] = 0.75
-    #     elif lu[i] >= 1.25 and lu[i] < 2:
-    #         lu_prob[i] = 0.5
-    #     elif lu[i] < 1.25:
-    #         lu_prob[i] = 0.01
-    #     else:
-    #         lu_prob[i] = 0.01
 
     oPC_Prob = np.fmax(roadx_prob, np.fmax(roadad_prob, np.fmax(canal_prob, rr_prob)))
 
@@ -170,7 +159,7 @@ def main(
     opc_prob_table = scratch + "/opc_prob_table"
     arcpy.CopyRows_management(out_table, opc_prob_table)
 
-    # join the fuzzy inference system output to the flowline network
+    # join the output to the flowline network
     # create empty dictionary to hold input table field values
     tblDict = {}
     # add values to dictionary
