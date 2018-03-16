@@ -20,20 +20,28 @@ import uuid
 def main(
     projPath,
     in_network,
+    CrossingLow,
+    CrossingHigh,
+    AdjLow,
+    AdjHigh,
+    CanalLow,
+    CanalHigh,
+    RRLow,
+    RRHigh,
     out_name):
 
     scratch = 'in_memory'
 
     arcpy.env.overwriteOutput = True
 
-    CrossingLow = 10
-    CrossingHigh = 100
-    AdjLow = 10
-    AdjHigh = 100
-    CanalLow = 50
-    CanalHigh = 200
-    RRLow = 30
-    RRHigh = 100
+    # CrossingLow = 10
+    # CrossingHigh = 100
+    # AdjLow = 10
+    # AdjHigh = 100
+    # CanalLow = 50
+    # CanalHigh = 200
+    # RRLow = 30
+    # RRHigh = 100
 
     # function to calculate slope-intercept equation based on user inputs
     def slopeInt(lowValue, highValue):
@@ -218,4 +226,13 @@ if __name__ == '__main__':
     main(
         sys.argv[1],
         sys.argv[2],
-        sys.argv[3])
+        sys.argv[3],
+        sys.argv[4],
+        sys.argv[5],
+        sys.argv[6],
+        sys.argv[7],
+        sys.argv[8],
+        sys.argv[9],
+        sys.argv[10],
+        sys.argv[11]
+    )
