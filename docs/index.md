@@ -1,13 +1,10 @@
 ---
 title: Home
 ---
-<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-
-<div class="float-left"><img src="{{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png" alt="Beaver_EcosystemEngineer"/></div>
 
 ## About
 
-Welcome to the pyBRAT website. The Beaver Restoration Assessment Tool (BRAT) is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
+<div class="float-right"><img src="{{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png"/></div>Welcome to the pyBRAT website. The Beaver Restoration Assessment Tool (BRAT) is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
 
 The BRAT model can be run with widely available existing data sets, and is used to identify opportunities,  potential conflicts and constraints through a mix of assessment of existing resources and scenario-based assessment of potential futures. The backbone to BRAT are **spatial models that predict the capacity of riverscapes to support dam-building activity by beaver**. The beaver-dam building capacity model uses both existing and historic vegetation layers to show current capacity and historic capacity. 
 
