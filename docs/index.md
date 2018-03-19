@@ -4,7 +4,7 @@ title: Home
 
 ## About
 
-<div class="float-right"><img src="{{ site.baseurl }}/assets/Images/Beaver_EcosystemEngineer.png"/></div>Welcome to the pyBRAT website. The Beaver Restoration Assessment Tool (BRAT) is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
+<div class="float-right"><img src="{{ site.baseurl }}/assets/images/Beaver_EcosystemEngineer.png"/></div>Welcome to the pyBRAT website. The Beaver Restoration Assessment Tool (BRAT) is a decision support and planning tool intended to help researchers and resource managers assess the potential for beaver as a stream conservation and restoration agent over large regions and watersheds. 
 
 The BRAT model can be run with widely available existing data sets, and is used to identify opportunities,  potential conflicts and constraints through a mix of assessment of existing resources and scenario-based assessment of potential futures. The backbone to BRAT are **spatial models that predict the capacity of riverscapes to support dam-building activity by beaver**. The beaver-dam building capacity model uses both existing and historic vegetation layers to show current capacity and historic capacity. 
 
@@ -22,7 +22,7 @@ By combining capacity and decision support approaches, researchers and resource 
 
 For more information on beaver and workshops we occasionally teach, see [here](http://beaver.joewheaton.org/).
 
-[![State_Management]({{ site.baseurl }}/assets/Images//State_Management.png)]({{ site.baseurl }}/assets/Images//hr/State_Management.png)
+[![State_Management]({{ site.baseurl }}/assets/images//State_Management.png)]({{ site.baseurl }}/assets/images//hr/State_Management.png)
 
 ## Developers
 
@@ -51,8 +51,8 @@ The Matlab versions of BRAT source code are available from the [matBRAT repo](ht
 Initial development of BRAT was funded through a [pilot project](http://etal.joewheaton.org/projects/past-projects/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat) granted to Utah State University (USU Award Control No. 120353) from the [Grand Canyon Trust](http://www.grandcanyontrust.org/) based on a grant from the [Walton Family Foundation](http://www.waltonfamilyfoundation.org/). 
 
 <div>
-	<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/Images/WFF.jpg" alt="WFF"></a></div>
-	<div class="float-left"><a href="https://wildlife.utah.gov"><img src="/assets/Images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
+	<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/images/WFF.jpg" alt="WFF"></a></div>
+	<div class="float-left"><a href="https://wildlife.utah.gov"><img src="/assets/images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
 </div>
 
 <div style="clear:both;"></div>

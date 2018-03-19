@@ -4,7 +4,7 @@ title: 2-Vegetation Input
 
 ### 2. Vegetation Input Derivation
 
-![Ungulate_veg_class]({{ site.baseurl }}/assets/Images/Ungulate_veg_class.png)
+![Ungulate_veg_class]({{ site.baseurl }}/assets/images/Ungulate_veg_class.png)
 
 Figure 5 shows the LANDFIRE land cover classification by ungulate forage preferences established in the literature.
 
@@ -31,7 +31,7 @@ O - Unsuitable - LANDFIRE land cover = Cropland, developed, roads, barren, or wa
 
 
 
-[![Escalante_Veg_Cap_Ungulate_distribution]({{ site.baseurl }}/assets/Images/Escalante_Veg_Cap_Ungulate_distribution.png)]({{ site.baseurl }}/assets/Images/hr/Escalante_Veg_Cap_Ungulate_distribution.png)
+[![Escalante_Veg_Cap_Ungulate_distribution]({{ site.baseurl }}/assets/images/Escalante_Veg_Cap_Ungulate_distribution.png)]({{ site.baseurl }}/assets/images/hr/Escalante_Veg_Cap_Ungulate_distribution.png)
 
 Figure 6 - Your classified output should look something like the above for the Escalante (click on image for larger view).
 

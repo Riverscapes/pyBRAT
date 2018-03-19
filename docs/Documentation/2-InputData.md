@@ -16,7 +16,7 @@ Existing, readily and freely available datasets from GIS data clearinghouses can
 
 We use the National Hydrograph Dataset [(NHD)](https://viewer.nationalmap.gov/basic/) for the drainage network and associated hydrography data.  The NHD layers required to run BRAT include the stream flowline, waterbody and area feature classes.
 
-![national_map]({{ site.baseurl }}/assets/Images/national_map.PNG)
+![national_map]({{ site.baseurl }}/assets/images/national_map.PNG)
 
 ### Vegetation Raster
 
@@ -32,13 +32,13 @@ Note: If 'us_140' is not yet available for your study area you can use 'us_130'.
 
 Note: The potential vegetation layer (biophysical settings, bps) represents the vegetation that may have been dominant on the landscape prior to Euro-American settlement and is based on both the current biophysical environment and an approximation of the historical disturbance regime. 
 
-![landfire]({{ site.baseurl }}/assets/Images/landfire.PNG)
+![landfire]({{ site.baseurl }}/assets/images/landfire.PNG)
 
 ### DEM
 
 We typically use [USGS National Elevation Dataset (NED)](https://viewer.nationalmap.gov/basic/) 1/3 arc second (~ 10 m) DEM data.
 
-![national_map_dem]({{ site.baseurl }}/assets/Images/national_map_dem.PNG)
+![national_map_dem]({{ site.baseurl }}/assets/images/national_map_dem.PNG)
 
 ### Streamflow Information
 
