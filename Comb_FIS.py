@@ -255,7 +255,11 @@ def main(
     combFIS('ex')
 
     # save results to user defined output shp
-    out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+    if out_name.endswith('.shp'):
+        out_network = os.path.dirname(in_network) + "/" + out_name
+    else:
+        out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+
     arcpy.CopyFeatures_management(in_network, out_network)
     addxmloutput(projPath, in_network, out_network)
 

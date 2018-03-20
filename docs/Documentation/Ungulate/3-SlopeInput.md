@@ -11,7 +11,7 @@ title: 3-Slope Input Derivation
 - **Step 3**: Use "Extract by Mask" with your project area boundary to confine the slope map to the project area.
 - **Step 4:** Use the "Raster to ASCII" command to convert the .img raster to an ASCII raster format for use in MATLAB.
 
-[![Escalante_Slope_Ungulate_distribution]({{ site.baseurl }}/assets/Images/Escalante_Slope_Ungulate_distribution.png)]({{ site.baseurl }}/assets/Images/hr/Escalante_Slope_Ungulate_distribution.png)
+[![Escalante_Slope_Ungulate_distribution]({{ site.baseurl }}/assets/images/Escalante_Slope_Ungulate_distribution.png)]({{ site.baseurl }}/assets/images/hr/Escalante_Slope_Ungulate_distribution.png)
 
 Your slope analysis should look something like the above.
 

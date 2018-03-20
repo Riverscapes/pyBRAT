@@ -6,7 +6,7 @@ title: 4-Distance To Water Source Input - Derivation
 
 **Task 1: Convert NHD waterbodies to polyline (for distance to water input)**
 
-- **Step 1:** Use the "Polygon to Line" command:![polygon_to_line]({{ site.baseurl }}/assets/Images/polygon_to_line.png)
+- **Step 1:** Use the "Polygon to Line" command:![polygon_to_line]({{ site.baseurl }}/assets/images/polygon_to_line.png)
 
 **Output:**
 
@@ -15,7 +15,7 @@ title: 4-Distance To Water Source Input - Derivation
 
 - **Step 2:** Use the "Merge" command to combine the resulting lakes polyline with the NHD perennial streams include streams outside your project area.
 
-![Merge]({{ site.baseurl }}/assets/Images/Merge.png)
+![Merge]({{ site.baseurl }}/assets/images/Merge.png)
 
 **Output:** NHD_Lakes_Perennial_Streams.shp
 
@@ -26,7 +26,7 @@ title: 4-Distance To Water Source Input - Derivation
 - **Step 1:** Load the input layer, generated in the previous task: NHD_Lakes_Perennial_Streams
 - **Step 2:** Assign an output grid name
 
-![Euclidean_Distance (1)]({{ site.baseurl }}/assets/Images/Euclidean_Distance1.png)
+![Euclidean_Distance (1)]({{ site.baseurl }}/assets/images/Euclidean_Distance1.png)
 
 **Output:**
 
@@ -37,11 +37,11 @@ title: 4-Distance To Water Source Input - Derivation
 
 Use "Extract by Mask":
 
-![extract_by_mask]({{ site.baseurl }}/assets/Images/extract_by_mask.png)
+![extract_by_mask]({{ site.baseurl }}/assets/images/extract_by_mask.png)
 
 **Step 4:** Convert to an ASCII raster using the "Raster to ASCII" command.
 
-[![Escalante_distance_to_water_Ungulate_distribution]({{ site.baseurl }}/assets/Images/Escalante_distance_to_water_Ungulate_distribution.png)]({{ site.baseurl }}/assets/Images/hr/Escalante_distance_to_water_Ungulate_distribution.png)
+[![Escalante_distance_to_water_Ungulate_distribution]({{ site.baseurl }}/assets/images/Escalante_distance_to_water_Ungulate_distribution.png)]({{ site.baseurl }}/assets/images/hr/Escalante_distance_to_water_Ungulate_distribution.png)
 
 Your euclidean distance should look something like the above.
 

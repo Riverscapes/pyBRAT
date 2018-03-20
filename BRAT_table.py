@@ -118,7 +118,11 @@ def main(
     os.mkdir(projPath + "/02_Analyses/Output_" + str(j))
 
     # copy input segment network to output folder
-    out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name + ".shp"
+    if out_name.endswith('.shp'):
+        out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name
+    else:
+        out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name + ".shp"
+
     arcpy.CopyFeatures_management(seg_network, out_network)
 
     # run geo attributes function
@@ -629,15 +633,60 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     if landuse is not None:
         arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
         # create raster with just landuse code values
-        lu_landuse = Lookup(landuse, "CODE")
+        landuse_lu = Lookup(landuse, "CODE")
         # calculate mean landuse value within 100 m buffer of each network segment
-        landuseTbl = ZonalStatisticsAsTable(buf_100m, "SegID", lu_landuse, scratch + "/landuseTbl", 'DATA', "MEAN")
+        landuseTbl = ZonalStatisticsAsTable(buf_100m, "SegID", landuse_lu, scratch + "/landuseTbl", 'DATA', "MEAN")
         # populate flowline network mean landuse value "iPC_LU" field
         dictJoinField(landuseTbl, 'MEAN', out_network, "iPC_LU")
         # delete temp fcs, tbls, etc.
-        items = [lu_landuse, landuseTbl]
+        items = [landuse_lu, landuseTbl]
         for item in items:
             arcpy.Delete_management(item)
+
+        # get percentage of each land use intensity class in 100 m buffer of stream segment
+        fields = [f.name for f in arcpy.ListFields(landuse)]
+        if "LUI_Class" in fields:
+            buf_fields = [f.name for f in arcpy.ListFields(buf_100m)]
+            if 'oArea' not in buf_fields:
+                arcpy.AddField_management(buf_100m, 'oArea', 'DOUBLE')
+                with arcpy.da.UpdateCursor(buf_100m, ['SHAPE@AREA', 'oArea']) as cursor:
+                    for row in cursor:
+                        row[1] = row[0]
+                        cursor.updateRow(row)
+            landuse_poly = arcpy.RasterToPolygon_conversion(landuse, os.path.join(scratch, 'landuse_poly'), 'NO_SIMPLIFY', "LUI_Class")
+            landuse_int = arcpy.Intersect_analysis([landuse_poly, buf_100m], os.path.join(scratch, 'landuse_int'))
+            arcpy.AddField_management(landuse_int, 'propArea', 'DOUBLE')
+            with arcpy.da.UpdateCursor(landuse_int, ['SHAPE@AREA', 'oArea', 'propArea']) as cursor:
+                for row in cursor:
+                    row[2] = row[0]/row[1]
+                    cursor.updateRow(row)
+            areaTbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['SegID', 'LUI_CLASS'])
+            areaPivTbl = arcpy.PivotTable_management(areaTbl, ['SegID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
+
+            # create empty dictionary to hold input table field values
+            tblDict = {}
+            # add values to dictionary
+            with arcpy.da.SearchCursor(areaPivTbl, ['SegID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
+                for row in cursor:
+                    tblDict[row[0]] = [row[1], row[2], row[3], row[4]]
+            # populate flowline network out fields
+            arcpy.AddField_management(out_network, "iLUI_pVLow", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iLUI_pLow", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iLUI_pMod", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iLUI_pHigh", 'DOUBLE')
+
+            with arcpy.da.UpdateCursor(out_network, ['SegID', 'iLUI_pVLow', 'iLUI_pLow', 'iLUI_pMod', 'iLUI_pHigh']) as cursor:
+                for row in cursor:
+                    try:
+                        aKey = row[0]
+                        row[1] = round(100*tblDict[aKey][0], 2)
+                        row[2] = round(100*tblDict[aKey][1], 2)
+                        row[3] = round(100*tblDict[aKey][2], 2)
+                        row[4] = round(100*tblDict[aKey][3], 2)
+                        cursor.updateRow(row)
+                    except:
+                        pass
+            tblDict.clear()
 
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")

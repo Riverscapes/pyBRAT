@@ -515,23 +515,78 @@ class Conflict_Potential_tool(object):
         param1.filter.list = ["Polyline"]
 
         param2 = arcpy.Parameter(
+            displayName="Distance from road-stream crossing: LOW conflict threshold (in meters)",
+            name = "CrossingLow",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param2.value = 10.0
+
+        param3 = arcpy.Parameter(
+            displayName="Distance from road-stream crossing: HIGH conflict threshold (in meters)",
+            name = "CrossingHigh",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param3.value = 100.0
+
+        param4 = arcpy.Parameter(
+            displayName="Distance from road: LOW conflict threshold (in meters)",
+            name = "AdjLow",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param4.value = 10.0
+
+        param5 = arcpy.Parameter(
+            displayName="Distance from road: HIGH conflict threshold (in meters)",
+            name = "AdjHigh",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param5.value = 100.0
+
+        param6 = arcpy.Parameter(
+            displayName="Distance from canal: LOW conflict threshold (in meters)",
+            name = "CanalLow",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param6.value = 50.0
+
+        param7 = arcpy.Parameter(
+            displayName="Distance from canal: HIGH conflict threshold (in meters)",
+            name = "CanalHigh",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param7.value = 200.0
+
+        param8 = arcpy.Parameter(
+            displayName="Distance from railroad: LOW conflict threshold (in meters)",
+            name = "RRLow",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param8.value = 30.0
+
+        param9 = arcpy.Parameter(
+            displayName="Distance from railroad: HIGH conflict threshold (in meters)",
+            name = "RRHigh",
+            datatype="GPDouble",
+            parameterType="Required",
+            direction="Input")
+        param9.value = 100.0
+
+        param10 = arcpy.Parameter(
             displayName = "Name conflict potential model output network",
             name = "out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        # param2.symbology = os.path.join(os.path.dirname(__file__), "oPC.lyr")
+        # param10.symbology = os.path.join(os.path.dirname(__file__), "oPC.lyr")
 
-        param3 = arcpy.Parameter(
-            displayName="Set Scratch Workspace",
-            name="scratch",
-            datatype="DEWorkspace",
-            parameterType="Required",
-            direction="Input")
-        param3.filter.list = ['Local Database']
-        param3.value = arcpy.env.scratchWorkspace
-
-        return [param0, param1, param2, param3]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -553,8 +608,15 @@ class Conflict_Potential_tool(object):
         reload(Conflict_Potential)
         Conflict_Potential.main(p[0].valueAsText,
                                 p[1].valueAsText,
-                                p[2].valueAsText,
-                                p[3].valueAsText)
+                                p[2].value,
+                                p[3].value,
+                                p[4].value,
+                                p[5].value,
+                                p[6].value,
+                                p[7].value,
+                                p[8].value,
+                                p[9].value,
+                                p[10].valueAsText)
         return
 
 class Conservation_Restoration_tool(object):

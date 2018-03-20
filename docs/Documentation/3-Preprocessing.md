@@ -13,7 +13,7 @@ Some preprocessing of the following inputs in necessary before running the tools
 
 - Classify the vegetation rasters according to suitability of dam building material.  Add a "VEG_CODE" field to the raster attribute table and assign a value from 0 to 4 according to the chart below:
 
-![veg_code]({{ site.baseurl }}/assets/Images/veg_code.png)
+![veg_code]({{ site.baseurl }}/assets/images/veg_code.png)
 Figure 1. Diagram showing Landfire land cover data classification for the beaver dam capacity model.
 
 - If you use Landifre data, you can follow these steps:
