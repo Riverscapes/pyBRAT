@@ -30,6 +30,9 @@ def main(inputNetwork):
         arcpy.AddField_management(inputNetwork, "ClusterID", "SHORT", "", "", "", "", "NULLABLE")
     arcpy.CalculateField_management(inputNetwork, "ClusterID", -1, "PYTHON")
 
+    for i in range(len(clusters)):
+        clusters[i].id = i+1
+
     with arcpy.da.UpdateCursor(inputNetwork, ['SegID', 'ClusterID']) as cursor:
         for row in cursor:
             for cluster in clusters:
@@ -148,4 +151,10 @@ def mergeClusters(cluster_one, cluster_two, new_stream):
 
 
 def handleClusters(inputNetwork, clusters):
+    """
+    Takes the clusters and applies the drainage area that we want to it
+    :param inputNetwork:
+    :param clusters:
+    :return:
+    """
     pass
