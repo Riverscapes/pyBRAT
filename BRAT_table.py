@@ -140,6 +140,7 @@ def main(
 
     # find braided reaches
     FindBraidedNetwork.main(out_network)
+    addMainstemAttribute(out_network)
 
     # run write xml function
     arcpy.AddMessage('Writing project xml')
@@ -1023,6 +1024,17 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
         # write xml
         exxml.write()
 
+
+def addMainstemAttribute(out_network):
+    """
+    Adds the mainstem attribute to our output network
+    :param out_network: The network that we want to work with
+    :return: None
+    """
+    listFields = arcpy.ListFields(out_network,"IsMainstem")
+    if len(listFields) is not 1:
+        arcpy.AddField_management(out_network, "IsMainstem", "SHORT", "", "", "", "", "NULLABLE")
+    arcpy.CalculateField_management(out_network,"IsMainstem",1,"PYTHON")
 
 def getUUID():
     return str(uuid.uuid4()).upper()
