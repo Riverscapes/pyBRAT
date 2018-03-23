@@ -302,7 +302,7 @@ class BRAT_table_tool(object):
 class BRAT_braid_handler(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 3. BRAT Braid Handler"
+        self.label = "Step 3. BRAT Braid Handler (Optional)"
         self.description = "In development and currently non-operational. Gives braided streams the appropriate values, once mainstems have been identified in the stream network."
         self.canRunInBackground = False
 
