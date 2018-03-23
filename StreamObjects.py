@@ -44,7 +44,7 @@ class Cluster:
     def containsStream(self, given_stream):
         """
         Returns True if the stream given is inside the cluster, False if otherwise
-        :param given_stream: The stream ID that we want to check
+        :param given_stream: The stream ID that we want to check. Is an int
         :return: Boolean
         """
         for stream in self.streams:

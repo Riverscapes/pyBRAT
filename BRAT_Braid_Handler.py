@@ -23,23 +23,6 @@ def main(inputNetwork):
     arcpy.AddMessage("Finding clusters...")
     clusters = findClusters(inputNetwork)
 
-    arcpy.AddMessage("Adding clusterID to the input network...")
-
-    listFields = arcpy.ListFields(inputNetwork, "ClusterID")
-    if len(listFields) is not 1:
-        arcpy.AddField_management(inputNetwork, "ClusterID", "SHORT", "", "", "", "", "NULLABLE")
-    arcpy.CalculateField_management(inputNetwork, "ClusterID", -1, "PYTHON")
-
-    for i in range(len(clusters)):
-        clusters[i].id = i+1
-
-    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', 'ClusterID']) as cursor:
-        for row in cursor:
-            for cluster in clusters:
-                if cluster.containsStream(row[0]):
-                    row[1] = cluster.id
-            cursor.updateRow(row)
-
     handleClusters(inputNetwork, clusters)
 
 
@@ -153,8 +136,70 @@ def mergeClusters(cluster_one, cluster_two, new_stream):
 def handleClusters(inputNetwork, clusters):
     """
     Takes the clusters and applies the drainage area that we want to it
-    :param inputNetwork:
-    :param clusters:
-    :return:
+    :param inputNetwork: The network that we were given at first
+    :param clusters: The list of clusters that we're working with
+    :return: None
     """
-    pass
+    addClusterID(inputNetwork, clusters)
+    updateNetworkDrainageValues(inputNetwork, clusters)
+
+
+def addClusterID(inputNetwork, clusters):
+    """
+    Adds cluster ID attribute to the input network
+    :param inputNetwork: The network to add this info to
+    :param clusters: The list of clusters that we're dealing with
+    :return: None
+    """
+    arcpy.AddMessage("Adding clusterID to the input network...")
+
+    listFields = arcpy.ListFields(inputNetwork, "ClusterID")
+    if len(listFields) is not 1:
+        arcpy.AddField_management(inputNetwork, "ClusterID", "SHORT", "", "", "", "", "NULLABLE")
+    arcpy.CalculateField_management(inputNetwork, "ClusterID", -1, "PYTHON")
+
+    for i in range(len(clusters)):
+        clusters[i].id = i + 1
+
+    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', 'ClusterID', 'IsBraided']) as cursor:
+        for row in cursor:
+            if row[2] == 1: # If the stream is braided. If it isn't, we don't care about its cluster id
+                for cluster in clusters:
+                    if cluster.containsStream(row[0]):
+                        row[1] = cluster.id
+                cursor.updateRow(row)
+
+
+def updateNetworkDrainageValues(inputNetwork, clusters):
+    """
+    Updates all the streams in our clusters based on whether or not they are mainstems
+    :param inputNetwork: The network we gave as an input
+    :param clusters: The list of clusters for us to work with
+    :return: None
+    """
+    arcpy.AddMessage("Updating Drainage Area Values...")
+    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', 'IsMainstem', 'iGeo_DA', 'IsBraided']) as cursor:
+        for row in cursor:
+            if row[3] == 1:
+                updateStreamDrainageValue(clusters, row, cursor)
+
+
+def updateStreamDrainageValue(clusters, row, cursor):
+    """
+    Updates the drainage area values for a single stream in the network
+    :param clusters: The list of clusters we got earlier
+    :param row: The row of the input network that we want to update
+    :param cursor: The cursor we're using for the stream network
+    :return: None
+    """
+    sidechannelDAValue = 25.0
+
+    for cluster in clusters:
+        if cluster.containsStream(row[0]):
+            if row[1] == 0: # if it's a side channel
+                row[2] = sidechannelDAValue
+            else:
+                row[2] = cluster.maxDA
+
+    cursor.updateRow(row)
+
