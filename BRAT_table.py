@@ -1036,6 +1036,7 @@ def addMainstemAttribute(out_network):
         arcpy.AddField_management(out_network, "IsMainstem", "SHORT", "", "", "", "", "NULLABLE")
     arcpy.CalculateField_management(out_network,"IsMainstem",1,"PYTHON")
 
+
 def getUUID():
     return str(uuid.uuid4()).upper()
 
