@@ -20,6 +20,7 @@ import uuid
 def main(
     projPath,
     in_network,
+    landuse,
     CrossingLow,
     CrossingHigh,
     AdjLow,
@@ -60,10 +61,10 @@ def main(
 
     arcpy.CopyFeatures_management(in_network, out_network)
 
-    # check for oPC_Prob field and delete if already exists
+    # check for oPC_Score field and delete if already exists
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "oPC_Prob" in fields:
-        arcpy.DeleteField_management(out_network, "oPC_Prob")
+    if "oPC_Score" in fields:
+        arcpy.DeleteField_management(out_network, "oPC_Score")
 
     # create segid array for joining output
     segid_np = arcpy.da.FeatureClassToNumPyArray(out_network, "SegID")
@@ -73,110 +74,141 @@ def main(
     if "iPC_RoadX" in fields:
         roadx_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_RoadX")
         roadx = np.asarray(roadx_array, np.float64)
-        #roadx_prob = np.zeros_like(roadx)
-        roadx_prob = np.empty_like(roadx)
+        roadx_pc = np.empty_like(roadx)
         m = slopeInt(CrossingLow, CrossingHigh)[0]
         b = slopeInt(CrossingLow, CrossingHigh)[1]
         for i in range(len(roadx)):
             if roadx[i] >= 0 and roadx[i] <= CrossingLow:
-                roadx_prob[i] = 0.99
+                roadx_pc[i] = 0.99
             elif roadx[i] > CrossingLow and roadx[i] <= CrossingHigh:
-                roadx_prob[i] = m * roadx[i] + b
+                roadx_pc[i] = m * roadx[i] + b
             elif roadx[i] > CrossingHigh:
-                roadx_prob[i] = 0.01
+                roadx_pc[i] = 0.01
             else:
-                roadx_prob[i] = 0.01
+                roadx_pc[i] = 0.01
 
         del roadx_array, roadx, m, b
     else:
-        roadx_prob = np.zeros_like(segid_array)
+        roadx_pc = np.zeros_like(segid_array)
 
     # road adjacent conflict
     if "iPC_RoadAd" in fields:
         roadad_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_RoadAd")
         roadad = np.asarray(roadad_array, np.float64)
-        #roadad_prob = np.zeros_like(roadad)
-        roadad_prob = np.empty_like(roadad)
+        #roadad_pc = np.zeros_like(roadad)
+        roadad_pc = np.empty_like(roadad)
         m = slopeInt(AdjLow, AdjHigh)[0]
         b = slopeInt(AdjLow, AdjHigh)[1]
         for i in range(len(roadad)):
             if roadad[i] >= 0 and roadad[i] <= AdjLow:
-                roadad_prob[i] = 0.99
+                roadad_pc[i] = 0.99
             elif roadad[i] > AdjLow and roadad[i] <= AdjHigh:
-                roadad_prob[i] = m * roadad[i] + b
+                roadad_pc[i] = m * roadad[i] + b
             elif roadad[i] > AdjHigh:
-                roadad_prob[i] = 0.01
+                roadad_pc[i] = 0.01
             else:
-                roadad_prob[i] = 0.01
+                roadad_pc[i] = 0.01
 
         del roadad_array, roadad, m, b
     else:
-        roadad_prob = np.zeros_like(segid_array)
+        roadad_pc = np.zeros_like(segid_array)
 
     # canal conflict
     if "iPC_Canal" in fields:
         canal_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_Canal")
         canal = np.asarray(canal_array, np.float64)
-        #canal_prob = np.zeros_like(canal)
-        canal_prob = np.empty_like(canal)
+        #canal_pc = np.zeros_like(canal)
+        canal_pc = np.empty_like(canal)
         m = slopeInt(CanalLow, CanalHigh)[0]
         b = slopeInt(CanalLow, CanalHigh)[1]
         for i in range(len(canal)):
             if canal[i] >= 0 and canal[i] <= CanalLow:
-                canal_prob[i] = 0.99
+                canal_pc[i] = 0.99
             elif canal[i] > CanalLow and canal[i] <= CanalHigh:
-                canal_prob[i] = m * canal[i] + b
+                canal_pc[i] = m * canal[i] + b
             elif canal[i] > CanalHigh:
-                canal_prob[i] = 0.01
+                canal_pc[i] = 0.01
             else:
-                canal_prob[i] = 0.01
+                canal_pc[i] = 0.01
 
         del canal_array, canal, m, b
     else:
-        canal_prob = np.zeros_like(segid_array)
+        canal_pc = np.zeros_like(segid_array)
 
     # railroad conflict
     if "iPC_RR" in fields:
         rr_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_RR")
         rr = np.asarray(rr_array, np.float64)
-        #rr_prob = np.zeros_like(rr)
-        rr_prob = np.empty_like(rr)
+        #rr_pc = np.zeros_like(rr)
+        rr_pc = np.empty_like(rr)
         m = slopeInt(RRLow, RRHigh)[0]
         b = slopeInt(RRLow, RRHigh)[1]
         for i in range(len(rr)):
             if rr[i] >= 0 and rr[i] <= RRLow:
-                rr_prob[i] = 0.99
+                rr_pc[i] = 0.99
             elif rr[i] > RRLow and rr[i] <= RRHigh:
-                rr_prob[i] = m * rr[i] + b
+                rr_pc[i] = m * rr[i] + b
             elif rr[i] > RRHigh:
-                rr_prob[i] = 0.01
+                rr_pc[i] = 0.01
             else:
-                rr_prob[i] = 0.01
+                rr_pc[i] = 0.01
 
         del rr_array, rr, m, b
     else:
-        rr_prob = np.zeros_like(segid_array)
+        rr_pc = np.zeros_like(segid_array)
 
-    oPC_Prob = np.fmax(roadx_prob, np.fmax(roadad_prob, np.fmax(canal_prob, rr_prob)))
+    # landuse conflict
+    if "iPC_LU" in fields:
+        lu_array = arcpy.da.FeatureClassToNumPyArray(out_network, "iPC_LU")
+        lu = np.asarray(lu_array, np.float64)
+        lu_pc = np.empty_like(lu)
+
+        # for i in range(len(lu)):
+        #     if lu[i] >= 2:
+        #         lu_pc[i] = 0.75
+        #     elif lu[i] >= 1.25 and lu[i] < 2:
+        #         lu_pc[i] = 0.5
+        #     elif lu[i] < 1.25:
+        #         lu_pc[i] = 0.01
+        #     else:
+        #         lu_pc[i] = 0.01
+
+        for i in range(len(lu)):
+            if lu[i] >= 1.0:
+                lu_pc[i] = 0.99
+            elif lu[i] >= 0.66 and lu[i] < 1.0:
+                lu_pc[i] = 0.75
+            elif lu[i] >= 0.33 and lu[i] < 0.66:
+                lu_pc[i] = 0.5
+            elif lu[i] > 0 and lu[i] < 0.33:
+                lu_pc[i] = 0.25
+            else:
+                lu_pc[i] = 0.01
+    else:
+        lu_pc = np.zeros_like(segid_array)
+
+    # get max of all individual conflict potential scores
+    # this is our conflict potential output
+    oPC_Score = np.fmax(roadx_pc, np.fmax(roadad_pc, np.fmax(canal_pc, np.fmax(rr_pc, lu_pc))))
 
     # save the output text file
-    columns = np.column_stack((segid_array, oPC_Prob))
-    out_table = os.path.dirname(out_network) + "/oPC_Prob_Table.txt"
-    np.savetxt(out_table, columns, delimiter = ",", header = "SegID, oPC_Prob", comments = "")
+    columns = np.column_stack((segid_array, oPC_Score))
+    out_table = os.path.dirname(out_network) + "/oPC_Score_Table.txt"
+    np.savetxt(out_table, columns, delimiter = ",", header = "SegID, oPC_Score", comments = "")
 
-    opc_prob_table = scratch + "/opc_prob_table"
-    arcpy.CopyRows_management(out_table, opc_prob_table)
+    opc_score_table = scratch + "/opc_score_table"
+    arcpy.CopyRows_management(out_table, opc_score_table)
 
     # join the output to the flowline network
     # create empty dictionary to hold input table field values
     tblDict = {}
     # add values to dictionary
-    with arcpy.da.SearchCursor(opc_prob_table, ['SegID', 'oPC_Prob']) as cursor:
+    with arcpy.da.SearchCursor(opc_score_table, ['SegID', 'oPC_Score']) as cursor:
         for row in cursor:
             tblDict[row[0]] = row[1]
     # populate flowline network out field
-    arcpy.AddField_management(out_network, 'oPC_Prob', 'DOUBLE')
-    with arcpy.da.UpdateCursor(out_network, ['SegID', 'oPC_Prob']) as cursor:
+    arcpy.AddField_management(out_network, 'oPC_Score', 'DOUBLE')
+    with arcpy.da.UpdateCursor(out_network, ['SegID', 'oPC_Score']) as cursor:
         for row in cursor:
             try:
                 aKey = row[0]
@@ -187,7 +219,7 @@ def main(
     tblDict.clear()
 
     arcpy.Delete_management(out_table)
-    arcpy.Delete_management(opc_prob_table)
+    arcpy.Delete_management(opc_score_table)
 
     addxmloutput(projPath, in_network, out_network)
 
@@ -234,5 +266,6 @@ if __name__ == '__main__':
         sys.argv[8],
         sys.argv[9],
         sys.argv[10],
-        sys.argv[11]
+        sys.argv[11],
+        sys.argv[12]
     )
