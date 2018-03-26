@@ -24,8 +24,8 @@ def main(projPath, in_network, out_name):
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # check for oPBRC field and delete if exists
-    network_fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "oPBRC" in network_fields:
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    if "oPBRC" in fields:
         arcpy.DeleteField_management(out_network, "oPBRC")
 
     LowConflict = 0.25
@@ -34,68 +34,64 @@ def main(projPath, in_network, out_name):
 
     arcpy.AddField_management(out_network, "oPBRC", "TEXT", "", "", 60)
 
-    cursor = arcpy.da.UpdateCursor(out_network, ["oCC_EX", "oCC_PT", "oPC_Prob", "oPBRC"])
-    for row in cursor:
+    with arcpy.da.UpdateCursor(out_network, ["oCC_EX", "oCC_PT", "oPC_Score", "iPC_ModLU", "iPC_HighLU", "oPBRC"]) as cursor:
+        for row in cursor:
 
-        if row[0] == 0:  # no existing capacity
-            if row[1] > 5:
-                if row[2] <= IntConflict:
-                    row[3] = "Long Term Possibility Restoration Zone"
+            if row[0] <= 1.0:  # none or rare existing capacity
+                if row[1] <= 1.0:
+                    row[5] = "Unsuitable: Naturally Limited"
+                elif row[2] > 0.75:
+                    row[5] = "Unsuitable: Anthropogenically Limited"
+                elif row[1] <= 5.0:
+                    row[5] = "Quick Return Restoration Zone"
+                elif row[2] > 0.25:
+                    row[5] = "Long Term Possibility Restoration Zone"
+                elif row[3] + row[4] > 0.5:
+                    row[5] = "Long Term Possibility Restoration Zone"
                 else:
-                    row[3] = "Unsuitable: Anthropogenically Limited"
-            elif row[1] > 1:
-                row[3] = "Unsuitable: Anthropogenically Limited"
+                    row[5] = "Quick Return Restoration Zone"
+
+            elif row[0] <= 5.0:  # occasional existing capacity
+                if row[2] > 0.75:
+                    row[5] = "Unsuitable: Anthropogenically Limited"
+                elif row[1] > 5.0:
+                    row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
+                elif row[2] <= 0.25:
+                    row[5] = "Quick Return Restoration Zone"
+                elif row[3] + row[4] > 0.5:
+                    row[5] = "Long Term Possibility Restoration Zone"
+                else:
+                    row[5] = "Living with Beaver (Low Source)"
+
+            elif row[0] <= 15.0:  # frequent existing capacity
+                if row[2] > 0.75:
+                    row[5] = "Unsuitable: Anthropogenically Limited"
+                elif row[1] > 15.0:
+                    if row[2] <= 0.25:
+                        row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
+                    else:
+                        row[5] = "Living with Beaver (High Source)"
+                elif row[2] <= 0.25:
+                    row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
+                elif row[3] + row[4] > 0.5:
+                    row[5] = "Long Term Possibility Restoration Zone"
+                else:
+                    row[5] = "Quick Return Restoration Zone"
+
+            elif row[0] > 15.0:  # pervasive existing capacity
+                if row[2] <= 0.25:
+                    row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
+                elif row[2] > 0.75:
+                    row[5] = "Unsuitable: Anthropogenically Limited"
+                elif row[3] + row[4] > 0.5:
+                    row[5] = "Living with Beaver (High Source)"
+                else:
+                    row[5] = "Quick Return Restoration Zone"
+
             else:
-                row[3] = "Unsuitable: Naturally Limited"
+                row[5] = "NOT PREDICTED - Requires Manual Attention"
 
-        elif row[0] > 0 and row[0] <= 1:  # rare existing capacity
-            if row[1] > 5:
-                if row[2] <= IntConflict:
-                    row[3] = "Quick Return Restoration Zone"
-                else:
-                    row[3] = "Living with Beaver (Low Source)"
-            elif row[1] > 1:
-                if row[2] <= IntConflict:
-                    row[3] = "Long Term Possibility Restoration Zone"
-                else:
-                    row[3] = "Living with Beaver (Low Source)"
-            else:
-                row[3] = "Unsuitable: Naturally Limited"
-
-        elif row[0] > 1 and row[0] <= 5:  # occasional existing capacity
-            if row[1] > 5:
-                if row[2] <= IntConflict:
-                    row[3] = "Long Term Possibility Restoration Zone"
-                else:
-                    row[3] = "Living with Beaver (Low Source)"
-            else:
-                row[3] = "Unsuitable: Naturally Limited"
-
-        elif row[0] > 5 and row[0] <= 15:  # frequent existing capacity
-            if row[1] > 15:
-                if row[2] <= IntConflict:
-                    row[3] = "Quick Return Restoration Zone"
-                else:
-                    row[3] = "Living with Beaver (High Source)"
-            else:
-                if row[2] <= IntConflict:
-                    row[3] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
-                else:
-                    row[3] = "Living with Beaver (High Source)"
-
-        elif row[0] > 15 and row[0] <= 50: # pervasive existing capacity
-            if row[2] <= IntConflict:
-                row[3] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
-            else:
-                row[3] = "Living with Beaver (High Source)"
-
-        else:
-            row[3] = "NOT PREDICTED - Requires Manual Attention"
-
-        cursor.updateRow(row)
-
-    del row
-    del cursor
+            cursor.updateRow(row)
 
     addxmloutput(projPath, in_network, out_network)
 
