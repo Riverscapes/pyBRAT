@@ -634,18 +634,15 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     if landuse is not None:
         arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
         # create raster with just landuse code values
-        landuse_lu = Lookup(landuse, "CODE")
+        lu_ras = Lookup(landuse, "LU_CODE")
         # calculate mean landuse value within 100 m buffer of each network segment
-        landuseTbl = ZonalStatisticsAsTable(buf_100m, "SegID", landuse_lu, scratch + "/landuseTbl", 'DATA', "MEAN")
+        luTbl = ZonalStatisticsAsTable(buf_100m, "SegID", lu_ras, scratch + "/luTbl", 'DATA', "MEAN")
         # populate flowline network mean landuse value "iPC_LU" field
-        dictJoinField(landuseTbl, 'MEAN', out_network, "iPC_LU")
-        # delete temp fcs, tbls, etc.
-        items = [landuse_lu, landuseTbl]
-        for item in items:
-            arcpy.Delete_management(item)
+        dictJoinField(luTbl, 'MEAN', out_network, "iPC_LU")
 
-        # get percentage of each land use intensity class in 100 m buffer of stream segment
+        # get percentage of each land use class in 100 m buffer of stream segment
         fields = [f.name for f in arcpy.ListFields(landuse)]
+
         if "LUI_Class" in fields:
             buf_fields = [f.name for f in arcpy.ListFields(buf_100m)]
             if 'oArea' not in buf_fields:
@@ -671,12 +668,12 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                 for row in cursor:
                     tblDict[row[0]] = [row[1], row[2], row[3], row[4]]
             # populate flowline network out fields
-            arcpy.AddField_management(out_network, "iLUI_pVLow", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iLUI_pLow", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iLUI_pMod", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iLUI_pHigh", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iPC_VLowLU", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iPC_LowLU", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iPC_ModLU", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iPC_HighLU", 'DOUBLE')
 
-            with arcpy.da.UpdateCursor(out_network, ['SegID', 'iLUI_pVLow', 'iLUI_pLow', 'iLUI_pMod', 'iLUI_pHigh']) as cursor:
+            with arcpy.da.UpdateCursor(out_network, ['SegID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
                 for row in cursor:
                     try:
                         aKey = row[0]
@@ -688,6 +685,11 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                     except:
                         pass
             tblDict.clear()
+
+        # delete temp fcs, tbls, etc.
+        items = [lu_ras, luTbl]
+        for item in items:
+            arcpy.Delete_management(item)
 
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")
