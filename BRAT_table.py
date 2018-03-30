@@ -452,7 +452,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     # calculate mean distance from railroads ('iPC_RR')
     # here we only care about railroads in the valley bottom
     if railroad is not None:
-        arcpy.AddField_management(out_network, "iPC_RR")
+        arcpy.AddField_management(out_network, "iPC_RR", "DOUBLE")
         # clip railroads to the valley bottom
         rr_subset = arcpy.Clip_analysis(railroad, valley_bottom, tempDir + '\\rr_subset.shp')
         # get count of railroads in the valley bottom
