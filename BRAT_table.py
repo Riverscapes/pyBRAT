@@ -106,10 +106,10 @@ def main(
     midpoint_buffer = arcpy.Buffer_analysis(midpoints, scratch + "/midpoint_buffer", "100 Meters")
     # create network 30 m buffer
     buf_30m = os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"
-    arcpy.Buffer_analysis(seg_network, buf_30m, "30 Meters", "", "FLAT")
+    arcpy.Buffer_analysis(seg_network, buf_30m, "30 Meters", "", "ROUND")
     # create network 100 m buffer
     buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
-    arcpy.Buffer_analysis(seg_network, buf_100m, "100 Meters", "", "FLAT", "NONE")
+    arcpy.Buffer_analysis(seg_network, buf_100m, "100 Meters", "", "ROUND")
 
     # name and create output folder
     j = 1
@@ -153,26 +153,72 @@ def main(
 
     arcpy.CheckInExtension("spatial")
 
-
+# zonal statistics within buffer function
 # dictionary join field function
-def dictJoinField(inTbl, inTblField, outFC, outFCField):
-    # create empty dictionary to hold input table field values
-    tblDict = {}
-    # add values to dictionary
-    with arcpy.da.SearchCursor(inTbl, ['SegID', inTblField]) as cursor:
+def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, scratch):
+    # get input raster stat value within each buffer
+    # note: zonal stats as table does not support overlapping polygons so we will check which
+    #       segment buffers output was produced for and which we need to run tool on again
+    statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'SegID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
+    # get list of segment buffers where zonal stats tool produced output
+    haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'SegID')]
+    # create dictionary to hold all segment buffer min dem z values
+    statDict = {}
+    # add buffer raster stat values to dictionary
+    with arcpy.da.SearchCursor(statTbl, ['SegID', statField]) as cursor:
         for row in cursor:
-            tblDict[row[0]] = row[1]
-    # populate flowline network min distance 'iPC_RoadX' field
+            statDict[row[0]] = row[1]
+    # create list of overlapping buffer segments (i.e., where zonal stats tool did not produce output)
+    needStatList = []
+    with arcpy.da.SearchCursor(buffer, ['SegID']) as cursor:
+        for row in cursor:
+            if row[0] not in haveStatList:
+                needStatList.append(row[0])
+    # run zonal stats until we have output for each overlapping buffer segment
+    while len(needStatList) > 0:
+        # create tuple of segment ids where still need raster values
+        needStat = ()
+        for seg in needStatList:
+            if seg not in needStat:
+                needStat += (seg,)
+        # use the segment id tuple to create selection query and run zonal stats tool
+        if len(needStat) == 1:
+            quer = '"SegID" = ' + str(needStat[0])
+        else:
+            quer = '"SegID" IN ' + str(needStat)
+        tmp_buff_lyr = arcpy.MakeFeatureLayer_management(buffer, 'tmp_buff_lyr')
+        arcpy.SelectLayerByAttribute_management(tmp_buff_lyr, 'NEW_SELECTION', quer)
+        stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'SegID', ras, os.path.join(scratch, 'stat'), 'DATA', statType)
+        # add segment stat values from zonal stats table to main dictionary
+        with arcpy.da.SearchCursor(stat, ['SegID', statField]) as cursor:
+            for row in cursor:
+                statDict[row[0]] = row[1]
+        # create list of segments that were run and remove from 'need to run' list
+        haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'SegID')]
+        for seg in haveStatList2:
+            needStatList.remove(seg)
+        arcpy.Delete_management(stat)
+        # if need to run list is empty exit while loop
+        if len(needStatList) == 0:
+            break
+    # populate dictionary value to output field by SegID
     with arcpy.da.UpdateCursor(outFC, ['SegID', outFCField]) as cursor:
         for row in cursor:
             try:
                 aKey = row[0]
-                row[1] = tblDict[aKey]
+                row[1] = statDict[aKey]
                 cursor.updateRow(row)
             except:
                 pass
-    tblDict.clear()
-
+    statDict.clear()
+    # delete temp fcs, tbls, etc.
+    #items = [statTbl, haveStatList, haveStatList2, needStatList, stat, tmp_buff_lyr, needStat]
+    lists = [haveStatList, haveStatList2, needStatList, needStat]
+    for list in lists:
+        del(list)
+    items = [statTbl, stat, tmp_buff_lyr]
+    for item in items:
+        arcpy.Delete_management(item)
 
 # geo attributes function
 # calculates min and max elevation, length, slope, and drainage area for each flowline segment
@@ -197,69 +243,19 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
     # function to attribute start/end elevation (dem z) to each flowline segment
     def zSeg(vertexType, outField):
         # create start/end points for each flowline segment
-        tmp_pts = arcpy.FeatureVerticesToPoints_management(out_network, os.path.join(scratch, 'tmp_pts'), vertexType)
-        # create 50 meter buffer around each start/end point
-        tmp_buff = arcpy.Buffer_analysis(tmp_pts, os.path.join(scratch, 'tmp_buff'), '30 Meters')
+        tmp_pts = os.path.join(scratch, 'tmp_pts')
+        arcpy.FeatureVerticesToPoints_management(out_network, tmp_pts, vertexType)
+        # create 30 meter buffer around each start/end point
+        tmp_buff = os.path.join(scratch, 'tmp_buff')
+        arcpy.Buffer_analysis(tmp_pts, tmp_buff, '30 Meters')
         # get min dem z value within each buffer
-        # note: zonal stats as table does not support overlapping polygons so we will check which
-        #       segment buffers output was produced for and which we need to run tool on again
-        zTbl = arcpy.sa.ZonalStatisticsAsTable(tmp_buff, 'SegID', DEM, os.path.join(scratch, 'zTbl'), 'DATA', 'MINIMUM')
-        # get list of segment buffers where zonal stats tool produced output
-        haveZList = [row[0] for row in arcpy.da.SearchCursor(zTbl, 'SegID')]
-        # create dictionary to hold all segment buffer min dem z values
-        zDict = {}
-        # add min dem z values to dictionary
-        with arcpy.da.SearchCursor(zTbl, ['SegID', 'MIN']) as cursor:
-            for row in cursor:
-                zDict[row[0]] = row[1]
-        # create list of overlapping buffer segments (i.e., where zonal stats tool did not produce output)
-        needZList = []
-        with arcpy.da.SearchCursor(tmp_buff, ['SegID']) as cursor:
-            for row in cursor:
-                if row[0] not in haveZList:
-                    needZList.append(row[0])
-        # run zonal stats until we have output for each overlapping buffer segment
-        while len(needZList) > 0:
-            # create tuple of segment ids where still need dem z values
-            needZ = ()
-            for seg in needZList:
-                if seg not in needZ:
-                    needZ += (seg, )
-            # use the segment id tuple to create selection query and run zonal stats tool
-            if len(needZ) == 1:
-                quer = '"SegID" = ' + str(needZ[0])
-            else:
-                quer = '"SegID" IN ' + str(needZ)
-            tmp_buff_lyr = arcpy.MakeFeatureLayer_management(tmp_buff, 'tmp_buff_lyr')
-            arcpy.SelectLayerByAttribute_management(tmp_buff_lyr, 'NEW_SELECTION', quer)
-            stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'SegID', DEM, os.path.join(scratch, 'stat'), 'DATA', 'MINIMUM')
-            # add segment z values from zonal stats table to main dictionary
-            with arcpy.da.SearchCursor(stat, ['SegID', 'MIN']) as cursor:
-                for row in cursor:
-                    zDict[row[0]] = row[1]
-            # create list of segments that were run and remove from 'need to run' list
-            haveZList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'SegID')]
-            for seg in haveZList2:
-                needZList.remove(seg)
-            # if need to run list is empty exit while loop
-            if len(needZList) == 0:
-                break
-        # add outField to stream network and assign value from dictionary
         arcpy.AddField_management(out_network, outField, "DOUBLE")
-        with arcpy.da.UpdateCursor(out_network, ['SegID', outField]) as cursor:
-            for row in cursor:
-                try:
-                    aKey = row[0]
-                    row[1] = zDict[aKey]
-                    cursor.updateRow(row)
-                except:
-                    pass
+        zonalStatsWithinBuffer(tmp_buff, DEM, 'MINIMUM', 'MIN', out_network, outField, scratch)
 
         # delete temp fcs, tbls, etc.
-        items = [zTbl, tmp_pts, tmp_buff]
+        items = [tmp_pts, tmp_buff]
         for item in items:
             arcpy.Delete_management(item)
-        zDict.clear()
 
     # run zSeg function for start/end of each network segment
     zSeg('START', 'iGeo_ElMax')
@@ -295,11 +291,11 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
     else:
         DrArea = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
     # Todo: check this bc it seems wrong to pull from midpoint buffer
-    daTbl = ZonalStatisticsAsTable(midpoint_buffer, "SegID", DrArea, scratch + "/daTbl", 'DATA', "MAXIMUM")
 
     # add drainage area 'iGeo_DA' field to flowline network
     arcpy.AddField_management(out_network, "iGeo_DA", "DOUBLE")
-    dictJoinField(daTbl, 'MAX', out_network, "iGeo_DA")
+    # get max drainage area within 100 m midpoint buffer
+    zonalStatsWithinBuffer(midpoint_buffer, DrArea, "MAXIMUM", 'MAX', out_network, "iGeo_DA", scratch)
 
     # replace '0' drainage area values with tiny value
     with arcpy.da.UpdateCursor(out_network, ["iGeo_DA"]) as cursor:
@@ -307,11 +303,6 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
             if row[0] == 0:
                 row[0] = 0.00000001
             cursor.updateRow(row)
-
-    # delete temp fcs, tbls, etc.
-    items = [daTbl]
-    for item in items:
-        arcpy.Delete_management(item)
 
 
 # vegetation attributes function
@@ -327,43 +318,36 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 
     # --existing vegetation values--
     veg_lookup = Lookup(coded_veg, "VEG_CODE")
-    # get mean existing veg value within 100 m buffer
-    ex100Tbl = ZonalStatisticsAsTable(buf_100m, "SegID", veg_lookup, scratch + "/ex100Tbl", 'DATA', "MEAN")
     # add mean veg value 'iVeg_100EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100EX", "DOUBLE")
-    dictJoinField(ex100Tbl, 'MEAN', out_network, "iVeg_100EX")
+    # get mean existing veg value within 100 m buffer
+    zonalStatsWithinBuffer(buf_100m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100EX", scratch)
 
-    arcpy.Delete_management(ex100Tbl)
-
-    # get mean existing veg value within 30 m buffer
-    ex30Tbl = ZonalStatisticsAsTable(buf_30m, "SegID", veg_lookup, scratch + "/ex30Tbl", 'DATA', "MEAN")
     # add mean veg value 'iVeg_VT30EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30EX", "DOUBLE")
-    dictJoinField(ex30Tbl, 'MEAN', out_network, "iVeg_30EX")
+    # get mean existing veg value within 30 m buffer
+    zonalStatsWithinBuffer(buf_30m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30EX", scratch)
 
     # delete temp fcs, tbls, etc.
-    items = [ex30Tbl, veg_lookup]
+    items = [veg_lookup]
     for item in items:
         arcpy.Delete_management(item)
 
     # --historic (i.e., potential) vegetation values--
     hist_veg_lookup = Lookup(coded_hist, "VEG_CODE")
 
-    # get mean potential veg value within 100 m buffer
-    pt100Tbl = ZonalStatisticsAsTable(buf_100m, "SegID", hist_veg_lookup, scratch + "/pt100Tbl", 'DATA', "MEAN")
     # add mean veg value 'iVeg_100PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100PT", "DOUBLE")
-    dictJoinField(pt100Tbl, 'MEAN', out_network, "iVeg_100PT")
-    # delete temp fcs, tbls, etc.
-    arcpy.Delete_management(pt100Tbl)
+    # get mean potential veg value within 100 m buffer
+    zonalStatsWithinBuffer(buf_100m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100PT", scratch)
 
-    # get mean potential veg value within 30 m buffer
-    pt30Tbl = ZonalStatisticsAsTable(buf_30m, "SegID", hist_veg_lookup, scratch + "/pt30Tbl", 'DATA', "MEAN")
     # add mean veg value 'iVeg_30PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30PT", "DOUBLE")
-    dictJoinField(pt30Tbl, 'MEAN', out_network, "iVeg_30PT")
+    # get mean potential veg value within 30 m buffer
+    zonalStatsWithinBuffer(buf_30m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30PT", scratch)
+
     # delete temp fcs, tbls, etc.
-    items = [pt30Tbl, hist_veg_lookup]
+    items = [hist_veg_lookup]
     for item in items:
         arcpy.Delete_management(item)
 
@@ -410,11 +394,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             # calculate euclidean distance from road-stream crossings
             ed_roadx = EucDistance(roadx, cell_size = 5)  # cell size of 5 m
             # get minimum distance from road-stream crossings within 30 m buffer of each network segment
-            roadxTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadx, scratch + "/roadxTbl", 'DATA', "MINIMUM")
-            # populate flowline network min distance 'iPC_RoadX' field
-            dictJoinField(roadxTbl, 'MIN', out_network, "iPC_RoadX")
+            zonalStatsWithinBuffer(buf_30m, ed_roadx, "MINIMUM", 'MIN', out_network, "iPC_RoadX", scratch)
+
             # delete temp fcs, tbls, etc.
-            items = [ed_roadx, roadxTbl]
+            items = [ed_roadx]
             for item in items:
                 arcpy.Delete_management(item)
 
@@ -441,11 +424,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             # calculate euclidean distance from roads in the valley bottom
             ed_roadad = EucDistance(road_subset, cell_size = 5) # cell size of 5 m
             # get mean distance from roads in the valley bottom within 30 m buffer of each network segment
-            roadadjTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadad, scratch + "/roadadjTbl", 'DATA', "MEAN")  # might try mean here to make it less restrictive
-            # populate flowline network adjacent road distance "iPC_RoadAd" field
-            dictJoinField(roadadjTbl, 'MEAN', out_network, "iPC_RoadAd")
+            zonalStatsWithinBuffer(buf_30m, ed_roadad, 'MEAN', 'MEAN', out_network, "iPC_RoadAd", scratch)
+
             # delete temp fcs, tbls, etc.
-            items = [ed_roadad, roadadjTbl]
+            items = [ed_roadad]
             for item in items:
                 arcpy.Delete_management(item)
 
@@ -472,11 +454,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             # calculate distance from railroads in the valley bottom
             ed_rr = EucDistance(rr_subset, cell_size = 5)  # cell size of 5 m
             # get mean distance from railroads in the valley bottom within 30 m buffer of each network segment
-            rrTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_rr, tempDir + "/rrTable", 'DATA', "MEAN")
-            # populate flowline network railroad distance "iPC_RR" field
-            dictJoinField(rrTbl, 'MEAN', out_network, "iPC_RR")
+            zonalStatsWithinBuffer(buf_30m, ed_rr, 'MEAN', 'MEAN', out_network, "iPC_RR", scratch)
+
             # delete temp fcs, tbls, etc.
-            items = [ed_rr, rrTbl]
+            items = [ed_rr]
             for item in items:
                 arcpy.Delete_management(item)
 
@@ -503,11 +484,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             # calculate euclidean distance from canals in the valley bottom
             ed_canal = EucDistance(canal_subset, cell_size = 5)  # cell size of 5 m
             # get mean distance from canals in the valley bottom within 30 m buffer of each network segment
-            canalTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_canal, scratch + "/canalTbl", 'DATA', "MEAN")
-            # populate flowline network canal distance "iPC_Canal" field
-            dictJoinField(canalTbl, 'MEAN', out_network, "iPC_Canal")
+            zonalStatsWithinBuffer(buf_30m, ed_canal, 'MEAN', 'MEAN', out_network, "iPC_Canal", scratch)
+
             # delete temp fcs, tbls, etc.
-            items = [ed_canal, canalTbl]
+            items = [ed_canal]
             for item in items:
                 arcpy.Delete_management(item)
 
@@ -636,9 +616,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         # create raster with just landuse code values
         lu_ras = Lookup(landuse, "LU_CODE")
         # calculate mean landuse value within 100 m buffer of each network segment
-        luTbl = ZonalStatisticsAsTable(buf_100m, "SegID", lu_ras, scratch + "/luTbl", 'DATA', "MEAN")
-        # populate flowline network mean landuse value "iPC_LU" field
-        dictJoinField(luTbl, 'MEAN', out_network, "iPC_LU")
+        zonalStatsWithinBuffer(buf_100m, lu_ras, 'MEAN', 'MEAN', out_network, "iPC_LU", scratch)
 
         # get percentage of each land use class in 100 m buffer of stream segment
         fields = [f.name for f in arcpy.ListFields(landuse)]
@@ -687,7 +665,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             tblDict.clear()
 
         # delete temp fcs, tbls, etc.
-        items = [lu_ras, luTbl]
+        items = [lu_ras]
         for item in items:
             arcpy.Delete_management(item)
 
