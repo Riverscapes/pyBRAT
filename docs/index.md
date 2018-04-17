@@ -52,7 +52,8 @@ Initial development of BRAT was funded through a [pilot project](http://etal.joe
 
 <div>
 	<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/images/WFF.jpg" alt="WFF"></a></div>
-	<div class="float-left"><a href="https://wildlife.utah.gov"><img src="/assets/images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
+	
+	<div class="float-right"><a href="https://wildlife.utah.gov"><img src="/assets/images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
 </div>
 
 <div style="clear:both;"></div>
