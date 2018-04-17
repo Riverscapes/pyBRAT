@@ -26,7 +26,7 @@ For more information on beaver and workshops we occasionally teach, see [here](h
 
 ## Developers
 
-[Wally Macfarlane](http://etal.joewheaton.org/people/researchers-technicians/Wally), [Joe Wheaton](http://joewheaton.org/),  [Martha Jensen](http://etal.joewheaton.org/people/where-are-they-now/former-researchers/martha-jensen), Taylor Dudunake & [Jordan Gilbert](http://etal.joewheaton.org/people/researchers-technicians/jordan-gilbert) of Utah State University's [Ecogeomorphology & Topographic Analysis Lab](http://etal.joewheaton.org/)
+[Wally Macfarlane](http://etal.joewheaton.org/Wally), [Joe Wheaton](http://joewheaton.org/),  [Martha Jensen](http://etal.joewheaton.org/people/where-are-they-now/former-researchers/martha-jensen), Taylor Dudunake & [Jordan Gilbert](http://etal.joewheaton.org/jordan-gilbert) of Utah State University's [Ecogeomorphology & Topographic Analysis Lab](http://etal.joewheaton.org/)
 
 ## Releases
 
@@ -61,4 +61,4 @@ BRAT development and implementation for the entire State of Utah was funded by t
 
 ## Interested in Helping?
 
-If you'd like to help improve BRAT and help UDWR better manage beavers, take part in monitoring beaver using our new [Beaver Monitoring App](https://extension.usu.edu/utahwaterwatch/htm/beaver-monitoring-app/) (developed by [EcoTech Solutions](http://www.ecotsolutions.com/) in Partnership with [Utah State University Extension](https://extension.usu.edu/utahwaterwatch/)).
+If you'd like to help improve BRAT and help UDWR better manage beavers, contact [Joe Wheaton](http://www.joewheaton.org/contact.html).
