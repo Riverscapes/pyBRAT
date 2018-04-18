@@ -43,7 +43,13 @@ def main(
     arcpy.CheckOutExtension("Spatial")
 
     # --check input projections--
-    networkSR = arcpy.Describe(seg_network).spatialReference
+    try:
+        networkSR = arcpy.Describe(seg_network).spatialReference
+    except:
+        arcpy.AddError("There was a problem finding the spatial reference of the stream network. "
+                       + "This is commonly caused by trying to run the Table tool directly after running the project "
+                       + "builder. Restarting ArcGIS fixes this problem most of the time.")
+        raise Exception("Spatial reference not found")
     if networkSR.type == "Projected":
         pass
     else:
@@ -139,7 +145,7 @@ def main(
         ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
     # find braided reaches
-    FindBraidedNetwork.main(out_network)
+    FindBraidedNetwork.main(out_network, canal)
     addMainstemAttribute(out_network)
 
     # run write xml function

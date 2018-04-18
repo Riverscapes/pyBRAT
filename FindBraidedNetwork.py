@@ -22,7 +22,7 @@ import sys
 import arcpy
 
 
-def main(fcStreamNetwork):
+def main(fcStreamNetwork, canal):
 
     # Polyline prep
     listFields = arcpy.ListFields(fcStreamNetwork,"IsBraided")
@@ -31,9 +31,16 @@ def main(fcStreamNetwork):
     arcpy.CalculateField_management(fcStreamNetwork,"IsBraided",0,"PYTHON")
 
     # Process
-    findBraidedReaches(fcStreamNetwork)
+    if canal is None:
+        findBraidedReaches(fcStreamNetwork)
+    else:
+        handleCanals(fcStreamNetwork, canal)
 
     return
+
+
+def handleCanals(streamNetwork, canal):
+    findBraidedReaches(streamNetwork)
 
 
 def findBraidedReaches(fcLines):
