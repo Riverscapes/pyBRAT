@@ -17,6 +17,7 @@ import projectxml
 import datetime
 import uuid
 import FindBraidedNetwork
+import BRAT_Braid_Handler
 
 
 def main(
@@ -34,7 +35,8 @@ def main(
     railroad,
     canal,
     landuse,
-    out_name):
+    out_name,
+    findClusters):
 
 
     scratch = 'in_memory'
@@ -147,6 +149,14 @@ def main(
     # find braided reaches
     FindBraidedNetwork.main(out_network, canal)
     addMainstemAttribute(out_network)
+
+    if findClusters:
+        clusters = BRAT_Braid_Handler.findClusters(out_network)
+        BRAT_Braid_Handler.addClusterID(out_network, clusters)
+        arcpy.AddMessage("Finding Clusters")
+    else:
+        arcpy.AddMessage("Not Finding Clusters")
+
 
     # run write xml function
     arcpy.AddMessage('Writing project xml')
