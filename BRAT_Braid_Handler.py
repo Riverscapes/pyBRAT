@@ -12,6 +12,7 @@ import arcpy
 from StreamObjects import Cluster, BraidStream
 
 cluster_id = 0 # Provides a consistent way to refer to clusters, that give more information that a UUID
+CLUSTERFIELDNAME = "ClusterID"
 
 
 def main(inputNetwork):
@@ -20,10 +21,63 @@ def main(inputNetwork):
     :param inputNetwork: The stream network that we want to give mainstem values
     :return: None
     """
-    arcpy.AddMessage("Finding clusters...")
-    clusters = findClusters(inputNetwork)
+    if not hasClusterIDs(inputNetwork):
+        arcpy.AddMessage("Finding clusters...")
+        clusters = findClusters(inputNetwork)
 
-    handleClusters(inputNetwork, clusters)
+        handleClusters(inputNetwork, clusters)
+    else:
+        arcpy.AddMessage("Finding clusters based on the ClusterID field")
+        clusters = getClustersFromIDs(inputNetwork)
+
+        for i in range(len(clusters)):
+            clusters[i].id = i+1
+
+        updateNetworkDrainageValues(inputNetwork, clusters)
+
+
+def getClustersFromIDs(inputNetwork):
+    """
+    Returns an array of clusters based on the Cluster ID elements that they already have
+    :param inputNetwork: The stream network
+    :return: List of clusters
+    """
+    clusters = []
+    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'SegID']
+    with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
+        for polyline, clusterID, drainageArea, segID in cursor:
+            if clusterID != -1:
+                newStream = BraidStream(polyline, segID, drainageArea)
+                addStreamToClustersWithID(newStream, clusterID, clusters)
+
+    return clusters
+
+
+def addStreamToClustersWithID(newStream, clusterID, clusters):
+    """
+    Adds clusters to the stream based on the
+    :param newStream: The stream we want to add
+    :param clusterID: The cluster we want to add it to
+    :param clusters: The clusters we've already made
+    :return: None
+    """
+    for cluster in clusters:
+        if cluster.id == clusterID:
+            cluster.addStream(newStream)
+            return #if we found the stream, we end now
+
+    # If the for loop didn't return, add a new cluster with the new stream as the first stream
+    newCluster = Cluster(clusterID)
+    newCluster.addStream(newStream)
+    clusters.append(newCluster)
+
+
+def hasClusterIDs(inputNetwork):
+    fields = arcpy.ListFields(inputNetwork)
+    for field in fields:
+        if field.name == CLUSTERFIELDNAME:
+            return True
+    return False
 
 
 def findClusters(inputNetwork):
@@ -153,15 +207,15 @@ def addClusterID(inputNetwork, clusters):
     """
     arcpy.AddMessage("Adding clusterID to the input network...")
 
-    listFields = arcpy.ListFields(inputNetwork, "ClusterID")
+    listFields = arcpy.ListFields(inputNetwork, CLUSTERFIELDNAME)
     if len(listFields) is not 1:
-        arcpy.AddField_management(inputNetwork, "ClusterID", "SHORT", "", "", "", "", "NULLABLE")
-    arcpy.CalculateField_management(inputNetwork, "ClusterID", -1, "PYTHON")
+        arcpy.AddField_management(inputNetwork, CLUSTERFIELDNAME, "SHORT", "", "", "", "", "NULLABLE")
+    arcpy.CalculateField_management(inputNetwork, CLUSTERFIELDNAME, -1, "PYTHON")
 
     for i in range(len(clusters)):
         clusters[i].id = i + 1
 
-    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', 'ClusterID', 'IsBraided']) as cursor:
+    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', CLUSTERFIELDNAME, 'IsBraided']) as cursor:
         for row in cursor:
             if row[2] == 1: # If the stream is braided. If it isn't, we don't care about its cluster id
                 for cluster in clusters:
