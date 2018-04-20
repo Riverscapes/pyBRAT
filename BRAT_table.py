@@ -37,7 +37,10 @@ def main(
     landuse,
     out_name,
     findClusters):
-
+    if findClusters == 'false':
+        findClusters = False
+    else:
+        findClusters = True
 
     scratch = 'in_memory'
     #arcpy.env.workspace = scratch
@@ -146,16 +149,14 @@ def main(
         arcpy.AddMessage('Adding "iPC" attributes to network')
         ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
+    addMainstemAttribute(out_network)
     # find braided reaches
     FindBraidedNetwork.main(out_network, canal)
-    addMainstemAttribute(out_network)
 
     if findClusters:
         clusters = BRAT_Braid_Handler.findClusters(out_network)
         BRAT_Braid_Handler.addClusterID(out_network, clusters)
-        arcpy.AddMessage("Finding Clusters")
-    else:
-        arcpy.AddMessage("Not Finding Clusters")
+        arcpy.AddMessage("Finding Clusters...")
 
 
     # run write xml function
