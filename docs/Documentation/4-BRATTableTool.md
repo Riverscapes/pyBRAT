@@ -29,4 +29,4 @@ Inputs:
 
 Click OK to run the tool.
 
-[Continue to Step 5]({{ site.baseurl }}/Documenation/5-iHydAttributes) ->
+[Continue to Step 5]({{ site.baseurl }}/Documentation/5-iHydAttributes) ->
