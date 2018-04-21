@@ -36,7 +36,7 @@ The below dialog box should open and prompt you to load slope input raster:
 
 The below dialog box should open and prompt you to load water source input raster:
 
-![Ungulate%20dist_water]({{ site.baseurl }}/assets/images/Ungulate%20dist_water.png)
+![Ungulate20dist_water]({{ site.baseurl }}/assets/images/Ungulate20dist_water.png)
 
 - **Step 7:** Path to the GrazingCapacityFIS and selected the distance_to_water.asc
 
