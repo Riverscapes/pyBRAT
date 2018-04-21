@@ -6,7 +6,7 @@ title: 5-Running Probability of Ungulate Utilization FIS Model
 
 **Task 1: Run the Probability of Ungulate Utilization (grazing capacity) three input FIS**
 
-- **Step 1: ** Click on the **MATLAB R2012a** icon to start the program.
+- **Step 1:** Click on the **MATLAB R2012a** icon to start the program.
 
 ![3C]({{ site.baseurl }}/assets/images/3C.png)
 
