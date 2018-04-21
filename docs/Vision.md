@@ -13,7 +13,7 @@ With the completion of the Utah statewide run of BRAT (June 2014), BRAT is now f
 
 ## BRAT As A Restoration Planning Tool
 
-BRAT and its sister [R-CAT](http://etal.joewheaton.org/rcat), can be used to plan and prioritize restoration projects as explained in the video below:
+BRAT and its sister [R-CAT](http://rcat.riverscapes.xyz/), can be used to plan and prioritize restoration projects as explained in the video below:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/e28Ix-08PdM" frameborder="0" allowfullscreen></iframe>
 
@@ -26,4 +26,4 @@ BRAT currently consists of an ArcGIS Toolbox. However, we think BRAT could be mo
 
 ## Implementing the Vision
 
-We are actively pursuing funding opportunities to enable us to develop the above tools and disseminate them widely.  If you or your organization would benefit from these tools, please feel free to [contact us](http://www.joewheaton.org/Home/contact) to discuss collaborative opportunities.
+We are actively pursuing funding opportunities to enable us to develop the above tools and disseminate them widely.  If you or your organization would benefit from these tools, please feel free to [contact us](http://www.joewheaton.org/contact.html) to discuss collaborative opportunities.
