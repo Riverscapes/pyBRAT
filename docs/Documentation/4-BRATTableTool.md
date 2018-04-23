@@ -29,7 +29,7 @@ Inputs:
 
 Click OK to run the tool.
 
-##Running the Braid Handler
+## Running the Braid Handler
 
 Currently, there is no good way to find the drainage area values of segments where the river splits, braids, and eventually comes back together. The Flow Accumulation tool can only model a single river, and so gives segments either a much higher value than they should have, or a much lower value. Sometimes, the Flow Accumulation line doesn't accurately line up with the real world dominant stem. An example of this problem is depicted in the pictures below. 
 
@@ -40,7 +40,7 @@ Currently, there is no good way to find the drainage area values of segments whe
 
 In an effort to more accurately model these sorts of stream networks, we have created an optional tool, called the Braid Handler, that identifies clusters of braided networks. It then assigns the sidechannels with a reasonable Drainage Area value and gives the dominant channel, if one exists, the highest Drainage Area value found in the cluster.
 
-###Input Preparation
+### Input Preparation
 The Braid Handler requires the technician to go through and identify with imagery the mainstem of each cluster in the network. Because thiscan be a time intensive process, it is only recommended that the Braid Handler be run on watershed that contain large amounts of heavily braided streams. Outside of these watershed, the Braid Handler offers little benefit for the work put into running it.
 
 The BRAT Table tool produces a stream network with the attributes "IsBraided" and "IsMainstem". In these fields, a value of 0 is "false", and a value of 1 is "true". If the stream is braided, they are automatically assigned a value of 0, "false", for the "IsMainstem" attribute. The most efficient way to identify areas that need editing is to select by attribute streams where "IsBraided"=1. Once this is done, every cluster of braided streams in the network will be hightlighted. Once that is done, visually identify what stream network is on the mainstem of the cluster, and set "IsMainstem" of each of those streams to 1.
