@@ -40,7 +40,7 @@ The Matlab versions of BRAT source code are available from the [matBRAT repo](ht
 
 ## Publications & Reports
 
-- Macfarlane W.W. , Wheaton J.M.**, **Bouwes N., Jensen M., Gilbert J.T., Hough-Snee N., and Shivick J. 2015. [Modeling the capacity of riverscapes to support beaver dams](https://www.researchgate.net/publication/285590037_Modeling_the_capacity_of_riverscapes_to_support_beaver_dams). Geomorphology. DOI: [10.1016/j.geomorph.2015.11.019](http://dx.doi.org/10.1016/j.geomorph.2015.11.019).
+- Macfarlane W.W. , Wheaton J.M., Bouwes N., Jensen M., Gilbert J.T., Hough-Snee N., and Shivick J. 2015. [Modeling the capacity of riverscapes to support beaver dams](https://www.researchgate.net/publication/285590037_Modeling_the_capacity_of_riverscapes_to_support_beaver_dams). Geomorphology. DOI: [10.1016/j.geomorph.2015.11.019](http://dx.doi.org/10.1016/j.geomorph.2015.11.019).
 - Macfarlane W.W., Wheaton J.M., and Jensen, M.L. 2014. [The Beaver Restoration Assessment Tool: A Decision Support and Planning Tool for Utah](http://etal.usu.edu/Downloads/BRAT/UTAH_BRAT_FinalReport.pdf). Ecogeomorphology and Topographic Analysis Lab, Utah State University, Prepared for Utah Division of Wildlife Resources, Logan, Utah, 135 pp.
 - Wheaton JM and Macfarlane WW. 2014. [The Utah Beaver Restoration Assessment Tool: A Decision Support & Planning Tool – Manager Brief](http://etal.usu.edu/Downloads/BRAT/UTAH_BRAT_Management%20Brief.pdf), Ecogeomorphology and Topographic Analysis Lab, Utah State University, Prepared for Utah Division of Wildlife Resources, Logan, UT, 16 pp. 
 - Macfarlane WW and Wheaton JM. 2013. [Modeling the Capacity of Riverscapes to Support Dam-Building Beaver - Case Study: Escalante River Watershed](http://etal.usu.edu/GCT/BRAT_Final_Report.pdf), Final Report Prepared for Grand Canyon Trust and the Walton Family Foundation, Logan, UT, 78 pp.
@@ -52,7 +52,7 @@ Initial development of BRAT was funded through a [pilot project](http://etal.joe
 
 <div>
 	<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/images/WFF.jpg" alt="WFF"></a></div>
-	
+
 	<div class="float-right"><a href="https://wildlife.utah.gov"><img src="/assets/images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
 </div>
 

@@ -52,4 +52,4 @@ Your euclidean distance should look something like the above.
 
 ------
 
-← [Back to ](http://brat.joewheaton.org/home/documentation/manual-implementation/ungulate-capacity-model/goog_2007911975)[3. Slope Input Derivation ]({{ site.baseurl}}/Documentation/Ungulate/3-SlopeInput)        Ahead to [5. Running Probability of Ungulate Utilization FIS Model]({{ site.baseurl}}/Documentation/Ungulate/5-RunningProbability) →
+← Back to [3. Slope Input Derivation ]({{ site.baseurl}}/Documentation/Ungulate/3-SlopeInput)        Ahead to [5. Running Probability of Ungulate Utilization FIS Model]({{ site.baseurl}}/Documentation/Ungulate/5-RunningProbability) →
