@@ -29,4 +29,15 @@ Inputs:
 
 Click OK to run the tool.
 
+##Running the Braid Handler
+Currently, there is no good way to find the drainage area values of segments where the river splits, braids, and eventually comes back together. The Flow Accumulation tool can only model a single river, and so gives segments either a much higher value than they should have, or a much lower value. Sometimes, the Flow Accumulation line doesn't accurately line up with the real world dominant stem. An example of this problem is depicted in the pictures below. 
+
+##### Stream Network with Imagery
+![table_tool]({{ site.baseurl }}/assets/images/FlowAccBasemap.PNG)
+##### Stream Network with Flow Accumulation Raster
+![table_tool]({{ site.baseurl }}/assets/images/FlowAccExample.PNG)
+
+
+
+
 [Continue to Step 5]({{ site.baseurl }}/Documenation/5-iHydAttributes) ->
