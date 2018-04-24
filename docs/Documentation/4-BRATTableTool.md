@@ -51,5 +51,4 @@ After the Braid handler is run, the user can run the rest of the tool as normal.
 
 
 
-
 [Continue to Step 5]({{ site.baseurl }}/Documenation/5-BRATBraidHandler) ->
