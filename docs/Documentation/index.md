@@ -13,7 +13,7 @@ If you are interested in running the older Matlab version of BRAT you can find t
 
 ## Prerequisites
 
-Running BRAT requires a good working knowledge of ArcGIS.  Users should have ArcGIS 10.1 or greater already installed, including the Spatial Analyst Extension.
+Running BRAT requires a good working knowledge of ArcGIS.  Users should have ArcGIS 10.1 or above already installed, including the Spatial Analyst Extension.
 
 
 

@@ -40,4 +40,4 @@ Inputs and Parameters:
 - **Select Hydrologic Region**:  enter the integer that was used to identify the regression you want to use.  In the example here we used the number 24.
 - **Set Scratch Workspace**: choose a file geodatabase to dump intermediate files. The default is ArcMap's default GDB.
 
-[Continue to Step 6]({{ site.baseurl }}/Documentation/6-BRATVegetationFIS) ->
+[Continue to Step 7]({{ site.baseurl }}/Documentation/7-BRATVegetationFIS) ->

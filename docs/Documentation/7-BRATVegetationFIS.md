@@ -16,5 +16,5 @@ Click OK to run.
 
 After the tool has been run both times, the network should now include the attributes "oVC_PT" and "oVC_EX"
 
-[Continue to Step 7]({{ site.baseurl }}/Documentation/7-BRATCombinedFIS) ->
+[Continue to Step 8]({{ site.baseurl }}/Documentation/8-BRATCombinedFIS) ->
 
