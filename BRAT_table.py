@@ -17,6 +17,7 @@ import projectxml
 import datetime
 import uuid
 import FindBraidedNetwork
+import BRAT_Braid_Handler
 
 
 def main(
@@ -34,8 +35,12 @@ def main(
     railroad,
     canal,
     landuse,
-    out_name):
-
+    out_name,
+    findClusters):
+    if findClusters == 'false':
+        findClusters = False
+    else:
+        findClusters = True
 
     scratch = 'in_memory'
     #arcpy.env.workspace = scratch
@@ -43,7 +48,13 @@ def main(
     arcpy.CheckOutExtension("Spatial")
 
     # --check input projections--
-    networkSR = arcpy.Describe(seg_network).spatialReference
+    try:
+        networkSR = arcpy.Describe(seg_network).spatialReference
+    except:
+        arcpy.AddError("There was a problem finding the spatial reference of the stream network. "
+                       + "This is commonly caused by trying to run the Table tool directly after running the project "
+                       + "builder. Restarting ArcGIS fixes this problem most of the time.")
+        raise Exception("Spatial reference not found")
     if networkSR.type == "Projected":
         pass
     else:
@@ -138,9 +149,15 @@ def main(
         arcpy.AddMessage('Adding "iPC" attributes to network')
         ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
-    # find braided reaches
-    FindBraidedNetwork.main(out_network)
     addMainstemAttribute(out_network)
+    # find braided reaches
+    FindBraidedNetwork.main(out_network, canal)
+
+    if findClusters:
+        clusters = BRAT_Braid_Handler.findClusters(out_network)
+        BRAT_Braid_Handler.addClusterID(out_network, clusters)
+        arcpy.AddMessage("Finding Clusters...")
+
 
     # run write xml function
     arcpy.AddMessage('Writing project xml')
