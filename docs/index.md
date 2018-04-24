@@ -48,11 +48,11 @@ The Matlab versions of BRAT source code are available from the [matBRAT repo](ht
 
 ## Financial Support
 
-Initial development of BRAT was funded through a [pilot project](http://etal.joewheaton.org/projects/past-projects/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat) granted to Utah State University (USU Award Control No. 120353) from the [Grand Canyon Trust](http://www.grandcanyontrust.org/) based on a grant from the [Walton Family Foundation](http://www.waltonfamilyfoundation.org/). 
+Initial development of BRAT was funded through a [pilot project](http://etal.joewheaton.org/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat.html) granted to Utah State University (USU Award Control No. 120353) from the [Grand Canyon Trust](http://www.grandcanyontrust.org/) based on a grant from the [Walton Family Foundation](http://www.waltonfamilyfoundation.org/). 
 
 <div>
 	<div class="float-left"><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/images/WFF.jpg" alt="WFF"></a></div>
-	
+
 	<div class="float-right"><a href="https://wildlife.utah.gov"><img src="/assets/images/Utah_DWR.jpg" alt="gct-logo2"></a></div>
 </div>
 
