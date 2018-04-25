@@ -1,5 +1,5 @@
 ---
-title: Step 6 - BRAT Vegetation FIS
+title: Step 7 - BRAT Vegetation FIS
 ---
 
 Now that the input file is totally prepared, you should be ready to run the fuzzy inference tools.  The first is the vegetation FIS, which estimates a stream segments capacity to support beaver dam building based solely on the quality of the streamside and riparian vegetation.  "The BRAT Vegetation FIS" tool must be run two times.  The first time predicts capacity based on historic vegetation, and the second predicts capacity based on existing vegetation.

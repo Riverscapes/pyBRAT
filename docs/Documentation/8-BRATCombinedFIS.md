@@ -1,5 +1,5 @@
 ---
-title: Step 7 - BRAT Combined FIS
+title: Step 8 - BRAT Combined FIS
 ---
 
 After running the Vegetation FIS, you can run the "BRAT Combined FIS" tool.  This fuzzy inference system predicts the capacity of stream reaches to support dam building activity based on 4 inputs: 1) the output of the vegetation FIS 2) the low (base) flow stream power, 3) the high flow (Q2) stream power, and 4) the slope of the reach.  This tool like the vegetation FIS tool, must be run twice, once based on historic vegetation and once based on existing vegetation.

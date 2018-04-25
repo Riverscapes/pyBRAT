@@ -1,5 +1,5 @@
 ---
-title: Step 5 - iHyd Attributes
+title: Step 6 - iHyd Attributes
 ---
 
 To add the "iHyd" or hydrologic attributes to the input table you created in the previous step, regressions for predicting stream flow must first be obtained.  This information can be found at https://water.usgs.gov/osw/streamstats/.  Once you have the regressions for both typical low flow and a typical 2-year flood, you must modify the script of the iHyd Attributes tool.  To do so, open the iHyd.py file (found inside the toolbox) in a python text editor.  Pyscripter works well.
