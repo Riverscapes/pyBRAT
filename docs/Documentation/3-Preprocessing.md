@@ -45,10 +45,10 @@ Classify the land use raster according to water-related land use categories:
 
 Table 2. Suitability of LANDFIRE Land Cover as Dam-building Material 
 
-| CODE |Description |Example land use categories|
-|----------|---------|----------------------|
-|1|Conservation Emphasis|Riparian, No Landuse, Open Water|
-|2|Agricultural|Agriculture, Irrigated, Non Irrigated, Naturally Irrigated|
-|3|Urban|Urban, Developed|
+| CODE | Description           | Example land use categories              |
+| ---- | --------------------- | ---------------------------------------- |
+| 1    | Conservation Emphasis | Riparian, No Landuse, Open Water         |
+| 2    | Agricultural          | Agriculture, Irrigated, Non Irrigated, Naturally Irrigated |
+| 3    | Urban                 | Urban, Developed                         |
 
-[Continue to Step 4]({{ site.baseurl }}/Documentation/4-BratTableTool)
+[Continue to Step 4]({{ site.baseurl }}/Documentation/4-BRATTableTool)

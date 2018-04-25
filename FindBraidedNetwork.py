@@ -59,6 +59,7 @@ def findBraidedReaches(fcLines):
     arcpy.MakeFeatureLayer_management("in_memory/DonutPolygons","lyrDonuts")
     arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrDonuts",'',"NEW_SELECTION")
     arcpy.CalculateField_management("lyrBraidedReaches","IsBraided",1,"PYTHON")
+    arcpy.CalculateField_management("lyrBraidedReaches","IsMainstem",0,"PYTHON")
 
 # # Run as Script # # 
 if __name__ == "__main__":
