@@ -29,4 +29,4 @@ Inputs:
 
 Click OK to run the tool.
 
-[Continue to Step 5]({{ site.baseurl }}/Documenation/5-BRATBraidHandler) ->
+[Continue to Step 5]({{ site.baseurl }}/Documentation/5-BRATBraidHandler) ->

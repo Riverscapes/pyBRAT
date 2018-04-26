@@ -22,4 +22,4 @@ Once the mainstems are identified, the user can run the Braid Handler. The Braid
 
 After the Braid handler is run, the user can run the rest of the tool as normal.
 
-[Continue to Step 6]({{ site.baseurl }}/Documenation/6-iHydAttributes) ->
+[Continue to Step 6]({{ site.baseurl }}/Documentation/6-iHydAttributes) ->
