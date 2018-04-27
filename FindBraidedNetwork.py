@@ -18,13 +18,14 @@
 #!/usr/bin/env python
 
 # Import modules
+import os
 import sys
 import arcpy
 
 
 def main(fcStreamNetwork, canal):
-
     # Polyline prep
+    tempFolder = "C:\Users\A02150284\Documents\GISData\Temp"
     listFields = arcpy.ListFields(fcStreamNetwork,"IsBraided")
     if len(listFields) is not 1:
         arcpy.AddField_management(fcStreamNetwork, "IsBraided", "SHORT", "", "", "", "", "NULLABLE")
@@ -34,13 +35,29 @@ def main(fcStreamNetwork, canal):
     if canal is None:
         findBraidedReaches(fcStreamNetwork)
     else:
-        handleCanals(fcStreamNetwork, canal)
+        handleCanals(fcStreamNetwork, canal, tempFolder)
 
     return
 
 
-def handleCanals(streamNetwork, canal):
-    findBraidedReaches(streamNetwork)
+def handleCanals(streamNetwork, canal, tempFolder):
+    streamNetworkNoCanals = "in_memory/NoCanals"
+    arcpy.Erase_analysis(streamNetwork, canal, streamNetworkNoCanals)
+    findBraidedReaches(streamNetworkNoCanals)
+
+    with arcpy.da.UpdateCursor(streamNetworkNoCanals, "IsBraided") as cursor: # delete non-braided reaches
+        for row in cursor:
+            if row[0] == 0:
+                cursor.deleteRow()
+
+    arcpy.MakeFeatureLayer_management(streamNetwork,"lyrBraidedReaches")
+    arcpy.MakeFeatureLayer_management(streamNetworkNoCanals,"lyrNoCanals")
+
+    arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrNoCanals",'',"NEW_SELECTION")
+
+    arcpy.CalculateField_management("lyrBraidedReaches","IsBraided",1,"PYTHON")
+    arcpy.CalculateField_management("lyrBraidedReaches","IsMainstem",0,"PYTHON")
+
 
 
 def findBraidedReaches(fcLines):

@@ -37,7 +37,7 @@ def main(
     landuse,
     out_name,
     findClusters):
-    if findClusters == 'false':
+    if findClusters == 'false' or findClusters is None:
         findClusters = False
     else:
         findClusters = True
@@ -51,10 +51,9 @@ def main(
     try:
         networkSR = arcpy.Describe(seg_network).spatialReference
     except:
-        arcpy.AddError("There was a problem finding the spatial reference of the stream network. "
+        raise Exception("There was a problem finding the spatial reference of the stream network. "
                        + "This is commonly caused by trying to run the Table tool directly after running the project "
                        + "builder. Restarting ArcGIS fixes this problem most of the time.")
-        raise Exception("Spatial reference not found")
     if networkSR.type == "Projected":
         pass
     else:
