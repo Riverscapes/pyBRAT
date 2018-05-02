@@ -8,6 +8,7 @@ import Comb_FIS
 import Conflict_Potential
 import Conservation_Restoration
 import BRAT_Braid_Handler
+import Summary_Report
 
 
 class Toolbox(object):
@@ -18,7 +19,7 @@ class Toolbox(object):
         self.alias = "BRAT Toolbox"
 
         # List of tool classes associated with this toolbox
-        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool]
+        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool, Summary_Report_tool]
 
 
 class BRAT_project_tool(object):
@@ -690,4 +691,68 @@ class Conservation_Restoration_tool(object):
         Conservation_Restoration.main(p[0].valueAsText,
                                       p[1].valueAsText,
                                       p[2].valueAsText)
+        return
+
+class Summary_Report_tool(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "Step 9. Summary Report"
+        self.description = "Tests the results of BRAT against data on beaver dam sites"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+        param0 = arcpy.Parameter(
+            displayName="Select project folder",
+            name="projPath",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input")
+
+        param1 = arcpy.Parameter(
+            displayName="Select conservation restoration model output network",
+            name="in_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+        param1.filter.list = ["Polyline"]
+
+        param2 = arcpy.Parameter(
+            displayName="Select beaver dam shape file",
+            name="dams",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input")
+
+        param3 = arcpy.Parameter(
+            displayName="Name the validation shape file output",
+            name="out_name",
+            datatype="GPString",
+            parameterType="Required",
+            direction="Input")
+
+        return [param0, param1, param2, param3]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(Conservation_Restoration)
+        Summary_Report.main(p[0].valueAsText,
+                            p[1].valueAsText,
+                            p[2].valueAsText,
+                            p[3].valueAsText)
         return
