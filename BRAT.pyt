@@ -702,36 +702,30 @@ class Summary_Report_tool(object):
 
     def getParameterInfo(self):
         """Define parameter definitions"""
-        param0 = arcpy.Parameter(
-            displayName="Select project folder",
-            name="projPath",
-            datatype="DEFolder",
-            parameterType="Required",
-            direction="Input")
 
-        param1 = arcpy.Parameter(
+        param0 = arcpy.Parameter(
             displayName="Select conservation restoration model output network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
             direction="Input")
-        param1.filter.list = ["Polyline"]
+        param0.filter.list = ["Polyline"]
 
-        param2 = arcpy.Parameter(
+        param1 = arcpy.Parameter(
             displayName="Select beaver dam shape file",
             name="dams",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
 
-        param3 = arcpy.Parameter(
+        param2 = arcpy.Parameter(
             displayName="Name the validation shape file output",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
 
-        return [param0, param1, param2, param3]
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -753,6 +747,5 @@ class Summary_Report_tool(object):
         reload(Conservation_Restoration)
         Summary_Report.main(p[0].valueAsText,
                             p[1].valueAsText,
-                            p[2].valueAsText,
-                            p[3].valueAsText)
+                            p[2].valueAsText)
         return
