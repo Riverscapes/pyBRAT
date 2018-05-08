@@ -17,3 +17,5 @@ Inputs and Parameters:
 "Location_BRAT_Capacity.shp") that will have the new fields "oCC_PT" and "oCC_EX."  When the tool finishes running the second time it should automatically add the output to the map and symbolize the "oCC_EX" field, which represents the existing capacity to support dam building activity.
 
 [![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
+
+[Continue to Step 5]({{ site.baseurl }}/Documentation/9-SummaryReport) ->

@@ -191,6 +191,8 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
             if row[0] not in haveStatList:
                 needStatList.append(row[0])
     # run zonal stats until we have output for each overlapping buffer segment
+    stat = None
+    tmp_buff_lyr = None
     while len(needStatList) > 0:
         # create tuple of segment ids where still need raster values
         needStat = ()
@@ -214,9 +216,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
         for seg in haveStatList2:
             needStatList.remove(seg)
         arcpy.Delete_management(stat)
-        # if need to run list is empty exit while loop
-        if len(needStatList) == 0:
-            break
+
     # populate dictionary value to output field by SegID
     with arcpy.da.UpdateCursor(outFC, ['SegID', outFCField]) as cursor:
         for row in cursor:
@@ -229,12 +229,10 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     statDict.clear()
     # delete temp fcs, tbls, etc.
     #items = [statTbl, haveStatList, haveStatList2, needStatList, stat, tmp_buff_lyr, needStat]
-    lists = [haveStatList, haveStatList2, needStatList, needStat]
-    for list in lists:
-        del(list)
     items = [statTbl, stat, tmp_buff_lyr]
     for item in items:
-        arcpy.Delete_management(item)
+        if item is not None:
+            arcpy.Delete_management(item)
 
 # geo attributes function
 # calculates min and max elevation, length, slope, and drainage area for each flowline segment
