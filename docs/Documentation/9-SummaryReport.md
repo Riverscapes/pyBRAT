@@ -2,7 +2,7 @@
 title: Step 9 - Summary Report (Optional)
 ---
 
-#Creating a Summary Report (Optional)
+# Creating a Summary Report (Optional)
 
 After running the BRAT tool, it can sometimes be useful calculate additional metrics on the output. The Summary Report tool adds and calculates a number of fields that further contextualize the results of a BRAT run.
 
