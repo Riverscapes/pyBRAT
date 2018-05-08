@@ -18,4 +18,4 @@ Inputs and Parameters:
 
 [![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
 
-[Continue to Step 5]({{ site.baseurl }}/Documentation/9-SummaryReport) ->
+[Continue to Step 9]({{ site.baseurl }}/Documentation/9-SummaryReport) ->
