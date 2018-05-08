@@ -215,7 +215,6 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
         haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'SegID')]
         for seg in haveStatList2:
             needStatList.remove(seg)
-        arcpy.Delete_management(stat)
 
     # populate dictionary value to output field by SegID
     with arcpy.da.UpdateCursor(outFC, ['SegID', outFCField]) as cursor:
