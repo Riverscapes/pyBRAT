@@ -144,7 +144,7 @@ def main(
     iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch)
 
     # run ipc attributes function if conflict layers are defined by user
-    if road is not None and canal is not None and valley_bottom is not None:
+    if road is not None and valley_bottom is not None:
         arcpy.AddMessage('Adding "iPC" attributes to network')
         ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
