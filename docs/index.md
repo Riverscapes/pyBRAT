@@ -26,7 +26,7 @@ For more information on beaver and workshops we occasionally teach, see [here](h
 
 ## Developers
 
-[Wally Macfarlane](http://etal.joewheaton.org/wally-macfarlane.html), [Joe Wheaton](http://joewheaton.org/),  [Martha Jensen](http://etal.joewheaton.org/martha-jensen1.html), Taylor Dudunake & [Jordan Gilbert](http://etal.joewheaton.org/jordan-gilbert.html) of Utah State University's [Ecogeomorphology & Topographic Analysis Lab](http://etal.joewheaton.org/)
+[Wally Macfarlane](http://etal.joewheaton.org/wally-macfarlane.html), [Joe Wheaton](http://joewheaton.org/),  [Martha Jensen](http://etal.joewheaton.org/martha-jensen1.html), Taylor Dudunake, [Jordan Gilbert](http://etal.joewheaton.org/jordan-gilbert.html) and [Nick Weber](nick.weber@ecologicalresearch.net) of Utah State University's [Ecogeomorphology & Topographic Analysis Lab](http://etal.joewheaton.org/).
 
 ## Releases
 
