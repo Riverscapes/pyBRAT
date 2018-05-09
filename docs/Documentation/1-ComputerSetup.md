@@ -1,5 +1,6 @@
 ---
 title: Step 1 - Computer Setup & Installation
+weight: 1
 ---
 ## Python Prerequisites
 In order to use the [Beaver Restoration Assessment Tool (BRAT) Toolbox v 3](https://github.com/Riverscapes/pyBRAT/releases/latest), your computer needs to have ArcGIS version 10.1 or later with the Spatial Analyst Extension as well as the scikit-fuzzy python module. Don't panic, even if you've never used a command line, you can follow these instructions. All this does is show you how to install a few dependencies (NumPy_mkl and scikit-fuzzy) that BRAT uses. The video below provides detailed instructions on installing the scikit-fuzzy python module.
