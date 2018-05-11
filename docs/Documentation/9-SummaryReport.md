@@ -18,7 +18,7 @@ If not given a beaver dam shapefile, the tool will not produce the fields that r
 The tool produces eight new fields. Three of these fields are reliant on the dams input. The fields are as follows:
 * e_DamCt: The observed number of dams per segment (based on the beaver dam shape file).
 * e_DamDens: The number of dams per kilometer. Calculated by dividing e_DamCt by the segment length.
-* e_DamPcC: The ratio between the observed dam count and the calculated existing capacity
+* e_DamPcC: The ratio between the observed dam count and the calculated existing capacity. Calculated by dividing e_DamCt by oCC_EX.
 * Ex_Categor: The category of the calculated existing capacity. It is determined based on the oCC_EX (the calculated existing capacity), as follows:
 	* If oCC_EX = 0, Ex_Categor = "None"
 	* If 0 < oCC_EX <= 1, Ex_Categor = "Rare"
