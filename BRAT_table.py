@@ -137,7 +137,7 @@ def main(
 
     # run geo attributes function
     arcpy.AddMessage('Adding "iGeo" attributes to network')
-    igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch)
+    igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch)
 
     # run vegetation attributes function
     arcpy.AddMessage('Adding "iVeg" attributes to network')
