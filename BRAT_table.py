@@ -302,7 +302,7 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
     # get DA values
     if FlowAcc is None:
         arcpy.AddMessage("calculating drainage area")
-        calc_drain_area(DEM)
+        calc_drain_area(DEM, inDEM)
     # todo: try and figure out what this elif is doing
     elif os.path.exists(os.path.dirname(inDEM) + "/Flow"):
         pass
@@ -698,7 +698,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
 
 # calculate drainage area function
-def calc_drain_area(DEM):
+def calc_drain_area(DEM, inDEM):
 
     #  define raster environment settings
     desc = arcpy.Describe(DEM)
