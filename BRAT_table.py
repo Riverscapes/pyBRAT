@@ -87,12 +87,12 @@ def main(
         raise Exception("Input network must be a shapefile (.shp)")
 
     # --check input network fields--
-    # add flowline segment id field ('SegID') if it doens't already exist
+    # add flowline reach id field ('ReachID') if it doens't already exist
     # this field allows for more for more 'stable' joining
     fields = [f.name for f in arcpy.ListFields(seg_network)]
-    if 'SegID' not in fields:
-        arcpy.AddField_management(seg_network, 'SegID', 'SHORT')
-        with arcpy.da.UpdateCursor(seg_network, ['FID', 'SegID']) as cursor:
+    if 'ReachID' not in fields:
+        arcpy.AddField_management(seg_network, 'ReachID', 'SHORT')
+        with arcpy.da.UpdateCursor(seg_network, ['FID', 'ReachID']) as cursor:
             for row in cursor:
                 row[1] = row[0]
                 cursor.updateRow(row)
@@ -105,7 +105,7 @@ def main(
     midpoints = arcpy.FeatureVerticesToPoints_management(seg_network, scratch + "/midpoints", "MID")
     # remove unwanted fields from midpoints
     fields = arcpy.ListFields(midpoints)
-    keep = ['SegID']
+    keep = ['ReachID']
     drop = []
     for field in fields:
         if not field.required and field.name not in keep and field.type <> 'Geometry':
@@ -175,18 +175,18 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     # get input raster stat value within each buffer
     # note: zonal stats as table does not support overlapping polygons so we will check which
     #       segment buffers output was produced for and which we need to run tool on again
-    statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'SegID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
+    statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'ReachID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
     # get list of segment buffers where zonal stats tool produced output
-    haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'SegID')]
+    haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'ReachID')]
     # create dictionary to hold all segment buffer min dem z values
     statDict = {}
     # add buffer raster stat values to dictionary
-    with arcpy.da.SearchCursor(statTbl, ['SegID', statField]) as cursor:
+    with arcpy.da.SearchCursor(statTbl, ['ReachID', statField]) as cursor:
         for row in cursor:
             statDict[row[0]] = row[1]
     # create list of overlapping buffer segments (i.e., where zonal stats tool did not produce output)
     needStatList = []
-    with arcpy.da.SearchCursor(buffer, ['SegID']) as cursor:
+    with arcpy.da.SearchCursor(buffer, ['ReachID']) as cursor:
         for row in cursor:
             if row[0] not in haveStatList:
                 needStatList.append(row[0])
@@ -206,18 +206,18 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
             quer = '"SegID" IN ' + str(needStat)
         tmp_buff_lyr = arcpy.MakeFeatureLayer_management(buffer, 'tmp_buff_lyr')
         arcpy.SelectLayerByAttribute_management(tmp_buff_lyr, 'NEW_SELECTION', quer)
-        stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'SegID', ras, os.path.join(scratch, 'stat'), 'DATA', statType)
+        stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'ReachID', ras, os.path.join(scratch, 'stat'), 'DATA', statType)
         # add segment stat values from zonal stats table to main dictionary
-        with arcpy.da.SearchCursor(stat, ['SegID', statField]) as cursor:
+        with arcpy.da.SearchCursor(stat, ['ReachID', statField]) as cursor:
             for row in cursor:
                 statDict[row[0]] = row[1]
         # create list of segments that were run and remove from 'need to run' list
-        haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'SegID')]
+        haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'ReachID')]
         for seg in haveStatList2:
             needStatList.remove(seg)
 
     # populate dictionary value to output field by SegID
-    with arcpy.da.UpdateCursor(outFC, ['SegID', outFCField]) as cursor:
+    with arcpy.da.UpdateCursor(outFC, ['ReachID', outFCField]) as cursor:
         for row in cursor:
             try:
                 aKey = row[0]
@@ -244,10 +244,10 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
         if field in drop:
             arcpy.DeleteField_management(out_network, field)
 
-    # add flowline segment id field ('SegID') for more 'stable' joining
-    if 'SegID' not in fields:
-        arcpy.AddField_management(out_network, 'SegID', 'SHORT')
-        with arcpy.da.UpdateCursor(out_network, ['FID', 'SegID']) as cursor:
+    # add flowline segment id field ('ReachID') for more 'stable' joining
+    if 'ReachID' not in fields:
+        arcpy.AddField_management(out_network, 'ReachID', 'SHORT')
+        with arcpy.da.UpdateCursor(out_network, ['FID', 'ReachID']) as cursor:
             for row in cursor:
                 row[1] = row[0]
                 cursor.updateRow(row)
@@ -649,13 +649,13 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                 for row in cursor:
                     row[2] = row[0]/row[1]
                     cursor.updateRow(row)
-            areaTbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['SegID', 'LUI_CLASS'])
-            areaPivTbl = arcpy.PivotTable_management(areaTbl, ['SegID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
+            areaTbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['ReachID', 'LUI_CLASS'])
+            areaPivTbl = arcpy.PivotTable_management(areaTbl, ['ReachID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
 
             # create empty dictionary to hold input table field values
             tblDict = {}
             # add values to dictionary
-            with arcpy.da.SearchCursor(areaPivTbl, ['SegID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
+            with arcpy.da.SearchCursor(areaPivTbl, ['ReachID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
                 for row in cursor:
                     tblDict[row[0]] = [row[1], row[2], row[3], row[4]]
             # populate flowline network out fields
@@ -664,7 +664,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             arcpy.AddField_management(out_network, "iPC_ModLU", 'DOUBLE')
             arcpy.AddField_management(out_network, "iPC_HighLU", 'DOUBLE')
 
-            with arcpy.da.UpdateCursor(out_network, ['SegID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
+            with arcpy.da.UpdateCursor(out_network, ['ReachID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
                 for row in cursor:
                     try:
                         aKey = row[0]
