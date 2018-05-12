@@ -49,7 +49,7 @@ def main(
             arcpy.DeleteField_management(in_network, out_field)
 
         # get arrays for fields of interest
-        segid_np = arcpy.da.FeatureClassToNumPyArray(in_network, "SegID")
+        segid_np = arcpy.da.FeatureClassToNumPyArray(in_network, "ReachID")
         ovc_np = arcpy.da.FeatureClassToNumPyArray(in_network, veg_field)
         ihydsp2_np = arcpy.da.FeatureClassToNumPyArray(in_network, "iHyd_SP2")
         ihydsplow_np = arcpy.da.FeatureClassToNumPyArray(in_network, "iHyd_SPLow")
@@ -195,7 +195,7 @@ def main(
         # save fuzzy inference system output as table
         columns = np.column_stack((segid_array, out))
         out_table = os.path.dirname(in_network) + "/" + out_field + "_Table.txt"  # todo: see if possible to skip this step
-        np.savetxt(out_table, columns, delimiter = ",", header = "SegID, " + out_field, comments = "")
+        np.savetxt(out_table, columns, delimiter = ",", header = "ReachID, " + out_field, comments = "")
         occ_table = scratch + "/" + out_field + "Tbl"
         arcpy.CopyRows_management(out_table, occ_table)
 
