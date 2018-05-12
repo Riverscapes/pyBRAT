@@ -43,7 +43,7 @@ def getClustersFromIDs(inputNetwork):
     :return: List of clusters
     """
     clusters = []
-    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'SegID']
+    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'ReachID']
     with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
         for polyline, clusterID, drainageArea, segID in cursor:
             if clusterID != -1:
@@ -87,7 +87,7 @@ def findClusters(inputNetwork):
     :return: An array of clusters
     """
     clusters = []
-    fields = ['SHAPE@', 'SegID', 'iGeo_DA', 'IsBraided']
+    fields = ['SHAPE@', 'ReachID', 'iGeo_DA', 'IsBraided']
     with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
         for polyline, stream_id, drainageArea, isBraided in cursor:
             if isBraided:
@@ -215,7 +215,7 @@ def addClusterID(inputNetwork, clusters):
     for i in range(len(clusters)):
         clusters[i].id = i + 1
 
-    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', CLUSTERFIELDNAME, 'IsBraided']) as cursor:
+    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', CLUSTERFIELDNAME, 'IsBraided']) as cursor:
         for row in cursor:
             if row[2] == 1: # If the stream is braided. If it isn't, we don't care about its cluster id
                 for cluster in clusters:
@@ -232,7 +232,7 @@ def updateNetworkDrainageValues(inputNetwork, clusters):
     :return: None
     """
     arcpy.AddMessage("Updating Drainage Area Values...")
-    with arcpy.da.UpdateCursor(inputNetwork, ['SegID', 'IsMainstem', 'iGeo_DA', 'IsBraided']) as cursor:
+    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', 'IsMainstem', 'iGeo_DA', 'IsBraided']) as cursor:
         for row in cursor:
             if row[3] == 1:
                 updateStreamDrainageValue(clusters, row, cursor)
