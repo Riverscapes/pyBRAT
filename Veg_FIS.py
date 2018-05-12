@@ -139,12 +139,12 @@ def main(in_network):
         # create empty dictionary to hold input table field values
         tblDict = {}
         # add values to dictionary
-        with arcpy.da.SearchCursor(ovc_table, ['SegID', out_field]) as cursor:
+        with arcpy.da.SearchCursor(ovc_table, ['ReachID', out_field]) as cursor:
             for row in cursor:
                 tblDict[row[0]] = row[1]
         # populate flowline network out field
         arcpy.AddField_management(in_network, out_field, 'DOUBLE')
-        with arcpy.da.UpdateCursor(in_network, ['SegID', out_field]) as cursor:
+        with arcpy.da.UpdateCursor(in_network, ['ReachID', out_field]) as cursor:
             for row in cursor:
                 try:
                     aKey = row[0]
