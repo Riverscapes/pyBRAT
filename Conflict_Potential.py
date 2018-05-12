@@ -203,12 +203,12 @@ def main(
     # create empty dictionary to hold input table field values
     tblDict = {}
     # add values to dictionary
-    with arcpy.da.SearchCursor(opc_score_table, ['SegID', 'oPC_Score']) as cursor:
+    with arcpy.da.SearchCursor(opc_score_table, ['ReachID', 'oPC_Score']) as cursor:
         for row in cursor:
             tblDict[row[0]] = row[1]
     # populate flowline network out field
     arcpy.AddField_management(out_network, 'oPC_Score', 'DOUBLE')
-    with arcpy.da.UpdateCursor(out_network, ['SegID', 'oPC_Score']) as cursor:
+    with arcpy.da.UpdateCursor(out_network, ['ReachID', 'oPC_Score']) as cursor:
         for row in cursor:
             try:
                 aKey = row[0]
