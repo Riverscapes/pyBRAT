@@ -698,7 +698,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
 
 # calculate drainage area function
-def calc_drain_area(DEM, inDEM):
+def calc_drain_area(DEM, inputDEM):
 
     #  define raster environment settings
     desc = arcpy.Describe(DEM)
@@ -719,12 +719,12 @@ def calc_drain_area(DEM, inDEM):
     DrainArea = flow_accumulation * cellArea / 1000000 # calculate drainage area in square kilometers
 
     # save drainage area raster
-    if os.path.exists(os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif"):
-        arcpy.Delete_management(os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif")
-        arcpy.CopyRaster_management(DrainArea, os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif")
+    if os.path.exists(os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif"):
+        arcpy.Delete_management(os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif")
+        arcpy.CopyRaster_management(DrainArea, os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif")
     else:
-        os.mkdir(os.path.dirname(inDEM) + "/Flow")
-        arcpy.CopyRaster_management(DrainArea, os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif")
+        os.mkdir(os.path.dirname(inputDEM) + "/Flow")
+        arcpy.CopyRaster_management(DrainArea, os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif")
 
 
 # write xml function
