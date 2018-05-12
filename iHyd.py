@@ -24,7 +24,7 @@ def main(
     arcpy.env.overwriteOutput = True
 
     # create segid array for joining output to input network
-    segid_np = arcpy.da.FeatureClassToNumPyArray(in_network, "SegID")
+    segid_np = arcpy.da.FeatureClassToNumPyArray(in_network, "ReachID")
     segid = np.asarray(segid_np, np.int64)
 
     # create array for input network drainage area ("iGeo_DA")
@@ -60,13 +60,13 @@ def main(
         Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
 
     else:
-        Qlow = (1.29265*10**-20.0945) * (DAsqm ** 0.9143) * (18.0 ** 2.6626) * (4730**3.9409)
-        Q2 = (1.04647*10**-3.9067) * (DAsqm ** 1.0143) * (18.0 ** 2.6456)
+        Qlow = (DAsqm ** 0.2098) + 1
+        Q2 = 14.7 * (DAsqm ** 0.815)
 
     # save segid, Qlow, Q2 as single table
     columns = np.column_stack((segid, Qlow, Q2))
     tmp_table = os.path.dirname(in_network) + "/ihyd_Q_Table.txt"
-    np.savetxt(tmp_table, columns, delimiter = ",", header = "SegID, iHyd_QLow, iHyd_Q2", comments = "")
+    np.savetxt(tmp_table, columns, delimiter = ",", header = "ReachID, iHyd_QLow, iHyd_Q2", comments = "")
     ihyd_table = scratch + "/ihyd_table"
     arcpy.CopyRows_management(tmp_table, ihyd_table)
 
@@ -74,13 +74,13 @@ def main(
     # create empty dictionary to hold input table field values
     tblDict = {}
     # add values to dictionary
-    with arcpy.da.SearchCursor(ihyd_table, ['SegID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
+    with arcpy.da.SearchCursor(ihyd_table, ['ReachID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
         for row in cursor:
             tblDict[row[0]] = [row[1], row[2]]
     # populate flowline network out field
     arcpy.AddField_management(in_network, "iHyd_QLow", 'DOUBLE')
     arcpy.AddField_management(in_network, "iHyd_Q2", 'DOUBLE')
-    with arcpy.da.UpdateCursor(in_network, ['SegID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
+    with arcpy.da.UpdateCursor(in_network, ['ReachID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
         for row in cursor:
             try:
                 aKey = row[0]
