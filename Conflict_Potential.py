@@ -67,7 +67,7 @@ def main(
         arcpy.DeleteField_management(out_network, "oPC_Score")
 
     # create segid array for joining output
-    segid_np = arcpy.da.FeatureClassToNumPyArray(out_network, "SegID")
+    segid_np = arcpy.da.FeatureClassToNumPyArray(out_network, "ReachID")
     segid_array = np.asarray(segid_np, np.int64)
 
     # road crossing conflict
@@ -194,7 +194,7 @@ def main(
     # save the output text file
     columns = np.column_stack((segid_array, oPC_Score))
     out_table = os.path.dirname(out_network) + "/oPC_Score_Table.txt"
-    np.savetxt(out_table, columns, delimiter = ",", header = "SegID, oPC_Score", comments = "")
+    np.savetxt(out_table, columns, delimiter = ",", header = "ReachID, oPC_Score", comments = "")
 
     opc_score_table = scratch + "/opc_score_table"
     arcpy.CopyRows_management(out_table, opc_score_table)
