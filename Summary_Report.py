@@ -18,8 +18,12 @@ def main(bratOutput, dams, outputName):
     :param outputName: The name of the output shape file
     :return:
     """
-    outputPath = os.path.join(os.path.dirname(bratOutput), outputName + ".shp")
-    arcpy.Delete_management(outputPath)
+    if outputName.endswith('.shp'):
+        out_network = os.path.join(os.path.dirname(bratOutput), outputName)
+    else:
+        out_network = os.path.join(os.path.dirname(bratOutput), outputName + ".shp")
+    arcpy.Delete_management(out_network)
+
     damFields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
     otherFields = ['Ex_Categor', 'Pt_Categor', 'mCC_EX_Ct', 'mCC_PT_Ct', 'mCC_EXtoPT']
     newFields = damFields + otherFields
@@ -28,13 +32,13 @@ def main(bratOutput, dams, outputName):
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
-        setDamAttributes(bratOutput, outputPath, dams, damFields + ['Join_Count'] + inputFields, newFields)
+        setDamAttributes(bratOutput, out_network, dams, damFields + ['Join_Count'] + inputFields, newFields)
     else:
-        arcpy.CopyFeatures_management(bratOutput, outputPath)
-        addFields(outputPath, otherFields)
+        arcpy.CopyFeatures_management(bratOutput, out_network)
+        addFields(out_network, otherFields)
 
     arcpy.AddMessage("Adding fields that don't need dam input...")
-    setOtherAttributes(outputPath, otherFields + inputFields)
+    setOtherAttributes(out_network, otherFields + inputFields)
 
 
 def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):

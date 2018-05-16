@@ -55,9 +55,9 @@ def main(
         return [m, b]
 
     if out_name.endswith('.shp'):
-        out_network = os.path.dirname(in_network) + "/" + out_name
+        out_network = os.path.join(os.path.dirname(in_network), out_name)
     else:
-        out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+        out_network = os.path.join(os.path.dirname(in_network), out_name + ".shp")
 
     arcpy.CopyFeatures_management(in_network, out_network)
 

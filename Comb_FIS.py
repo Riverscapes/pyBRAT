@@ -255,10 +255,12 @@ def main(
     combFIS('ex')
 
     # save results to user defined output shp
+    output_folder = os.path.dirname(os.path.dirname(in_network))
+    analyses_folder = makeFolder(output_folder, "02_Analyses")
     if out_name.endswith('.shp'):
-        out_network = os.path.dirname(in_network) + "/" + out_name
+        out_network = os.path.join(analyses_folder, out_name)
     else:
-        out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+        out_network = os.path.join(analyses_folder, out_name + ".shp")
 
     arcpy.CopyFeatures_management(in_network, out_network)
     addxmloutput(projPath, in_network, out_network)
@@ -288,6 +290,19 @@ def addxmloutput(projPath, in_network, out_network):
                     outrz, guid=getUUID())
 
     exxml.write()
+
+
+def makeFolder(pathToLocation, newFolderName):
+    """
+    Makes a folder and returns the path to it
+    :param pathToLocation: Where we want to put the folder
+    :param newFolderName: What the folder will be called
+    :return: String
+    """
+    newFolder = os.path.join(pathToLocation, newFolderName)
+    if not os.path.exists(newFolder):
+        os.mkdir(newFolder)
+    return newFolder
 
 
 def getUUID():
