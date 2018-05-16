@@ -342,6 +342,7 @@ class BRAT_braid_handler(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
+        reload(BRAT_Braid_Handler)
         BRAT_Braid_Handler.main(p[0].valueAsText)
         return
 
