@@ -21,152 +21,96 @@ import string
 
 def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal):
     """Create a BRAT project and populate the inputs"""
-
     arcpy.env.overwriteOutput = True
 
     if not os.path.exists(projPath):
         os.mkdir(projPath)
 
-    if os.getcwd() is not projPath:
-        os.chdir(projPath)
+    inputsFolder = makeFolder(projPath, "01_Inputs")
+    intermediatesFolder = makeFolder(projPath, "02_Intermediates")
+    analysesFolder = makeFolder(projPath, "03_Analyses")
 
-    set_structure(projPath)
+    vegetationFolder = makeFolder(inputsFolder, "01_Vegetation")
+    networkFolder = makeFolder(inputsFolder, "02_Network")
+    topoFolder = makeFolder(inputsFolder, "03_Topography")
+    conflictFolder = makeFolder(inputsFolder, "04_Conflict")
+
+    exVegFolder = makeFolder(vegetationFolder, "01_ExistingVegetation")
+    histVegFolder = makeFolder(vegetationFolder, "02_HistoricVegetation")
+
+    valleyBottomFolder = makeFolder(conflictFolder, "01_ValleyBottom")
+    roadFolder = makeFolder(conflictFolder, "02_Roads")
+    railroadFolder = makeFolder(conflictFolder, "03_Railroads")
+    canalsFolder = makeFolder(conflictFolder, "04_Canals")
+    landUseFolder = makeFolder(conflictFolder, "05_LandUse")
 
     # add the existing veg inputs to project
-    inex_veg = ex_veg.split(";")
-    os.chdir(projPath + "/01_Inputs/01_Ex_Veg/")
-    i = 1
-    for x in range(len(inex_veg)):
-        if not os.path.exists("Ex_Veg_" + str(i)):
-            os.mkdir("Ex_Veg_" + str(i))
-        arcpy.CopyRaster_management(inex_veg[x], "Ex_Veg_" + str(i) + "/" + os.path.basename(inex_veg[x]))
-        i += 1
+    copyMultiInputToFolder(exVegFolder, ex_veg, "Ex_Veg", isRaster=True)
 
     # add the historic veg inputs to project
-    inhist_veg = hist_veg.split(";")
-    os.chdir(projPath + "/01_Inputs/02_Hist_Veg/")
-    i = 1
-    for x in range(len(inhist_veg)):
-        if not os.path.exists("Hist_Veg_" + str(i)):
-            os.mkdir("Hist_Veg_" + str(i))
-        arcpy.CopyRaster_management(inhist_veg[x], "Hist_Veg_" + str(i) + "/" + os.path.basename(inhist_veg[x]))
-        i += 1
+    copyMultiInputToFolder(histVegFolder, hist_veg, "Hist_Veg", isRaster=True)
 
     # add the network inputs to project
-    innetwork = network.split(";")
-    os.chdir(projPath + "/01_Inputs/03_Network/")
-    i = 1
-    for x in range(len(innetwork)):
-        if not os.path.exists("Network_" + str(i)):
-            os.mkdir("Network_" + str(i))
-        arcpy.Copy_management(innetwork[x], "Network_" + str(i) + "/" + os.path.basename(innetwork[x]))
-        i += 1
+    copyMultiInputToFolder(networkFolder, network, "Network", isRaster=False)
 
     # add the DEM inputs to the project
-    inDEM = DEM.split(";")
-    os.chdir(projPath + "/01_Inputs/04_Topo/")
-    i = 1
-    for x in range(len(inDEM)):
-        if not os.path.exists("DEM_" + str(i)):
-            os.mkdir("DEM_" + str(i))
-        arcpy.CopyRaster_management(inDEM[x], "DEM_" + str(i) + "/" + os.path.basename(inDEM[x]))
-        i += 1
+    copyMultiInputToFolder(topoFolder, DEM, "DEM", isRaster=True)
 
     # add landuse raster to the project
     if landuse is not None:
-        inlanduse = landuse.split(";")
-        os.chdir(projPath + "/01_Inputs/05_Conflict/05_Land_Use/")
-        i = 1
-        for x in range(len(inlanduse)):
-            if not os.path.exists("Land_Use_" + str(i)):
-                os.mkdir("Land_Use_" + str(i))
-            arcpy.CopyRaster_management(inlanduse[x], "Land_Use_" + str(i) + "/" + os.path.basename(inlanduse[x]))
-            i += 1
+        copyMultiInputToFolder(landUseFolder, landuse, "Land_Use", isRaster=True)
 
     # add the conflict inputs to the project
     if valley is not None:
-        invalley = valley.split(";")
-        os.chdir(projPath + "/01_Inputs/05_Conflict/01_Valley/")
-        i = 1
-        for x in range(len(invalley)):
-            if not os.path.exists("Valley_" + str(i)):
-                os.mkdir("Valley_" + str(i))
-            arcpy.Copy_management(invalley[x], "Valley_" + str(i) + "/" + os.path.basename(invalley[x]))
-            i += 1
+        copyMultiInputToFolder(valleyBottomFolder, valley, "Valley", isRaster=False)
 
     # add road layers to the project
     if road is not None:
-        inroad = road.split(";")
-        os.chdir(projPath + "/01_Inputs/05_Conflict/02_Roads/")
-        i = 1
-        for x in range(len(inroad)):
-            if not os.path.exists("Roads_" + str(i)):
-                os.mkdir("Roads_" + str(i))
-            arcpy.Copy_management(inroad[x], "Roads_" + str(i) + "/" + os.path.basename(inroad[x]))
-            i += 1
+        copyMultiInputToFolder(roadFolder, road, "Roads", isRaster=False)
 
     # add railroad layers to the project
     if rr is not None:
-        inrr = rr.split(";")
-        os.chdir(projPath + "/01_Inputs/05_Conflict/03_Railroads/")
-        i = 1
-        for x in range(len(inrr)):
-            if not os.path.exists("Railroads_" + str(i)):
-                os.mkdir("Railroads_" + str(i))
-            arcpy.Copy_management(inrr[x], "Railroads_" + str(i) + "/" + os.path.basename(inrr[x]))
-            i += 1
+        copyMultiInputToFolder(railroadFolder, rr, "Railroads", isRaster=False)
 
     # add canal layers to the project
     if canal is not None:
-        incanal = canal.split(";")
-        os.chdir(projPath + "/01_Inputs/05_Conflict/04_Canals/")
-        i = 1
-        for x in range(len(incanal)):
-            if not os.path.exists("Canals_" + str(i)):
-                os.mkdir("Canals_" + str(i))
-            arcpy.Copy_management(incanal[x], "Canals_" + str(i) + "/" + os.path.basename(incanal[x]))
-            i += 1
-
-    else:
-        pass
+        copyMultiInputToFolder(canalsFolder, canal, "Canals", isRaster=False)
 
 
-def set_structure(projPath):
-    """Sets up the folder structure for an RVD project"""
+def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
+    """
+    Copies multi input ArcGIS inputs into the folder that we want them in
+    :param folderPath: The root folder, where we'll put a bunch of sub folders
+    :param multiInput: A string, with paths to the inputs seperated by semicolons
+    :param subFolderName: The name for each subfolder (will have a number after it)
+    :param isRaster: Tells us if the thing is a raster or not
+    :return:
+    """
+    splitInput = multiInput.split(";")
+    i = 1
+    for inputPath in splitInput:
+        newSubFolder = makeFolder(folderPath, subFolderName + "_" + str(i))
+        destinationPath = os.path.join(newSubFolder, os.path.basename(inputPath))
 
-    if not os.path.exists(projPath):
-        os.mkdir(projPath)
+        if isRaster:
+            arcpy.CopyRaster_management(inputPath, destinationPath)
+        else:
+            arcpy.Copy_management(inputPath, destinationPath)
+        i += 1
 
-    if os.getcwd() is not projPath:
-        os.chdir(projPath)
 
-    if not os.path.exists("01_Inputs"):
-        os.mkdir("01_Inputs")
-    if not os.path.exists("02_Analyses"):
-        os.mkdir("02_Analyses")
-    os.chdir("01_Inputs")
-    if not os.path.exists("01_Ex_Veg"):
-        os.mkdir("01_Ex_Veg")
-    if not os.path.exists("02_Hist_Veg"):
-        os.mkdir("02_Hist_Veg")
-    if not os.path.exists("03_Network"):
-        os.mkdir("03_Network")
-    if not os.path.exists("04_Topo"):
-        os.mkdir("04_Topo")
-    if not os.path.exists("05_Conflict"):
-        os.mkdir("05_Conflict")
-    os.chdir("05_Conflict")
-    if not os.path.exists("01_Valley"):
-        os.mkdir("01_Valley")
-    if not os.path.exists("02_Roads"):
-        os.mkdir("02_Roads")
-    if not os.path.exists("03_Railroads"):
-        os.mkdir("03_Railroads")
-    if not os.path.exists("04_Canals"):
-        os.mkdir("04_Canals")
-    if not os.path.exists("05_Land_Use"):
-        os.mkdir("05_Land_Use")
-    os.chdir(projPath)
+def makeFolder(pathToLocation, newFolderName):
+    """
+    Makes a folder and returns the path to it
+    :param pathToLocation: Where we want to put the folder
+    :param newFolderName: What the folder will be called
+    :return: String
+    """
+    newFolder = os.path.join(pathToLocation, newFolderName)
+    if not os.path.exists(newFolder):
+        os.mkdir(newFolder)
+    return newFolder
+
 
 if __name__ == '__main__':
     main(
