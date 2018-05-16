@@ -50,77 +50,80 @@ def main(
     # --check input projections--
     validateInputs(seg_network, road, railroad, canal)
 
+    # name and create output folder
+    j = 1
+    new_output_folder = os.path.join(projPath, "Output_" + str(j))
+    while os.path.exists(new_output_folder):
+        j += 1
+        new_output_folder = os.path.join(projPath, "Output_" + str(j))
+    os.mkdir(new_output_folder)
+
+    intermediateFolder = makeFolder(new_output_folder, "01_Intermediates")
+
+    # copy input segment network to output folder
+    if out_name.endswith('.shp'):
+        seg_network_copy = os.path.join(intermediateFolder, out_name)
+    else:
+        seg_network_copy = os.path.join(intermediateFolder, out_name + ".shp")
+
+    arcpy.CopyFeatures_management(seg_network, seg_network_copy)
+
     # --check input network fields--
     # add flowline reach id field ('ReachID') if it doens't already exist
     # this field allows for more for more 'stable' joining
-    fields = [f.name for f in arcpy.ListFields(seg_network)]
+    fields = [f.name for f in arcpy.ListFields(seg_network_copy)]
     if 'ReachID' not in fields:
-        arcpy.AddField_management(seg_network, 'ReachID', 'SHORT')
-        with arcpy.da.UpdateCursor(seg_network, ['FID', 'ReachID']) as cursor:
+        arcpy.AddField_management(seg_network_copy, 'ReachID', 'SHORT')
+        with arcpy.da.UpdateCursor(seg_network_copy, ['FID', 'ReachID']) as cursor:
             for row in cursor:
                 row[1] = row[0]
                 cursor.updateRow(row)
 
     # --create network buffers for analyses--
     # create 'Buffers' folder if it doesn't exist
-    if not os.path.exists(os.path.dirname(seg_network) + "/Buffers"):
-        os.mkdir(os.path.dirname(seg_network) + "/Buffers")
+    buffersFolder = makeFolder(intermediateFolder, "Buffers")
+
     # create network segment midpoints
-    midpoints = arcpy.FeatureVerticesToPoints_management(seg_network, scratch + "/midpoints", "MID")
+    midpoints = arcpy.FeatureVerticesToPoints_management(seg_network_copy, scratch + "/midpoints", "MID")
     # remove unwanted fields from midpoints
     fields = arcpy.ListFields(midpoints)
     keep = ['ReachID']
     drop = []
     for field in fields:
-        if not field.required and field.name not in keep and field.type <> 'Geometry':
+        if not field.required and field.name not in keep and field.type != 'Geometry':
             drop.append(field.name)
     if len(drop) > 0:
         arcpy.DeleteField_management(midpoints, drop)
     # create midpoint 100 m buffer
     midpoint_buffer = arcpy.Buffer_analysis(midpoints, scratch + "/midpoint_buffer", "100 Meters")
     # create network 30 m buffer
-    buf_30m = os.path.dirname(seg_network) + "/Buffers/buffer_30m.shp"
-    arcpy.Buffer_analysis(seg_network, buf_30m, "30 Meters", "", "ROUND")
+    buf_30m = os.path.join(buffersFolder, "buffer_30m.shp")
+    arcpy.Buffer_analysis(seg_network_copy, buf_30m, "30 Meters", "", "ROUND")
     # create network 100 m buffer
-    buf_100m = os.path.dirname(seg_network) + "/Buffers/buffer_100m.shp"
-    arcpy.Buffer_analysis(seg_network, buf_100m, "100 Meters", "", "ROUND")
-
-    # name and create output folder
-    j = 1
-    while os.path.exists(projPath + "/02_Analyses/Output_" + str(j)):
-        j += 1
-    os.mkdir(projPath + "/02_Analyses/Output_" + str(j))
-
-    # copy input segment network to output folder
-    if out_name.endswith('.shp'):
-        out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name
-    else:
-        out_network = projPath + "/02_Analyses/Output_" + str(j) + "/" + out_name + ".shp"
-
-    arcpy.CopyFeatures_management(seg_network, out_network)
+    buf_100m = os.path.join(buffersFolder, "buffer_100m.shp")
+    arcpy.Buffer_analysis(seg_network_copy, buf_100m, "100 Meters", "", "ROUND")
 
     # run geo attributes function
     arcpy.AddMessage('Adding "iGeo" attributes to network')
-    igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch)
+    igeo_attributes(seg_network_copy, inDEM, FlowAcc, midpoint_buffer, scratch)
 
     # run vegetation attributes function
     arcpy.AddMessage('Adding "iVeg" attributes to network')
-    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch)
+    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, seg_network_copy, scratch)
 
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
         arcpy.AddMessage('Adding "iPC" attributes to network')
-        ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
+        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
-    addMainstemAttribute(out_network)
+    addMainstemAttribute(seg_network_copy)
     # find braided reaches
-    FindBraidedNetwork.main(out_network, canal)
+    FindBraidedNetwork.main(seg_network_copy, canal)
 
     if findClusters:
-        clusters = BRAT_Braid_Handler.findClusters(out_network)
-        BRAT_Braid_Handler.addClusterID(out_network, clusters)
         arcpy.AddMessage("Finding Clusters...")
-
+        clusters = BRAT_Braid_Handler.findClusters(seg_network_copy)
+        BRAT_Braid_Handler.addClusterID(seg_network_copy, clusters)
 
     # run write xml function
     arcpy.AddMessage('Writing project xml')
@@ -129,7 +132,7 @@ def main(
     else:
         DrAr = os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc)
     writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
-             FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network)
+             FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
 
     arcpy.CheckInExtension("spatial")
 
@@ -1051,6 +1054,19 @@ def addMainstemAttribute(out_network):
     if len(listFields) is not 1:
         arcpy.AddField_management(out_network, "IsMainstem", "SHORT", "", "", "", "", "NULLABLE")
     arcpy.CalculateField_management(out_network,"IsMainstem",1,"PYTHON")
+
+
+def makeFolder(pathToLocation, newFolderName):
+    """
+    Makes a folder and returns the path to it
+    :param pathToLocation: Where we want to put the folder
+    :param newFolderName: What the folder will be called
+    :return: String
+    """
+    newFolder = os.path.join(pathToLocation, newFolderName)
+    if not os.path.exists(newFolder):
+        os.mkdir(newFolder)
+    return newFolder
 
 
 def getUUID():

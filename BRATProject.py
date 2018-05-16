@@ -26,9 +26,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     if not os.path.exists(projPath):
         os.mkdir(projPath)
 
-    inputsFolder = makeFolder(projPath, "01_Inputs")
-    intermediatesFolder = makeFolder(projPath, "02_Intermediates")
-    analysesFolder = makeFolder(projPath, "03_Analyses")
+    inputsFolder = makeFolder(projPath, "Inputs")
 
     vegetationFolder = makeFolder(inputsFolder, "01_Vegetation")
     networkFolder = makeFolder(inputsFolder, "02_Network")
