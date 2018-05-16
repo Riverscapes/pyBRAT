@@ -48,43 +48,7 @@ def main(
     arcpy.CheckOutExtension("Spatial")
 
     # --check input projections--
-    try:
-        networkSR = arcpy.Describe(seg_network).spatialReference
-    except:
-        raise Exception("There was a problem finding the spatial reference of the stream network. "
-                       + "This is commonly caused by trying to run the Table tool directly after running the project "
-                       + "builder. Restarting ArcGIS fixes this problem most of the time.")
-    if networkSR.type == "Projected":
-        pass
-    else:
-        raise Exception("Input stream network must have a projected coordinate system")
-
-    if road is not None:
-        roadSR = arcpy.Describe(road).spatialReference
-        if roadSR.type == "Projected":
-            pass
-        else:
-            raise Exception("Input roads must have a projected coordinate system")
-
-    if railroad is not None:
-        rrSR = arcpy.Describe(railroad).spatialReference
-        if rrSR.type == "Projected":
-            pass
-        else:
-            raise Exception("Input railroads must have a projected coordinate system")
-
-    if canal is not None:
-        canalSR = arcpy.Describe(canal).spatialReference
-        if canalSR.type == "Projected":
-            pass
-        else:
-            raise Exception("Input canals must have projected coordinate system")
-
-    # --check that input network is shapefile--
-    if seg_network.endswith(".shp"):
-        pass
-    else:
-        raise Exception("Input network must be a shapefile (.shp)")
+    validateInputs(seg_network, road, railroad, canal)
 
     # --check input network fields--
     # add flowline reach id field ('ReachID') if it doens't already exist
@@ -1027,6 +991,54 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
 
         # write xml
         exxml.write()
+
+
+def validateInputs(seg_network, road, railroad, canal):
+    """
+    Checks if the spatial references are correct and that the inputs are what we want
+    :param seg_network: The stream network shape file
+    :param road: The roads shapefile
+    :param railroad: The railroads shape file
+    :param canal: The canals shapefile
+    :return:
+    """
+    try:
+        networkSR = arcpy.Describe(seg_network).spatialReference
+    except:
+        raise Exception("There was a problem finding the spatial reference of the stream network. "
+                       + "This is commonly caused by trying to run the Table tool directly after running the project "
+                       + "builder. Restarting ArcGIS fixes this problem most of the time.")
+    if networkSR.type == "Projected":
+        pass
+    else:
+        raise Exception("Input stream network must have a projected coordinate system")
+
+    if road is not None:
+        roadSR = arcpy.Describe(road).spatialReference
+        if roadSR.type == "Projected":
+            pass
+        else:
+            raise Exception("Input roads must have a projected coordinate system")
+
+    if railroad is not None:
+        rrSR = arcpy.Describe(railroad).spatialReference
+        if rrSR.type == "Projected":
+            pass
+        else:
+            raise Exception("Input railroads must have a projected coordinate system")
+
+    if canal is not None:
+        canalSR = arcpy.Describe(canal).spatialReference
+        if canalSR.type == "Projected":
+            pass
+        else:
+            raise Exception("Input canals must have projected coordinate system")
+
+    # --check that input network is shapefile--
+    if seg_network.endswith(".shp"):
+        pass
+    else:
+        raise Exception("Input network must be a shapefile (.shp)")
 
 
 def addMainstemAttribute(out_network):
