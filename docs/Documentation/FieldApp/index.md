@@ -1,5 +1,5 @@
 ---
-title: Field App Data Collector
+title: Data Capture App
 ---
 
 This will be Weber's Documentation page.

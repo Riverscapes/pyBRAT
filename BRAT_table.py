@@ -26,7 +26,7 @@ def main(
     hucID,
     hucName,
     seg_network,
-    DEM,
+    inDEM,
     FlowAcc,
     coded_veg,
     coded_hist,
@@ -87,12 +87,12 @@ def main(
         raise Exception("Input network must be a shapefile (.shp)")
 
     # --check input network fields--
-    # add flowline segment id field ('SegID') if it doens't already exist
+    # add flowline reach id field ('ReachID') if it doens't already exist
     # this field allows for more for more 'stable' joining
     fields = [f.name for f in arcpy.ListFields(seg_network)]
-    if 'SegID' not in fields:
-        arcpy.AddField_management(seg_network, 'SegID', 'SHORT')
-        with arcpy.da.UpdateCursor(seg_network, ['FID', 'SegID']) as cursor:
+    if 'ReachID' not in fields:
+        arcpy.AddField_management(seg_network, 'ReachID', 'SHORT')
+        with arcpy.da.UpdateCursor(seg_network, ['FID', 'ReachID']) as cursor:
             for row in cursor:
                 row[1] = row[0]
                 cursor.updateRow(row)
@@ -105,7 +105,7 @@ def main(
     midpoints = arcpy.FeatureVerticesToPoints_management(seg_network, scratch + "/midpoints", "MID")
     # remove unwanted fields from midpoints
     fields = arcpy.ListFields(midpoints)
-    keep = ['SegID']
+    keep = ['ReachID']
     drop = []
     for field in fields:
         if not field.required and field.name not in keep and field.type <> 'Geometry':
@@ -137,7 +137,7 @@ def main(
 
     # run geo attributes function
     arcpy.AddMessage('Adding "iGeo" attributes to network')
-    igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch)
+    igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch)
 
     # run vegetation attributes function
     arcpy.AddMessage('Adding "iVeg" attributes to network')
@@ -161,10 +161,10 @@ def main(
     # run write xml function
     arcpy.AddMessage('Writing project xml')
     if FlowAcc is None:
-        DrAr = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
+        DrAr = os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif"
     else:
-        DrAr = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
-    writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, valley_bottom, landuse,
+        DrAr = os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc)
+    writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
              FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network)
 
     arcpy.CheckInExtension("spatial")
@@ -174,19 +174,19 @@ def main(
 def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, scratch):
     # get input raster stat value within each buffer
     # note: zonal stats as table does not support overlapping polygons so we will check which
-    #       segment buffers output was produced for and which we need to run tool on again
-    statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'SegID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
+    #       reach buffers output was produced for and which we need to run tool on again
+    statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'ReachID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
     # get list of segment buffers where zonal stats tool produced output
-    haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'SegID')]
-    # create dictionary to hold all segment buffer min dem z values
+    haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'ReachID')]
+    # create dictionary to hold all reach buffer min dem z values
     statDict = {}
     # add buffer raster stat values to dictionary
-    with arcpy.da.SearchCursor(statTbl, ['SegID', statField]) as cursor:
+    with arcpy.da.SearchCursor(statTbl, ['ReachID', statField]) as cursor:
         for row in cursor:
             statDict[row[0]] = row[1]
-    # create list of overlapping buffer segments (i.e., where zonal stats tool did not produce output)
+    # create list of overlapping buffer reaches (i.e., where zonal stats tool did not produce output)
     needStatList = []
-    with arcpy.da.SearchCursor(buffer, ['SegID']) as cursor:
+    with arcpy.da.SearchCursor(buffer, ['ReachID']) as cursor:
         for row in cursor:
             if row[0] not in haveStatList:
                 needStatList.append(row[0])
@@ -196,28 +196,28 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     while len(needStatList) > 0:
         # create tuple of segment ids where still need raster values
         needStat = ()
-        for seg in needStatList:
-            if seg not in needStat:
-                needStat += (seg,)
+        for reach in needStatList:
+            if reach not in needStat:
+                needStat += (reach,)
         # use the segment id tuple to create selection query and run zonal stats tool
         if len(needStat) == 1:
-            quer = '"SegID" = ' + str(needStat[0])
+            quer = '"ReachID" = ' + str(needStat[0])
         else:
-            quer = '"SegID" IN ' + str(needStat)
+            quer = '"ReachID" IN ' + str(needStat)
         tmp_buff_lyr = arcpy.MakeFeatureLayer_management(buffer, 'tmp_buff_lyr')
         arcpy.SelectLayerByAttribute_management(tmp_buff_lyr, 'NEW_SELECTION', quer)
-        stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'SegID', ras, os.path.join(scratch, 'stat'), 'DATA', statType)
+        stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'ReachID', ras, os.path.join(scratch, 'stat'), 'DATA', statType)
         # add segment stat values from zonal stats table to main dictionary
-        with arcpy.da.SearchCursor(stat, ['SegID', statField]) as cursor:
+        with arcpy.da.SearchCursor(stat, ['ReachID', statField]) as cursor:
             for row in cursor:
                 statDict[row[0]] = row[1]
-        # create list of segments that were run and remove from 'need to run' list
-        haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'SegID')]
-        for seg in haveStatList2:
-            needStatList.remove(seg)
+        # create list of reaches that were run and remove from 'need to run' list
+        haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'ReachID')]
+        for reach in haveStatList2:
+            needStatList.remove(reach)
 
-    # populate dictionary value to output field by SegID
-    with arcpy.da.UpdateCursor(outFC, ['SegID', outFCField]) as cursor:
+    # populate dictionary value to output field by ReachID
+    with arcpy.da.UpdateCursor(outFC, ['ReachID', outFCField]) as cursor:
         for row in cursor:
             try:
                 aKey = row[0]
@@ -235,7 +235,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
 
 # geo attributes function
 # calculates min and max elevation, length, slope, and drainage area for each flowline segment
-def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
+def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -244,18 +244,29 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
         if field in drop:
             arcpy.DeleteField_management(out_network, field)
 
-    # add flowline segment id field ('SegID') for more 'stable' joining
-    if 'SegID' not in fields:
-        arcpy.AddField_management(out_network, 'SegID', 'SHORT')
-        with arcpy.da.UpdateCursor(out_network, ['FID', 'SegID']) as cursor:
+    # add flowline segment id field ('ReachID') for more 'stable' joining
+    if 'ReachID' not in fields:
+        arcpy.AddField_management(out_network, 'ReachID', 'LONG')
+        with arcpy.da.UpdateCursor(out_network, ['FID', 'ReachID']) as cursor:
             for row in cursor:
                 row[1] = row[0]
                 cursor.updateRow(row)
 
+    #  --smooth input dem by 3x3 cell window--
+    #  define raster environment settings
+    desc = arcpy.Describe(inDEM)
+    arcpy.env.extent = desc.Extent
+    arcpy.env.outputCoordinateSystem = desc.SpatialReference
+    arcpy.env.cellSize = desc.meanCellWidth
+    # calculate mean z over 3x3 cell window
+    neighborhood = NbrRectangle(3, 3, "CELL")
+    tmpDEM = FocalStatistics(inDEM, neighborhood, 'MEAN')
+    # clip smoothed dem to input dem
+    DEM = ExtractByMask(tmpDEM, inDEM)
 
     # function to attribute start/end elevation (dem z) to each flowline segment
     def zSeg(vertexType, outField):
-        # create start/end points for each flowline segment
+        # create start/end points for each flowline reach segment
         tmp_pts = os.path.join(scratch, 'tmp_pts')
         arcpy.FeatureVerticesToPoints_management(out_network, tmp_pts, vertexType)
         # create 30 meter buffer around each start/end point
@@ -274,7 +285,7 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
     zSeg('START', 'iGeo_ElMax')
     zSeg('END', 'iGeo_ElMin')
 
-    # calculate network segment slope
+    # calculate network reach slope
     arcpy.AddField_management(out_network, "iGeo_Len", "DOUBLE")
     arcpy.CalculateField_management(out_network, "iGeo_Len", '!shape.length@meters!', "PYTHON_9.3")
     arcpy.AddField_management(out_network, "iGeo_Slope", "DOUBLE")
@@ -291,18 +302,18 @@ def igeo_attributes(out_network, DEM, FlowAcc, midpoint_buffer, scratch):
     # get DA values
     if FlowAcc is None:
         arcpy.AddMessage("calculating drainage area")
-        calc_drain_area(DEM)
+        calc_drain_area(DEM, inDEM)
     # todo: try and figure out what this elif is doing
-    elif os.path.exists(os.path.dirname(DEM) + "/Flow"):
+    elif os.path.exists(os.path.dirname(inDEM) + "/Flow"):
         pass
     else:
-        os.mkdir(os.path.dirname(DEM) + "/Flow")
-        arcpy.CopyRaster_management(FlowAcc, os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc))
+        os.mkdir(os.path.dirname(inDEM) + "/Flow")
+        arcpy.CopyRaster_management(FlowAcc, os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc))
 
     if FlowAcc is None:
-        DrArea = os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"
+        DrArea = os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif"
     else:
-        DrArea = os.path.dirname(DEM) + "/Flow/" + os.path.basename(FlowAcc)
+        DrArea = os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc)
     # Todo: check this bc it seems wrong to pull from midpoint buffer
 
     # add drainage area 'iGeo_DA' field to flowline network
@@ -649,13 +660,13 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                 for row in cursor:
                     row[2] = row[0]/row[1]
                     cursor.updateRow(row)
-            areaTbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['SegID', 'LUI_CLASS'])
-            areaPivTbl = arcpy.PivotTable_management(areaTbl, ['SegID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
+            areaTbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['ReachID', 'LUI_CLASS'])
+            areaPivTbl = arcpy.PivotTable_management(areaTbl, ['ReachID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
 
             # create empty dictionary to hold input table field values
             tblDict = {}
             # add values to dictionary
-            with arcpy.da.SearchCursor(areaPivTbl, ['SegID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
+            with arcpy.da.SearchCursor(areaPivTbl, ['ReachID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
                 for row in cursor:
                     tblDict[row[0]] = [row[1], row[2], row[3], row[4]]
             # populate flowline network out fields
@@ -664,7 +675,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             arcpy.AddField_management(out_network, "iPC_ModLU", 'DOUBLE')
             arcpy.AddField_management(out_network, "iPC_HighLU", 'DOUBLE')
 
-            with arcpy.da.UpdateCursor(out_network, ['SegID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
+            with arcpy.da.UpdateCursor(out_network, ['ReachID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
                 for row in cursor:
                     try:
                         aKey = row[0]
@@ -687,7 +698,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
 
 # calculate drainage area function
-def calc_drain_area(DEM):
+def calc_drain_area(DEM, inputDEM):
 
     #  define raster environment settings
     desc = arcpy.Describe(DEM)
@@ -708,16 +719,16 @@ def calc_drain_area(DEM):
     DrainArea = flow_accumulation * cellArea / 1000000 # calculate drainage area in square kilometers
 
     # save drainage area raster
-    if os.path.exists(os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif"):
-        arcpy.Delete_management(os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif")
-        arcpy.CopyRaster_management(DrainArea, os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif")
+    if os.path.exists(os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif"):
+        arcpy.Delete_management(os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif")
+        arcpy.CopyRaster_management(DrainArea, os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif")
     else:
-        os.mkdir(os.path.dirname(DEM) + "/Flow")
-        arcpy.CopyRaster_management(DrainArea, os.path.dirname(DEM) + "/Flow/DrainArea_sqkm.tif")
+        os.mkdir(os.path.dirname(inputDEM) + "/Flow")
+        arcpy.CopyRaster_management(DrainArea, os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif")
 
 
 # write xml function
-def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, DEM, valley_bottom, landuse,
+def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
              FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
     if not os.path.exists(projPath + "/project.rs.xml"):
@@ -749,7 +760,7 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
         newxml.addBRATInput(newxml.BRATRealizations[0], "Historic Vegetation", ref="HISTVEG1")
         newxml.addProjectInput("Vector", "Segmented Network", seg_network[seg_network.find("01_Inputs"):], iid="NETWORK1", guid=getUUID())
         newxml.addBRATInput(newxml.BRATRealizations[0], "Network", ref="NETWORK1")
-        newxml.addProjectInput("DEM", "DEM", DEM[DEM.find("01_Inputs"):], iid="DEM1", guid=getUUID())
+        newxml.addProjectInput("DEM", "DEM", inDEM[inDEM.find("01_Inputs"):], iid="DEM1", guid=getUUID())
         newxml.addBRATInput(newxml.BRATRealizations[0], "DEM", ref="DEM1")
 
         # add optional inputs
@@ -814,19 +825,19 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
             dempath[i] = dems[i].find("Path").text
 
         for i in range(len(dempath)):
-            if os.path.abspath(dempath[i]) == os.path.abspath(DEM[DEM.find("01_Inputs"):]):
+            if os.path.abspath(dempath[i]) == os.path.abspath(inDEM[inDEM.find("01_Inputs"):]):
                 exxml.addBRATInput(exxml.BRATRealizations[0], "DEM", ref=str(demid[i]))
 
         nlist = []
         for j in dempath:
-            if os.path.abspath(DEM[DEM.find("01_Inputs"):]) == os.path.abspath(j):
+            if os.path.abspath(inDEM[inDEM.find("01_Inputs"):]) == os.path.abspath(j):
                 nlist.append("yes")
             else:
                 nlist.append("no")
         if "yes" in nlist:
             pass
         else:
-            exxml.addProjectInput("DEM", "DEM", DEM[DEM.find("01_Inputs"):], iid="DEM" + str(k), guid=getUUID())
+            exxml.addProjectInput("DEM", "DEM", inDEM[inDEM.find("01_Inputs"):], iid="DEM" + str(k), guid=getUUID())
             exxml.addBRATInput(exxml.BRATRealizations[0], "DEM", ref="DEM" + str(k))
 
         raster = inputs.findall("Raster")
