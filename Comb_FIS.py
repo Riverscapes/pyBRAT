@@ -35,11 +35,15 @@ def main(
     else:
         out_network = os.path.join(analyses_folder, out_name + ".shp")
 
+    if os.path.exists(out_network):
+        arcpy.Delete_management(out_network)
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # run the combined fis function for both potential and existing
     combFIS(out_network, 'pt', scratch, max_DA_thresh)
     combFIS(out_network, 'ex', scratch, max_DA_thresh)
+
+    makeLayers(out_network, out_name)
 
     addxmloutput(projPath, in_network, out_network)
 
@@ -289,6 +293,41 @@ def addxmloutput(projPath, in_network, out_network):
                     outrz, guid=getUUID())
 
     exxml.write()
+
+def makeLayers(out_network, out_name):
+    """
+    Writes the layers
+    :param out_network: The output network, which we want to make into a layer
+    :param out_name: The name of the layers
+    :return:
+    """
+    arcpy.AddMessage("Making layers...")
+    output_folder = os.path.dirname(out_network)
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    existingCapacityLayer = os.path.join(symbologyFolder, "Existing_Capacity.lyr")
+    historicCapacityLayer = os.path.join(symbologyFolder, "Historic_Capacity.lyr")
+
+    makeLayer(output_folder, out_name, out_network, "ExistingCapacity", existingCapacityLayer)
+    makeLayer(output_folder, out_name, out_network, "HistoricCapacity", historicCapacityLayer)
+
+
+def makeLayer(output_folder, out_name, out_network, new_layer_name, symbology_layer):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder:
+    :param out_name:
+    :param out_network:
+    :param new_layer_name:
+    :param symbology_layer:
+    :return: The path to the new layer
+    """
+    new_layer = os.path.join(output_folder, out_name + new_layer_name + ".lyr")
+    arcpy.MakeFeatureLayer_management(out_network, new_layer)
+    arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+    arcpy.SaveToLayerFile_management(new_layer, new_layer)
+    return new_layer
 
 
 def makeFolder(pathToLocation, newFolderName):
