@@ -19,10 +19,10 @@ def main(bratOutput, dams, outputName):
     :return:
     """
     if outputName.endswith('.shp'):
-        out_network = os.path.join(os.path.dirname(bratOutput), outputName)
+        outNetwork = os.path.join(os.path.dirname(bratOutput), outputName)
     else:
-        out_network = os.path.join(os.path.dirname(bratOutput), outputName + ".shp")
-    arcpy.Delete_management(out_network)
+        outNetwork = os.path.join(os.path.dirname(bratOutput), outputName + ".shp")
+    arcpy.Delete_management(outNetwork)
 
     damFields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
     otherFields = ['Ex_Categor', 'Pt_Categor', 'mCC_EX_Ct', 'mCC_PT_Ct', 'mCC_EXtoPT']
@@ -32,13 +32,16 @@ def main(bratOutput, dams, outputName):
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
-        setDamAttributes(bratOutput, out_network, dams, damFields + ['Join_Count'] + inputFields, newFields)
+        setDamAttributes(bratOutput, outNetwork, dams, damFields + ['Join_Count'] + inputFields, newFields)
     else:
-        arcpy.CopyFeatures_management(bratOutput, out_network)
-        addFields(out_network, otherFields)
+        arcpy.CopyFeatures_management(bratOutput, outNetwork)
+        addFields(outNetwork, otherFields)
 
     arcpy.AddMessage("Adding fields that don't need dam input...")
-    setOtherAttributes(out_network, otherFields + inputFields)
+    setOtherAttributes(outNetwork, otherFields + inputFields)
+
+    if dams:
+        cleanUpFields(bratOutput, outNetwork, newFields)
 
 
 def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):
@@ -146,3 +149,27 @@ def handleCategory(oCCVariable):
         return "Pervasive"
     else:
         return "UNDEFINED"
+
+
+def cleanUpFields(bratNetwork, outNetwork, newFields):
+    """
+    Removes unnecessary fields
+    :param bratNetwork: The original, unmodified stream network
+    :param outNetwork: The output network
+    :param newFields: All the fields we added
+    :return:
+    """
+    arcpy.AddField_management(outNetwork, "Garbage", "TEXT", field_length=50)
+
+    originalFields = [field.baseName for field in arcpy.ListFields(bratNetwork)]
+    desiredFields = originalFields + newFields
+    outputFields = [field.baseName for field in arcpy.ListFields(outNetwork)]
+
+    removeFields = []
+    for field in outputFields:
+        if field not in desiredFields:
+            removeFields.append(field)
+
+    if len(removeFields) > 0:
+        arcpy.DeleteField_management(outNetwork, removeFields)
+    

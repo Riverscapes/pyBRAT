@@ -745,7 +745,7 @@ class Summary_Report_tool(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        reload(Conservation_Restoration)
+        reload(Summary_Report)
         Summary_Report.main(p[0].valueAsText,
                             p[1].valueAsText,
                             p[2].valueAsText)
