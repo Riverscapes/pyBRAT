@@ -53,6 +53,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
 
     # add the DEM inputs to the project
     copyMultiInputToFolder(topoFolder, DEM, "DEM", isRaster=True)
+    makeDEMLayers(topoFolder)
 
     # add landuse raster to the project
     if landuse is not None:
@@ -95,6 +96,43 @@ def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
         else:
             arcpy.Copy_management(inputPath, destinationPath)
         i += 1
+
+
+def makeDEMLayers(topoFolder):
+    """
+    Writes the layers
+    :param dem: We want to make a layer for this DEM
+    :return:
+    """
+    arcpy.AddMessage("Making layers...")
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    demLayer = os.path.join(symbologyFolder, "DEM.lyr")
+
+    for folder in os.listdir(topoFolder):
+        demFolderPath = os.path.join(topoFolder, folder)
+        for file in os.listdir(demFolderPath):
+            if file.endswith(".tif"):
+                demFile = os.path.join(demFolderPath, file)
+                makeRasterLayer(demFolderPath, demFile, "LandUseIntensity", demLayer)
+
+
+def makeRasterLayer(output_folder, out_raster, new_layer_name, symbology_layer):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder: Where we want to put the folder
+    :param out_raster: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
+    :return: The path to the new layer
+    """
+    new_layer = os.path.join(output_folder, new_layer_name + ".lyr")
+    arcpy.MakeRasterLayer_management(out_raster, new_layer)
+    arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+    arcpy.SaveToLayerFile_management(new_layer, new_layer)
+    return new_layer
+
 
 
 def makeFolder(pathToLocation, newFolderName):
