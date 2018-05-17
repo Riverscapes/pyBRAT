@@ -316,11 +316,11 @@ def makeLayers(out_network, out_name):
 def makeLayer(output_folder, out_name, out_network, new_layer_name, symbology_layer):
     """
     Creates a layer and applies a symbology to it
-    :param output_folder:
-    :param out_name:
-    :param out_network:
-    :param new_layer_name:
-    :param symbology_layer:
+    :param output_folder: Where we want to put the folder
+    :param out_name: What we would name the folder (maybe not using now)
+    :param out_network: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
     :return: The path to the new layer
     """
     new_layer = os.path.join(output_folder, new_layer_name + ".lyr")
