@@ -323,7 +323,7 @@ def makeLayer(output_folder, out_name, out_network, new_layer_name, symbology_la
     :param symbology_layer:
     :return: The path to the new layer
     """
-    new_layer = os.path.join(output_folder, out_name + new_layer_name + ".lyr")
+    new_layer = os.path.join(output_folder, new_layer_name + ".lyr")
     arcpy.MakeFeatureLayer_management(out_network, new_layer)
     arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
     arcpy.SaveToLayerFile_management(new_layer, new_layer)
