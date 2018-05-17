@@ -28,11 +28,6 @@ def main(
 
     scratch = 'in_memory'
 
-    # run the combined fis function for both potential and existing
-    combFIS(in_network, 'pt', scratch, max_DA_thresh)
-    combFIS('ex')
-
-    # save results to user defined output shp
     output_folder = os.path.dirname(os.path.dirname(in_network))
     analyses_folder = makeFolder(output_folder, "02_Analyses")
     if out_name.endswith('.shp'):
@@ -41,6 +36,11 @@ def main(
         out_network = os.path.join(analyses_folder, out_name + ".shp")
 
     arcpy.CopyFeatures_management(in_network, out_network)
+
+    # run the combined fis function for both potential and existing
+    combFIS(out_network, 'pt', scratch, max_DA_thresh)
+    combFIS(out_network, 'ex', scratch, max_DA_thresh)
+
     addxmloutput(projPath, in_network, out_network)
 
 
