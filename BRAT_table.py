@@ -131,8 +131,13 @@ def main(
         DrAr = os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif"
     else:
         DrAr = os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc)
-    writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
+
+    makeLayers(seg_network_copy)
+    try:
+        writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
              FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
+    except IndexError:
+        pass
 
     arcpy.CheckInExtension("spatial")
 
@@ -1067,6 +1072,38 @@ def makeFolder(pathToLocation, newFolderName):
     if not os.path.exists(newFolder):
         os.mkdir(newFolder)
     return newFolder
+
+
+def makeLayers(out_network):
+    """
+    Writes the layers
+    :param out_network: The output network, which we want to make into a layer
+    :return:
+    """
+    arcpy.AddMessage("Making layers...")
+    output_folder = os.path.dirname(out_network)
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    existingCapacityLayer = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
+
+    makeLayer(output_folder, out_network, "LandUseIntensity", existingCapacityLayer)
+
+
+def makeLayer(output_folder, out_network, new_layer_name, symbology_layer):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder: Where we want to put the folder
+    :param out_network: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
+    :return: The path to the new layer
+    """
+    new_layer = os.path.join(output_folder, new_layer_name + ".lyr")
+    arcpy.MakeFeatureLayer_management(out_network, new_layer)
+    arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+    arcpy.SaveToLayerFile_management(new_layer, new_layer)
+    return new_layer
 
 
 def getUUID():
