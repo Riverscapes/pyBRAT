@@ -294,6 +294,7 @@ def addxmloutput(projPath, in_network, out_network):
 
     exxml.write()
 
+
 def makeLayers(out_network, out_name):
     """
     Writes the layers
