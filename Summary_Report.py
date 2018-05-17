@@ -159,8 +159,6 @@ def cleanUpFields(bratNetwork, outNetwork, newFields):
     :param newFields: All the fields we added
     :return:
     """
-    arcpy.AddField_management(outNetwork, "Garbage", "TEXT", field_length=50)
-
     originalFields = [field.baseName for field in arcpy.ListFields(bratNetwork)]
     desiredFields = originalFields + newFields
     outputFields = [field.baseName for field in arcpy.ListFields(outNetwork)]
@@ -172,4 +170,4 @@ def cleanUpFields(bratNetwork, outNetwork, newFields):
 
     if len(removeFields) > 0:
         arcpy.DeleteField_management(outNetwork, removeFields)
-    
+
