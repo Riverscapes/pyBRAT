@@ -44,6 +44,7 @@ def main(bratOutput, dams, outputName):
         cleanUpFields(bratOutput, outNetwork, newFields)
 
     makeLayers(outNetwork)
+    makeLayerPackage(outNetwork)
 
 
 def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):
@@ -217,3 +218,106 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRast
     new_layer_instance.description = description
     new_layer_instance.save()
     return new_layer_save
+
+
+def makeLayerPackage(outNetwork):
+    """
+    Makes a layer package for the project
+    :param outNetwork: The network in the fodler that we want to do stuff with.
+    :return:
+    """
+    arcpy.AddMessage("Making Layer Package...")
+    analysesFolder = os.path.dirname(outNetwork)
+    outputFolder = os.path.dirname(analysesFolder)
+    projectFolder = os.path.dirname(outputFolder)
+    inputsFolder = findFolder(projectFolder, "Inputs")
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    emptyGroupLayer = os.path.join(symbologyFolder, "EmptyGroupLayer.lyr")
+
+    mxd = arcpy.mapping.MapDocument("CURRENT")
+    df = arcpy.mapping.ListDataFrames(mxd)[0]
+
+    topoFolder = findFolder(inputsFolder, "03_Topography")
+    demLayers = findInstanceLayers(topoFolder)
+
+    outputLayers = findLayersInFolder(analysesFolder)
+
+    BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
+
+    # groupLayers(emptyGroupLayer, "Some Name", layers, df, mxd)
+    layerPackage = os.path.join(analysesFolder, "layerPackage.lpk")
+    arcpy.PackageLayer_management(BRATLayer, layerPackage)
+
+
+def findInstanceLayers(root_folder):
+    """
+    Returns a list of DEM layers
+    :param root_folder: The path to the topography folder
+    :return: A list of DEM layers
+    """
+    layers = []
+    for instance_folder in os.listdir(root_folder):
+        instance_folder_path = os.path.join(root_folder, instance_folder)
+        layers += findLayersInFolder(instance_folder_path)
+    return layers
+
+
+def findLayersInFolder(folder_root):
+    """
+    Returns a list of all layers in a folder
+    :param folder_root: Where we want to look
+    :return:
+    """
+    layers = []
+    for instance_file in os.listdir(folder_root):
+        if instance_file.endswith(".lyr"):
+            layers.append(os.path.join(folder_root, instance_file))
+    return layers
+
+
+def findFolder(folderLocation, folderName):
+    """
+    If the folder exists, returns it. Otherwise, raises an error
+    :param folderLocation: Where to look
+    :param folderName: The folder to look for
+    :return: Path to folder
+    """
+    folder = os.path.join(folderLocation, folderName)
+    if os.path.exists(folder):
+        return folder
+    else:
+        raise Exception("The " + folderName + " folder does not exist, and so a layer package could not be created."
+                        " It was supposed to be at the following location: \n" + folder)
+
+
+def groupLayers(groupLayer, groupName, layers, df, mxd):
+    """
+    Groups a bunch of layers together
+    :param groupLayer:
+    :param groupName:
+    :param layers:
+    :param df:
+    :param mxd:
+    :return: The layer that we put our layers in
+    """
+    groupLayer = arcpy.mapping.Layer(groupLayer)
+    groupLayer.name = groupName
+    groupLayer.description = "Made Up Description"
+    arcpy.mapping.AddLayer(df, groupLayer, "BOTTOM")
+    groupLayer = arcpy.mapping.ListLayers(mxd, groupName, df)[0]
+
+    for layer in layers:
+        layer_instance = arcpy.mapping.Layer(layer)
+        # if isinstance(layer, arcpy.mapping.Layer):
+        #     layer_instance = arcpy.mapping.Layer(layer)
+        # else:
+        #     layer_instance = layer
+        arcpy.mapping.AddLayerToGroup(df, groupLayer, layer_instance)
+    return groupLayer
+
+
+
+
+
