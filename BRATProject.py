@@ -109,19 +109,20 @@ def makeDEMLayers(topoFolder):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     demLayer = os.path.join(symbologyFolder, "DEM.lyr")
+    layers = []
 
     for folder in os.listdir(topoFolder):
         demFolderPath = os.path.join(topoFolder, folder)
         for file in os.listdir(demFolderPath):
             if file.endswith(".tif"):
                 demFile = os.path.join(demFolderPath, file)
-                makeLayer(demFolderPath, demFile, "DEM", demLayer, isRaster=True)
+                layers.append(makeLayer(demFolderPath, demFile, os.path.basename(demFile), demLayer, isRaster=True))
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
     """
     Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the folder
+    :param output_folder: Where we want to put the layer
     :param layer_base: What we should base the layer off of
     :param new_layer_name: What the layer should be called
     :param symbology_layer: The symbology that we will import
@@ -138,7 +139,7 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRast
         arcpy.MakeFeatureLayer_management(layer_base, new_layer)
 
     arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
     new_layer_instance = arcpy.mapping.Layer(new_layer_save)
     new_layer_instance.description = description
     new_layer_instance.save()
