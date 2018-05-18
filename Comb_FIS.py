@@ -310,25 +310,35 @@ def makeLayers(out_network, out_name):
     existingCapacityLayer = os.path.join(symbologyFolder, "Existing_Capacity.lyr")
     historicCapacityLayer = os.path.join(symbologyFolder, "Historic_Capacity.lyr")
 
-    makeLayer(output_folder, out_name, out_network, "ExistingCapacity", existingCapacityLayer)
-    makeLayer(output_folder, out_name, out_network, "HistoricCapacity", historicCapacityLayer)
+    makeLayer(output_folder, out_network, "ExistingCapacity", existingCapacityLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "HistoricCapacity", historicCapacityLayer, isRaster=False)
 
 
-def makeLayer(output_folder, out_name, out_network, new_layer_name, symbology_layer):
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
     """
     Creates a layer and applies a symbology to it
     :param output_folder: Where we want to put the folder
-    :param out_name: What we would name the folder (maybe not using now)
-    :param out_network: What we should base the layer off of
+    :param layer_base: What we should base the layer off of
     :param new_layer_name: What the layer should be called
     :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
     :return: The path to the new layer
     """
-    new_layer = os.path.join(output_folder, new_layer_name + ".lyr")
-    arcpy.MakeFeatureLayer_management(out_network, new_layer)
+    new_layer = new_layer_name + "_lyr"
+    new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
+
+    if isRaster:
+        arcpy.MakeRasterLayer_management(layer_base, new_layer)
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
     arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-    arcpy.SaveToLayerFile_management(new_layer, new_layer)
-    return new_layer
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
 
 
 def makeFolder(pathToLocation, newFolderName):

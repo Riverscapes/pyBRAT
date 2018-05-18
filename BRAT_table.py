@@ -1087,23 +1087,34 @@ def makeLayers(out_network):
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     existingCapacityLayer = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
 
-    makeLayer(output_folder, out_network, "LandUseIntensity", existingCapacityLayer)
+    makeLayer(output_folder, out_network, "LandUseIntensity", existingCapacityLayer, isRaster=False)
 
 
-def makeLayer(output_folder, out_network, new_layer_name, symbology_layer):
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
     """
     Creates a layer and applies a symbology to it
     :param output_folder: Where we want to put the folder
-    :param out_network: What we should base the layer off of
+    :param layer_base: What we should base the layer off of
     :param new_layer_name: What the layer should be called
     :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
     :return: The path to the new layer
     """
-    new_layer = os.path.join(output_folder, new_layer_name + ".lyr")
-    arcpy.MakeFeatureLayer_management(out_network, new_layer)
+    new_layer = new_layer_name + "_lyr"
+    new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
+
+    if isRaster:
+        arcpy.MakeRasterLayer_management(layer_base, new_layer)
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
     arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-    arcpy.SaveToLayerFile_management(new_layer, new_layer)
-    return new_layer
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
 
 
 def getUUID():

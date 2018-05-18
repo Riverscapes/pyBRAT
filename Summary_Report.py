@@ -188,21 +188,32 @@ def makeLayers(out_network):
     conflictLayer = os.path.join(symbologyFolder, "Conflict.lyr")
     managementLayer = os.path.join(symbologyFolder, "Management_Zones.lyr")
 
-    makeLayer(output_folder, out_network, "Conflict_Potential", conflictLayer)
-    makeLayer(output_folder, out_network, "Beaver_Management_Zones", managementLayer)
+    makeLayer(output_folder, out_network, "Conflict_Potential", conflictLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "Beaver_Management_Zones", managementLayer, isRaster=False)
 
 
-def makeLayer(output_folder, out_network, new_layer_name, symbology_layer):
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
     """
     Creates a layer and applies a symbology to it
     :param output_folder: Where we want to put the folder
-    :param out_network: What we should base the layer off of
+    :param layer_base: What we should base the layer off of
     :param new_layer_name: What the layer should be called
     :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
     :return: The path to the new layer
     """
-    new_layer = os.path.join(output_folder, new_layer_name + ".lyr")
-    arcpy.MakeFeatureLayer_management(out_network, new_layer)
+    new_layer = new_layer_name + "_lyr"
+    new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
+
+    if isRaster:
+        arcpy.MakeRasterLayer_management(layer_base, new_layer)
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
     arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-    arcpy.SaveToLayerFile_management(new_layer, new_layer)
-    return new_layer
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
