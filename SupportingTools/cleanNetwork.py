@@ -1,13 +1,13 @@
 # -------------------------------------------------------------------------------
 # Name:        Clean Network
-# Purpose:     Cleans up network by i) removing flowlines less than
+# Purpose:     Script helps when 'manually' creating perennial network.
+#              Cleans up network by i) removing flowlines less than
 #              user defined length as long as there is no upstream
 #              connected flowline, ii) filling flowline gaps
 #              in input network that are within nhd area and nhd
 #              waterbody polygons (copied from original nhd
-#              flowlines once identified).  Should be run after
-#              running Network Builder Tool (NBT) and ideally before
-#              manually checking/cleaning up network.
+#              flowlines once identified).  Should be run before
+#              running the 'checkNetwork' script.
 #
 # Author:      Sara Bangen (sara.bangen@gmail.com)
 #
@@ -129,41 +129,41 @@ def main():
             for row in sCursor:
                 iCursor.insertRow([row[0]])
 
-    # -get missing segments in nhd waterbody polygons-
-
-    # find line end points that intersect waterbody polygons
-    arcpy.SelectLayerByLocation_management("line_pts_join_lyr", 'INTERSECT', nhd_waterbody_path, '1 Meters', 'NEW_SELECTION')
-
-    # create feature class from selected end points
-    line_pts_wbody = arcpy.CopyFeatures_management("line_pts_join_lyr", 'in_memory/line_pts_wbody')
-
-    # delete previous join count field
-    fields = [f.name for f in arcpy.ListFields(line_pts_wbody)]
-    for field in fields:
-        if 'Join' in field:
-            arcpy.DeleteField_management(line_pts_wbody, field)
-
-    # find flowlines from orignal nhd that and aren't in subsetted flowline network
-    arcpy.SelectLayerByLocation_management("nhd_orig_lyr", 'SHARE_A_LINE_SEGMENT_WITH', flowlines, '', 'NEW_SELECTION', 'INVERT')
-
-    # create feature class from selected nhd lines
-    nhd_line_sel = arcpy.CopyFeatures_management("nhd_orig_lyr", 'in_memory/nhd_line_sel')
-
-    # join flowlines selection to end points on waterbodies to get point counts
-    # here we want to find lines that are between 2 points (i.e., connecting across a waterbody)
-    nhd_line_join = arcpy.SpatialJoin_analysis(nhd_line_sel, line_pts_wbody, 'in_memory/nhd_line_join', 'JOIN_ONE_TO_ONE', 'KEEP_ALL', '', 'INTERSECT')
-
-    # remove points that intersect > 1 line feature
-    with arcpy.da.UpdateCursor(nhd_line_join, ['Join_Count']) as cursor:
-        for row in cursor:
-            if row[0] < 2:
-                cursor.deleteRow()
-
-    # insert nhd gap lines into flowlines
-    with arcpy.da.InsertCursor(flowlines, ["SHAPE@"]) as iCursor:
-        with arcpy.da.SearchCursor(nhd_line_join, ["SHAPE@"]) as sCursor:
-            for row in sCursor:
-                iCursor.insertRow([row[0]])
+    # # -get missing segments in nhd waterbody polygons-
+    #
+    # # find line end points that intersect waterbody polygons
+    # arcpy.SelectLayerByLocation_management("line_pts_join_lyr", 'INTERSECT', nhd_waterbody_path, '1 Meters', 'NEW_SELECTION')
+    #
+    # # create feature class from selected end points
+    # line_pts_wbody = arcpy.CopyFeatures_management("line_pts_join_lyr", 'in_memory/line_pts_wbody')
+    #
+    # # delete previous join count field
+    # fields = [f.name for f in arcpy.ListFields(line_pts_wbody)]
+    # for field in fields:
+    #     if 'Join' in field:
+    #         arcpy.DeleteField_management(line_pts_wbody, field)
+    #
+    # # find flowlines from orignal nhd that and aren't in subsetted flowline network
+    # arcpy.SelectLayerByLocation_management("nhd_orig_lyr", 'SHARE_A_LINE_SEGMENT_WITH', flowlines, '', 'NEW_SELECTION', 'INVERT')
+    #
+    # # create feature class from selected nhd lines
+    # nhd_line_sel = arcpy.CopyFeatures_management("nhd_orig_lyr", 'in_memory/nhd_line_sel')
+    #
+    # # join flowlines selection to end points on waterbodies to get point counts
+    # # here we want to find lines that are between 2 points (i.e., connecting across a waterbody)
+    # nhd_line_join = arcpy.SpatialJoin_analysis(nhd_line_sel, line_pts_wbody, 'in_memory/nhd_line_join', 'JOIN_ONE_TO_ONE', 'KEEP_ALL', '', 'INTERSECT')
+    #
+    # # remove points that intersect > 1 line feature
+    # with arcpy.da.UpdateCursor(nhd_line_join, ['Join_Count']) as cursor:
+    #     for row in cursor:
+    #         if row[0] < 2:
+    #             cursor.deleteRow()
+    #
+    # # insert nhd gap lines into flowlines
+    # with arcpy.da.InsertCursor(flowlines, ["SHAPE@"]) as iCursor:
+    #     with arcpy.da.SearchCursor(nhd_line_join, ["SHAPE@"]) as sCursor:
+    #         for row in sCursor:
+    #             iCursor.insertRow([row[0]])
 
     # copy cleaned-up flowlines to output path
     arcpy.CopyFeatures_management(flowlines, outpath)
