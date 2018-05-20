@@ -1,6 +1,7 @@
 # -------------------------------------------------------------------------------
 # Name:        Check Network
-# Purpose:     Identifies potential gaps in the network by creating points
+# Purpose:     Script helps when 'manually' creating perennial network.
+#              Identifies potential gaps in the network by creating points
 #              where flowlines aren't connected to any other lines.  This
 #              should be used to identify gaps but will also create 'false-positive'
 #              points at the head of a network and at the DS/US end of waterbodies
