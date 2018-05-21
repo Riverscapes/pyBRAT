@@ -81,7 +81,7 @@ def main(
 
     # --create network buffers for analyses--
     # create 'Buffers' folder if it doesn't exist
-    buffersFolder = makeFolder(intermediateFolder, "Buffers")
+    buffersFolder = makeFolder(intermediateFolder, "01_Buffers")
 
     # create network segment midpoints
     midpoints = arcpy.FeatureVerticesToPoints_management(seg_network_copy, scratch + "/midpoints", "MID")
@@ -1081,13 +1081,23 @@ def makeLayers(out_network):
     :return:
     """
     arcpy.AddMessage("Making layers...")
-    output_folder = os.path.dirname(out_network)
+    intermediates_folder = os.path.dirname(out_network)
+    buffers_folder = os.path.join(intermediates_folder, "01_Buffers")
+    land_use_folder = makeFolder(intermediates_folder, "02_LandUse")
+    topo_folder = makeFolder(intermediates_folder, "03_TopographicIndex")
+
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    existingCapacityLayer = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
 
-    makeLayer(output_folder, out_network, "LandUseIntensity", existingCapacityLayer, isRaster=False)
+    landUseSymbology = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
+    slopeSymbology = os.path.join(symbologyFolder, "Slope_Feature_Class.lyr")
+    drainAreaSymbology = os.path.join(symbologyFolder, "Drainage_Area_Feature_Class.lyr")
+
+    makeBufferLayers(buffers_folder)
+    makeLayer(land_use_folder, out_network, "LandUseIntensity", landUseSymbology, isRaster=False)
+    makeLayer(topo_folder, out_network, "SlopeIndex", slopeSymbology, isRaster=False)
+    makeLayer(topo_folder, out_network, "DrainageArea", drainAreaSymbology, isRaster=False)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
@@ -1115,6 +1125,27 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRast
     new_layer_instance.description = description
     new_layer_instance.save()
     return new_layer_save
+
+
+def makeBufferLayers(buffers_folder):
+    """
+    Makes a layer for each buffer
+    :param buffers_folder: The path to the buffers folder
+    :return: Nothing
+    """
+    for fileName in os.listdir(buffers_folder):
+        if fileName.endswith(".shp"):
+            new_layer = fileName[:-4] + "_lyr"
+            filePath = os.path.join(buffers_folder, fileName)
+            new_layer_save = filePath[:-4] + ".lyr"
+
+            arcpy.MakeFeatureLayer_management(filePath, new_layer)
+            arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
+
+            new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+            new_layer_instance.description = "Buffer Layer"
+            new_layer_instance.save()
+
 
 
 def getUUID():

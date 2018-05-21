@@ -18,6 +18,7 @@ def main(bratOutput, dams, outputName):
     :param outputName: The name of the output shape file
     :return:
     """
+    arcpy.env.overwriteOutput = True
     if outputName.endswith('.shp'):
         outNetwork = os.path.join(os.path.dirname(bratOutput), outputName)
     else:
@@ -229,6 +230,7 @@ def makeLayerPackage(outNetwork):
     arcpy.AddMessage("Making Layer Package...")
     analysesFolder = os.path.dirname(outNetwork)
     outputFolder = os.path.dirname(analysesFolder)
+    intermediatesFolder = os.path.join(outputFolder, "01_Intermediates")
     projectFolder = os.path.dirname(outputFolder)
     inputsFolder = findFolder(projectFolder, "Inputs")
 
@@ -243,12 +245,27 @@ def makeLayerPackage(outNetwork):
     demLayers = findInstanceLayers(topoFolder)
 
     outputLayers = findLayersInFolder(analysesFolder)
+    intermediateLayers = findLayersInFolder(intermediatesFolder)
 
     BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
+    intermediatesLayer = getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd)
+    outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd, removeLayer=False)
 
     # groupLayers(emptyGroupLayer, "Some Name", layers, df, mxd)
     layerPackage = os.path.join(analysesFolder, "layerPackage.lpk")
     arcpy.PackageLayer_management(BRATLayer, layerPackage)
+
+
+def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
+    """
+
+    :param emptyGroupLayer:
+    :param intermediatesFolder:
+    :param df:
+    :param mxd:
+    :return:
+    """
+
 
 
 def findInstanceLayers(root_folder):
@@ -292,7 +309,7 @@ def findFolder(folderLocation, folderName):
                         " It was supposed to be at the following location: \n" + folder)
 
 
-def groupLayers(groupLayer, groupName, layers, df, mxd):
+def groupLayers(groupLayer, groupName, layers, df, mxd, removeLayer=True):
     """
     Groups a bunch of layers together
     :param groupLayer:
@@ -300,6 +317,7 @@ def groupLayers(groupLayer, groupName, layers, df, mxd):
     :param layers:
     :param df:
     :param mxd:
+    :param removeLayer: Tells us if we should remove the layer from the map display
     :return: The layer that we put our layers in
     """
     groupLayer = arcpy.mapping.Layer(groupLayer)
@@ -309,12 +327,15 @@ def groupLayers(groupLayer, groupName, layers, df, mxd):
     groupLayer = arcpy.mapping.ListLayers(mxd, groupName, df)[0]
 
     for layer in layers:
-        layer_instance = arcpy.mapping.Layer(layer)
-        # if isinstance(layer, arcpy.mapping.Layer):
-        #     layer_instance = arcpy.mapping.Layer(layer)
-        # else:
-        #     layer_instance = layer
+        if not isinstance(layer, arcpy.mapping.Layer):
+            layer_instance = arcpy.mapping.Layer(layer)
+        else:
+            layer_instance = layer
         arcpy.mapping.AddLayerToGroup(df, groupLayer, layer_instance)
+
+    if removeLayer:
+        arcpy.mapping.RemoveLayer(df, groupLayer)
+
     return groupLayer
 
 
