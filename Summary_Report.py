@@ -251,20 +251,43 @@ def makeLayerPackage(outNetwork):
     intermediatesLayer = getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd, removeLayer=False)
 
-    # groupLayers(emptyGroupLayer, "Some Name", layers, df, mxd)
     layerPackage = os.path.join(analysesFolder, "layerPackage.lpk")
-    arcpy.PackageLayer_management(BRATLayer, layerPackage)
+    arcpy.PackageLayer_management(outputLayer, layerPackage)
 
 
 def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
     """
-
-    :param emptyGroupLayer:
-    :param intermediatesFolder:
-    :param df:
-    :param mxd:
+    Returns a group layer with all of the intermediates
+    :param emptyGroupLayer: The base to build the group layer with
+    :param intermediatesFolder: Path to the intermediates folder
+    :param df: The dataframe we're working with
+    :param mxd: The map document we're working with
     :return:
     """
+    buffers_folder = findFolder(intermediatesFolder, "01_Buffers")
+    land_use_folder = findFolder(intermediatesFolder, "02_LandUse")
+    topo_folder = findFolder(intermediatesFolder, "03_TopographicIndex")
+    braid_folder = findFolder(intermediatesFolder, "04_BraidHandler")
+    hydro_folder = findFolder(intermediatesFolder, "05_Hydrology")
+    veg_folder = findFolder(intermediatesFolder, "06_VegCondition")
+
+    buffer_layers = findLayersInFolder(buffers_folder)
+    land_use_layers = findLayersInFolder(land_use_folder)
+    topo_layers = findLayersInFolder(topo_folder)
+    braid_layers = findLayersInFolder(braid_folder)
+    hydro_layers = findLayersInFolder(hydro_folder)
+    veg_layers = findLayersInFolder(veg_folder)
+
+    intermediate_layers = []
+    intermediate_layers.append(groupLayers(emptyGroupLayer, "Land_Use_Intensity", land_use_layers, df, mxd))
+    intermediate_layers.append(groupLayers(emptyGroupLayer, "Buffers", buffer_layers, df, mxd))
+    intermediate_layers.append(groupLayers(emptyGroupLayer, "Hydrology", hydro_layers, df, mxd))
+    intermediate_layers.append(groupLayers(emptyGroupLayer, "Braid_Handler", braid_layers, df, mxd))
+    intermediate_layers.append(groupLayers(emptyGroupLayer, "Overall_Vegetation_Condition", veg_layers, df, mxd))
+    intermediate_layers.append(groupLayers(emptyGroupLayer, "Topographic_Index", topo_layers, df, mxd))
+
+    return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
+
 
 
 
