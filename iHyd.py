@@ -118,6 +118,8 @@ def main(
             row[4] = (1000 * 9.80665) * row[0] * (row[3] * 0.028316846592)
             cursor.updateRow(row)
 
+    makeLayers(in_network)
+
 
 def makeLayers(inputNetwork):
     """
@@ -127,16 +129,17 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    braid_folder_name = findAvailableNum(intermediates_folder) + "_BraidHandler"
-    braid_folder = makeFolder(intermediates_folder, braid_folder_name)
-
+    hydrology_folder_name = findAvailableNum(intermediates_folder) + "_Hydrology"
+    hydrology_folder = makeFolder(intermediates_folder, hydrology_folder_name)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
-    mainstemSymbology = os.path.join(symbologyFolder, "Mainstems.lyr")
+    highflowSymbology = os.path.join(symbologyFolder, "Highflow_Streampower.lyr")
+    baseflowSymbology = os.path.join(symbologyFolder, "Baseflow_Streampower.lyr")
 
-    makeLayer(braid_folder, inputNetwork, "Mainstem_Braids", mainstemSymbology, isRaster=False)
+    makeLayer(hydrology_folder, inputNetwork, "Highflow_Streampower", highflowSymbology, isRaster=False)
+    makeLayer(hydrology_folder, inputNetwork, "Baseflow_Streampower", baseflowSymbology, isRaster=False)
 
 
 
