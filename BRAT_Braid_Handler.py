@@ -9,6 +9,7 @@
 
 
 import arcpy
+import os
 from StreamObjects import Cluster, BraidStream
 
 cluster_id = 0 # Provides a consistent way to refer to clusters, that give more information that a UUID
@@ -34,6 +35,8 @@ def main(inputNetwork):
             clusters[i].id = i+1
 
         updateNetworkDrainageValues(inputNetwork, clusters)
+
+    makeLayers(inputNetwork)
 
 
 def getClustersFromIDs(inputNetwork):
@@ -256,4 +259,83 @@ def updateStreamDrainageValue(clusters, row, cursor):
                 row[2] = cluster.maxDA
 
     cursor.updateRow(row)
+
+
+def makeLayers(inputNetwork):
+    """
+    Makes the layers for the modified output
+    :param inputNetwork: The path to the network that we'll make a layer from
+    :return:
+    """
+    arcpy.AddMessage("Making layers...")
+    intermediates_folder = os.path.dirname(inputNetwork)
+    braid_folder_name = findAvailableNum(intermediates_folder) + "_BraidHandler"
+    braid_folder = makeFolder(intermediates_folder, braid_folder_name)
+
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+
+    mainstemSymbology = os.path.join(symbologyFolder, "Mainstems.lyr")
+
+    makeLayer(braid_folder, inputNetwork, "Mainstem_Braids", mainstemSymbology, isRaster=False)
+
+
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder: Where we want to put the folder
+    :param layer_base: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
+    :return: The path to the new layer
+    """
+    new_layer = new_layer_name + "_lyr"
+    new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
+
+    if isRaster:
+        arcpy.MakeRasterLayer_management(layer_base, new_layer)
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
+    arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
+
+
+def makeFolder(pathToLocation, newFolderName):
+    """
+    Makes a folder and returns the path to it
+    :param pathToLocation: Where we want to put the folder
+    :param newFolderName: What the folder will be called
+    :return: String
+    """
+    newFolder = os.path.join(pathToLocation, newFolderName)
+    if not os.path.exists(newFolder):
+        os.mkdir(newFolder)
+    return newFolder
+
+
+def findAvailableNum(folderRoot):
+    """
+    Tells us the next number for a folder in the directory given
+    :param folderRoot: Where we want to look for a number
+    :return: A string, containing a number
+    """
+    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
+    POSSIBLENUMS = range(1, 100)
+    for i in POSSIBLENUMS:
+        stringVersion = str(i)
+        if i < 10:
+            stringVersion = '0' + stringVersion
+        if stringVersion not in takenNums:
+            return stringVersion
+    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
+    return "100"
+
 
