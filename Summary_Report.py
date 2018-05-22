@@ -241,18 +241,71 @@ def makeLayerPackage(outNetwork):
     mxd = arcpy.mapping.MapDocument("CURRENT")
     df = arcpy.mapping.ListDataFrames(mxd)[0]
 
-    topoFolder = findFolder(inputsFolder, "03_Topography")
-    demLayers = findInstanceLayers(topoFolder)
-
     outputLayers = findLayersInFolder(analysesFolder)
-    intermediateLayers = findLayersInFolder(intermediatesFolder)
 
+    inputsLayer = getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd)
     BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
     intermediatesLayer = getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd)
-    outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd, removeLayer=False)
+    outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd)
+    outputLayer = groupLayers(emptyGroupLayer, "ProjectNameHere", [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
     layerPackage = os.path.join(analysesFolder, "layerPackage.lpk")
     arcpy.PackageLayer_management(outputLayer, layerPackage)
+
+
+
+def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
+    """
+    Gets all the input layers, groups them properly, returns the layer
+    :param emptyGroupLayer: The base to build the group layer with
+    :param inputsFolder: Path to the inputs folder
+    :param df: The dataframe we're working with
+    :param mxd: The map document we're working with
+    :return: layer for inputs
+    """
+    vegetationFolder = findFolder(inputsFolder, "01_Vegetation")
+    exVegFolder = findFolder(vegetationFolder, "01_ExistingVegetation")
+    histVegFolder = findFolder(vegetationFolder, "02_HistoricVegetation")
+
+    networkFolder = findFolder(inputsFolder, "02_Network")
+
+    topoFolder = findFolder(inputsFolder, "03_Topography")
+
+    conflictFolder = findFolder(inputsFolder, "04_Conflict")
+    valleyFolder = findFolder(conflictFolder, "01_ValleyBottom")
+    roadsFolder = findFolder(conflictFolder, "02_Roads")
+    railroadsFolder = findFolder(conflictFolder, "03_Railroads")
+    canalsFolder = findFolder(conflictFolder, "04_Canals")
+    landUseFolder = findFolder(conflictFolder, "05_LandUse")
+
+    exVegLayers = findInstanceLayers(exVegFolder)
+    exVegLayer = groupLayers(emptyGroupLayer, "Existing_Vegetation_Type", exVegLayers, df, mxd)
+    histVegLayers = findInstanceLayers(histVegFolder)
+    histVegLayer = groupLayers(emptyGroupLayer, "Historic_Vegetation_Type", histVegLayers, df, mxd)
+    vegLayer = groupLayers(emptyGroupLayer, "Vegetation", [exVegLayer, histVegLayer], df, mxd)
+
+    networkLayers = findInstanceLayers(networkFolder)
+    networkLayer = groupLayers(emptyGroupLayer, "Network", networkLayers, df, mxd)
+
+    demLayers = findInstanceLayers(topoFolder)
+    hillshadeLayers = find_dem_derivative(topoFolder, "Hillshade")
+    slopeLayers = find_dem_derivative(topoFolder, "Slope")
+    flowLayers = find_dem_derivative(topoFolder, "Flow")
+    topoLayer = groupLayers(emptyGroupLayer, "Topography", demLayers + hillshadeLayers + slopeLayers + flowLayers, df, mxd)
+
+    valleyLayers = findInstanceLayers(valleyFolder)
+    valleyLayer = groupLayers(emptyGroupLayer, "Valley_Bottom", valleyLayers, df, mxd)
+    roadLayers = findInstanceLayers(roadsFolder)
+    roadLayer = groupLayers(emptyGroupLayer, "Roads", roadLayers, df, mxd)
+    railroadLayers = findInstanceLayers(railroadsFolder)
+    railroadLayer = groupLayers(emptyGroupLayer, "Railroads", railroadLayers, df, mxd)
+    canalLayers = findInstanceLayers(canalsFolder)
+    canalLayer = groupLayers(emptyGroupLayer, "Canals", canalLayers, df, mxd)
+    landUseLayers = findInstanceLayers(landUseFolder)
+    landUseLayer = groupLayers(emptyGroupLayer, "Land_Use", landUseLayers, df, mxd)
+    conflictLayer = groupLayers(emptyGroupLayer, "Conflict_Layers", [valleyLayer, roadLayer, railroadLayer, canalLayer, landUseLayer], df, mxd)
+
+    return groupLayers(emptyGroupLayer, "Inputs", [vegLayer, networkLayer, topoLayer, conflictLayer], df, mxd)
 
 
 def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
@@ -262,7 +315,7 @@ def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
     :param intermediatesFolder: Path to the intermediates folder
     :param df: The dataframe we're working with
     :param mxd: The map document we're working with
-    :return:
+    :return: Layer for intermediates
     """
     buffers_folder = findFolder(intermediatesFolder, "01_Buffers")
     land_use_folder = findFolder(intermediatesFolder, "02_LandUse")
@@ -289,17 +342,29 @@ def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
     return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
 
 
-
-
 def findInstanceLayers(root_folder):
     """
-    Returns a list of DEM layers
-    :param root_folder: The path to the topography folder
-    :return: A list of DEM layers
+    Finds every layer when buried beneath an additional layer of folders (ie, in DEM_1, DEM_2, DEM_3, etc)
+    :param root_folder: The path to the folder root
+    :return: A list of layers
     """
     layers = []
     for instance_folder in os.listdir(root_folder):
         instance_folder_path = os.path.join(root_folder, instance_folder)
+        layers += findLayersInFolder(instance_folder_path)
+    return layers
+
+
+def find_dem_derivative(root_folder, dir_name):
+    """
+    Designed to look specifically for flow, slope, and hillshade layers
+    :param root_folder: Where we look
+    :param dir_name: The directory we're looking for
+    :return:
+    """
+    layers = []
+    for instance_folder in os.listdir(root_folder):
+        instance_folder_path = os.path.join(os.path.join(root_folder, instance_folder), dir_name)
         layers += findLayersInFolder(instance_folder_path)
     return layers
 
