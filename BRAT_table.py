@@ -131,6 +131,7 @@ def main(
         DrAr = os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif"
     else:
         DrAr = os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc)
+    makeLayer(os.path.dirname(DrAr), DrAr, "Flow_Accumulation", isRaster=True)
 
     makeLayers(seg_network_copy)
     try:
@@ -1086,7 +1087,6 @@ def makeLayers(out_network):
     land_use_folder = makeFolder(intermediates_folder, "02_LandUse")
     topo_folder = makeFolder(intermediates_folder, "03_TopographicIndex")
 
-
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
@@ -1100,7 +1100,7 @@ def makeLayers(out_network):
     makeLayer(topo_folder, out_network, "DrainageArea", drainAreaSymbology, isRaster=False)
 
 
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
     """
     Creates a layer and applies a symbology to it
     :param output_folder: Where we want to put the folder
@@ -1118,8 +1118,8 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRast
         arcpy.MakeRasterLayer_management(layer_base, new_layer)
     else:
         arcpy.MakeFeatureLayer_management(layer_base, new_layer)
-
-    arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+    if symbology_layer:
+        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
     arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
     new_layer_instance = arcpy.mapping.Layer(new_layer_save)
     new_layer_instance.description = description
