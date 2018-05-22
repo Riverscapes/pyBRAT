@@ -726,7 +726,14 @@ class Summary_Report_tool(object):
             parameterType="Required",
             direction="Input")
 
-        return [param0, param1, param2]
+        param3 = arcpy.Parameter(
+            displayName="Name the layer package output",
+            name="layer_package_name",
+            datatype="GPString",
+            parameterType="Required",
+            direction="Input")
+
+        return [param0, param1, param2, param3]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -748,5 +755,6 @@ class Summary_Report_tool(object):
         reload(Summary_Report)
         Summary_Report.main(p[0].valueAsText,
                             p[1].valueAsText,
-                            p[2].valueAsText)
+                            p[2].valueAsText,
+                            p[3].valueAsText)
         return

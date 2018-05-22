@@ -10,12 +10,13 @@
 import os
 import arcpy
 
-def main(bratOutput, dams, outputName):
+def main(bratOutput, dams, outputName, layerPackageName):
     """
     The main function
     :param bratOutput: The output of BRAT (a polyline shapefile)
     :param dams: A shapefile containing a point for each dam
     :param outputName: The name of the output shape file
+    :param layerPackageName: The name for the layer package
     :return:
     """
     arcpy.env.overwriteOutput = True
@@ -45,7 +46,7 @@ def main(bratOutput, dams, outputName):
         cleanUpFields(bratOutput, outNetwork, newFields)
 
     makeLayers(outNetwork)
-    makeLayerPackage(outNetwork)
+    makeLayerPackage(outNetwork, layerPackageName)
 
 
 def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):
@@ -221,12 +222,16 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRast
     return new_layer_save
 
 
-def makeLayerPackage(outNetwork):
+def makeLayerPackage(outNetwork, layerPackageName):
     """
     Makes a layer package for the project
     :param outNetwork: The network in the fodler that we want to do stuff with.
+    :param layerPackageName: The name of the layer package that we'll make
     :return:
     """
+    if not layerPackageName.endswith(".lpk"):
+        layerPackageName += ".lpk"
+
     arcpy.AddMessage("Making Layer Package...")
     analysesFolder = os.path.dirname(outNetwork)
     outputFolder = os.path.dirname(analysesFolder)
@@ -247,9 +252,9 @@ def makeLayerPackage(outNetwork):
     BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
     intermediatesLayer = getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd)
-    outputLayer = groupLayers(emptyGroupLayer, "ProjectNameHere", [outputLayer, inputsLayer], df, mxd, removeLayer=False)
+    outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
-    layerPackage = os.path.join(analysesFolder, "layerPackage.lpk")
+    layerPackage = os.path.join(analysesFolder, layerPackageName)
     arcpy.PackageLayer_management(outputLayer, layerPackage)
 
 
