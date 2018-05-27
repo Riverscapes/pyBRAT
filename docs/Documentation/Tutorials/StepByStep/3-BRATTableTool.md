@@ -1,5 +1,6 @@
 ---
-title: Step 4 - BRAT Table Tool
+title: Step 3 - BRAT Table Tool
+weight: 3
 ---
 
 The first step in using the BRAT toolbox is to generate the input table associated with the segmented stream network.
@@ -29,4 +30,15 @@ Inputs:
 
 Click OK to run the tool.
 
-[Continue to Step 5]({{ site.baseurl }}/Documentation/5-BRATBraidHandler) ->
+
+<div align="center">
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/2-Preprocessing"><i class="fa fa-arrow-circle-left"></i> Back to Step 2 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4-BRATBraidHandler"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4 </a>
+</div>	
+
+------
+<div align="center">
+
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation"><i class="fa fa-info-circle"></i> Back to Help </a>
+	<a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>  
+</div>

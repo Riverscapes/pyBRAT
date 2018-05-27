@@ -1,5 +1,6 @@
 ---
-title: Step 5 - BRAT Braid Handler
+title: Step 4 - BRAT Braid Handler
+weight: 4
 ---
 
 ## Running the Braid Handler (Optional)
@@ -22,4 +23,15 @@ Once the mainstems are identified, the user can run the Braid Handler. The Braid
 
 After the Braid handler is run, the user can run the rest of the tool as normal.
 
-[Continue to Step 6]({{ site.baseurl }}/Documentation/6-iHydAttributes) ->
+
+<div align="center">
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATTableTool"><i class="fa fa-arrow-circle-left"></i> Back to Step 3 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-iHydAttributes"><i class="fa fa-arrow-circle-right"></i> Continue to Step 5 </a>
+</div>	
+
+------
+<div align="center">
+
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation"><i class="fa fa-info-circle"></i> Back to Help </a>
+	<a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>  
+</div>

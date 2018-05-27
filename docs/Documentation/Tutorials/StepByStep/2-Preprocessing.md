@@ -1,5 +1,6 @@
 ---
-title: Step 3 - Preprocessing
+title: Step 2 - Preprocessing Input Data
+weight: 2
 ---
 
 Some preprocessing of the following inputs in necessary before running the tools in the BRAT toolbox.
@@ -51,4 +52,16 @@ Table 2. Suitability of LANDFIRE Land Cover as Dam-building Material
 | 2    | Agricultural          | Agriculture, Irrigated, Non Irrigated, Naturally Irrigated |
 | 3    | Urban                 | Urban, Developed                         |
 
-[Continue to Step 4]({{ site.baseurl }}/Documentation/4-BRATTableTool)
+
+
+<div align="center">
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/1-InputData"><i class="fa fa-arrow-circle-left"></i> Back to Step 1 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATTableTool"><i class="fa fa-arrow-circle-right"></i> Continue to Step 3 </a>
+</div>	
+
+------
+<div align="center">
+
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation"><i class="fa fa-info-circle"></i> Back to Help </a>
+	<a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>  
+</div>

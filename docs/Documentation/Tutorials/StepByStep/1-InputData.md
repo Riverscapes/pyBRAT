@@ -1,5 +1,6 @@
 ---
-title: Step 2 - Input Data
+title: Step 1 - Input Data
+weight: 2
 ---
 
 ## Capacity Model Inputs
@@ -56,6 +57,7 @@ The requisite inputs to the potential conflict model include:
 - Landuse raster
 
 ### Valley Bottom Layer
+The valley bottom is a polgon feature class. We use it to check if roads or railroads are in the valley bottom as they may have a higher probability of being flooded or impacted by nearby beaver dam building activity. The [Valley Bottom Extraction Tool (V-BET)](http://rcat.riverscapes.xyz/Documentation/Version_1.0/VBET.html) is what we typically use to derive this.
 
 ### Roads Layer
 
@@ -73,4 +75,16 @@ Canals can be extracted from the NHD Flowline layer (our recommended drainage ne
 
 If no accurate land use layer exits for you study are you can use the Landfire existing vegetation type raster (e.g., 'us_140evt').
 
-[Continue to Step 3]({{ site.baseurl }}/Documentation/3-Preprocessing)
+
+
+<div align="center">
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/2-Preprocessing"><i class="fa fa-arrow-circle-right"></i> Continue to Step 2 </a>
+</div>	
+
+
+------
+<div align="center">
+
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation"><i class="fa fa-info-circle"></i> Back to Help </a>
+	<a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>  
+</div>
