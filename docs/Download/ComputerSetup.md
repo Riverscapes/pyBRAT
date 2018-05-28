@@ -3,7 +3,7 @@ title: Computer Setup & Installation
 weight: 2
 ---
 ## Python Prerequisites
-In order to use the [Beaver Restoration Assessment Tool (BRAT) Toolbox v 3](https://github.com/Riverscapes/pyBRAT/releases/latest), your computer needs to have ArcGIS version 10.1 or later with the Spatial Analyst Extension as well as the scikit-fuzzy python module. Don't panic, even if you've never used a command line, you can follow these instructions. All this does is show you how to install a few dependencies (NumPy_mkl and scikit-fuzzy) that BRAT uses. The video below provides detailed instructions on installing the scikit-fuzzy python module.
+In order to use the [Beaver Restoration Assessment Tool (BRAT) Toolbox v 3](https://github.com/Riverscapes/pyBRAT/releases/latest), your computer needs to have ArcGIS version 10.4 or later with the Spatial Analyst Extension as well as the scikit-fuzzy python module. Don't panic, even if you've never used a command line, you can follow these instructions. The video will show you how to install a few dependencies ( [NumPy_mkl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy) and  [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy)) that BRAT uses. The video below provides detailed instructions on installing the [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy) python module.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6-Je5jtH-j8" frameborder="0" allowfullscreen></iframe>
 
@@ -17,7 +17,6 @@ You can download the software menitoned in the video from these links:
 You can download the latest version of BRAT [here](https://github.com/Riverscapes/pyBRAT/releases/latest). The video below walks you through the install process.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/MVEXXMOPTBI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
 
 ------
 <div align="center">
