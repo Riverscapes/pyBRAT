@@ -1,6 +1,6 @@
 ---
 title: BRAT Help
-weight: 1
+weight: 2
 ---
 
 

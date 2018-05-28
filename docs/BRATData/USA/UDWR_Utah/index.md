@@ -7,9 +7,14 @@ weight: 1
 
 Figure 1.  Map showing areas where BRAT was run as part of the UDWR Utah BRAT project.
 
+| Sponsor   | | Geography   | Year(s)   | Status      |
+| ---------------------------------------- | - | -------------------- | -------------- | ------------- |
+| **[Utah Division of Wildlife Resources](https://wildlife.utah.gov)** |![UDWR]({{ site.baseurl }}\assets\images\logos\Utah_DWR.jpg) | State of Utah                            |  2014-2015   | [Complete]({{ site.baseurl }}\BRATData\USA\UDWR_Utah\)     |
 
+[![State_Management]({{ site.baseurl }}/assets/images//State_Management.png)]({{ site.baseurl }}/assets/images//hr/State_Management.png)
 
 BRAT data for that state of Utah can be downloaded from [Utah AGRC](http://gis.utah.gov/data/bioscience-overview/), [Databasin](http://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f), or directly from [ETAL](https://usu.box.com/v/UtahBRATData).  The ETAL dataset is organized into different coverages including statewide (i.e., Utah only), hydrological regions, and UDWR Management Regions. 
+
 
 [![BRAT_DataBasin]({{ site.baseurl }}/assets/images/BRAT_DataBasin.png)](https://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f)
 
