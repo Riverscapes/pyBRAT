@@ -22,6 +22,7 @@ import string
 def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
+    arcpy.env.workspace = projPath
 
     if not os.path.exists(projPath):
         os.mkdir(projPath)

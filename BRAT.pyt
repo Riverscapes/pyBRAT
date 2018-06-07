@@ -9,6 +9,7 @@ import Conflict_Potential
 import Conservation_Restoration
 import BRAT_Braid_Handler
 import Summary_Report
+import Drainage_Area_Check
 
 
 class Toolbox(object):
@@ -19,7 +20,8 @@ class Toolbox(object):
         self.alias = "BRAT Toolbox"
 
         # List of tool classes associated with this toolbox
-        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool, Conflict_Potential_tool, Conservation_Restoration_tool, Summary_Report_tool]
+        self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
+                        Conflict_Potential_tool, Conservation_Restoration_tool, Summary_Report_tool, Drainage_Area_Check_tool]
 
 
 class BRAT_project_tool(object):
@@ -757,4 +759,46 @@ class Summary_Report_tool(object):
                             p[1].valueAsText,
                             p[2].valueAsText,
                             p[3].valueAsText)
+        return
+
+
+class Drainage_Area_Check_tool(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "Drainage Area Check"
+        self.description = "Looks for drainage area values that are less than an upstream value, and then modifies them"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+
+        param0 = arcpy.Parameter(
+            displayName="Select conservation restoration model output network",
+            name="in_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+        param0.filter.list = ["Polyline"]
+
+        return [param0]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(Summary_Report)
+        Drainage_Area_Check.main(p[0].valueAsText)
         return

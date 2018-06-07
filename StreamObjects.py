@@ -66,3 +66,28 @@ class BraidStream:
         self.polyline = polyline
         self.id = given_id
         self.drainageArea = drainageArea
+
+
+class DAValueCheckStream:
+    def __init__(self, reach_id,  stream_id, downstream_dist, drainage_area):
+        self.reach_id = reach_id
+        self.stream_id = stream_id
+        self.downstream_dist = downstream_dist
+        self.drainage_area = drainage_area
+
+    def __lt__(self, other):
+        """
+        Our heap is sorted based on how far downstream a reach is, so we want comparison to use downstream_dist to sort
+        """
+        if not isinstance(other, DAValueCheckStream):
+            raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
+        return self.downstream_dist < other.downstream_dist
+
+
+    def __gt__(self, other):
+        """
+        Our heap is sorted based on how far downstream a reach is, so we want comparison to use downstream_dist to sort
+        """
+        if not isinstance(other, DAValueCheckStream):
+            raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
+        return self.downstream_dist < other.downstream_dist
