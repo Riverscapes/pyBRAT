@@ -175,6 +175,8 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
                 arcpy.AddError(err)
                 arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
                 raise Exception
+            else:
+                raise arcpy.ExecuteError(err)
 
     else:
         arcpy.MakeFeatureLayer_management(layer_base, new_layer)
