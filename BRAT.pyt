@@ -10,6 +10,7 @@ import Conservation_Restoration
 import BRAT_Braid_Handler
 import Summary_Report
 import Drainage_Area_Check
+import StreamObjects
 
 
 class Toolbox(object):
@@ -345,6 +346,7 @@ class BRAT_braid_handler(object):
     def execute(self, p, messages):
         """The source code of the tool."""
         reload(BRAT_Braid_Handler)
+        reload(StreamObjects)
         BRAT_Braid_Handler.main(p[0].valueAsText)
         return
 
@@ -799,6 +801,7 @@ class Drainage_Area_Check_tool(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
+        reload(StreamObjects)
         reload(Drainage_Area_Check)
         Drainage_Area_Check.main(p[0].valueAsText)
         return
