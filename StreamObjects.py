@@ -68,12 +68,29 @@ class BraidStream:
         self.drainageArea = drainageArea
 
 
+import heapq
+class StreamHeap:
+    def __init__(self, first_stream):
+        self.streams = [first_stream]
+        self.stream_name = first_stream.stream_name
+
+    def first_element(self):
+        return self.streams[0]
+
+    def push_stream(self, given_stream):
+        heapq.heappush(self.streams, given_stream)
+
+    def pop(self):
+        return
+
+
 class DAValueCheckStream:
-    def __init__(self, reach_id,  stream_id, downstream_dist, drainage_area):
+    def __init__(self, reach_id,  stream_id, downstream_dist, drainage_area, stream_name):
         self.reach_id = reach_id
         self.stream_id = stream_id
         self.downstream_dist = downstream_dist
         self.drainage_area = drainage_area
+        self.stream_name = stream_name
 
     def __lt__(self, other):
         """
