@@ -168,7 +168,14 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
 
     if isRaster:
-        arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        try:
+            arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        except arcpy.ExecuteError as err:
+            if err[0][6:12] == "000873":
+                arcpy.AddError(err)
+                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
+                raise Exception
+
     else:
         arcpy.MakeFeatureLayer_management(layer_base, new_layer)
 
