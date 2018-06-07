@@ -8,7 +8,9 @@
 # Created:     06/2018
 # -------------------------------------------------------------------------------
 
-from StreamObjects import DAValueCheckStream, StreamHeap
+import arcpy
+from StreamObjects import DAValueCheckStream
+from StreamObjects import StreamHeap
 
 
 def main(stream_network):
@@ -30,7 +32,13 @@ def find_streams(stream_network):
     :param stream_network: The stream network to be used
     :return:
     """
-    return []
+    arcpy.AddMessage("Finding Streams...")
+    stream_heaps = []
+    req_fields = ["StreamName", "ReachID", "StreamID", "ReachDist", "iGeo_DA"]
+    with arcpy.da.SearchCursor(stream_network, req_fields) as cursor:
+        for stream_name, reach_id, stream_id, downstream_dist, drainage_area in cursor:
+            stream_heaps.append(stream_name)
+    return stream_heaps
 
 
 def find_problem_streams(stream_heaps):

@@ -773,7 +773,7 @@ class Drainage_Area_Check_tool(object):
         """Define parameter definitions"""
 
         param0 = arcpy.Parameter(
-            displayName="Select conservation restoration model output network",
+            displayName="Select BRAT Table output network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -799,6 +799,6 @@ class Drainage_Area_Check_tool(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        reload(Summary_Report)
+        reload(Drainage_Area_Check)
         Drainage_Area_Check.main(p[0].valueAsText)
         return

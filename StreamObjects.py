@@ -1,11 +1,13 @@
 # -------------------------------------------------------------------------------
-# Name:        Cluster
-# Purpose:     A class that holds a cluster of braided streams. Used primarily in BRAT_Braid_Handler.py
+# Name:        StreamObjects
+# Purpose:     This file holds classes that will be used to hold data in BRAT tools
 #
 # Author:      Braden Anderson
 #
 # Created:     03/2018
 # -------------------------------------------------------------------------------
+
+import heapq
 
 class Cluster:
     def __init__(self, given_id):
@@ -68,22 +70,6 @@ class BraidStream:
         self.drainageArea = drainageArea
 
 
-import heapq
-class StreamHeap:
-    def __init__(self, first_stream):
-        self.streams = [first_stream]
-        self.stream_name = first_stream.stream_name
-
-    def first_element(self):
-        return self.streams[0]
-
-    def push_stream(self, given_stream):
-        heapq.heappush(self.streams, given_stream)
-
-    def pop(self):
-        return
-
-
 class DAValueCheckStream:
     def __init__(self, reach_id,  stream_id, downstream_dist, drainage_area, stream_name):
         self.reach_id = reach_id
@@ -100,6 +86,30 @@ class DAValueCheckStream:
             raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
         return self.downstream_dist < other.downstream_dist
 
+    def __gt__(self, other):
+        """
+        Our heap is sorted based on how far downstream a reach is, so we want comparison to use downstream_dist to sort
+        """
+        if not isinstance(other, DAValueCheckStream):
+            raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
+        return self.downstream_dist < other.downstream_dist
+
+
+class Something:
+    def __init__(self, reach_id,  stream_id, downstream_dist, drainage_area, stream_name):
+        self.reach_id = reach_id
+        self.stream_id = stream_id
+        self.downstream_dist = downstream_dist
+        self.drainage_area = drainage_area
+        self.stream_name = stream_name
+
+    def __lt__(self, other):
+        """
+        Our heap is sorted based on how far downstream a reach is, so we want comparison to use downstream_dist to sort
+        """
+        if not isinstance(other, DAValueCheckStream):
+            raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
+        return self.downstream_dist < other.downstream_dist
 
     def __gt__(self, other):
         """
@@ -108,3 +118,18 @@ class DAValueCheckStream:
         if not isinstance(other, DAValueCheckStream):
             raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
         return self.downstream_dist < other.downstream_dist
+
+
+class StreamHeap:
+    def __init__(self, first_stream):
+        self.streams = [first_stream]
+        self.stream_name = first_stream.stream_name
+
+    def first_element(self):
+        return self.streams[0]
+
+    def push_stream(self, given_stream):
+        heapq.heappush(self.streams, given_stream)
+
+    def pop(self):
+        return heapq.heappop(self.streams)
