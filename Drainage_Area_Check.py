@@ -20,10 +20,10 @@ def main(stream_network):
     :return:
     """
     stream_heaps = find_streams(stream_network)
-    check_heap(stream_network, stream_heaps)
+    #check_heap(stream_network, stream_heaps)
 
     problem_streams = find_problem_streams(stream_heaps)
-    check_problem_streams(stream_network, problem_streams)
+    #check_problem_streams(stream_network, problem_streams)
 
     fix_problem_streams(stream_network, problem_streams)
 
@@ -127,4 +127,45 @@ def check_problem_streams(stream_network, problem_streams):
     arcpy.AddMessage("Max problem DA ID: " + str(max_orig_DA_id))
 
 
+def fix_problem_streams(stream_network, problem_streams):
+    """
+    Goes through the stream network and fixes problem streams
+    :param stream_network: The stream network to fix
+    :param problem_streams: A list of problem streams
+    :return:
+    """
+    arcpy.AddMessage("Fixing Streams...")
+    arcpy.AddMessage(str(len(problem_streams)))
+    arcpy.AddField_management(stream_network, "Orig_DA", "DOUBLE")
+    req_fields = ["ReachID", "iGeo_DA", "Orig_DA"]
+    with arcpy.da.UpdateCursor(stream_network, req_fields) as cursor:
+        for row in cursor:
+            reach_id = row[0]
+            drain_area = row[1]
+            problem_stream = find_problem_stream(reach_id, problem_streams)
+            if problem_stream:
+                row[1] = problem_stream.fixed_drainage_area
+                row[2] = problem_stream.orig_drainage_area
+            else:
+                row[2] = drain_area
+            cursor.updateRow(row)
+    arcpy.AddMessage(str(len(problem_streams)))
+    write_problem_streams(stream_network, problem_streams)
 
+
+def write_problem_streams(stream_network, problem_streams):
+    with open(os.path.join(os.path.dirname(stream_network), "ProblemStreamsList.txt"), 'w') as file:
+        file.write("Something")
+        for problem_stream in problem_streams:
+            file.write("Altered Reach #" + str(problem_stream.reach_id) + '\n')
+
+
+def find_problem_stream(reach_id, problem_streams):
+    """
+    Returns the problem stream that goes with the reach id. If the reach ID is not in the list of problem streams,
+    returns None
+    """
+    for problem_stream in problem_streams:
+        if problem_stream.reach_id == reach_id:
+            return problem_stream
+    return None
