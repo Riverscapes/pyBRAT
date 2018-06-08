@@ -9,6 +9,7 @@
 # -------------------------------------------------------------------------------
 
 import arcpy
+import os
 from StreamObjects import DAValueCheckStream, StreamHeap
 
 
@@ -19,6 +20,11 @@ def main(stream_network):
     :return:
     """
     stream_heaps = find_streams(stream_network)
+    arcpy.AddMessage("Stream heap length: " + str(len(stream_heaps)))
+    # with open(os.path.join(os.path.dirname(stream_network), "streams.txt"), 'w') as file:
+    #     for stream_heap in stream_heaps:
+    #         stream_heap.pop()
+    #         file.write(str(stream_heap) + '\n')
 
     problem_streams = find_problem_streams(stream_heaps)
 
@@ -37,8 +43,28 @@ def find_streams(stream_network):
     with arcpy.da.SearchCursor(stream_network, req_fields) as cursor:
         for reach_id, stream_id, downstream_dist, drainage_area in cursor:
             new_stream = DAValueCheckStream(reach_id, stream_id, downstream_dist, drainage_area)
-            stream_heaps.append(new_stream)
+            new_stream_heap_index = find_new_stream_heap_index(stream_id, stream_heaps)
+
+            if new_stream_heap_index is not None:
+                stream_heaps[new_stream_heap_index].push_stream(new_stream)
+            else:
+                new_stream_heap = StreamHeap(new_stream)
+                stream_heaps.append(new_stream_heap)
     return stream_heaps
+
+
+def find_new_stream_heap_index(stream_id, stream_heaps):
+    """
+    Finds the index of the heap that the stream belongs to
+    :param stream_id: The stream_id that we want to find in the heaps
+    :param stream_heaps: A list of heaps
+    :return: A number if that stream ID is in the list of heaps, otherwise, None
+    """
+    for i in range(len(stream_heaps)):
+        if stream_id == stream_heaps[i].stream_id:
+            return i
+    return None
+
 
 
 def find_problem_streams(stream_heaps):

@@ -77,6 +77,9 @@ class DAValueCheckStream:
         self.downstream_dist = downstream_dist
         self.drainage_area = drainage_area
 
+    def __eq__(self, other):
+        return self.reach_id == other.reach_id
+
     def __lt__(self, other):
         """
         Our heap is sorted based on how far downstream a reach is, so we want comparison to use downstream_dist to sort
@@ -93,11 +96,14 @@ class DAValueCheckStream:
             raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
         return self.downstream_dist < other.downstream_dist
 
+    def __str__(self):
+        return str(self.stream_id)
+
 
 class StreamHeap:
     def __init__(self, first_stream):
         self.streams = [first_stream]
-        self.stream_name = first_stream.stream_name
+        self.stream_id = first_stream.stream_id
 
     def first_element(self):
         return self.streams[0]
@@ -107,3 +113,18 @@ class StreamHeap:
 
     def pop(self):
         return heapq.heappop(self.streams)
+
+    def __eq__(self, other):
+        if not isinstance(other, StreamHeap):
+            raise Exception("A StreamHeap can only be compared to another StreamHeap")
+        return self.stream_id == other.stream_id
+
+    def __str__(self):
+        ret_string = '['
+        for i in range(len(self.streams)):
+            #ret_string += '(' + str(self.streams[i].reach_id) + ', ' + str(self.streams[i].stream_id) + ')'
+            ret_string += str(self.streams[i].downstream_dist)
+            if i + 1 < len(self.streams):
+                ret_string += ', '
+        ret_string += ']'
+        return ret_string
