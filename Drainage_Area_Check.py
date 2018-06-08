@@ -10,7 +10,7 @@
 
 import arcpy
 import os
-from StreamObjects import DAValueCheckStream, StreamHeap
+from StreamObjects import DAValueCheckStream, ProblemStream, StreamHeap
 
 
 def main(stream_network):
@@ -20,10 +20,10 @@ def main(stream_network):
     :return:
     """
     stream_heaps = find_streams(stream_network)
-
     check_heap(stream_network, stream_heaps)
 
     problem_streams = find_problem_streams(stream_heaps)
+    check_problem_streams(stream_network, problem_streams)
 
     fix_problem_streams(stream_network, problem_streams)
 
@@ -65,6 +65,7 @@ def check_heap(stream_network, stream_heaps):
                     raise Exception("Error in stream id: " + str(streams[k].stream_id))
             except IndexError:
                 pass
+    arcpy.AddMessage("Stream Heaps passed check")
 
 
 
@@ -88,17 +89,42 @@ def find_problem_streams(stream_heaps):
     :param stream_heaps: A list of stream heaps
     :return:
     """
+    arcpy.AddMessage("Identifying problem streams...")
+    problem_streams = []
     for stream_heap in stream_heaps:
         while len(stream_heap.streams) > 0:
-            upstream_reach = stream_heap.pop()
+            downstream_reach = stream_heap.pop()
+            max_upstream_drainage_area = 0.0
+            for stream in stream_heap.streams:
+                if stream.drainage_area > max_upstream_drainage_area:
+                    max_upstream_drainage_area = stream.drainage_area
 
-    return []
+            if downstream_reach.drainage_area < max_upstream_drainage_area:
+                new_problem_stream = ProblemStream(downstream_reach.reach_id, downstream_reach.stream_id, downstream_reach.drainage_area, max_upstream_drainage_area)
+                problem_streams.append(new_problem_stream)
+
+    return problem_streams
 
 
-def fix_problem_streams(stream_network, problem_streams):
+def check_problem_streams(stream_network, problem_streams):
     """
-    Fixes
-    :param stream_network:
-    :param problem_streams:
-    :return:
+    A simple function that's mean to write the data to a text file and raise errors if something seems wrong
     """
+    max_orig_DA = 0
+    max_orig_DA_id = -1
+    with open(os.path.join(os.path.dirname(stream_network), "problemStreams.txt"), 'w') as file:
+        for problem_stream in problem_streams:
+            file.write(str(problem_stream) + '\n')
+            if problem_stream.orig_drainage_area > 50:
+                arcpy.AddWarning("Reach " + str(problem_stream.reach_id) + " may not be a problem stream")
+            if problem_stream.orig_drainage_area > max_orig_DA:
+                max_orig_DA = problem_stream.orig_drainage_area
+                max_orig_DA_id = problem_stream.reach_id
+            if problem_stream.orig_drainage_area > problem_stream.fixed_drainage_area:
+                raise Exception("Something weird with the following reach:\n" + str(problem_stream))
+    arcpy.AddMessage("Problem Streams passed check")
+    arcpy.AddMessage("Max problem DA: " + str(max_orig_DA))
+    arcpy.AddMessage("Max problem DA ID: " + str(max_orig_DA_id))
+
+
+
