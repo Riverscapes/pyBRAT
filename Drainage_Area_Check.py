@@ -20,11 +20,8 @@ def main(stream_network):
     :return:
     """
     stream_heaps = find_streams(stream_network)
-    arcpy.AddMessage("Stream heap length: " + str(len(stream_heaps)))
-    # with open(os.path.join(os.path.dirname(stream_network), "streams.txt"), 'w') as file:
-    #     for stream_heap in stream_heaps:
-    #         stream_heap.pop()
-    #         file.write(str(stream_heap) + '\n')
+
+    check_heap(stream_network, stream_heaps)
 
     problem_streams = find_problem_streams(stream_heaps)
 
@@ -53,6 +50,24 @@ def find_streams(stream_network):
     return stream_heaps
 
 
+def check_heap(stream_network, stream_heaps):
+    with open(os.path.join(os.path.dirname(stream_network), "streams.txt"), 'w') as file:
+        for stream_heap in stream_heaps:
+            file.write(str(stream_heap) + '\n')
+    for stream_heap in stream_heaps:
+        streams = stream_heap.streams
+        for k in range(len(streams)):
+            try:
+                high_dist = streams[k].downstream_dist
+                low_dist_one = streams[(k*2) + 1].downstream_dist
+                low_dist_two = streams[(k*2) + 2].downstream_dist
+                if high_dist < low_dist_one or high_dist < low_dist_two:
+                    raise Exception("Error in stream id: " + str(streams[k].stream_id))
+            except IndexError:
+                pass
+
+
+
 def find_new_stream_heap_index(stream_id, stream_heaps):
     """
     Finds the index of the heap that the stream belongs to
@@ -73,6 +88,10 @@ def find_problem_streams(stream_heaps):
     :param stream_heaps: A list of stream heaps
     :return:
     """
+    for stream_heap in stream_heaps:
+        while len(stream_heap.streams) > 0:
+            upstream_reach = stream_heap.pop()
+
     return []
 
 

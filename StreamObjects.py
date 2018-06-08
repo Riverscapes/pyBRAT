@@ -82,15 +82,21 @@ class DAValueCheckStream:
 
     def __lt__(self, other):
         """
-        Our heap is sorted based on how far downstream a reach is, so we want comparison to use downstream_dist to sort
+        The heap is based on downstream distance, so we define < and > based on downstream distance
+
+        To make the heap a max heap, we reverse what might seem to be intuitive for > and <. To make it a min heap,
+        replace ">" with "<" in the return statement
         """
         if not isinstance(other, DAValueCheckStream):
             raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
-        return self.downstream_dist < other.downstream_dist
+        return self.downstream_dist > other.downstream_dist
 
     def __gt__(self, other):
         """
-        Our heap is sorted based on how far downstream a reach is, so we want comparison to use downstream_dist to sort
+        The heap is based on downstream distance, so we define < and > based on downstream distance
+
+        To make the heap a max heap, we reverse what might seem to be intuitive for > and <. To make it a min heap,
+        replace "<" with ">" in the return statement
         """
         if not isinstance(other, DAValueCheckStream):
             raise Exception("Comparing a DAValueCheckStream to another data type is not currently supported")
@@ -104,9 +110,6 @@ class StreamHeap:
     def __init__(self, first_stream):
         self.streams = [first_stream]
         self.stream_id = first_stream.stream_id
-
-    def first_element(self):
-        return self.streams[0]
 
     def push_stream(self, given_stream):
         heapq.heappush(self.streams, given_stream)
