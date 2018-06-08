@@ -19,8 +19,8 @@
 # interval - reach spacing (in meters)
 # min_segLength - minimum segment (reach) length (in meters)
 
-nhd_flowline_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\WestWalker_16050302\NHD\NHDFlowline.shp"
-outpath = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\WestWalker_16050302\NHD\NHD_24k_300mReaches.shp"
+nhd_flowline_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\LakeTahoe_16050101\NHD\NHDFlowline.shp"
+outpath = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\LakeTahoe_16050101\NHD\NHD_24k_300mReaches_check.shp"
 interval = 300.0 # Default: 300.0
 min_segLength = 50.0 # Default: 50.0
 
@@ -41,51 +41,62 @@ def main():
     quer = """ "FCODE" >=42800 AND "FCODE" <= 42813 """
     arcpy.SelectLayerByAttribute_management('nhd_flowline_lyr', 'NEW_SELECTION', quer)
     arcpy.SelectLayerByAttribute_management('nhd_flowline_lyr', 'SWITCH_SELECTION')
-    flowline_network = arcpy.CopyFeatures_management('nhd_flowline_lyr', 'in_memory/flowline_selection')
+    flowline_sel = arcpy.CopyFeatures_management('nhd_flowline_lyr', 'in_memory/flowline_selection')
 
+    #  select and dissolve named reaches
+    arcpy.MakeFeatureLayer_management(flowline_sel, 'flowline_sel_lyr')
+    quer = """ "GNIS_NAME" = '' """
+    arcpy.SelectLayerByAttribute_management('flowline_sel_lyr', 'NEW_SELECTION', quer)
+    arcpy.SelectLayerByAttribute_management('flowline_sel_lyr', 'SWITCH_SELECTION')
+    flowline_named = arcpy.CopyFeatures_management('flowline_sel_lyr', 'in_memory/flowline_named')
+    flowline_named_dissolve = arcpy.Dissolve_management(flowline_named, 'in_memory/flowline_named_dissolve', 'GNIS_NAME', '', 'SINGLE_PART', 'UNSPLIT_LINES')
 
-    #  dissolve flowline network by name
-    #flowline_dissolve_name = arcpy.Dissolve_management(flowline_network, 'in_memory/flowline_dissolve', 'GNIS_NAME', '', 'SINGLE_PART', 'UNSPLIT_LINES')
-    tmp_flowline_dissolve_name = arcpy.Dissolve_management(flowline_network, 'in_memory/flowline_dissolve_tmp', 'GNIS_NAME', '',
-                                                       'SINGLE_PART', 'UNSPLIT_LINES')
-    flowline_dissolve_name = arcpy.Sort_management(tmp_flowline_dissolve_name, 'in_memory/flowline_dissolve', [['Shape', 'DESCENDING']], 'PEANO')
+    # dissolve all reaches and then select out those that are not named
+    flowline_dissolve = arcpy.Dissolve_management(flowline_sel, 'in_memory/flowline_dissolve', '', '', 'SINGLE_PART', 'UNSPLIT_LINES')
+    arcpy.MakeFeatureLayer_management(flowline_dissolve, 'flowline_dissolve_lyr')
+    arcpy.SelectLayerByLocation_management('flowline_dissolve_lyr', 'SHARE_A_LINE_SEGMENT_WITH', flowline_named_dissolve, '', 'NEW_SELECTION', 'INVERT')
+    flowline_unnamed = arcpy.CopyFeatures_management('flowline_dissolve_lyr', 'in_memory/flowline_unnamed')
+
+    # merge the 2 layers (named and unnamed) into single flowline network
+    tmp_flowline_network = arcpy.Merge_management([flowline_named_dissolve, flowline_unnamed], 'in_memory/tmp_flowline_network')
+    flowline_network = arcpy.Sort_management(tmp_flowline_network, 'in_memory/flowline_network', [['Shape', 'DESCENDING']], 'PEANO')
 
     #  create line id field and line length fields
     #  if fields already exist, delete them
     check_fields = ['LineID', 'LineLen', 'SegID', 'SegLen', 'ReachID', 'ReachLen']
-    fields = [f.name for f in arcpy.ListFields(flowline_dissolve_name)]
+    fields = [f.name for f in arcpy.ListFields(flowline_network)]
     for field in fields:
         if field in check_fields:
-            arcpy.DeleteField_management(flowline_dissolve_name, field)
-    arcpy.AddField_management(flowline_dissolve_name, 'StreamName', 'TEXT', 50)
-    arcpy.AddField_management(flowline_dissolve_name, 'StreamID', 'LONG')
-    arcpy.AddField_management(flowline_dissolve_name, 'StreamLen', 'DOUBLE')
+            arcpy.DeleteField_management(flowline_network, field)
+    arcpy.AddField_management(flowline_network, 'StreamName', 'TEXT', 50)
+    arcpy.AddField_management(flowline_network, 'StreamID', 'LONG')
+    arcpy.AddField_management(flowline_network, 'StreamLen', 'DOUBLE')
     ct = 1
-    with arcpy.da.UpdateCursor(flowline_dissolve_name, ['FID', 'StreamID', 'Shape@Length', 'StreamLen', 'GNIS_NAME', 'StreamName']) as cursor:
+    with arcpy.da.UpdateCursor(flowline_network, ['StreamID', 'Shape@Length', 'StreamLen', 'GNIS_NAME', 'StreamName']) as cursor:
         for row in cursor:
             #row[1] = row[0]
-            row[1] = ct
-            row[3] = row[2]
-            row[5] = row[4]
+            row[0] = ct
+            row[2] = row[1]
+            row[4] = row[3]
             ct += 1
             cursor.updateRow(row)
 
-
-
     #  dissolve flowline network
-    flowline_dissolve_all = arcpy.Dissolve_management(flowline_network, 'in_memory/flowline_dissolve_all', '', '', 'SINGLE_PART', 'UNSPLIT_LINES')
-    arcpy.AddField_management(flowline_dissolve_all, 'SegID', 'LONG')
-    arcpy.AddField_management(flowline_dissolve_all, 'SegLen', 'DOUBLE')
-    with arcpy.da.UpdateCursor(flowline_dissolve_all, ['FID', 'SegID', 'Shape@Length', 'SegLen']) as cursor:
+    flowline_network_dissolve = arcpy.Dissolve_management(flowline_network, 'in_memory/flowline_network_dissolve', '', '', 'SINGLE_PART')
+
+    #  intersect to split by segments
+    flowline_int = arcpy.Intersect_analysis([flowline_network, flowline_network_dissolve], 'in_memory/flowline_int')
+    arcpy.AddField_management(flowline_int, 'SegID', 'LONG')
+    arcpy.AddField_management(flowline_int, 'SegLen', 'DOUBLE')
+    ct = 1
+    with arcpy.da.UpdateCursor(flowline_int, ['SegID', 'Shape@Length', 'SegLen']) as cursor:
         for row in cursor:
-            row[1] = row[0]
-            row[3] = row[2]
+            row[0] = ct
+            row[2] = row[1]
+            ct += 1
             cursor.updateRow(row)
 
-
-    flowline_int = arcpy.Intersect_analysis([flowline_dissolve_name, flowline_dissolve_all], 'in_memory/flowline_int')
-
-    keep = ['FID', 'Shape', 'StreamID', 'StreamLen', 'StreamName', 'SegID', 'SegLen']
+    keep = ['FID', 'OID', 'Shape', 'StreamID', 'StreamLen', 'StreamName', 'SegID', 'SegLen']
     drop = []
     fields = [f.name for f in arcpy.ListFields(flowline_int)]
     for field in fields:
@@ -112,52 +123,53 @@ def main():
                 except Exception as e:
                     arcpy.AddMessage(str(e.message))
 
+    # flip line back to correct direction
+    arcpy.FlipLine_edit(flowline_int)
+
     # split flowlines at segment interval points
     flowline_seg = arcpy.SplitLineAtPoint_management(flowline_int, seg_pts, 'in_memory/flowline_seg', 1.0)
 
     # add and populate reach id and length fields
     arcpy.AddField_management(flowline_seg, 'ReachID', 'SHORT')
     arcpy.AddField_management(flowline_seg, 'ReachLen', 'DOUBLE')
-    with arcpy.da.UpdateCursor(flowline_seg, ['FID', 'ReachID', 'Shape@Length', 'ReachLen']) as cursor:
+    ct = 1
+    with arcpy.da.UpdateCursor(flowline_seg, ['ReachID', 'Shape@Length', 'ReachLen']) as cursor:
         for row in cursor:
-            row[1] = row[0]
-            row[3] = row[2]
+            row[0] = ct
+            row[2] = row[1]
+            ct += 1
             cursor.updateRow(row)
 
-    # # get distance along route (LineID) for segment midpoints
-    # midpoints =  arcpy.FeatureVerticesToPoints_management(flowline_seg, 'in_memory/midpoints', "MID")
-    # arcpy.CopyFeatures_management(midpoints, os.path.join(os.path.dirname(outpath), 'tmp_midpoints.shp'))
-    #
-    # arcpy.FlipLine_edit(flowline_int)
-    # arcpy.AddField_management(flowline_int, 'From_', 'DOUBLE')
-    # arcpy.AddField_management(flowline_int, 'To_', 'DOUBLE')
-    # with arcpy.da.UpdateCursor(flowline_int, ['SegLen', 'From_', 'To_']) as cursor:
-    #     for row in cursor:
-    #         row[1] = 0.0
-    #         row[2] = row[0]
-    #         cursor.updateRow(row)
-    #
-    #
-    # arcpy.CreateRoutes_lr(flowline_int, 'SegID', 'in_memory/flowline_route', 'TWO_FIELDS', 'From_', 'To_')
-    # routeTbl = arcpy.LocateFeaturesAlongRoutes_lr(midpoints, 'in_memory/flowline_route', 'SegID',
-    #                                                1.0, os.path.join(os.path.dirname(outpath), 'tbl_Routes.dbf'),
-    #                                                'RID POINT MEAS')
-    #
-    # distDict = {}
-    # # add reach id distance values to dictionary
-    # with arcpy.da.SearchCursor(routeTbl, ['ReachID', 'MEAS']) as cursor:
-    #     for row in cursor:
-    #         distDict[row[0]] = row[1]
-    #
-    # # populate dictionary value to output field by ReachID
-    # arcpy.AddField_management(flowline_seg, 'ReachDist', 'DOUBLE')
-    # with arcpy.da.UpdateCursor(flowline_seg, ['ReachID', 'ReachDist']) as cursor:
-    #     for row in cursor:
-    #         aKey = row[0]
-    #         row[1] = distDict[aKey]
-    #         cursor.updateRow(row)
-    # #  flip lines back to correct direction
-    # arcpy.FlipLine_edit(flowline_seg)
+    # get distance along route (LineID) for segment midpoints
+    midpoints =  arcpy.FeatureVerticesToPoints_management(flowline_seg, 'in_memory/midpoints', "MID")
+    arcpy.CopyFeatures_management(midpoints, os.path.join(os.path.dirname(outpath), 'tmp_midpoints.shp'))
+
+    arcpy.AddField_management(flowline_network, 'From_', 'DOUBLE')
+    arcpy.AddField_management(flowline_network, 'To_', 'DOUBLE')
+    with arcpy.da.UpdateCursor(flowline_network, ['StreamLen', 'From_', 'To_']) as cursor:
+        for row in cursor:
+            row[1] = 0.0
+            row[2] = row[0]
+            cursor.updateRow(row)
+
+    arcpy.CreateRoutes_lr(flowline_network, 'StreamID', 'in_memory/flowline_route', 'TWO_FIELDS', 'From_', 'To_')
+    routeTbl = arcpy.LocateFeaturesAlongRoutes_lr(midpoints, 'in_memory/flowline_route', 'StreamID',
+                                                   1.0, os.path.join(os.path.dirname(outpath), 'tbl_Routes.dbf'),
+                                                   'RID POINT MEAS')
+
+    distDict = {}
+    # add reach id distance values to dictionary
+    with arcpy.da.SearchCursor(routeTbl, ['ReachID', 'MEAS']) as cursor:
+        for row in cursor:
+            distDict[row[0]] = row[1]
+
+    # populate dictionary value to output field by ReachID
+    arcpy.AddField_management(flowline_seg, 'ReachDist', 'DOUBLE')
+    with arcpy.da.UpdateCursor(flowline_seg, ['ReachID', 'ReachDist']) as cursor:
+        for row in cursor:
+            aKey = row[0]
+            row[1] = distDict[aKey]
+            cursor.updateRow(row)
 
     # save flowline segment output
     arcpy.CopyFeatures_management(flowline_seg, outpath)
