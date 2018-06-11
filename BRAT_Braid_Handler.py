@@ -46,10 +46,10 @@ def getClustersFromIDs(inputNetwork):
     :return: List of clusters
     """
     clusters = []
-    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'ReachID']
+    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'ReachID', "IsBraided"]
     with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
-        for polyline, clusterID, drainageArea, segID in cursor:
-            if clusterID != -1:
+        for polyline, clusterID, drainageArea, segID, isBraided in cursor:
+            if clusterID != -1 and isBraided == 1:
                 newStream = BraidStream(polyline, segID, drainageArea)
                 addStreamToClustersWithID(newStream, clusterID, clusters)
 
