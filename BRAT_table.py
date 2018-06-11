@@ -1017,36 +1017,23 @@ def validateInputs(seg_network, road, railroad, canal):
         raise Exception("There was a problem finding the spatial reference of the stream network. "
                        + "This is commonly caused by trying to run the Table tool directly after running the project "
                        + "builder. Restarting ArcGIS fixes this problem most of the time.")
-    if networkSR.type == "Projected":
-        pass
-    else:
+    if not networkSR.type == "Projected":
         raise Exception("Input stream network must have a projected coordinate system")
 
     if road is not None:
-        roadSR = arcpy.Describe(road).spatialReference
-        if roadSR.type == "Projected":
-            pass
-        else:
+        if not arcpy.Describe(road).spatialReference.type == "Projected":
             raise Exception("Input roads must have a projected coordinate system")
 
     if railroad is not None:
-        rrSR = arcpy.Describe(railroad).spatialReference
-        if rrSR.type == "Projected":
-            pass
-        else:
+        if not arcpy.Describe(railroad).spatialReference.type == "Projected":
             raise Exception("Input railroads must have a projected coordinate system")
 
     if canal is not None:
-        canalSR = arcpy.Describe(canal).spatialReference
-        if canalSR.type == "Projected":
-            pass
-        else:
+        if not arcpy.Describe(canal).spatialReference.type == "Projected":
             raise Exception("Input canals must have projected coordinate system")
 
     # --check that input network is shapefile--
-    if seg_network.endswith(".shp"):
-        pass
-    else:
+    if not seg_network.endswith(".shp"):
         raise Exception("Input network must be a shapefile (.shp)")
 
 
