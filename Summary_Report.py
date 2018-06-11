@@ -250,7 +250,7 @@ def makeLayerPackage(outNetwork, layerPackageName):
 
     inputsLayer = getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd)
     BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
-    intermediatesLayer = getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd)
+    intermediatesLayer = getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
@@ -313,7 +313,7 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     return groupLayers(emptyGroupLayer, "Inputs", [vegLayer, networkLayer, topoLayer, conflictLayer], df, mxd)
 
 
-def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
+def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     """
     Returns a group layer with all of the intermediates
     :param emptyGroupLayer: The base to build the group layer with
@@ -322,32 +322,35 @@ def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
     :param mxd: The map document we're working with
     :return: Layer for intermediates
     """
-    buffers_folder = findFolder(intermediatesFolder, "_Buffers")
-    land_use_folder = findFolder(intermediatesFolder, "_LandUse")
-    topo_folder = findFolder(intermediatesFolder, "_TopographicIndex")
-    flow_direction_folder = findFolder(intermediatesFolder, "_FlowDirection")
-    braid_folder = findFolder(intermediatesFolder, "_BraidHandler")
-    hydro_folder = findFolder(intermediatesFolder, "_Hydrology")
-    veg_folder = findFolder(intermediatesFolder, "_VegCondition")
-
-    buffer_layers = findLayersInFolder(buffers_folder)
-    land_use_layers = findLayersInFolder(land_use_folder)
-    topo_layers = findLayersInFolder(topo_folder)
-    flow_direction_layers = findLayersInFolder(flow_direction_folder)
-    braid_layers = findLayersInFolder(braid_folder)
-    hydro_layers = findLayersInFolder(hydro_folder)
-    veg_layers = findLayersInFolder(veg_folder)
-
     intermediate_layers = []
-    intermediate_layers.append(groupLayers(emptyGroupLayer, "Land_Use_Intensity", land_use_layers, df, mxd))
-    intermediate_layers.append(groupLayers(emptyGroupLayer, "Buffers", buffer_layers, df, mxd))
-    intermediate_layers.append(groupLayers(emptyGroupLayer, "Hydrology", hydro_layers, df, mxd))
-    intermediate_layers.append(groupLayers(emptyGroupLayer, "Flow_Direction", flow_direction_layers, df, mxd))
-    intermediate_layers.append(groupLayers(emptyGroupLayer, "Braid_Handler", braid_layers, df, mxd))
-    intermediate_layers.append(groupLayers(emptyGroupLayer, "Overall_Vegetation_Condition", veg_layers, df, mxd))
-    intermediate_layers.append(groupLayers(emptyGroupLayer, "Topographic_Index", topo_layers, df, mxd))
+
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "LandUse", "Land_Use_Intensity", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic_Index", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid_Handler", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegCondition", "Overall_Vegetation_Condition", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "FlowDirection", "Flow_Direction", emptyGroupLayer, df, mxd)
 
     return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
+
+
+def findAndGroupLayers(layers_list, folderBase, folderName, groupLayerName, emptyGroupLayer, df, mxd):
+    """
+    Looks for the folder that matches what we're looking for, then groups them together. Adds that grouped layer to the
+    list of grouped layers that it was given
+    :param layers_list: The list of layers that we will add our grouped layer to
+    :param folderBase: Path to the folder that contains the folder we want
+    :param folderName: The name of the folder to look in
+    :param groupLayerName: What we want to name the group layer
+    :param emptyGroupLayer: The base to build the group layer with
+    :param df: The dataframe we're working with
+    :param mxd: The map document we're working with
+    :return:
+    """
+    folderPath = findFolder(folderBase, folderName)
+    if folderPath:
+        layers = findLayersInFolder(folderPath)
+        layers_list.append(groupLayers(emptyGroupLayer, groupLayerName, layers, df, mxd))
 
 
 def findInstanceLayers(root_folder):
@@ -402,8 +405,8 @@ def findFolder(folderLocation, folderName):
         if folder.endswith(folderName):
             return os.path.join(folderLocation, folder)
 
-    raise Exception("The " + folderName + " folder does not exist, and so a layer package could not be created."
-                    " It was supposed to be at the following location: \n" + folder)
+    arcpy.AddMessage(folderName + " layer was not found, and so will not be in the layer package")
+    return None
 
 
 def groupLayers(groupLayer, groupName, layers, df, mxd, removeLayer=True):
