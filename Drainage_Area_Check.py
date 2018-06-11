@@ -135,7 +135,6 @@ def fix_problem_streams(stream_network, problem_streams):
     :return:
     """
     arcpy.AddMessage("Fixing Streams...")
-    arcpy.AddMessage(str(len(problem_streams)))
     arcpy.AddField_management(stream_network, "Orig_DA", "DOUBLE")
     req_fields = ["ReachID", "iGeo_DA", "Orig_DA"]
     with arcpy.da.UpdateCursor(stream_network, req_fields) as cursor:
@@ -149,7 +148,6 @@ def fix_problem_streams(stream_network, problem_streams):
             else:
                 row[2] = drain_area
             cursor.updateRow(row)
-    arcpy.AddMessage(str(len(problem_streams)))
     write_problem_streams(stream_network, problem_streams)
 
 

@@ -268,20 +268,20 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     :param mxd: The map document we're working with
     :return: layer for inputs
     """
-    vegetationFolder = findFolder(inputsFolder, "01_Vegetation")
-    exVegFolder = findFolder(vegetationFolder, "01_ExistingVegetation")
-    histVegFolder = findFolder(vegetationFolder, "02_HistoricVegetation")
+    vegetationFolder = findFolder(inputsFolder, "_Vegetation")
+    exVegFolder = findFolder(vegetationFolder, "_ExistingVegetation")
+    histVegFolder = findFolder(vegetationFolder, "_HistoricVegetation")
 
-    networkFolder = findFolder(inputsFolder, "02_Network")
+    networkFolder = findFolder(inputsFolder, "_Network")
 
-    topoFolder = findFolder(inputsFolder, "03_Topography")
+    topoFolder = findFolder(inputsFolder, "_Topography")
 
-    conflictFolder = findFolder(inputsFolder, "04_Conflict")
-    valleyFolder = findFolder(conflictFolder, "01_ValleyBottom")
-    roadsFolder = findFolder(conflictFolder, "02_Roads")
-    railroadsFolder = findFolder(conflictFolder, "03_Railroads")
-    canalsFolder = findFolder(conflictFolder, "04_Canals")
-    landUseFolder = findFolder(conflictFolder, "05_LandUse")
+    conflictFolder = findFolder(inputsFolder, "_Conflict")
+    valleyFolder = findFolder(conflictFolder, "_ValleyBottom")
+    roadsFolder = findFolder(conflictFolder, "_Roads")
+    railroadsFolder = findFolder(conflictFolder, "_Railroads")
+    canalsFolder = findFolder(conflictFolder, "_Canals")
+    landUseFolder = findFolder(conflictFolder, "_LandUse")
 
     exVegLayers = findInstanceLayers(exVegFolder)
     exVegLayer = groupLayers(emptyGroupLayer, "Existing_Vegetation_Type", exVegLayers, df, mxd)
@@ -322,16 +322,18 @@ def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
     :param mxd: The map document we're working with
     :return: Layer for intermediates
     """
-    buffers_folder = findFolder(intermediatesFolder, "01_Buffers")
-    land_use_folder = findFolder(intermediatesFolder, "02_LandUse")
-    topo_folder = findFolder(intermediatesFolder, "03_TopographicIndex")
-    braid_folder = findFolder(intermediatesFolder, "04_BraidHandler")
-    hydro_folder = findFolder(intermediatesFolder, "05_Hydrology")
-    veg_folder = findFolder(intermediatesFolder, "06_VegCondition")
+    buffers_folder = findFolder(intermediatesFolder, "_Buffers")
+    land_use_folder = findFolder(intermediatesFolder, "_LandUse")
+    topo_folder = findFolder(intermediatesFolder, "_TopographicIndex")
+    flow_direction_folder = findFolder(intermediatesFolder, "_FlowDirection")
+    braid_folder = findFolder(intermediatesFolder, "_BraidHandler")
+    hydro_folder = findFolder(intermediatesFolder, "_Hydrology")
+    veg_folder = findFolder(intermediatesFolder, "_VegCondition")
 
     buffer_layers = findLayersInFolder(buffers_folder)
     land_use_layers = findLayersInFolder(land_use_folder)
     topo_layers = findLayersInFolder(topo_folder)
+    flow_direction_layers = findLayersInFolder(flow_direction_folder)
     braid_layers = findLayersInFolder(braid_folder)
     hydro_layers = findLayersInFolder(hydro_folder)
     veg_layers = findLayersInFolder(veg_folder)
@@ -340,6 +342,7 @@ def getIntermediatesLayer(emptyGroupLayer, intermediatesFolder, df, mxd):
     intermediate_layers.append(groupLayers(emptyGroupLayer, "Land_Use_Intensity", land_use_layers, df, mxd))
     intermediate_layers.append(groupLayers(emptyGroupLayer, "Buffers", buffer_layers, df, mxd))
     intermediate_layers.append(groupLayers(emptyGroupLayer, "Hydrology", hydro_layers, df, mxd))
+    intermediate_layers.append(groupLayers(emptyGroupLayer, "Flow_Direction", flow_direction_layers, df, mxd))
     intermediate_layers.append(groupLayers(emptyGroupLayer, "Braid_Handler", braid_layers, df, mxd))
     intermediate_layers.append(groupLayers(emptyGroupLayer, "Overall_Vegetation_Condition", veg_layers, df, mxd))
     intermediate_layers.append(groupLayers(emptyGroupLayer, "Topographic_Index", topo_layers, df, mxd))
@@ -394,12 +397,13 @@ def findFolder(folderLocation, folderName):
     :param folderName: The folder to look for
     :return: Path to folder
     """
-    folder = os.path.join(folderLocation, folderName)
-    if os.path.exists(folder):
-        return folder
-    else:
-        raise Exception("The " + folderName + " folder does not exist, and so a layer package could not be created."
-                        " It was supposed to be at the following location: \n" + folder)
+    folders = os.listdir(folderLocation)
+    for folder in folders:
+        if folder.endswith(folderName):
+            return os.path.join(folderLocation, folder)
+
+    raise Exception("The " + folderName + " folder does not exist, and so a layer package could not be created."
+                    " It was supposed to be at the following location: \n" + folder)
 
 
 def groupLayers(groupLayer, groupName, layers, df, mxd, removeLayer=True):
