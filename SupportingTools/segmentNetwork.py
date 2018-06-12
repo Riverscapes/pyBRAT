@@ -12,6 +12,9 @@
 
 # -------------------------------------------------------------------------------
 
+import os
+import arcpy
+
 # User defined arguments:
 
 # nhd_flowline_path - path to input flowlines that will be segmented
@@ -19,16 +22,12 @@
 # interval - reach spacing (in meters)
 # min_segLength - minimum segment (reach) length (in meters)
 
-nhd_flowline_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\LakeTahoe_16050101\NHD\NHDFlowline.shp"
-outpath = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\LakeTahoe_16050101\NHD\NHD_24k_300mReaches_check.shp"
 interval = 300.0 # Default: 300.0
 min_segLength = 50.0 # Default: 50.0
 
 
-def main():
+def main(nhd_flowline_path, outpath):
     #  import required modules and extensions
-    import os
-    import arcpy
     arcpy.CheckOutExtension('Spatial')
 
     #  environment settings
@@ -38,7 +37,7 @@ def main():
 
     #  select lines from original nhd that are not coded as pipeline (fcdoe 428**)
     arcpy.MakeFeatureLayer_management(nhd_flowline_path, 'nhd_flowline_lyr')
-    quer = """ "FCODE" >=42800 AND "FCODE" <= 42813 """
+    quer = '"FCODE" >=42800 AND "FCODE" <= 42813'
     arcpy.SelectLayerByAttribute_management('nhd_flowline_lyr', 'NEW_SELECTION', quer)
     arcpy.SelectLayerByAttribute_management('nhd_flowline_lyr', 'SWITCH_SELECTION')
     flowline_sel = arcpy.CopyFeatures_management('nhd_flowline_lyr', 'in_memory/flowline_selection')
@@ -176,5 +175,15 @@ def main():
 
     arcpy.Delete_management('in_memory')
 
+import argparse
+
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description="Segments the stream network given to it")
+    parser.add_argument('input_stream', help="The shape file given as input to the program")
+    parser.add_argument('-o' ,'--output_location', help="Path to where we should create the segmented stream network")
+    args = parser.parse_args()
+    if args.output_location:
+        main(args.input_stream, args.output_location)
+    else:
+        output_location = os.path.join(os.path.dirname(args.input_stream), "Segmented_Stream.shp")
+        main(args.input_stream, output_location)
