@@ -50,11 +50,11 @@ def main(nhd_flowline_path, outpath):
     flowline_named = arcpy.CopyFeatures_management('flowline_sel_lyr', 'in_memory/flowline_named')
     flowline_named_dissolve = arcpy.Dissolve_management(flowline_named, 'in_memory/flowline_named_dissolve', 'GNIS_NAME', '', 'SINGLE_PART', 'UNSPLIT_LINES')
 
-    # dissolve all reaches and then select out those that are not named
+    # dissolve all reaches
     flowline_dissolve = arcpy.Dissolve_management(flowline_sel, 'in_memory/flowline_dissolve', '', '', 'SINGLE_PART', 'UNSPLIT_LINES')
-    arcpy.MakeFeatureLayer_management(flowline_dissolve, 'flowline_dissolve_lyr')
-    arcpy.SelectLayerByLocation_management('flowline_dissolve_lyr', 'SHARE_A_LINE_SEGMENT_WITH', flowline_named_dissolve, '', 'NEW_SELECTION', 'INVERT')
-    flowline_unnamed = arcpy.CopyFeatures_management('flowline_dissolve_lyr', 'in_memory/flowline_unnamed')
+
+    # remove named reaches
+    flowline_unnamed = arcpy.Erase_analysis(flowline_dissolve, flowline_named_dissolve, 'in_memory/flowline_unnamed')
 
     # merge the 2 layers (named and unnamed) into single flowline network
     tmp_flowline_network = arcpy.Merge_management([flowline_named_dissolve, flowline_unnamed], 'in_memory/tmp_flowline_network')
@@ -141,7 +141,6 @@ def main(nhd_flowline_path, outpath):
 
     # get distance along route (LineID) for segment midpoints
     midpoints =  arcpy.FeatureVerticesToPoints_management(flowline_seg, 'in_memory/midpoints', "MID")
-    arcpy.CopyFeatures_management(midpoints, os.path.join(os.path.dirname(outpath), 'tmp_midpoints.shp'))
 
     arcpy.AddField_management(flowline_network, 'From_', 'DOUBLE')
     arcpy.AddField_management(flowline_network, 'To_', 'DOUBLE')

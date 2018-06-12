@@ -91,21 +91,21 @@ def main(in_network):
         # build fis rule table
         rule1 = ctrl.Rule(riparian['unsuitable'] & streamside['unsuitable'], density['none'])
         rule2 = ctrl.Rule(riparian['barely'] & streamside['unsuitable'], density['rare'])
-        rule3 = ctrl.Rule(riparian['moderately'] & streamside['unsuitable'], density['occasional'])
+        rule3 = ctrl.Rule(riparian['moderately'] & streamside['unsuitable'], density['rare'])
         rule4 = ctrl.Rule(riparian['suitable'] & streamside['unsuitable'], density['occasional'])
         rule5 = ctrl.Rule(riparian['preferred'] & streamside['unsuitable'], density['occasional'])
         rule6 = ctrl.Rule(riparian['unsuitable'] & streamside['barely'], density['rare'])
         rule7 = ctrl.Rule(riparian['barely'] & streamside['barely'], density['rare']) # matBRAT has consequnt as 'occasional'
         rule8 = ctrl.Rule(riparian['moderately'] & streamside['barely'], density['occasional'])
-        rule9 = ctrl.Rule(riparian['suitable'] & streamside['barely'], density['frequent'])
-        rule10 = ctrl.Rule(riparian['preferred'] & streamside['barely'], density['frequent'])
+        rule9 = ctrl.Rule(riparian['suitable'] & streamside['barely'], density['occasional'])
+        rule10 = ctrl.Rule(riparian['preferred'] & streamside['barely'], density['occasional'])
         rule11 = ctrl.Rule(riparian['unsuitable'] & streamside['moderately'], density['rare'])
         rule12 = ctrl.Rule(riparian['barely'] & streamside['moderately'], density['occasional'])
         rule13 = ctrl.Rule(riparian['moderately'] & streamside['moderately'], density['occasional'])
         rule14 = ctrl.Rule(riparian['suitable'] & streamside['moderately'], density['frequent'])
         rule15 = ctrl.Rule(riparian['preferred'] & streamside['moderately'], density['pervasive'])
-        rule16 = ctrl.Rule(riparian['unsuitable'] & streamside['suitable'], density['rare'])
-        rule17 = ctrl.Rule(riparian['barely'] & streamside['suitable'], density['frequent'])
+        rule16 = ctrl.Rule(riparian['unsuitable'] & streamside['suitable'], density['occasional'])
+        rule17 = ctrl.Rule(riparian['barely'] & streamside['suitable'], density['occasional'])
         rule18 = ctrl.Rule(riparian['moderately'] & streamside['suitable'], density['frequent'])
         rule19 = ctrl.Rule(riparian['suitable'] & streamside['suitable'], density['frequent'])
         rule20 = ctrl.Rule(riparian['preferred'] & streamside['suitable'], density['pervasive'])
@@ -160,14 +160,14 @@ def main(in_network):
         #            density 'none' values are changed in the model
         x = np.arange(0, 45, 0.01)
         mfx = fuzz.trimf(x, [0, 0, 0.1])
-        defuzz_centroid = fuzz.defuzz(x, mfx, 'centroid')
+        defuzz_centroid = round(fuzz.defuzz(x, mfx, 'centroid'), 6)
 
         # update vegetation capacity (ovc_*) values in stream network
         # set ovc_* to 0 if output falls fully in 'none' category
 
         with arcpy.da.UpdateCursor(in_network, [out_field]) as cursor:
             for row in cursor:
-                if row[0] == defuzz_centroid:
+                if round(row[0], 6) == defuzz_centroid:
                     row[0] = 0.0
                 cursor.updateRow(row)
 
