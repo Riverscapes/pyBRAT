@@ -11,6 +11,7 @@ import BRAT_Braid_Handler
 import Summary_Report
 import Drainage_Area_Check
 import StreamObjects
+import Layer_Package_Generator
 
 
 class Toolbox(object):
@@ -22,7 +23,8 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-                        Conflict_Potential_tool, Conservation_Restoration_tool, Summary_Report_tool, Drainage_Area_Check_tool]
+                        Conflict_Potential_tool, Conservation_Restoration_tool, Summary_Report_tool,
+                        Drainage_Area_Check_tool, Layer_Package_Generator_tool]
 
 
 class BRAT_project_tool(object):
@@ -314,7 +316,7 @@ class BRAT_table_tool(object):
 class BRAT_braid_handler(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 3. BRAT Braid Handler (Optional)"
+        self.label = "Step 2.2 Braid Handler (Optional)"
         self.description = "In development and currently non-operational. Gives braided streams the appropriate values, once mainstems have been identified in the stream network."
         self.canRunInBackground = False
 
@@ -354,7 +356,7 @@ class BRAT_braid_handler(object):
 class iHyd_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 4. iHyd Streamflow Attributes"
+        self.label = "Step 3. iHyd Streamflow Attributes"
         self.description = "Calculates, for each stream network segment, discharge (in cubic meters per second) and stream power for both baseflow and annual peak streamflows"
         self.canRunInBackground = False
 
@@ -402,7 +404,7 @@ class iHyd_tool(object):
 class Veg_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 5. BRAT Vegetation Dam Capacity Model"
+        self.label = "Step 4. BRAT Vegetation Dam Capacity Model"
         self.description = "Calculates dam capacity, for each stream network segment, based solely on vegetation.  Capacity is calculated separately for existing and potential (i.e., historic) vegetation type."
         self.canRunInBackground = False
 
@@ -442,7 +444,7 @@ class Veg_FIS_tool(object):
 class Comb_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 6. BRAT Combined Dam Capacity Model"
+        self.label = "Step 5. BRAT Combined Dam Capacity Model"
         self.description = "Calculates dam capacity, for each stream network segment, based on vegetation dam capacity estimates, baseflow stream power, annual peak stream power, and slope.  Capacity is calculated separetly for existing and potential (i.e., history) vegetation."
         self.canRunInBackground = False
 
@@ -507,7 +509,7 @@ class Comb_FIS_tool(object):
 class Conflict_Potential_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 7. BRAT Conflict Potential"
+        self.label = "Step 6. BRAT Conflict Potential"
         self.description = "Calculates, for each stream network segment, the potential for human-beaver conflict based on landuse and distance from roads, railroads, canals.  Note: this tool can only be run if the user provides the conflict layers."
         self.canRunInBackground = False
 
@@ -644,7 +646,7 @@ class Conflict_Potential_tool(object):
 class Conservation_Restoration_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 8. BRAT Conservation and Restoration Model"
+        self.label = "Step 7. BRAT Conservation and Restoration Model"
         self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, potential (i.e., historic) dam capacity, and human-beaver conflict potential score"
         self.canRunInBackground = False
 
@@ -701,7 +703,7 @@ class Conservation_Restoration_tool(object):
 class Summary_Report_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 9. Summary Report"
+        self.label = "Step 8. Summary Report"
         self.description = "Tests the results of BRAT against data on beaver dam sites"
         self.canRunInBackground = False
 
@@ -730,14 +732,7 @@ class Summary_Report_tool(object):
             parameterType="Required",
             direction="Input")
 
-        param3 = arcpy.Parameter(
-            displayName="Name the layer package output",
-            name="layer_package_name",
-            datatype="GPString",
-            parameterType="Required",
-            direction="Input")
-
-        return [param0, param1, param2, param3]
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -767,7 +762,7 @@ class Summary_Report_tool(object):
 class Drainage_Area_Check_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Drainage Area Check"
+        self.label = "Step 2.1 Drainage Area Check (Optional"
         self.description = "Looks for drainage area values that are less than an upstream value, and then modifies them"
         self.canRunInBackground = False
 
@@ -804,4 +799,53 @@ class Drainage_Area_Check_tool(object):
         reload(StreamObjects)
         reload(Drainage_Area_Check)
         Drainage_Area_Check.main(p[0].valueAsText)
+        return
+
+
+class Layer_Package_Generator_tool(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "Step 9. Layer Package Generator"
+        self.description = "Creates a layer package based on the completed BRAT run"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+
+        param0 = arcpy.Parameter(
+            displayName="Select Summary Report output network",
+            name="in_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+        param0.filter.list = ["Polyline"]
+
+        param1 = arcpy.Parameter(
+            displayName="Name the layer package output",
+            name="layer_package_name",
+            datatype="GPString",
+            parameterType="Required",
+            direction="Input")
+
+        return [param0, param1]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(Layer_Package_Generator)
+        Layer_Package_Generator.main(p[0].valueAsText, p[1].valueAsText)
         return
