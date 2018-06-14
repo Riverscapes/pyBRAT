@@ -754,8 +754,7 @@ class Summary_Report_tool(object):
         reload(Summary_Report)
         Summary_Report.main(p[0].valueAsText,
                             p[1].valueAsText,
-                            p[2].valueAsText,
-                            p[3].valueAsText)
+                            p[2].valueAsText)
         return
 
 

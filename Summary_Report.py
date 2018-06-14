@@ -10,7 +10,7 @@
 import os
 import arcpy
 
-def main(bratOutput, dams, outputName, layerPackageName):
+def main(bratOutput, dams, outputName):
     """
     The main function
     :param bratOutput: The output of BRAT (a polyline shapefile)
