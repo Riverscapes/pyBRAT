@@ -812,12 +812,11 @@ class Layer_Package_Generator_tool(object):
         """Define parameter definitions"""
 
         param0 = arcpy.Parameter(
-            displayName="Select Summary Report output network",
+            displayName="Select output folder",
             name="in_network",
-            datatype="DEFeatureClass",
+            datatype="DEFolder",
             parameterType="Required",
             direction="Input")
-        param0.filter.list = ["Polyline"]
 
         param1 = arcpy.Parameter(
             displayName="Name the layer package output",

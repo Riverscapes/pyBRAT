@@ -3,14 +3,14 @@
 import arcpy
 import os
 
-def main(brat_network, layer_package_name):
-    makeLayerPackage(brat_network, layer_package_name)
+def main(output_folder, layer_package_name):
+    makeLayerPackage(output_folder, layer_package_name)
 
 
-def makeLayerPackage(outNetwork, layerPackageName):
+def makeLayerPackage(outputFolder, layerPackageName):
     """
     Makes a layer package for the project
-    :param outNetwork: The network in the fodler that we want to do stuff with.
+    :param outputFolder: The folder that we want to base our layer package off of
     :param layerPackageName: The name of the layer package that we'll make
     :return:
     """
@@ -18,9 +18,8 @@ def makeLayerPackage(outNetwork, layerPackageName):
         layerPackageName += ".lpk"
 
     arcpy.AddMessage("Making Layer Package...")
-    analysesFolder = os.path.dirname(outNetwork)
-    outputFolder = os.path.dirname(analysesFolder)
     intermediatesFolder = os.path.join(outputFolder, "01_Intermediates")
+    analysesFolder = os.path.join(outputFolder, "02_Analyses")
     projectFolder = os.path.dirname(outputFolder)
     inputsFolder = findFolder(projectFolder, "Inputs")
 
