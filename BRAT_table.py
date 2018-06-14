@@ -401,94 +401,19 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     # calculate mean distance from adjacent roads ('iPC_RoadAd')
     # here we only care about roads in the valley bottom
     if road is not None:
-        arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
-        # clip roads to the valley bottom
-        road_subset = arcpy.Clip_analysis(road, valley_bottom, tempDir + '\\road_subset.shp')
-        # get count of roads in the valley bottom
-        road_mts = arcpy.MultipartToSinglepart_management(road_subset, tempDir + "\\road_mts.shp")
-        roadcount = arcpy.GetCount_management(road_mts)
-        roadct = int(roadcount.getOutput(0))
-        # if there are no roads in the valley bottom, set 'iPC_RoadsAd' to high value (10000 m)
-        if roadct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        # if there are roads in the valley bottom, calculate distance
-        else:
-            # set extent to the stream network
-            arcpy.env.extent = out_network
-            # calculate euclidean distance from roads in the valley bottom
-            ed_roadad = EucDistance(road_subset, cell_size = 5) # cell size of 5 m
-            # get mean distance from roads in the valley bottom within 30 m buffer of each network segment
-            zonalStatsWithinBuffer(buf_30m, ed_roadad, 'MEAN', 'MEAN', out_network, "iPC_RoadAd", scratch)
-
-            # delete temp fcs, tbls, etc.
-            items = [ed_roadad]
-            for item in items:
-                arcpy.Delete_management(item)
+        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "road_ad", "iPC_RoadAd", scratch)
 
     # calculate mean distance from railroads ('iPC_RR')
     # here we only care about railroads in the valley bottom
     if railroad is not None:
-        arcpy.AddField_management(out_network, "iPC_RR", "DOUBLE")
-        # clip railroads to the valley bottom
-        rr_subset = arcpy.Clip_analysis(railroad, valley_bottom, tempDir + '\\rr_subset.shp')
-        # get count of railroads in the valley bottom
-        rr_mts = arcpy.MultipartToSinglepart_management(rr_subset, tempDir + "\\rr_mts.shp")
-        rrcount = arcpy.GetCount_management(rr_mts)
-        rrct = int(rrcount.getOutput(0))
-        # if there are not railroads in the valley bottom, set 'iPC_RR' to high value (10000 m)
-        if rrct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        # if there are railroads in the valley bottom calculate distance
-        else:
-            # set extent to the flowline network
-            arcpy.env.extent = out_network
-            # calculate distance from railroads in the valley bottom
-            ed_rr = EucDistance(rr_subset, cell_size = 5)  # cell size of 5 m
-            # get mean distance from railroads in the valley bottom within 30 m buffer of each network segment
-            zonalStatsWithinBuffer(buf_30m, ed_rr, 'MEAN', 'MEAN', out_network, "iPC_RR", scratch)
-
-            # delete temp fcs, tbls, etc.
-            items = [ed_rr]
-            for item in items:
-                arcpy.Delete_management(item)
+        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroad", "iPC_RR", scratch)
 
     # calculate mean distance from canals ('iPC_Canal')
     # here we only care about canals in the valley bottom
     if canal is not None:
-        arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
-        # clip canals to the valley bottom
-        canal_subset = arcpy.Clip_analysis(canal, valley_bottom, tempDir + '\\canal_subset.shp')
-        # get count of canals in the valley bottom
-        canal_mts = arcpy.MultipartToSinglepart_management(canal_subset, tempDir + "\\canal_mts.shp")
-        canalcount = arcpy.GetCount_management(canal_mts)
-        canalct = int(canalcount.getOutput(0))
-        # if there are not canals in the valley bottom, set 'iPC_Canal' to high value (10000 m)
-        if canalct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        # if there are canals in the valley bottom, calculate distance
-        else:
-            # set extent to the stream network
-            arcpy.env.extent = out_network
-            # calculate euclidean distance from canals in the valley bottom
-            ed_canal = EucDistance(canal_subset, cell_size = 5)  # cell size of 5 m
-            # get mean distance from canals in the valley bottom within 30 m buffer of each network segment
-            zonalStatsWithinBuffer(buf_30m, ed_canal, 'MEAN', 'MEAN', out_network, "iPC_Canal", scratch)
+        findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch)
 
-            # delete temp fcs, tbls, etc.
-            items = [ed_canal]
-            for item in items:
-                arcpy.Delete_management(item)
-
-    rmtree(tempDir)
+    #rmtree(tempDir)
     """
     This is the section of code that stores intermediary data in memory. In ArcMap 10.6, that crashes the program,
     so we're getting rid of it for now, and using a temp dir instead
@@ -668,6 +593,35 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")
+
+
+def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch):
+    arcpy.AddField_management(out_network, new_field_name, "DOUBLE")
+    # clip roads to the valley bottom
+    feature_subset = arcpy.Clip_analysis(feature, valley_bottom, os.path.join(temp_dir, temp_name + '_subset.shp'))
+    # get count of roads in the valley bottom
+    feature_mts = arcpy.MultipartToSinglepart_management(feature_subset, os.path.join(temp_dir, temp_name + "_mts.shp"))
+    count = arcpy.GetCount_management(feature_mts)
+    ct = int(count.getOutput(0))
+    # if there are no roads in the valley bottom, set 'iPC_RoadsAd' to high value (10000 m)
+    if ct < 1:
+        with arcpy.da.UpdateCursor(out_network, new_field_name) as cursor:
+            for row in cursor:
+                row[0] = 10000.0
+                cursor.updateRow(row)
+    # if there are roads in the valley bottom, calculate distance
+    else:
+        # set extent to the stream network
+        arcpy.env.extent = out_network
+        # calculate euclidean distance from roads in the valley bottom
+        ed_roadad = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
+        # get mean distance from roads in the valley bottom within 30 m buffer of each network segment
+        zonalStatsWithinBuffer(buf, ed_roadad, 'MEAN', 'MEAN', out_network, new_field_name, scratch)
+
+        # delete temp fcs, tbls, etc.
+        items = [ed_roadad]
+        for item in items:
+            arcpy.Delete_management(item)
 
 
 # calculate drainage area function
