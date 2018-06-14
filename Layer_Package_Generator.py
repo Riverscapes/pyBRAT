@@ -38,7 +38,7 @@ def makeLayerPackage(outputFolder, layerPackageName):
     outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
-    layerPackage = os.path.join(analysesFolder, layerPackageName)
+    layerPackage = os.path.join(outputFolder, layerPackageName)
     arcpy.PackageLayer_management(outputLayer, layerPackage)
 
 
