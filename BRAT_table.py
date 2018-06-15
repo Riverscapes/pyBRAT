@@ -36,11 +36,10 @@ def main(
     canal,
     landuse,
     out_name,
-    findClusters):
-    if findClusters == 'false' or findClusters is None:
-        findClusters = False
-    else:
-        findClusters = True
+    findClusters,
+    should_segment_network):
+    findClusters = parseInputBool(findClusters)
+    should_segment_network = parseInputBool(should_segment_network)
 
     scratch = 'in_memory'
     #arcpy.env.workspace = scratch
@@ -66,8 +65,12 @@ def main(
     else:
         seg_network_copy = os.path.join(intermediateFolder, out_name + ".shp")
 
-    arcpy.CopyFeatures_management(seg_network, seg_network_copy)
+    if should_segment_network:
+        segment_by_roads(seg_network, seg_network_copy, road)
+    else:
+        arcpy.CopyFeatures_management(seg_network, seg_network_copy)
 
+    arcpy.AddMessage("Network is copied")
     # --check input network fields--
     # add flowline reach id field ('ReachID') if it doens't already exist
     # this field allows for more for more 'stable' joining
@@ -141,6 +144,31 @@ def main(
         pass
 
     arcpy.CheckInExtension("spatial")
+
+
+def segment_by_roads(seg_network, seg_network_copy, roads):
+    """
+    Segments the seg_network by roads, and puts segmented network at seg_network_copy
+    :param seg_network: Path to the seg_network that we want to segment further
+    :param seg_network_copy: Path to where we want the new network to go
+    :param roads: The shape file to segment by
+    :return:
+    """
+    temp_network = os.path.join(os.path.dirname(seg_network_copy), "temp.shp")
+    temp_layer = "temp_lyr"
+    temp_seg_network_layer = "seg_network_lyr"
+
+    arcpy.FeatureToLine_management([seg_network, roads], temp_network)
+
+    arcpy.MakeFeatureLayer_management(temp_network, temp_layer)
+    arcpy.MakeFeatureLayer_management(seg_network, temp_seg_network_layer)
+
+    arcpy.SelectLayerByLocation_management(temp_layer, "WITHIN", temp_seg_network_layer)
+    arcpy.CopyFeatures_management(temp_layer, seg_network_copy)
+
+    deleteWithArcpy([temp_layer, temp_seg_network_layer, temp_network])
+
+
 
 # zonal statistics within buffer function
 # dictionary join field function
@@ -1090,6 +1118,22 @@ def makeBufferLayers(buffers_folder):
             new_layer_instance.description = "Buffer Layer"
             new_layer_instance.save()
 
+
+def parseInputBool(given_input):
+    if given_input == 'false' or given_input is None:
+        return False
+    else:
+        return True
+
+
+def deleteWithArcpy(stuffToDelete):
+    """
+    Deletes everything in a list with arcpy.Delete_management()
+    :param stuffToDelete: A list of stuff to delete
+    :return:
+    """
+    for thing in stuffToDelete:
+        arcpy.Delete_management(thing)
 
 
 def getUUID():
