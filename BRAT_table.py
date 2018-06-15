@@ -70,7 +70,6 @@ def main(
     else:
         arcpy.CopyFeatures_management(seg_network, seg_network_copy)
 
-    arcpy.AddMessage("Network is copied")
     # --check input network fields--
     # add flowline reach id field ('ReachID') if it doens't already exist
     # this field allows for more for more 'stable' joining
