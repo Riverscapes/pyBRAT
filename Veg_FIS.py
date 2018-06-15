@@ -103,7 +103,7 @@ def main(in_network):
         rule12 = ctrl.Rule(riparian['barely'] & streamside['moderately'], density['occasional'])
         rule13 = ctrl.Rule(riparian['moderately'] & streamside['moderately'], density['occasional'])
         rule14 = ctrl.Rule(riparian['suitable'] & streamside['moderately'], density['frequent'])
-        rule15 = ctrl.Rule(riparian['preferred'] & streamside['moderately'], density['pervasive'])
+        rule15 = ctrl.Rule(riparian['preferred'] & streamside['moderately'], density['frequent'])
         rule16 = ctrl.Rule(riparian['unsuitable'] & streamside['suitable'], density['occasional'])
         rule17 = ctrl.Rule(riparian['barely'] & streamside['suitable'], density['occasional'])
         rule18 = ctrl.Rule(riparian['moderately'] & streamside['suitable'], density['frequent'])
@@ -111,7 +111,7 @@ def main(in_network):
         rule20 = ctrl.Rule(riparian['preferred'] & streamside['suitable'], density['pervasive'])
         rule21 = ctrl.Rule(riparian['unsuitable'] & streamside['preferred'], density['occasional'])
         rule22 = ctrl.Rule(riparian['barely'] & streamside['preferred'], density['frequent'])
-        rule23 = ctrl.Rule(riparian['moderately'] & streamside['preferred'], density['frequent'])
+        rule23 = ctrl.Rule(riparian['moderately'] & streamside['preferred'], density['pervasive'])
         rule24 = ctrl.Rule(riparian['suitable'] & streamside['preferred'], density['pervasive'])
         rule25 = ctrl.Rule(riparian['preferred'] & streamside['preferred'], density['pervasive'])
 
