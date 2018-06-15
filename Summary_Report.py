@@ -45,8 +45,6 @@ def main(bratOutput, dams, outputName):
     if dams:
         cleanUpFields(bratOutput, outNetwork, newFields)
 
-    makeLayers(outNetwork)
-
 
 def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):
     """
@@ -175,47 +173,3 @@ def cleanUpFields(bratNetwork, outNetwork, newFields):
     if len(removeFields) > 0:
         arcpy.DeleteField_management(outNetwork, removeFields)
 
-
-def makeLayers(out_network):
-    """
-    Writes the layers
-    :param out_network: The output network, which we want to make into a layer
-    :return:
-    """
-    arcpy.AddMessage("Making layers...")
-    output_folder = os.path.dirname(out_network)
-
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    conflictLayer = os.path.join(symbologyFolder, "Conflict.lyr")
-    managementLayer = os.path.join(symbologyFolder, "Management_Zones.lyr")
-
-    makeLayer(output_folder, out_network, "Conflict_Potential", conflictLayer, isRaster=False)
-    makeLayer(output_folder, out_network, "Beaver_Management_Zones", managementLayer, isRaster=False)
-
-
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
-    """
-    Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the folder
-    :param layer_base: What we should base the layer off of
-    :param new_layer_name: What the layer should be called
-    :param symbology_layer: The symbology that we will import
-    :param isRaster: Tells us if it's a raster or not
-    :param description: The discription to give to the layer file
-    :return: The path to the new layer
-    """
-    new_layer = new_layer_name + "_lyr"
-    new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
-
-    if isRaster:
-        arcpy.MakeRasterLayer_management(layer_base, new_layer)
-    else:
-        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
-
-    arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
-    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-    new_layer_instance.description = description
-    new_layer_instance.save()
-    return new_layer_save
