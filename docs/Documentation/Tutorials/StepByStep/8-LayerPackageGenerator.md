@@ -1,6 +1,6 @@
 ---
 title: Step 8 - Layer Package Generator (Optional)
-weight:10
+weight: 10
 ---
 ## Purpose of the Layer Package Generator (LPG)
 
