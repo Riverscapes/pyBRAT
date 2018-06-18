@@ -830,7 +830,7 @@ class Layer_Package_Generator_tool(object):
             displayName="Name the layer package output",
             name="layer_package_name",
             datatype="GPString",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
 
         return [param0, param1]

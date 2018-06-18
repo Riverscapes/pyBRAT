@@ -14,6 +14,8 @@ def makeLayerPackage(outputFolder, layerPackageName):
     :param layerPackageName: The name of the layer package that we'll make
     :return:
     """
+    if layerPackageName == "" or layerPackageName==None:
+        layerPackageName = "LayerPackage"
     if not layerPackageName.endswith(".lpk"):
         layerPackageName += ".lpk"
 
