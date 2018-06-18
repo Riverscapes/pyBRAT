@@ -7,6 +7,7 @@ import Veg_FIS
 import Comb_FIS
 import Conflict_Potential
 import Conservation_Restoration
+import Conservation_Restoration_v2_Beta
 import BRAT_Braid_Handler
 import Summary_Report
 import Drainage_Area_Check
@@ -23,7 +24,7 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-                        Conflict_Potential_tool, Conservation_Restoration_tool, Summary_Report_tool,
+                        Conflict_Potential_tool, Conservation_Restoration_tool, Conservation_Restoration_tool_v2, Summary_Report_tool,
                         Drainage_Area_Check_tool, Layer_Package_Generator_tool]
 
 
@@ -324,7 +325,7 @@ class BRAT_table_tool(object):
 class BRAT_braid_handler(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Braid Handler (Optional)"
+        self.label = "2.2 Braid Handler (Optional)"
         self.description = "In development and currently non-operational. Gives braided streams the appropriate values, once mainstems have been identified in the stream network."
         self.canRunInBackground = False
 
@@ -708,6 +709,63 @@ class Conservation_Restoration_tool(object):
                                       p[2].valueAsText)
         return
 
+class Conservation_Restoration_tool_v2(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "Step 7.1 BRAT Conservation and Restoration Model (version 2 Beta)"
+        self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, potential (i.e., historic) dam capacity, and human-beaver conflict potential score"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+        param0 = arcpy.Parameter(
+            displayName="Select project folder",
+            name="projPath",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input")
+
+        param1 = arcpy.Parameter(
+            displayName="Select combined dam capacity output network",
+            name="in_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+        param1.filter.list = ["Polyline"]
+
+        param2 = arcpy.Parameter(
+            displayName="Name conservation restoration model output feature class",
+            name="out_name",
+            datatype="GPString",
+            parameterType="Required",
+            direction="Input")
+        # param2.symbology = os.path.join(os.path.dirname(__file__), "oPBRC.lyr")
+
+        return [param0, param1, param2]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(Conservation_Restoration_v2_Beta)
+        Conservation_Restoration_v2_Beta.main(p[0].valueAsText,
+                                      p[1].valueAsText,
+                                      p[2].valueAsText)
+        return
+
 class Summary_Report_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
@@ -769,7 +827,7 @@ class Summary_Report_tool(object):
 class Drainage_Area_Check_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Drainage Area Check (Optional)"
+        self.label = "2.1 Drainage Area Check (Optional)"
         self.description = "Looks for drainage area values that are less than an upstream value, and then modifies them"
         self.canRunInBackground = False
 
