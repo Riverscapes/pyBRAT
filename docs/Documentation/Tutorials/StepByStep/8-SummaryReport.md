@@ -39,7 +39,7 @@ The tool produces eight new fields. Three of these fields are reliant on the dam
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-LayerPackageGenerator"><i class="fa fa-arrow-circle-left"></i> Continue to Step 9 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-LayerPackageGenerator"></i> Continue to Step 9 </a><i class="fa fa-arrow-circle-right">
 	
 </div>	
 
