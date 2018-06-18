@@ -33,7 +33,7 @@ Click OK to run the tool.
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/2-Preprocessing"><i class="fa fa-arrow-circle-left"></i> Back to Step 2 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4-BRATBraidHandler"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3.1-DrainageAreaCheck"><i class="fa fa-arrow-circle-right"></i> Continue to Step 3.1 </a>
 </div>	
 
 ------

@@ -1,5 +1,6 @@
 ---
-title: Step 9 - Layer Package Generator (Optional)
+title: Step 8 - Layer Package Generator (Optional)
+weight:10
 ---
 ## Purpose of the Layer Package Generator (LPG)
 
@@ -28,3 +29,7 @@ Because the layers are grouped by name in the Table of Contents, having a layer 
 
 #### Non-standard Folder Structure
 The LPG works by looking for layers in the folder structure. If the folders are not in the standard folder structure, created by the latest version of BRAT, the LPG will not work. If you are using data from an old run of BRAT, it may be worthwhile to just run it again all the way through. 
+
+<div align="center">
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-SummaryReport"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
+</div>	

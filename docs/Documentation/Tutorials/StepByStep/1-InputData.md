@@ -1,6 +1,6 @@
 ---
 title: Step 1 - Input Data
-weight: 2
+weight: 1
 ---
 
 ## Capacity Model Inputs
@@ -80,7 +80,6 @@ If no accurate land use layer exits for you study are you can use the Landfire e
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/2-Preprocessing"><i class="fa fa-arrow-circle-right"></i> Continue to Step 2 </a>
 </div>	
-
 
 ------
 <div align="center">

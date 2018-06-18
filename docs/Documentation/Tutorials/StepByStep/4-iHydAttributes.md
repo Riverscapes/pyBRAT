@@ -1,6 +1,6 @@
 ---
-title: Step 5 - iHyd Attributes
-weight: 5
+title: Step 4 - iHyd Attributes
+weight: 6
 ---
 
 To add the "iHyd" or hydrologic attributes to the input table you created in the previous step, regressions for predicting stream flow must first be obtained.  This information can be found at https://water.usgs.gov/osw/streamstats/.  Once you have the regressions for both typical low flow and a typical 2-year flood, you must modify the script of the iHyd Attributes tool.  To do so, open the iHyd.py file (found inside the toolbox) in a python text editor.  Pyscripter works well.
@@ -44,8 +44,8 @@ Inputs and Parameters:
 
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 4 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 6 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 3.2 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 5 </a>
 </div>	
 
 ------

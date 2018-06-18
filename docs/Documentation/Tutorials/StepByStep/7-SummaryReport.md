@@ -1,5 +1,6 @@
 ---
-title: Step 8 - Summary Report (Optional)
+title: Step 7 - Summary Report (Optional)
+weight: 9
 ---
 
 # Creating a Summary Report (Optional)
@@ -36,8 +37,8 @@ The tool produces eight new fields. Three of these fields are reliant on the dam
 * `mCC_EXtoPT`: The ration between existing and potential capacity. Calculated by dividing `oCC_EX` by `oCC_PT`.
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-LayerPackageGenerator"><i class="fa fa-arrow-circle-right"></i> Continue to Step 9 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-LayerPackageGenerator"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
 </div>	
 
 ------
