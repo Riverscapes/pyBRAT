@@ -324,7 +324,7 @@ class BRAT_table_tool(object):
 class BRAT_braid_handler(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 2.2 Braid Handler (Optional)"
+        self.label = "Braid Handler (Optional)"
         self.description = "In development and currently non-operational. Gives braided streams the appropriate values, once mainstems have been identified in the stream network."
         self.canRunInBackground = False
 
@@ -769,7 +769,7 @@ class Summary_Report_tool(object):
 class Drainage_Area_Check_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 2.1 Drainage Area Check (Optional"
+        self.label = "Drainage Area Check (Optional)"
         self.description = "Looks for drainage area values that are less than an upstream value, and then modifies them"
         self.canRunInBackground = False
 
@@ -812,7 +812,7 @@ class Drainage_Area_Check_tool(object):
 class Layer_Package_Generator_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 9. Layer Package Generator"
+        self.label = "Layer Package Generator"
         self.description = "Creates a layer package based on the completed BRAT run"
         self.canRunInBackground = False
 
