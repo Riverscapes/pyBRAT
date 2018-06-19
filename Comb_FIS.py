@@ -313,7 +313,7 @@ def makeLayers(out_network, out_name):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     existingCapacityLayer = os.path.join(symbologyFolder, "Existing_Capacity.lyr")
-    historicCapacityLayer = os.path.join(symbologyFolder, "Historic_Capacity.lyr")
+    historicCapacityLayer = os.path.join(symbologyFolder, "Potential_Capacity.lyr")
 
     makeLayer(output_folder, out_network, "ExistingCapacity", existingCapacityLayer, isRaster=False)
     makeLayer(output_folder, out_network, "HistoricCapacity", historicCapacityLayer, isRaster=False)
