@@ -16,12 +16,12 @@ BRAT automatically creates output folders, labelled "Output_1", "Output_2", etc.
 
 Any set of characters is acceptable as input for the layer package name. If you choose to not give the tool a name for the layer package, it will default to "LayerPackage.lpk". 
 
-As you run the tool, you may see the layers being rapidly grouped in the Table of Contents, with the map changing accordingly. This is normal. Arcpy requires the layers to be added to the Table of Contents before they can be grouped, which leads to this odd-looking behaviour.
+As you run the tool, you may see the layers being rapidly grouped in the Table of Contents, with the map changing accordingly. This is normal. Arcpy requires the layers to be added to the Table of Contents before they can be grouped, which leads to this odd-looking behavior.
 
 After the tool is run, there should be a layer package file in the output folder selected. This file can be emailed or uploaded without breaking any dependencies.
 
 ```markdown
-[![Layer Package Generator Demo](http://img.youtube.com/vi/iIVRsHuT7es/0.jpg)](http://www.youtube.com/watch?v=iIVRsHuT7es)
+[Link to a YouTube video demoing the Layer Package Generator](http://www.youtube.com/watch?v=iIVRsHuT7es)
 ```
 
 ## Possible Problems Running the LPG
