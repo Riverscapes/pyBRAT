@@ -20,9 +20,8 @@ As you run the tool, you may see the layers being rapidly grouped in the Table o
 
 After the tool is run, there should be a layer package file in the output folder selected. This file can be emailed or uploaded without breaking any dependencies.
 
-```
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=iIVRsHuT7es" target="_blank"><img src="http://img.youtube.com/vi/iIVRsHuT7es/0.jpg" 
-alt="Layer Package Generator Demo" width="240" height="180" border="10" /></a>
+```markdown
+[![Layer Package Generator Demo](http://img.youtube.com/vi/iIVRsHuT7es/0.jpg)](http://www.youtube.com/watch?v=iIVRsHuT7es)
 ```
 
 ## Possible Problems Running the LPG
