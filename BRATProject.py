@@ -45,8 +45,8 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
 
     sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
-    exVegSymbology = os.path.join(symbologyFolder, "Ex_Veg_Raster.lyr")
-    histVegSymbology = os.path.join(symbologyFolder, "Hist_Veg_Raster.lyr")
+    exVegSymbology = os.path.join(symbologyFolder, "Existing_Veg_Raster.lyr")
+    histVegSymbology = os.path.join(symbologyFolder, "Historic_Veg_Raster.lyr")
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
     landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster.lyr")
     canalsSymbology = os.path.join(symbologyFolder, "Canals.lyr")
@@ -139,7 +139,7 @@ def makeTopoLayers(topoFolder):
         for fileName in os.listdir(demFolderPath):
             if fileName.endswith(".tif"):
                 demFile = os.path.join(demFolderPath, fileName)
-                layers.append(makeLayer(demFolderPath, demFile, os.path.basename(demFile), demSymbology, isRaster=True))
+                layers.append(makeLayer(demFolderPath, demFile, "DEM", demSymbology, isRaster=True))
 
         hillshadeFolder = makeFolder(demFolderPath, "Hillshade")
         hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
