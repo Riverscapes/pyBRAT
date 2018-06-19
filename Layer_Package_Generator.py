@@ -70,9 +70,9 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     landUseFolder = findFolder(conflictFolder, "_LandUse")
 
     exVegLayers = findInstanceLayers(exVegFolder)
-    exVegLayer = groupLayers(emptyGroupLayer, "Existing_Vegetation_Type", exVegLayers, df, mxd)
+    exVegLayer = groupLayers(emptyGroupLayer, "Existing Vegetation Dam Capacity", exVegLayers, df, mxd)
     histVegLayers = findInstanceLayers(histVegFolder)
-    histVegLayer = groupLayers(emptyGroupLayer, "Historic_Vegetation_Type", histVegLayers, df, mxd)
+    histVegLayer = groupLayers(emptyGroupLayer, "Potential Vegetation Dam Capacity", histVegLayers, df, mxd)
     vegLayer = groupLayers(emptyGroupLayer, "Vegetation", [exVegLayer, histVegLayer], df, mxd)
 
     networkLayers = findInstanceLayers(networkFolder)
@@ -85,7 +85,7 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     topoLayer = groupLayers(emptyGroupLayer, "Topography", demLayers + hillshadeLayers + slopeLayers + flowLayers, df, mxd)
 
     valleyLayers = findInstanceLayers(valleyFolder)
-    valleyLayer = groupLayers(emptyGroupLayer, "Valley_Bottom", valleyLayers, df, mxd)
+    valleyLayer = groupLayers(emptyGroupLayer, "Valley Bottom", valleyLayers, df, mxd)
     roadLayers = findInstanceLayers(roadsFolder)
     roadLayer = groupLayers(emptyGroupLayer, "Roads", roadLayers, df, mxd)
     railroadLayers = findInstanceLayers(railroadsFolder)
@@ -93,8 +93,8 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     canalLayers = findInstanceLayers(canalsFolder)
     canalLayer = groupLayers(emptyGroupLayer, "Canals", canalLayers, df, mxd)
     landUseLayers = findInstanceLayers(landUseFolder)
-    landUseLayer = groupLayers(emptyGroupLayer, "Land_Use", landUseLayers, df, mxd)
-    conflictLayer = groupLayers(emptyGroupLayer, "Conflict_Layers", [valleyLayer, roadLayer, railroadLayer, canalLayer, landUseLayer], df, mxd)
+    landUseLayer = groupLayers(emptyGroupLayer, "Land Use", landUseLayers, df, mxd)
+    conflictLayer = groupLayers(emptyGroupLayer, "Conflict Layers", [valleyLayer, roadLayer, railroadLayer, canalLayer, landUseLayer], df, mxd)
 
     return groupLayers(emptyGroupLayer, "Inputs", [vegLayer, networkLayer, topoLayer, conflictLayer], df, mxd)
 
@@ -110,12 +110,11 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     """
     intermediate_layers = []
 
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "LandUse", "Land_Use_Intensity", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic_Index", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid_Handler", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "LandUse", "Land Use Intensity", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic Index", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid Handler", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegCondition", "Overall_Vegetation_Condition", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "FlowDirection", "Flow_Direction", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegCondition", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
 
     return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
 

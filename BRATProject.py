@@ -53,18 +53,21 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     roadsSymbology = os.path.join(symbologyFolder, "Roads.lyr")
     railroadsSymbology = os.path.join(symbologyFolder, "Railroads.lyr")
     valleyBottomSymbology = os.path.join(symbologyFolder, "ValleyBottom.lyr")
+    flowDirectionSymbology = os.path.join(symbologyFolder, "Network_FlowDirection.lyr")
 
     # add the existing veg inputs to project
     exVegDestinations = copyMultiInputToFolder(exVegFolder, ex_veg, "Ex_Veg", isRaster=True)
-    makeInputLayers(exVegDestinations, "Existing_Vegetation", symbologyLayer=None, isRaster=True)
+    makeInputLayers(exVegDestinations, "Existing Vegetation", symbologyLayer=None, isRaster=True)
+
 
     # add the historic veg inputs to project
     histVegDestinations = copyMultiInputToFolder(histVegFolder, hist_veg, "Hist_Veg", isRaster=True)
-    makeInputLayers(histVegDestinations, "Historic_Vegetation", symbologyLayer=None, isRaster=True)
+    makeInputLayers(histVegDestinations, "Historic Vegetation", symbologyLayer=None, isRaster=True)
 
     # add the network inputs to project
     networkDestinations = copyMultiInputToFolder(networkFolder, network, "Network", isRaster=False)
     makeInputLayers(networkDestinations, "Network", symbologyLayer=networkSymbology, isRaster=False)
+    makeInputLayers(networkDestinations, "Flow Direction", symbologyLayer=flowDirectionSymbology, isRaster=False)
 
     # add the DEM inputs to the project
     copyMultiInputToFolder(topoFolder, DEM, "DEM", isRaster=True)
@@ -73,12 +76,12 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     # add landuse raster to the project
     if landuse is not None:
         landuseDestinations = copyMultiInputToFolder(landUseFolder, landuse, "Land_Use", isRaster=True)
-        makeInputLayers(landuseDestinations, "Land_Use_Raster", symbologyLayer=landuseSymbology, isRaster=True)
+        makeInputLayers(landuseDestinations, "Land Use Raster", symbologyLayer=landuseSymbology, isRaster=True)
 
     # add the conflict inputs to the project
     if valley is not None:
         vallyBottomDestinations = copyMultiInputToFolder(valleyBottomFolder, valley, "Valley", isRaster=False)
-        makeInputLayers(vallyBottomDestinations, "Valley_Bottom", symbologyLayer=valleyBottomSymbology, isRaster=False)
+        makeInputLayers(vallyBottomDestinations, "Valley Bottom", symbologyLayer=valleyBottomSymbology, isRaster=False)
 
     # add road layers to the project
     if road is not None:
@@ -164,8 +167,9 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     :param description: The discription to give to the layer file
     :return: The path to the new layer
     """
-    new_layer = new_layer_name + "_lyr"
-    new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
+    new_layer = new_layer_name
+    new_layer_file_name = new_layer_name.replace(" ", "")
+    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
 
     if isRaster:
         try:

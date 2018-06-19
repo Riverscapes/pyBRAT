@@ -1054,7 +1054,6 @@ def makeLayers(out_network):
     buffers_folder = os.path.join(intermediates_folder, "01_Buffers")
     land_use_folder = makeFolder(intermediates_folder, "02_LandUse")
     topo_folder = makeFolder(intermediates_folder, "03_TopographicIndex")
-    stream_direction_folder = makeFolder(intermediates_folder, "04_FlowDirection")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -1062,13 +1061,11 @@ def makeLayers(out_network):
     landUseSymbology = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
     slopeSymbology = os.path.join(symbologyFolder, "Slope_Feature_Class.lyr")
     drainAreaSymbology = os.path.join(symbologyFolder, "Drainage_Area_Feature_Class.lyr")
-    flowDirectionSymbology = os.path.join(symbologyFolder, "Network_FlowDirection.lyr")
 
     makeBufferLayers(buffers_folder)
-    makeLayer(land_use_folder, out_network, "LandUseIntensity", landUseSymbology, isRaster=False)
-    makeLayer(topo_folder, out_network, "SlopeIndex", slopeSymbology, isRaster=False)
-    makeLayer(topo_folder, out_network, "DrainageArea", drainAreaSymbology, isRaster=False)
-    makeLayer(stream_direction_folder, out_network, "FlowDirection", flowDirectionSymbology, isRaster=False)
+    makeLayer(land_use_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
+    makeLayer(topo_folder, out_network, "Reach Slope", slopeSymbology, isRaster=False)
+    makeLayer(topo_folder, out_network, "Drainage Area", drainAreaSymbology, isRaster=False)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):

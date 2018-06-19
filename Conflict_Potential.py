@@ -264,13 +264,13 @@ def makeLayers(out_network):
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     conflictLayer = os.path.join(symbologyFolder, "Conflict.lyr")
 
-    makeLayer(output_folder, out_network, "Conflict_Potential", conflictLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "Conflict Potential", conflictLayer, isRaster=False)
 
 
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
     """
     Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the folder
+    :param output_folder: Where we want to put the layer
     :param layer_base: What we should base the layer off of
     :param new_layer_name: What the layer should be called
     :param symbology_layer: The symbology that we will import
@@ -278,16 +278,28 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRast
     :param description: The discription to give to the layer file
     :return: The path to the new layer
     """
-    new_layer = new_layer_name + "_lyr"
-    new_layer_save = os.path.join(output_folder, new_layer_name + ".lyr")
+    new_layer = new_layer_name
+    new_layer_file_name = new_layer_name.replace(" ", "")
+    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
 
     if isRaster:
-        arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        try:
+            arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        except arcpy.ExecuteError as err:
+            if err[0][6:12] == "000873":
+                arcpy.AddError(err)
+                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
+                raise Exception
+            else:
+                raise arcpy.ExecuteError(err)
+
     else:
         arcpy.MakeFeatureLayer_management(layer_base, new_layer)
 
-    arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
+    if symbology_layer:
+        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
     new_layer_instance = arcpy.mapping.Layer(new_layer_save)
     new_layer_instance.description = description
     new_layer_instance.save()
