@@ -110,11 +110,12 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     """
     intermediate_layers = []
 
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Buffers", "Buffers", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "LandUse", "Land Use Intensity", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic Index", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid Handler", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegCondition", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
 
     return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
 

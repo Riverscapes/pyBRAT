@@ -193,7 +193,7 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    veg_folder_name = findAvailableNum(intermediates_folder) + "_VegCondition"
+    veg_folder_name = findAvailableNum(intermediates_folder) + "_VegDamCapacity"
     veg_folder = makeFolder(intermediates_folder, veg_folder_name)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))

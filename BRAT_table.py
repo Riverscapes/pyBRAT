@@ -1115,7 +1115,7 @@ def makeBufferLayers(buffers_folder):
     """
     for fileName in os.listdir(buffers_folder):
         if fileName.endswith(".shp"):
-            new_layer = fileName[:-4] + "_lyr"
+            new_layer = fileName[:-4]
             filePath = os.path.join(buffers_folder, fileName)
             new_layer_save = filePath[:-4] + ".lyr"
 
