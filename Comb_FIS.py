@@ -316,7 +316,7 @@ def makeLayers(out_network, out_name):
     historicCapacityLayer = os.path.join(symbologyFolder, "Potential_Capacity.lyr")
 
     makeLayer(output_folder, out_network, "Existing Capacity", existingCapacityLayer, isRaster=False)
-    makeLayer(output_folder, out_network, "Historic Capacity", historicCapacityLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "Potential Capacity", historicCapacityLayer, isRaster=False)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):

@@ -133,7 +133,11 @@ def main(
         DrAr = os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif"
     else:
         DrAr = os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc)
-    makeLayer(os.path.dirname(DrAr), DrAr, "Flow_Accumulation", isRaster=True)
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    flowAccumulationSymLayer = os.path.join(symbologyFolder, "Flow_Accumulation.lyr")
+    makeLayer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flowAccumulationSymLayer, isRaster=True)
 
     makeLayers(seg_network_copy)
     try:
