@@ -1,43 +1,85 @@
 from bdws import BDLoG, BDSWEA
 from bdflopy import BDflopy
+import arcpy
+import os
 
-def main(project):
-    print "start"
-    basedir = "tutorials/tutorial1" #folder containing inputs, and where output directories will be created
-    bratPath = basedir + "/inputs/brat.shp" #shapefile of beaver dam capacities from BRAT
-    demPath = basedir + "/inputs/dem.tif" #DEM of study area (ideally clipped to valley-bottom)
-    facPath = basedir + "/inputs/fac.tif" #Thresholded flow accumulation raster representing stream network
-    outDir = basedir + "/outputs" #directory where BDLoG outputs will be generated
+def main(projectRoot, bratPath, demPath, flowAcc, flowDir):
+    arcpy.AddMessage("start")
+    projectFolder = makeFolder(projectRoot, "BDWS_Project")
+    inputsFolder = makeFolder(projectFolder, "Inputs")
+    outDir = makeFolder(projectFolder, "Output")
     bratCap = 1.0 #proportion (0-1) of maximum estimted dam capacity (from BRAT) for scenario
+    bratPath = copyIntoFolder(bratPath, inputsFolder, "BRAT")
+    demPath = copyIntoFolder(demPath, inputsFolder, "DEM")
+    flowAcc = copyIntoFolder(flowAcc, inputsFolder, "FlowAccumulation")
+    flowDir = copyIntoFolder(flowDir, inputsFolder, "FlowDir")
 
-    model = BDLoG(bratPath, demPath, facPath, outDir, bratCap) #initialize BDLoG, sets varibles and loads inputs
+
+    model = BDLoG(bratPath, demPath, flowAcc, outDir, bratCap) #initialize BDLoG, sets varibles and loads inputs
     model.run() #run BDLoG algorithms
     model.close() #close any files left open by BDLoG
-    print "bdlog done"
+    arcpy.AddMessage("bdlog done")
 
     #run surface water storage estimation (BDSWEA)
-    fdirPath = basedir + "/inputs/fdir.tif" #flow direction raster
-    idPath = basedir + "/outputs/damID.tif" #ouput from BDLoG
-    modPoints = basedir + "/outputs/ModeledDamPoints.shp" #output from BDLoG
+    idPath = os.path.join(outDir, "damID.tif")#ouput from BDLoG
+    modPoints = os.path.join(outDir, "ModeledDamPoints.shp") #output from BDLoG
 
-    model = BDSWEA(demPath, fdirPath, facPath, idPath, outDir, modPoints) #initialize BDSWEA object, sets variables and loads inputs
+    model = BDSWEA(demPath, flowDir, flowAcc, idPath, outDir, modPoints) #initialize BDSWEA object, sets variables and loads inputs
     model.run() #run BDSWEA algorithm
     model.writeModflowFiles() #generate files needed to parameterize MODFLOW
     model.close() #close any files left open by BDLoG
     print "bdswea done"
 
-    #run groundwater storage estimation (MODFLOW)
-    modflowexe = r"C:\Users\A02150284\Documents\MF2005.1_11\bin\mf2005" #path to MODFLOW-2005 executable
-    indir = basedir + "/inputs" #location of input raste files
-    modeldir = "tutorials/tutorial1/outputs" #BDSWEA output directory
-    outdir = basedir + "/modflow" #directory to output MODFLOW results
-    demfilename = "dem.tif" #name of input DEM
-    hkfn = "/inputs/ksat.tif" #horizontal ksat in micrometers per second
-    vkfn = "/inputs/kv.tif" #vertical ksat in micrometers per second
-    fracfn = "/inputs/fc.tif" #field capacity as percentage
-    kconv = 0.000001 #conversion of hkfn and vkfn to meters per second
-    fconv = 0.01 #conversion of fracfn to a proportion
-    gwmodel = BDflopy(modflowexe, indir, modeldir, outdir, demfilename) #initialize BDflopy, sets variables and loads inputs
-    gwmodel.run(hkfn, vkfn, kconv, fracfn, fconv) #run BDflopy, this will write inputs for MODFLOW and then run MODFLOW
-    gwmodel.close() #close any open files
-    print "done"
+    # #run groundwater storage estimation (MODFLOW)
+    # modflowexe = r"C:\Users\A02150284\Documents\MF2005.1_11\bin\mf2005" #path to MODFLOW-2005 executable
+    # indir = projectFolder + "/inputs" #location of input raste files
+    # modeldir = "tutorials/tutorial1/outputs" #BDSWEA output directory
+    # outdir = projectFolder + "/modflow" #directory to output MODFLOW results
+    # demfilename = "dem.tif" #name of input DEM
+    # hkfn = "/inputs/ksat.tif" #horizontal ksat in micrometers per second
+    # vkfn = "/inputs/kv.tif" #vertical ksat in micrometers per second
+    # fracfn = "/inputs/fc.tif" #field capacity as percentage
+    # kconv = 0.000001 #conversion of hkfn and vkfn to meters per second
+    # fconv = 0.01 #conversion of fracfn to a proportion
+    # gwmodel = BDflopy(modflowexe, indir, modeldir, outdir, demfilename) #initialize BDflopy, sets variables and loads inputs
+    # gwmodel.run(hkfn, vkfn, kconv, fracfn, fconv) #run BDflopy, this will write inputs for MODFLOW and then run MODFLOW
+    # gwmodel.close() #close any open files
+    # print "done"
+
+
+def copyIntoFolder(thingToCopy, copyFolderRoot, copyFolderName):
+    copyFolder = makeFolder(copyFolderRoot, findAvailableNum(copyFolderRoot) + '_' + copyFolderName)
+    copyPath = os.path.join(copyFolder, os.path.basename(thingToCopy))
+    arcpy.Copy_management(thingToCopy, copyPath)
+    return copyPath
+
+
+def makeFolder(pathToLocation, newFolderName):
+    """
+    Makes a folder and returns the path to it
+    :param pathToLocation: Where we want to put the folder
+    :param newFolderName: What the folder will be called
+    :return: String
+    """
+    newFolder = os.path.join(pathToLocation, newFolderName)
+    if not os.path.exists(newFolder):
+        os.mkdir(newFolder)
+    return newFolder
+
+
+def findAvailableNum(folderRoot):
+    """
+    Tells us the next number for a folder in the directory given
+    :param folderRoot: Where we want to look for a number
+    :return: A string, containing a number
+    """
+    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
+    POSSIBLENUMS = range(1, 100)
+    for i in POSSIBLENUMS:
+        stringVersion = str(i)
+        if i < 10:
+            stringVersion = '0' + stringVersion
+        if stringVersion not in takenNums:
+            return stringVersion
+    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
+    return "100"
