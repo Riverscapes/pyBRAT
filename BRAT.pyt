@@ -960,7 +960,28 @@ class BDWS_Run(object):
             parameterType="Required",
             direction="Input")
 
-        return [param0, param1, param2, param3, param4]
+        param5 = arcpy.Parameter(
+            displayName="Input Horizontal KFN",
+            name="horizontalKFN",
+            datatype="DERasterDataset",
+            parameterType="Optional",
+            direction="Input")
+
+        param6 = arcpy.Parameter(
+            displayName="Input Vertical KFN",
+            name="verticalKFN",
+            datatype="DERasterDataset",
+            parameterType="Optional",
+            direction="Input")
+
+        param7 = arcpy.Parameter(
+            displayName="Input Field Capacity Raster",
+            name="fieldCapacity",
+            datatype="DERasterDataset",
+            parameterType="Optional",
+            direction="Input")
+
+        return [param0, param1, param2, param3, param4, param5, param6, param7]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -984,5 +1005,8 @@ class BDWS_Run(object):
                       p[1].valueAsText,
                       p[2].valueAsText,
                       p[3].valueAsText,
-                      p[4].valueAsText)
+                      p[4].valueAsText,
+                      p[5].valueAsText,
+                      p[6].valueAsText,
+                      p[7].valueAsText)
         return
