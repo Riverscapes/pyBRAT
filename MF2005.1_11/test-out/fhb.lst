@@ -1,0 +1,593 @@
+                                  MODFLOW-2005     
+      U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUND-WATER FLOW MODEL
+                            VERSION 1.11.00 8/8/2013
+
+ LIST FILE: fhb.lst
+                         UNIT    7
+
+ OPENING fhb.ba6
+ FILE TYPE:BAS6   UNIT    8   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING fhb.dis
+ FILE TYPE:DIS   UNIT   10   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING fhb.bc6
+ FILE TYPE:BCF6   UNIT   11   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING fhb.sip
+ FILE TYPE:SIP   UNIT   19   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING fhb.oc
+ FILE TYPE:OC   UNIT   22   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING fhb.fhb
+ FILE TYPE:FHB   UNIT   31   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING fhb.hds
+ FILE TYPE:DATA(BINARY)   UNIT   41   STATUS:REPLACE
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ OPENING fhb.cbc
+ FILE TYPE:DATA(BINARY)   UNIT   44   STATUS:REPLACE
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT    8
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   10
+    1 LAYERS         3 ROWS        10 COLUMNS
+    3 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS UNDEFINED
+  Confining bed flag for each layer:
+   0
+
+                     DELR =  1000.000    
+
+                     DELC =  1000.000    
+
+ TOP ELEVATION OF LAYER 1 =   50.0000    
+
+   MODEL LAYER BOTTOM EL. =  -200.000     FOR LAYER   1
+
+
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1         400.0000         10                    1.000         TR
+        2         200.0000          4                    1.000         TR
+        3         400.0000          6                    1.100         TR
+
+ TRANSIENT SIMULATION
+
+
+
+ 
+ #Example problem for Flow and Head Boundary Package, Version 1  (FHB1)          
+ #From USGS Open-File Report 97-571                                              
+
+
+
+                     BOUNDARY ARRAY FOR LAYER   1
+ READING ON UNIT    8 WITH FORMAT: (20I4)              
+
+        1   2   3   4   5   6   7   8   9  10
+ ............................................
+   1    1   1   1   1   1   1   1   1   1   1
+   2    1   1   1   1   1   1   1   1   1   1
+   3    1   1   1   1   1   1   1   1   1   1
+
+ AQUIFER HEAD WILL BE SET TO   0.0000     AT ALL NO-FLOW NODES (IBOUND=0).
+
+             INITIAL HEAD =   0.00000     FOR LAYER   1
+
+ OUTPUT CONTROL IS SPECIFIED EVERY TIME STEP
+ HEAD PRINT FORMAT CODE IS   9    DRAWDOWN PRINT FORMAT CODE IS   9
+ HEADS WILL BE SAVED ON UNIT   41    DRAWDOWNS WILL BE SAVED ON UNIT   41
+
+ BCF -- BLOCK-CENTERED FLOW PACKAGE, VERSION 7, 5/2/2005
+         INPUT READ FROM UNIT 11
+ TRANSIENT SIMULATION
+ HEAD AT CELLS THAT CONVERT TO DRY=   0.0000    
+ WETTING CAPABILITY IS NOT ACTIVE
+      LAYER  LAYER-TYPE CODE     INTERBLOCK T
+      --------------------------------------------
+         1            0          0 -- HARMONIC    
+
+ COLUMN TO ROW ANISOTROPY =  1.000000    
+
+     PRIMARY STORAGE COEF =  1.000000E-02 FOR LAYER   1
+
+     TRANSMIS. ALONG ROWS =   5000.00     FOR LAYER   1
+
+ FHB1 -- SPECIFIED FLOW PACKAGE, VERSION 1,12/3/96 INPUT READ FROM 31
+ TOTAL OF    4 TIMES WILL BE USED TO DEFINE VARIATIONS IN FLOW AND HEAD.
+ FLOW WILL BE SPECIFIED AT A TOTAL OF    1 CELLS.
+ HEAD WILL BE SPECIFIED AT A TOTAL OF    3 CELLS.
+ FHB STEADY-STATE OPTION FLAG WILL BE IGNORED,
+ AT LEAST ONE STRESS PERIOD IS TRANSIENT.
+ CELL-BY-CELL FLOWS WILL BE RECORDED ON UNIT 44
+  0 AUXILIARY VARIABLES FOR SPECIFIED-FLOW CELLS WILL
+  BE DEFINED BY FHB FOR USE BY OTHER PACKAGES.
+  0 AUXILIARY VARIABLES FOR SPECIFIED-HEAD CELLS WILL
+  BE DEFINED BY FHB FOR USE BY OTHER PACKAGES.
+ TIMES FOR SPECIFIED-FLOW AND HEAD VALUES WILL BE READ ON UNIT  31 AND
+ MULTIPLIED BY  1.0000    .
+     4 TIMES FOR SPECIFYING FLOWS AND HEADS:
+                       1           2           3           4
+                 ------------------------------------------------
+                    0.000       307.0       791.0      1000.0    
+
+ CELL INDICIES AND SPECIFIED-FLOW RATES WILL BE READ ON UNIT  31. RATES WILL
+ BE MULTIPLIED BY  1.0000    .
+ LAYER  ROW  COL IAUX              FLOW RATES
+ -------------------------------------------------------------------
+    1    2    1    0   2000.       6000.       5000.       9000.    
+
+ CELL INDICIES AND SPECIFIED-HEAD VALUES WILL BE READ ON UNIT  31. HEAD VALUES
+ WILL BE MULTIPLIED BY  1.0000    .
+ LAYER  ROW  COL IAUX             HEAD VALUES
+ -------------------------------------------------------------------
+    1    1   10    0   0.000      1.0000       5.000       2.000    
+    1    2   10    0   0.000      1.0000       5.000       2.000    
+    1    3   10    0   0.000      1.0000       5.000       2.000    
+
+ SIP -- STRONGLY-IMPLICIT PROCEDURE SOLUTION PACKAGE
+                    VERSION 7, 5/2/2005 INPUT READ FROM UNIT   19
+ MAXIMUM OF 120 ITERATIONS ALLOWED FOR CLOSURE
+  5 ITERATION PARAMETERS
+
+          SOLUTION BY THE STRONGLY IMPLICIT PROCEDURE
+          -------------------------------------------
+ MAXIMUM ITERATIONS ALLOWED FOR CLOSURE =      120
+                 ACCELERATION PARAMETER =    1.00000    
+      HEAD CHANGE CRITERION FOR CLOSURE =    0.10000E-02
+      SIP HEAD CHANGE PRINTOUT INTERVAL =        5
+
+     CALCULATE ITERATION PARAMETERS FROM MODEL CALCULATED WSEED
+1
+                            STRESS PERIOD NO.    1, LENGTH =   400.0000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =    10
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =   40.00000    
+ 
+ SOLVING FOR HEAD 
+
+ AVERAGE SEED = 0.02467401
+ MINIMUM SEED = 0.02467401
+
+     5 ITERATION PARAMETERS CALCULATED FROM AVERAGE SEED:
+
+  0.000000E+00 0.603667E+00 0.842920E+00 0.937744E+00 0.975326E+00
+
+    10 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     0         0       1       0
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  1, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    1, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  2, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    2, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   3 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  3, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    3, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   4 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  4, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    4, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   5 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+     0.1124        0.1003        0.1189        0.1014        0.4731E-01
+  (  1,  2,  1) (  1,  1,  2) (  1,  1,  1) (  1,  3,  1) (  1,  3,  4)
+     0.3261E-02    0.2024E-02    0.1956E-02    0.1973E-02    0.9481E-03
+  (  1,  1,  8) (  1,  2,  7) (  1,  1,  4) (  1,  1,  1) (  1,  1,  4)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  5, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    5, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   6 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  6, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    6, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   7 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  7, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    7, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   8 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  8, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    8, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   9 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  9, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    9, STRESS PERIOD    1
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP  10 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+     0.2208        0.9976E-01    0.9948E-01    0.9739E-01    0.4721E-01
+  (  1,  3,  9) (  1,  2,  8) (  1,  1,  1) (  1,  3,  1) (  1,  3,  4)
+     0.3176E-02    0.2047E-02    0.1987E-02    0.2004E-02    0.9616E-03
+  (  1,  1,  8) (  1,  2,  7) (  1,  1,  4) (  1,  1,  1) (  1,  1,  4)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP 10, STRESS PERIOD    1
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP   10, STRESS PERIOD    1
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP   10, STRESS PERIOD   1
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     SPECIFIED FLOWS =     1777065.2500       SPECIFIED FLOWS =        5849.1738
+
+            TOTAL IN =     1777065.2500              TOTAL IN =        5849.1738
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =      860090.3125               STORAGE =        2264.6077
+       CONSTANT HEAD =      916104.8750         CONSTANT HEAD =        3582.3159
+     SPECIFIED FLOWS =           0.0000       SPECIFIED FLOWS =           0.0000
+
+           TOTAL OUT =     1776195.2500             TOTAL OUT =        5846.9238
+
+            IN - OUT =         870.0000              IN - OUT =           2.2500
+
+ PERCENT DISCREPANCY =           0.05     PERCENT DISCREPANCY =           0.04
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP   10 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 3.45600E+06  57600.      960.00      40.000     0.10951    
+ STRESS PERIOD TIME 3.45600E+07 5.76000E+05  9600.0      400.00      1.0951    
+         TOTAL TIME 3.45600E+07 5.76000E+05  9600.0      400.00      1.0951    
+1
+1
+                            STRESS PERIOD NO.    2, LENGTH =   200.0000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     4
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =   50.00000    
+ 
+ SOLVING FOR HEAD 
+
+    11 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    2
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  1, STRESS PERIOD    2
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    1, STRESS PERIOD    2
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    2
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  2, STRESS PERIOD    2
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    2, STRESS PERIOD    2
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   3 IN STRESS PERIOD    2
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  3, STRESS PERIOD    2
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    3, STRESS PERIOD    2
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   4 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+     0.2726        0.1205        0.1050        0.1158        0.6361E-01
+  (  1,  3,  9) (  1,  2,  8) (  1,  3,  5) (  1,  3,  1) (  1,  3,  3)
+     0.4410E-02    0.3001E-02    0.3350E-02    0.3623E-02    0.1943E-02
+  (  1,  1,  8) (  1,  2,  7) (  1,  3,  1) (  1,  1,  1) (  1,  1,  4)
+     0.1375E-03
+  (  1,  3,  8)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  4, STRESS PERIOD    2
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    4, STRESS PERIOD    2
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    4, STRESS PERIOD   2
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     SPECIFIED FLOWS =     2897313.0000       SPECIFIED FLOWS =        5446.2812
+
+            TOTAL IN =     2897313.0000              TOTAL IN =        5446.2812
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =     1284297.3750               STORAGE =        2075.0767
+       CONSTANT HEAD =     1611474.1250         CONSTANT HEAD =        3367.9297
+     SPECIFIED FLOWS =           0.0000       SPECIFIED FLOWS =           0.0000
+
+           TOTAL OUT =     2895771.5000             TOTAL OUT =        5443.0063
+
+            IN - OUT =        1541.5000              IN - OUT =           3.2749
+
+ PERCENT DISCREPANCY =           0.05     PERCENT DISCREPANCY =           0.06
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    4 IN STRESS PERIOD    2
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 4.32000E+06  72000.      1200.0      50.000     0.13689    
+ STRESS PERIOD TIME 1.72800E+07 2.88000E+05  4800.0      200.00     0.54757    
+         TOTAL TIME 5.18400E+07 8.64000E+05  14400.      600.00      1.6427    
+1
+1
+                            STRESS PERIOD NO.    3, LENGTH =   400.0000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     6
+
+                               MULTIPLIER FOR DELT =     1.100
+
+                            INITIAL TIME STEP SIZE =   51.84295    
+ 
+ SOLVING FOR HEAD 
+
+    11 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  1, STRESS PERIOD    3
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    1, STRESS PERIOD    3
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  2, STRESS PERIOD    3
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    2, STRESS PERIOD    3
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   3 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  3, STRESS PERIOD    3
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    3, STRESS PERIOD    3
+ 
+ SOLVING FOR HEAD 
+     6 ITERATIONS FOR TIME STEP   4 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  4, STRESS PERIOD    3
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    4, STRESS PERIOD    3
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   5 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.6808       -0.2661       -0.1448       -0.7894E-01   -0.6365E-01
+  (  1,  3,  9) (  1,  2,  8) (  1,  2,  7) (  1,  1,  5) (  1,  1,  1)
+    -0.4272E-02   -0.3330E-02   -0.4339E-02   -0.5214E-02   -0.3401E-02
+  (  1,  1,  7) (  1,  2,  6) (  1,  3,  1) (  1,  1,  1) (  1,  3,  1)
+    -0.2476E-03
+  (  1,  3,  8)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+ REUSING PREVIOUS VALUES OF IOFLG
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  5, STRESS PERIOD    3
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    5, STRESS PERIOD    3
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   6 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.7654       -0.3129       -0.1865       -0.1363       -0.1090    
+  (  1,  3,  9) (  1,  2,  8) (  1,  3,  7) (  1,  3,  1) (  1,  1,  1)
+    -0.7505E-02   -0.5849E-02   -0.7884E-02   -0.9670E-02   -0.6561E-02
+  (  1,  1,  7) (  1,  2,  6) (  1,  3,  1) (  1,  1,  1) (  1,  3,  1)
+    -0.4790E-03
+  (  1,  3,  8)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 1
+
+ OUTPUT FLAGS FOR EACH LAYER:
+          HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ LAYER  PRINTOUT  PRINTOUT  SAVE    SAVE
+ -----------------------------------------
+    1       1         0       1       0
+ UBUDSV SAVING " SPECIFIED FLOWS" ON UNIT 44 AT TIME STEP  6, STRESS PERIOD    3
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   6 IN STRESS PERIOD    3
+  ---------------------------------------------------------------------------
+
+         1     2     3     4     5     6     7     8     9    10
+ ...............................................................
+   1   7.22  6.78  6.25  5.70  5.12  4.54  3.94  3.31  2.67  2.00
+   2   7.65  6.87  6.27  5.70  5.13  4.54  3.94  3.31  2.67  2.00
+   3   7.22  6.78  6.25  5.70  5.12  4.54  3.94  3.31  2.67  2.00
+
+ HEAD WILL BE SAVED ON UNIT   41 AT END OF TIME STEP    6, STRESS PERIOD    3
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    6, STRESS PERIOD   3
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =      284414.2188               STORAGE =        1836.9207
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     SPECIFIED FLOWS =     5352999.5000       SPECIFIED FLOWS =        8201.0176
+
+            TOTAL IN =     5637413.5000              TOTAL IN =       10037.9385
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =     1656061.8750               STORAGE =           0.0000
+       CONSTANT HEAD =     3979498.7500         CONSTANT HEAD =       10050.3262
+     SPECIFIED FLOWS =           0.0000       SPECIFIED FLOWS =           0.0000
+
+           TOTAL OUT =     5635560.5000             TOTAL OUT =       10050.3262
+
+            IN - OUT =        1853.0000              IN - OUT =         -12.3877
+
+ PERCENT DISCREPANCY =           0.03     PERCENT DISCREPANCY =          -0.12
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    6 IN STRESS PERIOD    3
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 7.21385E+06 1.20231E+05  2003.8      83.494     0.22859    
+ STRESS PERIOD TIME 3.45600E+07 5.76000E+05  9600.0      400.00      1.0951    
+         TOTAL TIME 8.64000E+07 1.44000E+06  24000.     1000.00      2.7379    
+1
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2013/07/31 13:33:53
+ Elapsed run time:  0.031 Seconds
+

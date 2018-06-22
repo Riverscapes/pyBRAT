@@ -1,0 +1,348 @@
+Changes to SFR2, LAK7, UZF, and GAG Packages for MODFLOW-2005, version 1.10.0
+
+SFR2:
+Modifications were made to check for streambed altitudes set below the cell
+bottom to which the reach is connected.  Some code was commented out that
+supports options not documented. The package specific version of LAYTYP was
+replaced with the global variable LAYHDT. Some variable initialization was
+moved outside IF blocks to be sure of initialization in the read and prepare
+subroutine.  Some redundant code was removed in formulate subroutine. A
+calculation for stream reach seepage was added to formulate and budget
+subroutines for certain cases when seepage was not set. Some variables
+were set for zero inflow in the subroutine trans_route.
+
+UZF2:
+The package specific version of LAYTYP was replaced with the global variable
+LAYHDT. Some work arrays were allocated as single dimension instead of a
+double dimension. Previously, when the extinction depth (EXTDP) for ET was
+set to zero it was reset to 1. Now, it is left as zero and ET for these cells
+is set to inactive. Some of the unsaturated flow budget information that is
+printed to UZF1 GAGE files was modified to correct some inconsistencies in
+budget items.
+
+LAK:
+A bug was found that affects simulations that use the Hydrologic-Unit Flow
+(HUF) Package (Anderman and Hill, 2000). The Lake Package has been modified
+to compute effective lake-aquifer conductance solely on the basis of the
+user-specified value of lakebed leakance; aquifer hydraulic conductivities
+are not used in this calculation.  An appropriate informational message is
+now printed after the lakebed conductances are written to the main output
+file.  There have also been several minor changes to format statements to
+improve the information content of the output file.
+
+SEE FILE Lake3_Input_Modified.pdf for the revised input instructions.
+
+GAG:
+The variable that stores lake seepage into the unsaturated zone was changed
+to correctly reflect this value.
+____________________________________________________________________________
+
+
+The following text describes changes that were made to the SFR2, LAK7, and
+UZF1 Packages for the release of MODFLOW-2005, version 1.9.
+
+Unsaturated-Zone Flow Package
+
+Unsaturated-Flow Package (gwf2uzf1.f and gwfuzfmodule.f): 
+
+A change was made to increase the internal check made by UZF of the ratio of ROOTDEPTH to the 
+thickness of the cell from 0.90 to 0.99. Fixed memory out-of-bounds bug for array BOTM when IUZFBND 
+was specified as less than zero. This problem was fixed by taking the absolute value of IUZFBND 
+when used to access arrays.
+
+Added deallocate statements for the variables CHECKTIME, MORE and LAYNUM. The default value for  
+SURFDEP was changed. In prior versions of UZF1, if the value for SURFDEP was specified as 0, it 
+was reset internally to 1.0. In this new version of UZF1, SURFDEP is reset to 1.0x10-6. This change 
+could affect simulated results if the value of SURDFEP was specified as 0 in the input file.
+ 
+Three new options were added to this package to allow specification of the residual water content 
+(THTR), to provide the option of specifying initial water content (THTI) for simulations that 
+begin with a steady-state recharge period, and to turn off calculation of surface leakage. 
+These changes were made for the following reasons. 
+
+THTR originally was calculated internally by the UZF Package on the basis of the difference between the 
+saturated water content (THTS) and the specific yield (SY) of the aquifer receiving recharge (Niswonger 
+and others, 2006). However,the ability to specify THTR can be useful for some applications in which the 
+maximum storage in the unsaturated zone (THTS-THTR)is different than the instantaneous drainage from the 
+aquifer (SY). For these cases, specifying THTR based on external calculations provides greater 
+flexibility for parameterizing the unsaturated zone. The option to specify THTR is activated using the 
+key word SPECIFYTHTR. This key word is input on line 1a of the revised UZF1 input file (see revised 
+input instructions below). Values for THTR are input following the variable THTS (see below).
+
+Originally, THTI was not specified for simulations that included both a steady-state and one or more 
+transient stress periods. For this case, THTI was calculated internally by the code on the basis of the 
+steady-state infiltration rate and the unsaturated-zone hydraulic properties (FINF, FKS, EPS, THTS, and 
+THTR). However, in well-drained soils, the steady-state recharge rate corresponds to an initial water 
+content that is too large for coarse sediments. Consequently, drainage from the unsaturated zone during 
+the first transient stress period could result in an unrealistically large recharge rate. Additionally, 
+the head dependency on recharge that does not occur during steady-state stress periods but that can 
+occur during transient stress periods can cause a sudden increase in recharge during the transition 
+between these stress periods. For these circumstances it is more realistic to specify the initial water 
+content for the first transient stress period that follows a steady-state stress period. The option to 
+specify THTI in simulations that include both steady-state and one or more transient stress periods is 
+activated using the key word SPECIFYTHTI. This key word is input on line 1a of the UZF1 input file, and 
+follows the key word SPECIFYTHTR if SPECIFYTHTR is specified. Values for THTI are input following 
+variable THTR if it is input; otherwise, THTI follows THTS (see below). 
+
+UZF1 simulates surface leakage in the uppermost active cell if groundwater head is greater
+than the top of this cell. Surface leakage is a nonlinear boundary condition that can slow model  
+convergence, and in some cases it is beneficial to inactive this boundary condition. Surface leakage  
+is inactivated by the key word NOSURFLEAK that is specified on line 1a of the UZF1 input 
+file. This key word is specified following the key word SPECIFYTHTI (if SPECIFYTHTI is specified). 
+If the key word NOSURFLEAK is specified then water will not be removed from the uppermost active cell 
+when groundwater head rises above the top of this cell. 
+
+Modified input instructions for the UZF1 input file for specifying optional key words
+
+0. Data: [#Text]		(As in previous versions of the code)
+
+1a. Data: [SPECIFYTHTR] [SPECIFYTHTI] [NOSURFLEAK]
+
+SPECIFYTHTR 	key word for specifying optional input variable THTR. 
+SPECIFYTHTI 	key word for specifying optional input variable THTI.
+NOSURFLEAK 	key word for inactivating calculation of surface leakage.
+
+Note that the keywords must be entered in the order shown. For example, if keywords SPECIFYTHTR and 
+NOSURFLEAK are specified, then SPECIFYTHTR must precede NOSURFLEAK. Alternatively, if only SPECIFYTHTI  
+is specified, then the other two keywords should not be specified.
+
+1b. Data: NUZTOP IUZFOPT IRUNFLG IETFLG IUZFCB1 IUZFCB2 NTRAIL2 NSETS2 NUZGAG SURFDEP NUZTOP		
+   (As in previous versions of the code)
+
+Items 2-5:  As in previous versions of the code.
+
+6a. Data:  THTS (NCOL, NROW) -- U2DREL
+Refer to UZF1 documentation report (Niswonger and other, 2006) for definition of THTS.
+
+6b. Data: [THTR (NCOL, NROW)] -- U2DREL
+THTR 	An array of positive real values used to define the residual water content for each vertical 
+column of cells in units of volume of water to total volume (L3L-3). THTR is the irreducible water 
+content and the unsaturated water content cannot drain to water contents less than THTR. This variable 
+is not included unless the key word SPECIFYTHTR is specified.
+
+7. Data: [THTI (NCOL, NROW)] -- U2DREL
+Refer to UZF1 documentation report (Niswonger and others, 2006) for definition of THTI. This variable is 
+not included for simulations with a steady-state stress period unless the key word SPECIFYTHTI is 
+specified.
+
+Items 8-16: As in previous versions of the code.
+
+Streamflow-Routing Package (gwf2sfr7.f and gwfsfrmodule.f):
+ 
+Several updates were made to the SFR2 Package, which are described here. The major
+changes are described first, and smaller modifications are described at the end of this
+section.
+
+Four modifications were made to the SFR2 Package that affect Item 1 of the input file.
+
+Previous versions of Item 1 had the following data entries:
+1. Data: NSTRM NSS NSFRPAR NPARSEG CONST DLEAK ISTCB1 ISTCB2
+{ISFROPT} {NSTRAIL} {ISUZN} {NSFRSETS} {IRTFLG} {NUMTIM}
+{WEIGHT} {FLWTOL}
+
+The revised input structure for Item 1 is as follows:
+1a. Data: {REACHINPUT TRANSROUTE}
+1b. Data: {TABFILES NUMTAB MAXVAL}
+1c. Data: NSTRM NSS NSFRPAR NPARSEG CONST DLEAK ISTCB1 ISTCB2
+{ISFROPT} {NSTRAIL} {ISUZN} {NSFRSETS} {IRTFLG} {NUMTIM}
+{WEIGHT} {FLWTOL} {IFACE}
+
+The two new (optional) keyword variables in Item 1a were added to change the method for 
+invoking the options to specify streambed properties by reach or to simulate unsaturated flow
+beneath streams (REACHINPUT), and to simulate transient streamflow routing (TRANSROUTE).
+Previous versions of SFR2 had used an approach in which a negative value was specified for
+input variable NSTRM to invoke these options. In the new approach, the user specifies keywords
+REACHINPUT and (or) TRANSROUTE as Item 1a. The previous method of specifying a negative value
+for NSTRM is still supported in the new code; however, users are encouraged to use the key
+word option for developing new models. The definitions of REACHINPUT and TRANSROUTE, and the  
+revised definition of NSTRM, are as follows:
+
+REACHINPUT An optional character variable that is a flag to change the default format for
+entering reach and segment data input and to simulate unsaturated flow beneath streams. When
+REACHINPUT is specified, optional variable ISFROPT must be specified in item 1c; optional 
+variables NSTRAIL, ISUZN, and NSFRSETS also must be specified if ISFROPT>0.
+
+TRANSROUTE An optional character variable that is a flag to indicate that transient streamflow
+routing is active. When TRANSROUTE is specified, optional variables IRTFLG, NUMTIM, WEIGHT,
+and FLWTOL also must be specified in Item 1c. 
+
+NSTRM An integer value equal to the number of stream reaches (finite-difference cells) that are 
+active during the simulation. Specifying a negative value for NSTRM is equivelent to specifying 
+the key word REACHINPUT.
+
+An updated, complete version of the SFR2 input instructions is  with the MODFLOW-2005 version 1.9 
+release (file ‘SFR2_for_MF2005_v1.9.pdf’). Input data specified using the previous input structure   
+for SFR will be compatible with the updated version. Item 1b was added to allow users to specify 
+inflows of water to the first reach of stream segments to be read from files that are external to
+the SFR2 main input file. Reading specified flow rates from external files allows the user to 
+specify flows that change for each time step, rather than for each stress period. The specified 
+flows must be positive (a negative value for flow can not be specified using an external inflow file).
+When flows are specified using these files, any flows specified in Item 4a with variable FLOW are 
+ignored. The external files that contain the specified flows are referred to as tabular flow files.
+Each tabular file consists of two columns of input that are read using free format: TIME and
+INFLOW. Time is the point in the simulation when the flow is specified for the segment; INFLOW is
+the specified flow, in units of length cubed per time. The units for TIME and INFLOW should be
+consistent with those specified for variables ITMUNI and LENUNI in the MODFLOW Discretization 
+File. Times listed in the tabular flow file do not need to correspond to the beginning of 
+If the beginnings of the MODFLOW time steps fall MODFLOW time steps. between times listed in the
+tabular flow file, then the specified inflow is calculated using a timeweighted average of specified
+flows within the MODFLOW time step. Times can be listed in the tabular flow file either more 
+frequently or less frequently than the MODFLOW time steps. The option for reading tabular flow
+files is invoked using the keyword TABFILES, as shown above for Item 1b. Keyword TABFILES is 
+followed by two integer variables, NUMTAB and MAXVAL. The definitions of these variables are:
+
+TABFILES An optional character variable that is a flag to indicate that inflows to one or more
+stream segments will be specified with tabular flow files.
+
+NUMTAB An integer value equal to the number of tabular inflow files that will be read if TABFILES
+is specified. A separate input file is required for each segment that receives specified flow.
+Thus, the maximum value of NUMTAB that can be specified is equal to the total number of segments
+specified with variable NSS in Item 1c. The name (Fname) and unit number (Nunit) of each tabular 
+file must be specified in the MODFLOW-2005 Name File using file type (Ftype) DATA.
+
+MAXVAL An integer value equal to the largest number of rows of specified inflows for any of the
+tabular flow files. MAXVAL is used for memory allocation. For example, if there are two tabular 
+inflow files and the files contain 100 and 200 flow values, respectively, then MAXVAL would be 
+specified as 200.
+
+IFACE is an optional keyword that indicates that an IFACE value will be read for each reach and
+written to the budget file so that MODPATH can track particles to an exit face (or from an entry
+face) of a stream cell.  If "IFACE" is found at the end of record 1c, then IFACE values are read
+from the end of each item 2 record.
+
+If TABFILES is specified, then the following variables must be specified for the first stress 
+period only after the segment information has been specified (that is, new item 4f). One line of 
+entry is needed for each stream segment for which a time series of flows will be specified (that
+is, repeat the following line NUMTAB times):
+
+Data: SEGNUM NUMVAL IUNIT
+
+The definitions of these variables are:
+
+SEGNUM An integer value equal to the segment number to which the specified inflows will be applied.
+
+NUMVAL An integer value equal to the number of rows in the tabular flow file. Each flow file may 
+contain a different number of rows, but the number of rows in any file cannot exceed MAXVAL specified 
+in data Item 1b.
+
+IUNIT An integer value equal to the unit number of the tabular inflow file. IUNIT must match the unit 
+number for the file specified in the Name File.
+
+Refer to updated, complete version of the SFR2 input instructions for the MODFLOW-2005 version 1.9 
+release (file ‘SFR2_for_MF2005_v1.9.pdf’) for example SFR2 input instructions that include specified
+segment inflows and the key-word input options.
+
+Another major modification was made to add a smoothing function for the calculation of wetted channel  
+area when the SFR2 input variable ICALC is set to 1 (constant stream width). In previous versions of 
+the package, a discontinuity could form if the stream channel became dry during the outer iteration of  
+a time step, because stream width would oscillate between the specified value and zero. To avoid such  
+conditions, a smoothing function was used in SFR2 to smooth the transition between the constant (specified) 
+stream width and a zero stream width over the interval between zero depth and 1.0x10-5 (units defined on  
+the basis of the DIS file input variable LENUNI). Smoothing is applied automatically if ICALC=1 and the 
+stream depth is between zero and 1.0x10-5 and users should refer to the calculated stream depths to 
+determine if smoothing was applied to a particular reach in a simulation. SFR2 smoothes the constant-
+to-zero-width transition using the same smoothing function that is used by the WEL Package to decrease 
+specified pumping rates to zero when unconfined cells are dry in MODFLOW-NWT (see Niswonger and others, 
+2011, p. 14). 
+ 
+Modifications were made to correct the effects of lakes inundating stream cells. Seepage in inundated 
+stream cells was not being set to zero in the budget routine. This change could affect mass-balance 
+errors for models that include lakes that grow and inundate stream cells.
+
+Modifications were made to correct a bug that occurred when the specific yield specified in the 
+Block-Centered Flow (BCF7) Package was used for calculating the residual water content for the 
+unsaturated zone beneath streams. Changes were made such that the code searches through model layers 
+to find the corresponding layer that stores the specific yield for the case when the BCF7 input variable 
+LAYCON is 2 or 3.
+
+A change was made to fix the way stream information was being written to the LIST file. 
+
+
+Lake Package (gwf2lak7.f)
+
+A major change was to add the option for the user to specify the lake bathymetry information directly through 
+exteral text files. If the optional key word “TABLEINPUT” is specified on the first line of the Lake 
+package input file then the program reads values of lake stage, volume, and area from external lake 
+bathymetry text files. The unit number of the external text file for each lake is read from the end 
+of item 3, following the variable STAGES or the optional variables SSMN and SSMX, if they are specified. 
+Additionally, the file type, unit number, and file name must be specified in the MODFLOW Name file if 
+TABLEINPUT is specified. See revised input instructions below for more details. Each lake bathymetry input
+file must contain 151 lines with values of lake stage and the corresponding lake volume, and area in each line.
+Values are read in as free format, either as space or comma delimited. See example input file excerpt below.
+Seepage between lakes and groundwater is calculated on cell-by-cell basis using the area of cells inundated
+by the lake, and not the lake surface area specified with the external lake bathymetry file.
+
+Corrected two bugs. The first caused the package to incorrectly set the uppermost active cell beneath a lake 
+cell to NLAY. The second occurred in the calculation of outflow to a stream for specified outflow diversions; 
+the lake stage was not being set correctly.
+
+A format statement was modified to allow proper printout of the number of dry lake cells to the main 
+Listing file. This change does not affect simulation results.
+
+Modified input instructions for the LAK7 input file for specifying the optional key word “TABLEINPUT” for 
+specifying lake bathymetry information
+
+0. Data: [#Text]		(As in previous versions of the code)
+
+1a. Data: [TABLEINPUT]
+
+TABLEINPUT 	optional key word for specifying lake bathymetry information using external text files. 
+
+1b. Data: NLAKES ILKCB		 (As in previous versions of the code)
+
+Item 2:  As in previous versions of the code.
+
+3. Data:  STAGES [SSMN] [SSMX] [IUNITLAKTAB]
+
+This data set should consist of 1 line for each lake, where line 1 includes data for lake 1, and line n 
+includes data for lake n. There must be exactly NLAKES lines of data. See Merritt and Konikow (2000) 
+for more information about variables STAGES, SSMN, and SSMX. A value must be specified for each lake 
+if the key word “TABLEINPUT” is specified in item 1a (that is, if TABLEINPUT is specified then all
+lakes must have their bathymetry specified through external text files).
+
+Items 4-9: As in previous versions of the code.
+# Example input for specifying lake bathymetry information using external 
+# text files using key word option “TABLEINPUT”
+TABLEINPUT                             Item 1a: KEY WORD
+         1         0                   Item 1b: NLAKES,ILKCB
+      0.00        50     0.001         Item 2:  THETA,NSSITER,SSCNCR     
+     110.0     100.0     170.0   22    Item 3:  STAGES,SSMN,SSMX,IUNITLAKTAB
+The rest of the file is unchanged from the original version.
+
+The lake bathymetry input file has been assigned IUNIT 22 and Fname ‘lak1b_bath.txt’ in the Name File:
+
+data            22  lak1b_bath.txt
+
+File ‘lak1b_bath.txt’ must have exactly 151 lines of data, and each line contains the stage, volume,
+and surface area, respectively. Comment lines are not supported. The first five are:
+ 
+   9.70000E+01   0.00000E+00   2.25000E+06
+   9.96867E+01   6.04500E+06   2.25000E+06
+   1.02373E+02   1.20900E+07   2.25000E+06
+   1.05060E+02   1.81350E+07   2.25000E+06
+   1.07747E+02   3.49267E+07   6.25000E+06
+
+The lake stage, volume, and surface area are echoed to the MODFLOW-2005 LIST file.
+
+
+References
+
+Markstrom, S.L., Niswonger, R.G., Regan, R.S., Prudic, D.E., and Barlow, P.M., 2008, GSFLOW—Coupled 
+ground-water and surface-water flow model based on the integration of the Precipitation-Runoff Modeling 
+System (PRMS) and the Modular Ground-Water Flow Model (MODFLOW-2005): U.S. Geological Survey Techniques 
+and Methods 6-D1, 240 p.
+
+Merritt, M.L., and Konikow, L.F., 2000, Documentation of a computer program to simulate lake-aquifer 
+interaction using the MODFLOW ground-water flow model and the MOC3D solute-transport model: U.S. 
+Geological Survey Water-Resources Investigations Report 00-4167, 146 p.
+
+Niswonger, R.G., Panday, Sorab, and Ibaraki, Motomu, 2011, MODFLOW-NWT, A Newton formulation for 
+MODFLOW-2005: U.S. Geological Survey Techniques and Methods 6-A37, 44 p.
+
+Niswonger, R.G., and Prudic, D.E., 2005, Documentation of the Streamflow-Routing (SFR2) Package to 
+include unsaturated flow beneath streams—A modification to SFR1: U.S. Geological Survey Techniques 
+and Methods 6-A13, 62 p.
+
+Niswonger, R.G., Prudic, D.E., and Regan, R.S., 2006, Documentation of the Unsaturated-Zone Flow (UZF1) 
+Package for modeling unsaturated flow between the land surface and the water table with MODFLOW-2005: 
+U.S. Geological Survey Techniques and Methods 6-A19, 62 p.

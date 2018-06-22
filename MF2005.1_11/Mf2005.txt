@@ -1,0 +1,375 @@
+U.S. Geological Survey (USGS)                               modflow(1)
+
+NOTE: Any use of trade, product or firm names is for descriptive purposes
+      only and does not imply endorsement by the U.S. Government.
+
+NAME
+     modflow - Modular three-dimensional finite-difference ground-water
+               model
+
+ABSTRACT
+     MODFLOW is a three-dimensional finite-difference ground-water model
+     that was first published in 1984.  It has a modular structure that
+     allows it to be easily modified to adapt the code for a particular
+     application.  Many new capabilities have been added to the original
+     model.  Harbaugh (2005) documents a general update to MODFLOW, which
+     is called MODFLOW-2005 in order to distinguish it from earlier
+     versions.
+
+     MODFLOW-2005 simulates steady and nonsteady flow in an irregularly
+     shaped flow system in which aquifer layers can be confined,
+     unconfined, or a combination of confined and unconfined.  Flow from
+     external stresses, such as flow to wells, areal recharge,
+     evapotranspiration, flow to drains, and flow through river beds,
+     can be simulated.  Hydraulic conductivities or transmissivities for
+     any layer may differ spatially and be anisotropic (restricted to
+     having the principal directions aligned with the grid axes), and the
+     storage coefficient may be heterogeneous.  Specified head and
+     specified flux boundaries can be simulated as can a head dependent
+     flux across the model's outer boundary that allows water to be
+     supplied to a boundary block in the modeled area at a rate
+     proportional to the current head difference between a "source" of
+     water outside the modeled area and the boundary block.
+
+     In addition to simulating ground-water flow, the scope of
+     MODFLOW-2005 has been expanded to incorporate related capabilities
+     such as solute transport and ground-water management; however, this
+     distribution incorporates only the ground-water flow parts of MODFLOW.
+
+
+METHOD
+     The ground-water flow equation is solved using the finite-difference
+     approximation.  The flow region is subdivided into blocks in which
+     the medium properties are assumed to be uniform.  In plan view the
+     blocks are made from a grid of mutually perpendicular lines that may
+     be variably spaced.  Model layers can have varying thickness.  A flow
+     equation is written for each block, called a cell.  Several solvers
+     are provided for solving the resulting matrix problem; the user can
+     choose the best solver for the particular problem.  Flow-rate and
+     cumulative-volume balances from each type of inflow and outflow are
+     computed for each time step.
+
+
+HISTORY
+
+      MODFLOW-2005 Version 1.11.00 08/08/2013 -- Added Seawater Intrusion
+         (SWI2) Package. Added free format input option to STR Package.
+         The ULSTRD list reading utility subroutine was modified to allow
+         lists to be read from binary files. See release.txt for a full
+         description of changes.
+
+      MODFLOW-2005 Version 1.10.00 03/06/2013 -- Added a NOPRINT option for
+         observations. Fixed several problems in MNW2, SFR, LAK, and UZF.
+         See release.txt for a full description of changes.
+
+      MODFLOW-2005 Version 1.9.01 05/01/2012 -- Fixed bug that caused MODFLOW
+         to continue execution when solver closure criteria are not met and
+         the percent budget error is negative.
+
+      MODFLOW-2005 Version 1.9 03/30/2012 -- Added support for writing
+         MODPATH IFACE values in the MODFLOW budget file for STR, FHB, and
+         SFR Packages. Added the PCGN solver.  Many small changes
+         were also made, which are documented in the release.txt file.
+
+      MODFLOW-2005 Version 1.8 12/18/2009 -- Added MNW2 Package and made
+         minor changes.  All of the changes are documented in the
+         release.txt file.
+
+      MODFLOW-2005 Version 1.7 9/23/2009 -- Added observation capability
+         for the STR Package. Fixed problems with SFR, LAK, and UZF
+         Packages.  All of the changes are documented in the release.txt
+         file.
+
+      MODFLOW-2005 Version 1.6.02 6/5/2009 - Fixed problem with
+         multi-layer head observations in the OBS Process and computation
+         of interpolated head in hydrogeologic units in the HUF Package.
+         Also made other minor changes, which are documented in the
+         release.txt file.
+
+      MODFLOW-2005 Version 1.6.01 3/4/2009 - Fixed SFR problem in which
+         the new NUMTIM and WEIGHT variables that are read when using
+         the transient routing option (IRTFLG>0) were ignored.  Also
+         added the FLWTOL input variable to SFR.
+
+      MODFLOW-2005 Version 1.6 1/23/2009 - Added HYDMOD and LMT Packages.
+         Added NOVFC option to LPF Package. Added a full double-precision
+         executable version of MODFLOW for downloading (see readme.txt
+         file). Also fixed several miscellaneous problems.  All of the
+         changes are documented in the release.txt file.
+
+      MODFLOW-2005 Version 1.5 4/28/2008 - Updated SFR, UZF, and LAK
+         Packages to the versions used in the GSFLOW coupled ground-water
+         and surface-water model. Also added the capability to use
+         different damping factors in the PCG Package for transient and
+         steady-state stress periods.  Added option "DDREFERENCE"
+         to the Output Control Files, which was an option implemented
+         in MODFLOW-2000.  Also fixed several miscellaneous problems.
+         All of the changes are documented in the release.txt file.
+
+      MODFLOW-2005 Version 1.4 11/2/2007 - Added SWT Package, added
+         adaptive damping to GMG, and fixed minor problems (see
+         release.txt file).
+
+      MODFLOW-2005 Version 1.3.01 8/2/2007 - Checks added to prevent
+         using HUF with UZF Package or the unsaturated flow part of
+         SFR Package.
+
+      MODFLOW-2005 Version 1.3 8/1/2007 - Fixed several minor problems
+         (see release.txt file).
+
+      MODFLOW-2005 Version 1.2.01 10/24/2006 - Fixed bug in SFR.
+
+      MODFLOW-2005 Version 1.2 10/16/2006 - SFR, LAK, UZF, and GAG
+         packages were added.
+
+      MODFLOW-2005 Version 1.1 05/18/2006 - DRT, ETS, RES, and SUB
+         packages were added.  Observations (OBS Process) as
+         implemented in MODFLOW-2000 were also added.
+
+      MODFLOW-2005 Version 1.0 01/15/2006 - Initial release.
+
+
+DATA REQUIREMENTS
+     In order to use MODFLOW, initial conditions, hydraulic properties,
+     and stresses must be specified for every model cell in the finite-
+     difference grid. Input data are read from files.
+
+
+SYSTEM REQUIREMENTS
+     MODFLOW-2005 is written primarily in Fortran 90. Only the GMG solver
+     package is written in C.  The code has been used on UNIX-based
+     computers and personal computers running various forms of the Microsoft
+     Windows operating system.
+
+
+FUNTIONALITY
+     This version of MODFLOW includes the following functionality that is
+     documented in Harbaugh (2005).
+
+         BAS -- Basic Package
+         BCF -- Block-Centered Flow Package
+         LPF -- Layer-Property Flow Package
+         HFB -- Horizontal Flow Barrier Package
+         CHD -- Time-Variant Specified-Head Option
+         RIV -- River Package
+         DRN -- Drain Package
+         WEL -- Well Package
+         GHB -- General Head Boundary Package
+         RCH -- Recharge Package
+         EVT -- Evapotranspiration Package
+         SIP -- Strongly Implicit Procedure Package
+         PCG -- Preconditioned Conjugate Gradient Package
+         DE4 -- Direct solver
+
+      The following functionality is also included. This functionality is
+      documented in separate reports for use in earlier versions of MODFLOW.
+      Conversion of this functionality to work with MODFLOW-2005 is
+      documented in separate files that are provided with the MODFLOW-2005
+      distribution.
+         STR -- Streamflow-Routing Package
+         FHB -- Flow and Head Boundary Package
+         IBS -- Interbed Storage Package
+         GMG -- Geometric MultiGrid Solver Package
+         HUF -- Hydrogeologic-Unit Flow Package
+         MNW1 -- Version 1 of Multi-Node Well Package
+         MNW2 -- Version 2 of the Multi-Node Well Package
+         ETS -- Evapotranspiration with a Segmented Function Package
+         DRT -- Drains with Return Flow Package
+         RES -- Reservoir Package
+         SUB -- Subsidence Package
+         OBS -- Observation Process
+         SFR -- Streamflow-Routing Package
+         LAK -- Lake Package
+         UZF -- Unsaturated Zone Package
+         GAG -- Gage Package
+         SWT -- Subsidence and Aquifer-System Compaction Package
+         LMT -- Link to the MT3DMS contaminant-transport model
+         HYDMOD -- Hydrograph capability
+         PCGN -- Preconditioned Conjugate Gradient solver with
+                 improved nonlinear control
+         SWI2 -- Seawater Intrusion Package
+
+Unlike MODFLOW-2000, MODFLOW-2005 does not support a parameter-estimation
+process. Users of MODFLOW-2005 are encouraged to take advantage of
+'clip-on' parameter-estimation programs such as UCODE_2005. UCODE_2005 and
+supporting documentation are available at:
+         http://typhoon.mines.edu/freeware/ucode/
+
+DOCUMENTATION
+
+  The basic documentation for MODFLOW-2005 is contained in:
+
+Harbaugh, A.W., 2005, MODFLOW-2005, the U.S. Geological Survey modular
+ground-water model -- the Ground-Water Flow Process: U.S. Geological Survey
+Techniques and Methods 6-A16, variously p.
+
+  The STR Package is documented in:
+
+Prudic, D.E., 1989, Documentation of a computer program to simulate
+stream-aquifer relations using a modular, finite-difference, ground-water
+flow model: U.S. Geological Survey Open-File Report 88-729, 113 p.
+
+  The FHB Package is documented in:
+
+Leake, S.A., and Lilly, M.R., 1997, Documentation of a computer program
+(FHB1) for assignment of transient specified-flow and specified-head
+boundaries in applications of the modular finite- difference ground-water
+flow model (MODFLOW): U.S. Geological Survey Open-File Report 97-571, 50 p.
+
+  The IBS Package is documented in:
+
+Leake, S.A. and Prudic, D.E., 1991, Documentation of a computer program
+to simulate aquifer-system compaction using the modular
+finite-difference ground-water flow model: U.S. Geological Survey
+Techniques of Water-Resources Investigations, Book 6, Chapter A2, 68 p.
+
+  The GMG Package is documented in:
+
+Wilson, J.D. and Naff, R.L., 2004, The U.S. Geological Survey modular
+ground-water model -- GMG linear equation solver package documentation:  
+U.S. Geological Survey Open-File Report 2004-1261, 47 p.
+
+  The HUF Package is documented in:
+
+Anderman, E.R., and Hill, M.C., 2000, MODFLOW-2000, the U.S. Geological
+Survey modular ground-water model -- Documentation of the Hydrogeologic-
+Unit Flow (HUF) Package: U.S. Geological Survey Open-File Report 00-342,
+89 p.
+     
+Anderman, E.R., Kipp, K.L., Hill, M.C., Valstar, Johan, and Neupauer,
+R.M., 2002, MODFLOW-2000, the U.S. Geological Survey modular ground-water
+model -- Documentation of the Model-Layer Variable-Direction Horizontal
+Anisotropy (LVDA) capability of the Hydrogeologic-Unit Flow (HUF) Package:
+U.S. Geological Survey Open-File Report 02-409, 60 p.
+
+Anderman, E.R., and Hill, M.C., 2003, MODFLOW-2000, the U.S. Geological
+Survey modular ground-water model -- Three additions to the
+Hydrogeologic-Unit Flow (HUF) Package: Alternative storage for the
+uppermost active cells, Flows in hydrogeologic units, and the
+Hydraulic-coductivity depth-dependence (KDEP) capability:U.S. Geological
+Survey Open-File Report 03-347, 36 p.
+
+  The MNW1 Package is documented in:
+
+Halford, K.J. and Hanson, R.T., 2002, User guide for the drawdown-limited,
+multi-node well (MNW) package for the U.S. Geological Survey's modular
+three-dimensional finite-difference ground-water flow model, versions
+MODFLOW-96 and MODFLOW-2000: U.S. Geological Survey Open-File Report
+02-293, 33 p.
+
+  The MNW2 Package is documented in:
+
+Konikow, L.F., Hornberger, G.Z., Halford, K.J. and Hanson, R.T., 2009,
+Revised multi-node well (MNW2) package for MODFLOW ground-water flow
+model: U.S. Geological Survey Techniques and Methods 6-A30, 67 p.
+
+  The DRT and ETS Packages are documented in:
+
+Banta, E.R., 2000, MODFLOW-2000, the U.S. Geological Survey modular
+ground-water model -- documentation of packages for simulating
+evapotranspiration with a segmented function (ETS1) and drains with return
+flow (DRT1): U.S. Geological Survey Open-File Report 00-466, 127 p.
+
+  The RES Package is documented in:
+
+Fenske, J.P., Leake, S.A., and Prudic, D.E., 1996, Documentation of a
+computer program (RES1) to simulate leakage from reservoirs using the
+modular finite-difference ground-water flow model (MODFLOW): U.S.
+Geological Survey Open-File Report 96-364, 51 p.
+
+  The SUB Package is documented in:
+
+Hoffmann, Jorn, Leake, S.A., Galloway, D.L., and Wilson, A.M., 2003,
+MODFLOW-2000 ground-water model -- User guide to the Subsidence and
+Aquifer-System Compaction (SUB) Package: U.S. Geological Survey Open-File
+Report 03-233, 46 p.
+
+  The OBS Process is documented in:
+  
+Hill, M.C., Banta, E.R., Harbaugh, A.W., and Anderman, E.R., 2000,
+MODFLOW-2000, the U.S. Geological Survey modular ground-water model --
+User guide to the Observation, Sensitivity, and Parameter-Estimation
+Processes and three post-processing programs: U.S. Geological Survey
+Open-File Report 00-184, 209 p.
+
+See file obs.pdf for documentation of the OBS Process in MODFLOW-2005,
+including input instructions.
+
+  The SFR Package is documented in:
+
+Prudic, D.E., Konikow, L.F., and Banta, E.R., A new Streamflow-Routing
+(SFR1) Package to simulate stream-aquifer interaction with MODFLOW-2000:
+U.S. Geological Survey Open File Report 2004-1042, 95 p.
+
+Niswonger, R.G., and Prudic, D.E., 2005, Documentation of the
+Streamflow-Routing (SFR2) Package to include unsaturated flow beneath
+streams -- a modification to SFR1: U.S. Geological Techniques and Methods
+Book 6, Chapter A13, 47 p.
+
+  The UZF Package is documented in:
+
+Niswonger, R.G., Prudic, D.E., and Regan, R.S., 2006, Documentation of
+the Unsaturated-Zone Flow (UZF1) Package for modeling unsaturated flow
+between the land surface and the water table with MODFLOW-2005: U.S.
+Geological Techniques and Methods Book 6, Chapter A19, 62 p.
+  
+  The LAK Package is documented in:
+  
+Merritt, M.L., and Konikow, L.F., 2000, Documentation of a computer
+program to simulate lake-aquifer interaction using the MODFLOW ground-water
+flow model and the MOC3D solute-transport model: Water-Resources
+Investigations Report 00-4167, 146 p.
+
+  The GAG Package is documented as part of the above SFR and LAK
+  documentation.
+
+  The SWT Package is documented in:
+  
+Leake, S.A. and Galloway, D.L., 2007, MODFLOW ground-water model -- User
+guide to the Subsidence and Aquifer-System Compaction Package (SUB-WT) for
+water-table aquifers: U.S. Geological Survey Techniques and Methods 6-A23,
+42 p.
+
+  The LMT Package is documented in:
+  
+Zheng, Chunmiao, Hill, M.C., and Hsieh, P.A., 2001, MODFLOW-2000, the U.S.
+Geological Survey modular ground-water model - User guide to the LMT6
+package, the linkage with MT3DMS for multi-species mass transport modeling:
+U.S. Geological Survey Open-File Report 01-82, 43 p.
+
+   HYDMOD is documented in:
+
+Hanson, R.T. and Leake, S.A., 1999, Documentation of HYDMOD, a program for
+extracting and processing time-series data from the U.S. Geological
+Survey's modular three-dimensional finite-difference ground-water flow
+model: U.S. Geological Survey Open-File Report 98-564, 57 p.
+
+A separate file, hydmod7.pdf, documents the conversion for MODFLOW-2005.
+
+   The PCGN Package is documented in:
+
+Naff, Richard L.; Banta, Edward R., 2008, The U.S. Geological Survey Modular
+Ground-Water Model - PCGN: A Preconditioned Conjugate Gradient Solver with
+Improved Nonlinear Control: U.S. Geological Survey Open-File Report
+2008-1331, 35 p.
+
+   The SWI2 Package is documented in:
+
+Bakker, M., Schaars, F., Hughes, J.D., Langevin, C.D., Dausman, A.M., 2013, 
+Documentation of the seawater intrusion (SWI2) package for MODFLOW: 
+U.S. Geological Survey Techniques and Methods, book 6, chap. A46, 47 p.
+
+
+CONTACTS
+    U.S. Geological Survey
+    Office of Ground Water
+    411 National Center
+    Reston, VA 20192
+    (703) 648-5001
+    ogw_webmaster@usgs.gov
+
+    See
+
+      http://water.usgs.gov/software/ordering_documentation.html
+
+    for information on ordering printed copies of USGS publications.

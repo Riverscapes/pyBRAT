@@ -1,0 +1,626 @@
+                                  MODFLOW-2005     
+      U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUND-WATER FLOW MODEL
+                            VERSION 1.11.00 8/8/2013
+
+ LIST FILE: restest.lst
+                         UNIT    7
+
+ OPENING restest.ba6
+ FILE TYPE:BAS6   UNIT    8   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING restest.bc6
+ FILE TYPE:BCF6   UNIT   11   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING restest.ghb
+ FILE TYPE:GHB   UNIT   17   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING restest.sip
+ FILE TYPE:SIP   UNIT   19   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING restest.oc
+ FILE TYPE:OC   UNIT   22   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING restest.res
+ FILE TYPE:RES   UNIT   27   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING restest.dis
+ FILE TYPE:DIS   UNIT   10   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT    8
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   10
+    1 LAYERS        12 ROWS        12 COLUMNS
+    3 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS UNDEFINED
+  Confining bed flag for each layer:
+   0
+
+                     DELR =  100.0000    
+
+                     DELC =  100.0000    
+
+ TOP ELEVATION OF LAYER 1 =  100.0000    
+
+   MODEL LAYER BOTTOM EL. =  -500.000     FOR LAYER   1
+
+
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1         2.000000          2                    1.000         TR
+        2         2.000000          2                    1.000         TR
+        3         5.000000          5                    1.000         TR
+
+ TRANSIENT SIMULATION
+
+
+
+ 
+ #Reservoir Package Example Problem                                              
+ #June 25, 1996                                                                  
+
+
+
+                     BOUNDARY ARRAY FOR LAYER   1
+ READING ON UNIT    8 WITH FORMAT: (20I4)              
+
+        1   2   3   4   5   6   7   8   9  10  11  12
+ ....................................................
+   1    1   1   1   1   1   1   1   1   1   1   1   1
+   2    1   1   1   1   1   1   1   1   1   1   1   1
+   3    1   1   1   1   1   1   1   1   1   1   1   1
+   4    1   1   1   1   1   1   1   1   1   1   1   1
+   5    1   1   1   1   1   1   1   1   1   1   1   1
+   6    1   1   1   1   1   1   1   1   1   1   1   1
+   7    1   1   1   1   1   1   1   1   1   1   1   1
+   8    1   1   1   1   1   1   1   1   1   1   1   1
+   9    1   1   1   1   1   1   1   1   1   1   1   1
+  10    1   1   1   1   1   1   1   1   1   1   1   1
+  11    1   1   1   1   1   1   1   1   1   1   1   1
+  12    1   1   1   1   1   1   1   1   1   1   1   1
+
+ AQUIFER HEAD WILL BE SET TO   999.00     AT ALL NO-FLOW NODES (IBOUND=0).
+
+             INITIAL HEAD =   0.00000     FOR LAYER   1
+
+ OUTPUT CONTROL IS SPECIFIED EVERY TIME STEP
+ HEAD PRINT FORMAT CODE IS   4    DRAWDOWN PRINT FORMAT CODE IS   4
+ HEADS WILL BE SAVED ON UNIT    0    DRAWDOWNS WILL BE SAVED ON UNIT    0
+
+ BCF -- BLOCK-CENTERED FLOW PACKAGE, VERSION 7, 5/2/2005
+         INPUT READ FROM UNIT 11
+ TRANSIENT SIMULATION
+ HEAD AT CELLS THAT CONVERT TO DRY=   0.0000    
+ WETTING CAPABILITY IS NOT ACTIVE
+      LAYER  LAYER-TYPE CODE     INTERBLOCK T
+      --------------------------------------------
+         1            0          0 -- HARMONIC    
+
+ COLUMN TO ROW ANISOTROPY =  1.000000    
+
+     PRIMARY STORAGE COEF =  0.200000     FOR LAYER   1
+
+     TRANSMIS. ALONG ROWS =  10000.00     FOR LAYER   1
+
+ GHB -- GENERAL-HEAD BOUNDARY PACKAGE, VERSION 7, 5/2/2005
+         INPUT READ FROM UNIT   17
+ No named parameters
+ MAXIMUM OF     24 ACTIVE GHB CELLS AT ONE TIME
+
+
+     0 GHB parameters
+
+RES7 -- RESERVOIR PACKAGE, VERSION 7, 2/28/2006 INPUT READ FROM UNIT 27
+ TOTAL NUMBER OF RESERVOIRS:   1
+ OPTION 1 -- RESERVOIR CONNECTED TO TOP LAYER
+ RESERVOIR HEADS, AREAS, AND VOLUMES WILL BE PRINTED EACH TIME STEP
+   15 points will be used in constructing table of reservoir areas and volumes.
+
+
+
+                 RESERVOIR LOCATION FOR LAYER   1
+ READING ON UNIT   27 WITH FORMAT: (12I2)              
+
+        1   2   3   4   5   6   7   8   9  10  11  12
+ ....................................................
+   1    0   0   0   0   0   0   0   0   0   0   0   0
+   2    0   0   0   0   0   0   0   0   0   0   0   0
+   3    0   0   0   0   1   1   1   1   1   1   0   0
+   4    0   0   0   1   1   1   1   1   1   1   0   0
+   5    0   0   0   1   1   1   1   1   1   1   0   0
+   6    0   0   0   1   1   1   1   1   1   1   1   0
+   7    0   0   0   1   1   1   1   1   1   1   0   0
+   8    0   0   0   1   1   1   1   1   1   1   0   0
+   9    0   0   0   0   1   1   1   1   1   1   0   0
+  10    0   0   0   0   0   0   0   0   0   0   0   0
+  11    0   0   0   0   0   0   0   0   0   0   0   0
+  12    0   0   0   0   0   0   0   0   0   0   0   0
+ NUMBER OF CELLS IN RESERVOIR  1:    48
+
+
+
+           RESERVOIR LAND SURF ELEV FOR LAYER   1
+ READING ON UNIT   27 WITH FORMAT: (12F4.0)            
+
+         1     2     3     4     5     6     7     8     9    10    11    12
+ ...........................................................................
+   1    0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+   2    0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+   3    0.0   0.0   0.0   0.0   6.0   7.0   8.0   9.0  10.0  10.0   0.0   0.0
+   4    0.0   0.0   0.0   6.0   6.0   7.0   8.0   9.0  10.0  10.0   0.0   0.0
+   5    0.0   0.0   0.0   6.0   6.0   7.0   8.0   9.0  10.0  10.0   0.0   0.0
+   6    0.0   0.0   0.0   6.0   6.0   7.0   8.0   9.0  10.0  10.0  21.0   0.0
+   7    0.0   0.0   0.0   6.0   6.0   7.0   8.0   9.0  10.0  10.0   0.0   0.0
+   8    0.0   0.0   0.0   6.0   6.0   7.0   8.0   9.0  10.0  10.0   0.0   0.0
+   9    0.0   0.0   0.0   0.0   6.0   7.0   8.0   9.0  10.0  10.0   0.0   0.0
+  10    0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+  11    0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+  12    0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+
+   RES. BED VERT HYD COND =  1.000000     FOR LAYER   1
+
+  RESERVOIR BED THICKNESS =   2.00000     FOR LAYER   1
+ STAGE-VOLUME TABLE FOR RESERVOIR 1
+      STAGE       VOLUME         AREA
+   ------------------------------------
+   6.0000              0.0          0.0
+   7.0000      0.12000E+06  0.12000E+06
+   8.0000      0.31000E+06  0.19000E+06
+   9.0000      0.57000E+06  0.26000E+06
+  10.0000      0.90000E+06  0.33000E+06
+   11.000      0.13700E+07  0.47000E+06
+   12.000      0.18400E+07  0.47000E+06
+   13.000      0.23100E+07  0.47000E+06
+   14.000      0.27800E+07  0.47000E+06
+   15.000      0.32500E+07  0.47000E+06
+   16.000      0.37200E+07  0.47000E+06
+   17.000      0.41900E+07  0.47000E+06
+   18.000      0.46600E+07  0.47000E+06
+   19.000      0.51300E+07  0.47000E+06
+   20.000      0.56000E+07  0.47000E+06
+   21.000      0.60700E+07  0.47000E+06
+  
+
+ SIP -- STRONGLY-IMPLICIT PROCEDURE SOLUTION PACKAGE
+                    VERSION 7, 5/2/2005 INPUT READ FROM UNIT   19
+ MAXIMUM OF  50 ITERATIONS ALLOWED FOR CLOSURE
+  5 ITERATION PARAMETERS
+
+          SOLUTION BY THE STRONGLY IMPLICIT PROCEDURE
+          -------------------------------------------
+ MAXIMUM ITERATIONS ALLOWED FOR CLOSURE =       50
+                 ACCELERATION PARAMETER =    1.00000    
+      HEAD CHANGE CRITERION FOR CLOSURE =    0.10000E-02
+      SIP HEAD CHANGE PRINTOUT INTERVAL =      999
+
+     5 ITERATION PARAMETERS CALCULATED FROM SPECIFIED WSEED = 0.00080000 :
+
+  0.000000E+00 0.831821E+00 0.971716E+00 0.995243E+00 0.999200E+00
+1
+                            STRESS PERIOD NO.    1, LENGTH =   2.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     2
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =  1.0000000    
+
+ BOUND. NO. LAYER   ROW   COL     STAGE      CONDUCTANCE         
+ ----------------------------------------------------------------
+      1      1      1      1       0.000          1000.0    
+      2      1      2      1       0.000          1000.0    
+      3      1      3      1       0.000          1000.0    
+      4      1      4      1       0.000          1000.0    
+      5      1      5      1       0.000          1000.0    
+      6      1      6      1       0.000          1000.0    
+      7      1      7      1       0.000          1000.0    
+      8      1      8      1       0.000          1000.0    
+      9      1      9      1       0.000          1000.0    
+     10      1     10      1       0.000          1000.0    
+     11      1     11      1       0.000          1000.0    
+     12      1     12      1       0.000          1000.0    
+     13      1      1     12       0.000          1000.0    
+     14      1      2     12       0.000          1000.0    
+     15      1      3     12       0.000          1000.0    
+     16      1      4     12       0.000          1000.0    
+     17      1      5     12       0.000          1000.0    
+     18      1      6     12       0.000          1000.0    
+     19      1      7     12       0.000          1000.0    
+     20      1      8     12       0.000          1000.0    
+     21      1      9     12       0.000          1000.0    
+     22      1     10     12       0.000          1000.0    
+     23      1     11     12       0.000          1000.0    
+     24      1     12     12       0.000          1000.0    
+
+     24 GHB CELLS
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   1, STEP   1 TIME  1.00000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     8.0000     0.19000E+06 0.31000E+06
+ 
+ SOLVING FOR HEAD 
+
+     8 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    1
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR EACH LAYER:
+          HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ LAYER  PRINTOUT  PRINTOUT  SAVE    SAVE
+ -----------------------------------------
+    1       0         0       0       0
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   1, STEP   2 TIME   2.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     12.000     0.47000E+06 0.18400E+07
+ 
+ SOLVING FOR HEAD 
+     8 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+      3.773         3.154        0.9343        0.1868       -0.2572E-01
+  (  1,  6,  7) (  1,  6,  8) (  1,  3,  9) (  1, 10,  9) (  1, 12,  7)
+    -0.6576E-02   -0.4163E-02   -0.9969E-03
+  (  1, 10,  9) (  1, 11, 10) (  1, 11, 11)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR EACH LAYER:
+          HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ LAYER  PRINTOUT  PRINTOUT  SAVE    SAVE
+ -----------------------------------------
+    1       1         0       1       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   2 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1     2.07    2.43    2.93    3.50    4.00    4.24    4.22    3.97    3.55    3.03    2.49    2.09
+   2     2.20    2.63    3.26    4.05    4.80    5.13    5.10    4.79    4.26    3.58    2.80    2.28
+   3     2.42    2.97    3.87    5.15    6.66    7.10    7.04    6.65    5.86    4.86    3.35    2.58
+   4     2.66    3.34    4.57    6.65    7.71    8.04    7.94    7.54    6.72    5.56    3.77    2.85
+   5     2.82    3.59    4.96    7.19    8.18    8.46    8.33    7.93    7.12    5.89    4.00    3.02
+   6     2.86    3.65    5.07    7.33    8.30    8.57    8.43    8.02    7.22    5.97    4.06    3.06
+   7     2.77    3.53    4.91    7.15    8.13    8.42    8.28    7.88    7.06    5.83    3.94    2.96
+   8     2.54    3.21    4.44    6.53    7.60    7.93    7.82    7.42    6.57    5.41    3.64    2.74
+   9     2.23    2.75    3.62    4.90    6.42    6.85    6.79    6.37    5.58    4.61    3.13    2.39
+  10     1.91    2.29    2.86    3.59    4.30    4.60    4.56    4.28    3.79    3.16    2.45    1.98
+  11     1.65    1.94    2.32    2.76    3.14    3.33    3.31    3.11    2.78    2.38    1.96    1.65
+  12     1.52    1.75    2.05    2.37    2.63    2.76    2.74    2.58    2.33    2.02    1.72    1.48
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    2, STRESS PERIOD   1
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     HEAD DEP BOUNDS =           0.0000       HEAD DEP BOUNDS =           0.0000
+     RESERV. LEAKAGE =     1351890.3750       RESERV. LEAKAGE =     1006890.3750
+
+            TOTAL IN =     1351890.3750              TOTAL IN =     1006890.3750
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =     1283286.2500               STORAGE =      950191.8125
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     HEAD DEP BOUNDS =       68620.8906       HEAD DEP BOUNDS =       56722.7422
+     RESERV. LEAKAGE =           0.0000       RESERV. LEAKAGE =           0.0000
+
+           TOTAL OUT =     1351907.1250             TOTAL OUT =     1006914.5625
+
+            IN - OUT =         -16.7500              IN - OUT =         -24.1875
+
+ PERCENT DISCREPANCY =          -0.00     PERCENT DISCREPANCY =          -0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    2 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH  86400.      1440.0      24.000     1.00000     2.73785E-03
+ STRESS PERIOD TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+         TOTAL TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+1
+1
+                            STRESS PERIOD NO.    2, LENGTH =   2.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     2
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =  1.0000000    
+
+ REUSING NON-PARAMETER GHB CELLS FROM LAST STRESS PERIOD
+
+     24 GHB CELLS
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   2, STEP   1 TIME   3.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     13.000     0.47000E+06 0.23100E+07
+ 
+ SOLVING FOR HEAD 
+
+     8 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    2
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR EACH LAYER:
+          HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ LAYER  PRINTOUT  PRINTOUT  SAVE    SAVE
+ -----------------------------------------
+    1       0         0       0       0
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   2, STEP   2 TIME   4.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     14.000     0.47000E+06 0.27800E+07
+ 
+ SOLVING FOR HEAD 
+     8 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+      1.015        0.9675        0.4340        0.5330E-01   -0.5397E-02
+  (  1,  9, 10) (  1,  1, 10) (  1, 11,  4) (  1,  2,  4) (  1,  2,  3)
+     0.1282E-02    0.1056E-02    0.3297E-03
+  (  1, 10,  3) (  1, 11,  3) (  1, 12,  1)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR EACH LAYER:
+          HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ LAYER  PRINTOUT  PRINTOUT  SAVE    SAVE
+ -----------------------------------------
+    1       1         0       1       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   2 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1     5.23    5.92    6.75    7.63    8.42    8.94    9.15    9.06    8.68    8.03    7.21    6.42
+   2     5.37    6.11    7.05    8.10    9.07    9.65    9.87    9.78    9.38    8.64    7.59    6.68
+   3     5.59    6.44    7.59    9.01   10.48   11.11   11.31   11.22   10.83    9.99    8.24    7.09
+   4     5.83    6.79    8.20   10.19   11.32   11.86   12.03   11.93   11.52   10.61    8.72    7.44
+   5     5.99    7.01    8.53   10.64   11.70   12.20   12.36   12.25   11.82   10.88    8.96    7.64
+   6     6.00    7.05    8.60   10.73   11.78   12.27   12.43   12.31   11.88   10.93    9.00    7.67
+   7     5.86    6.88    8.41   10.53   11.61   12.11   12.27   12.16   11.74   10.79    8.84    7.51
+   8     5.57    6.51    7.91    9.95   11.10   11.64   11.82   11.72   11.31   10.38    8.43    7.15
+   9     5.17    5.98    7.09    8.50   10.03   10.65   10.86   10.77   10.39    9.54    7.74    6.60
+  10     4.77    5.44    6.29    7.27    8.19    8.73    8.93    8.85    8.48    7.79    6.79    5.95
+  11     4.44    5.02    5.70    6.42    7.07    7.50    7.67    7.59    7.27    6.74    6.05    5.40
+  12     4.27    4.79    5.39    6.00    6.53    6.90    7.05    6.97    6.69    6.23    5.67    5.11
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    2, STRESS PERIOD   2
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     HEAD DEP BOUNDS =           0.0000       HEAD DEP BOUNDS =           0.0000
+     RESERV. LEAKAGE =     2770540.0000       RESERV. LEAKAGE =      640179.1250
+
+            TOTAL IN =     2770540.0000              TOTAL IN =      640179.1250
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =     2452313.0000               STORAGE =      495440.7500
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     HEAD DEP BOUNDS =      318248.2812       HEAD DEP BOUNDS =      144740.9375
+     RESERV. LEAKAGE =           0.0000       RESERV. LEAKAGE =           0.0000
+
+           TOTAL OUT =     2770561.2500             TOTAL OUT =      640181.6875
+
+            IN - OUT =         -21.2500              IN - OUT =          -2.5625
+
+ PERCENT DISCREPANCY =          -0.00     PERCENT DISCREPANCY =          -0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    2 IN STRESS PERIOD    2
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH  86400.      1440.0      24.000     1.00000     2.73785E-03
+ STRESS PERIOD TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+         TOTAL TIME 3.45600E+05  5760.0      96.000      4.0000     1.09514E-02
+1
+1
+                            STRESS PERIOD NO.    3, LENGTH =   5.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     5
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =  1.0000000    
+
+ REUSING NON-PARAMETER GHB CELLS FROM LAST STRESS PERIOD
+
+     24 GHB CELLS
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   3, STEP   1 TIME   5.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     12.000     0.47000E+06 0.18400E+07
+ 
+ SOLVING FOR HEAD 
+
+     6 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR EACH LAYER:
+          HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ LAYER  PRINTOUT  PRINTOUT  SAVE    SAVE
+ -----------------------------------------
+    1       0         0       0       0
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   3, STEP   2 TIME   6.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1    10.0000     0.33000E+06 0.90000E+06
+ 
+ SOLVING FOR HEAD 
+     6 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   3, STEP   3 TIME   7.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     8.0000     0.19000E+06 0.31000E+06
+ 
+ SOLVING FOR HEAD 
+     6 ITERATIONS FOR TIME STEP   3 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   3, STEP   4 TIME   8.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     6.0000      0.0000      0.0000    
+ 
+ SOLVING FOR HEAD 
+     6 ITERATIONS FOR TIME STEP   4 IN STRESS PERIOD    3
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+
+ RESERVOIR CONDITIONS FOR STRESS PERIOD   3, STEP   5 TIME   9.0000    
+  RESERVOIR   HEAD         AREA        VOLUME
+  ----------------------------------------------
+       1     4.0000      0.0000      0.0000    
+ 
+ SOLVING FOR HEAD 
+     5 ITERATIONS FOR TIME STEP   5 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.2055       -0.2675       -0.1547       -0.2046E-01    0.8916E-03
+  (  1,  1,  8) (  1,  2,  9) (  1,  5,  8) (  1,  5,  7) (  1,  1, 11)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR EACH LAYER:
+          HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ LAYER  PRINTOUT  PRINTOUT  SAVE    SAVE
+ -----------------------------------------
+    1       1         0       1       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   5 IN STRESS PERIOD    3
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1     5.81    6.32    6.76    7.11    7.37    7.52    7.57    7.50    7.32    7.02    6.61    6.10
+   2     5.81    6.32    6.75    7.10    7.36    7.52    7.57    7.50    7.32    7.02    6.61    6.10
+   3     5.80    6.31    6.74    7.09    7.35    7.51    7.55    7.49    7.31    7.01    6.60    6.09
+   4     5.79    6.30    6.73    7.08    7.33    7.49    7.54    7.47    7.29    6.99    6.59    6.07
+   5     5.77    6.27    6.71    7.05    7.31    7.46    7.51    7.45    7.27    6.97    6.56    6.05
+   6     5.74    6.24    6.67    7.02    7.27    7.43    7.47    7.41    7.23    6.94    6.53    6.02
+   7     5.70    6.21    6.64    6.98    7.23    7.38    7.43    7.37    7.19    6.89    6.49    5.98
+   8     5.66    6.17    6.59    6.93    7.18    7.33    7.38    7.31    7.13    6.84    6.44    5.94
+   9     5.62    6.12    6.54    6.88    7.13    7.28    7.33    7.26    7.08    6.79    6.39    5.89
+  10     5.59    6.08    6.50    6.84    7.09    7.24    7.28    7.21    7.03    6.74    6.35    5.85
+  11     5.56    6.05    6.47    6.81    7.05    7.20    7.24    7.17    6.99    6.71    6.31    5.82
+  12     5.54    6.03    6.45    6.79    7.03    7.18    7.22    7.15    6.97    6.69    6.29    5.80
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    5, STRESS PERIOD   3
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =      671650.1875               STORAGE =      140131.1094
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     HEAD DEP BOUNDS =           0.0000       HEAD DEP BOUNDS =           0.0000
+     RESERV. LEAKAGE =     3088022.5000       RESERV. LEAKAGE =           0.0000
+
+            TOTAL IN =     3759672.7500              TOTAL IN =      140131.1094
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =     2625537.2500               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+     HEAD DEP BOUNDS =     1098479.7500       HEAD DEP BOUNDS =      140112.0156
+     RESERV. LEAKAGE =       35687.6602       RESERV. LEAKAGE =           0.0000
+
+           TOTAL OUT =     3759704.5000             TOTAL OUT =      140112.0156
+
+            IN - OUT =         -31.7500              IN - OUT =          19.0938
+
+ PERCENT DISCREPANCY =          -0.00     PERCENT DISCREPANCY =           0.01
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    5 IN STRESS PERIOD    3
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH  86400.      1440.0      24.000     1.00000     2.73785E-03
+ STRESS PERIOD TIME 4.32000E+05  7200.0      120.00      5.0000     1.36893E-02
+         TOTAL TIME 7.77600E+05  12960.      216.00      9.0000     2.46407E-02
+1
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2013/07/31 13:33:56
+ Elapsed run time:  0.024 Seconds
+

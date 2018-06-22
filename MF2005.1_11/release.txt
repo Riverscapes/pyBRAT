@@ -1,0 +1,404 @@
+release.txt
+
+                           MODFLOW-2005 Release Notes
+
+     This file describes changes introduced into MODFLOW-2005 with each
+official release; these changes may substantially affect users. In this
+file, packages are referred to by their 3-or 4-character abbreviation. 
+For information and references related to these packages, see mf2005.txt
+("Summary of MODFLOW-2005").
+
+NOTE: Any use of trade, product or firm names is for descriptive purposes 
+      only and does not imply endorsement by the U.S. Government.
+
+o Version 1.11.0 08/08/2013
+    GEF2SWI27 -- This is the Seawater Intrusion (SWI2) Package, which has
+       been added.
+    GWF2STR7 -- Added free format input option, which is used when the BAS
+       Package FREE option is specified.
+    UTL7 -- The ULSTRD list reading utility subroutine was modified to
+         allow lists to be read from binary files.  See file the revised
+         ULSTRD input instructions in file RevisedMF2005Input.pdf .
+    GWF2WEL7 -- WEL Package is no longer deactivated when there are 0
+       wells.
+    PCGN -- Removed non-standard KIND statements.
+
+o Version 1.10.0 03/06/2013
+    OBS2BAS7, OBS2CHD7, OBS2DRN7, OBS2GHB7, OBS2RIV7, OBS2STR7 -- Added 
+       NOPRINT option to turn off the output of data in the Listing File.
+       See the input instructions in OBS.pdf .
+    GWF2MNW27 -- a number of problems were fixed as described in
+       readme_MNW2.txt .
+    PCGN2 -- Corrected logic error that resulted in excessive inner
+       interations in the first outer iteration of a time step.  This
+       correction reduces execution time.
+    GWF2BAS7 -- In the Name File for DATA and DATA(BINARY) files, the
+       "OLD" option indicates that the file must already exist; however,
+       the file was previously opened with the READWRITE action specifier.
+       A modification has been made so that such files are opened with the
+       READ action specifier, which allows other programs to read the files
+       while MODFLOW is running.
+    GWF2DRT7 -- Modified the open statement for OPEN/CLOSE files to
+       specify that these files are opened for READ access rather than
+       the defult READWRITE access.
+    GWF2SFR7, GWF2LAK7, GWF2UZF1, GWF2GAG7 -- See file
+       LAK_SFR_UZF_updates_MF2005.txt for a description of changes.
+
+o Version 1.9.01 05/01/2012
+    GWF2BAS7 -- Fixed bug that caused MODFLOW to incorrectly continue
+       execution when solver closure criteria are not met and the
+       percent budget error is negative.  The bug occurred even when the
+       new STOPERROR option was not being used.
+      
+o Version 1.9.0 03/30/2012
+    GWF2BAS7 -- Added an option, STOPERROR, to specify a budget criterion
+       that allows a simulation to continue running even if the solver
+       closure criteria are not met.  "STOPERROR" is an optional keyword
+       that can be specified in the options list (input item 1) of the Basic
+       (BAS) Package input file.  The real number, STOPER, must follow
+       the keyword.  STOPER is a percent discrepancy that is compared to the
+       budget percent discrepancy when the solver convergence criteria are
+       not met.  Execution will continue unless the budget percent
+       discrepancy is greater than STOPER. 
+       Added information in the listing file about the precision of
+       variables.  This shows whether the code was compiled used mixed
+       double and single precision or full double precision. Increased the
+       number of digits used for printing the number of time steps in
+       some format statements.
+       Increased the number of digits used for printing the time step from
+       3 to 5 in several places.
+    GWF2STR7 -- Added support for compact budget and auxiliary data.  For
+       example, this allows the specification of IFACE for use with
+       MODPATH.  The auxiliary data are defined as in the other packages,
+       such as the RIV Package, that allow auxiliary data.
+    GWF2FHB7 -- Added the functionality to write the FHB IAUX input variable
+       for flow boundaries into the budget file as the MODPATH IFACE
+       variable.  This happens automatically if COMPACT BUDGET AUXILIARY
+       is specified in the Output Control file.
+    GWF2LPF7 -- Added an option to turn off the checking that a value is 
+       defined for all cells when parameters are used to define layer data.
+       This option is implemented by specifying the keyword "NOPARCHECK" as
+       one of the options in input Item 1 of the LPF input file.
+    GWF2SFR7 --  A number of changes were made, including some new options.
+       The changes, including modified input instructions, are described 
+       in file LAK_SFR_UZF_updates_MF2005.txt. Input files for the prior
+       release 1.8 of MODFLOW-2005 continue to work.  Consolidated SFR
+       input instructions are included in file:
+                    Updated_SFR2_input_instructions_MF2005.pdf .
+    GWF2LAK7 -- A number of changes were made, including a new option to
+       specify lake bathymetry data through external files. The changes,
+       including modified input instructions, are described in file
+       LAK_SFR_UZF_updates_MF2005.txt. Input files for the prior release
+       1.8 of MODFLOW-2005 continue to work.
+    GWF2UZF7 -- A number of changes were made, including some new options.
+       The changes, including modified input instructions, are described
+       in file LAK_SFR_UZF_updates_MF2005.txt. Input files for the prior
+       release 1.8 of MODFLOW-2005 continue to work.
+    PCGN2 -- Added the PCGN solver.
+    GWF2MNW27 -- A bug was fixed that affected simulations when both MNW2
+       and the HUF Package were used in the same simulation in conjunction
+       with the partial penetration correction. The variable KY is now
+       declared as a Double Precision variable instead of being implicitly
+       assumed (incorrectly) to be an Integer variable.  A number of minor
+       changes were made in Format statements to produce a cleaner output
+       file.  In Subroutines GWF2MNW27BCF and GWF2MNW27HUF, corrections
+       were made to assure the correct check is made for steady-state or
+       transient conditions and to prevent a divide by zero error if a cell
+       is dry. A bug was fixed for the calculation of angles theta and omega
+       for slanted wells with an orientation into the southwest directional
+       quadrant.  Fixed a bug that caused erroneous values to be written to
+       the compact budget file (specifically, for inactive MNW wells),
+       although the numerical solution was accurate, as were the budget
+       numbers written in the main listing file.
+    LMT7 -- Updated the code to support MNW2. Data handling was updated to
+       support use in the Local Grid Refinement (LGR) version of MODFLOW.
+       The input file is unchanged
+    GWF2GHB7 -- Fixed bug that prevented NO PRINT option from working.
+    OBS2BAS7 -- Fixed a problem with multi-layer head observations.
+       Observations involving an interpolation to a single neighboring cell
+       were incorrectly eliminated.
+    GMG7 -- Fixed a problem that caused MODFLOW to abort in some rare
+       conditions.
+    SIP7 -- Modified SIP to avoid failure in the unusual situation that head
+       change is 0 at all cells for an iteration.
+    PCG7 -- Fixed a memory access error when the polnomial preconditioner
+       is used. Added IHCOFADD option. When an active cell is surrounded
+       by dry cells, the cell normally converts to dry.  The new option
+       causes the cell to convert to dry only if storage and head-dependent
+       boundary flow are also 0.  IHCOFADD is a 4th integer input item read
+       on the first input line.  A non-zero value activates the option.  An
+       unspecified or 0 value turns the option off.
+    DE47 -- Modified code to allow a solution to occur for a single-cell
+       model.
+    GWF2SUB7 -- Fixed an uninitialized variable that caused MODFLOW to abort
+       in some situations.
+    GWF2HUF7 -- Fixed a bug that caused flow across some cell faces to be
+       incorrectly saved in the budget file, which affected Modpath. Fixed
+       A bug that caused an array to go out of bounds in some situations.
+       Fixed a bug that caused excessive time to be spent substituting
+       parameter values for arrays.
+
+o Version 1.8.0 12/18/2009
+    Added MNW2 Package.  This is an alternative to the original MNW
+       Package, which is referred to as MNW1.  MNW1 remains in
+       MODFLOW-2005, but both packages cannot be used in the same
+       simulation.
+    GWF2SFR7 -- Runoff generated by the UZF Package was not being added
+       to the assigned stream reaches within the Formulate routine of the
+       SFR2 Package; however, this runoff was being added to stream
+       reaches within the Budget routine, which caused mass balance
+       errors. The bug has been corrected.
+    GWF2UZF1 -- Fixed a problem in which UZF was obtaining 0 for the
+       vertical K when the top layer is inactive.  UZF will
+       now obtain vertical K from the uppermost active layer.
+    GWF2LAK7 -- Two minor bugs were corrected -- see readme_LAK.pdf.
+
+o Version 1.7.0 9/23/2009
+    GWF2BAS7 -- Added MXITER to the GLOBAL Module so that a different
+       value can be used for each grid when using Local-Grid Refinement
+       (LGR).  This change has no impact if LGR is not being used.
+    Added observations from the Streamflow-Routing Package (STR) to the
+       Observation Process.
+    GWF2ETS7 -- Added option (NESTOP=3) to cause ET to be applied to the
+       uppermost active cell in each horizontal location.
+    GWF2SFR7 --  A bug was fixed that caused the model to fail to
+       converge or to produce erroneous results in simulations with
+       transient streamflow routing when the ICALC=3 option was used.
+       Another bug was found in the calculations of mid-point flow, which
+       is printed to the gage output. This erroneous streamflow
+       calculation did not affect anything other than the printed
+       streamflow at the mid-point of a stream reach to the gage file.
+       See file readme_SFR.pdf in the doc\Updates directory for the full
+       history of SFR changes and information about updated SFR input
+       instructions.
+    GWF2UZF1.f -- A bug was fixed that affected the value of the
+       UZF input variable VKS. The error occurred if the vertical
+       hydraulic conductivity for UZF was specified in the LPF input
+       file and if the LPF input variable LAYVKA was not set to 0, such
+       that the LPF input variable VKA is the ratio of horizontal
+       to vertical hydraulic conductivity.  A bug was fixed in which UZF
+       was not allowing recharge and discharge to be simulated for dry
+       lake cells when the LAK Package was being used.  Another bug was
+       fixed that, in some cases, caused water content profiles to be
+       incorrectly printed in separate files. This bug did not affect
+       simulation results.  Finally, the options for writing unsaturated
+       flow budget files were changed.  See file readme_UZF.pdf in the
+       doc\Updates directory for the full history of UZF changes.
+    GWF2LAK7.f -- To allow the user to better assess the reliability of
+       the lake calculations, time-step and cumulative mass-balance errors
+       (as percent discrepancy) are calculated for each lake and have been
+       added to the lake budget output information in the main listing file
+       and to the gage output file for a lake.  The Lake Package was also 
+       modified to always write IFACE values when saving data to a compact
+       budget file. This will facilitate enhanced  compatibility and
+       consistency with MODPATH.  Modifications were made to the code to
+       better evaluate the lake volume and changes to lake volume for each
+       time step and to allow the lake to drain and fill on the basis of
+       surface water and groundwater inflows and outflows.  See file
+       readme_LAK.pdf in the doc\Updates directory for the full history of
+       LAK changes.
+    GWF2GAG7.f -- Two new output options have been added to the Stream and
+       Lake Gaging (GAGE) Package. An option has been added for Stream
+       output to list selected budget components summed over all stream
+       reaches when unsaturated flow is simulated (OUTTYPE = 8) and an
+       option has been added for Lake output to print volumetric flow rates
+       at a Lake gage (OUTTYPE = 4). See file Gage7_input_instructions.pdf
+       in the doc\Updates directory for complete descriptions of the options.
+
+o Version 1.6.02 6/5/2009
+    OBS2BAS7 -- Fixed a bug that incorrectly caused some multi-layer
+       head observations to be eliminated because dry cells were being
+       checked in the wrong layer.
+    HUF2 -- Fixed a bug that sometimes caused the interpolated head in 
+       hydrogeologic units to be incorrectly calculated.
+    OBS2 -- Additional digits included in the output of simulated
+       equivalents.
+    GWF2BAS7 -- Increased maximum number of clusters and instances for 
+       defining parameters.
+      
+o Version 1.6.01 3/4/2009
+    GWF2SFR7 -- Fixed the problem in which the new NUMTIM and WEIGHT
+       variables that are read when using the transient routing option
+       (IRTFLG>0) were ignored. Also added the FLWTOL variable, which is
+       documented in the readme_SFR.txt file.
+      
+o Version 1.6.00 1/23/2009
+   GWF2BAS7 -- Changed the message printed when the solver does not meet
+       convergence criteria. Old message: "FAILED TO CONVERGE ...". New 
+       message: "FAILED TO MEET SOLVER CONVERGENCE CRITERIA ...".  The
+       maximum number of parameters has been increased from 999 to 2000.
+   Main program -- Fixed bug that caused numerical error messages from SIP,
+       PCG, and DE4 solvers to print multiple times.
+   PCG7 -- Added statement to write locations of isolated cells that are
+       converted to no flow.
+       The code was modified to set DAMPPCG to 1.0 if the user specifies it
+       as 0.0. Similarly, DAMPPCGT is set to 1.0 if the user specifies it as
+       0.0 
+   GWF2SWT7 and GWF2SUB7 -- Fixed the problem in which a divide-by-zero
+      error occurred when these packages were used with a steady-state
+      stress period with PERLEN specified as 0.0 .
+   GWF2HUF7 -- Fixed bug in which error messages identifying problems
+       with vertical conductance calculations specified reversed row and
+       column indices.
+       A bug was fixed to allow proper calculation of SC1. Previously,
+       the method of computing SC1 allowed the portion of an HGU that is
+       above the topmost active cell or below the bottommost active cell 
+       to be included in the HGU thickness within those cells.
+   GWF2SFR7 -- Added a check for values of streambed thickness that are
+       zero.  Removed duplicate declaration of variables NHUF and HGUVANI.
+       Added definitions of NUMTIM and WEIGHT to the readme_SFR.txt file.
+   GWF2LAK7 -- Reactivated the capability to use LAK with the HUF PAckage.
+   GWF2UZF1 -- Removed duplicate declaration of LAYTYP.
+   GMG7 -- Fixed bug that caused a file unit error when IADAMPGMG was 1 or 2.
+   Added HYDMOD -- This saves data for producing hydrographs.
+   Added LMT7 -- This is the link to the MT3DMS transport code.
+   OBS2BAS7 -- Fixed a bug that caused incorrect values for multi-layer
+       head oservations.  Incorrect weights were being used in some
+       situations.
+   GWF2BCF7 -- Fixed problem in which input items 1 and 2 were read with
+       free format even when fixed format was specified.
+   GWF2LPF7 -- Added the NOVFC option, which turns off the vertical flow
+       correction under dewatered conditions.  This option turns off the
+       vertical flow calculation described on p. 5-8 of USGS Techniques
+       and Methods Report 6-A16 and the vertical conductance correction
+       described on p. 5-18 of that report.  To activate the NOVFC option,
+       use the keyword NOVFC as the Options Variable at the end of Item 1
+       in the LPF Package input file (see Options variable on pages 8-28
+       and 8-29 of TM 6-A16).
+
+o Version 1.5.00 4/28/2008
+   PCG7 -- Added capability to use different damping factors for transient
+       and steady-state stress periods. See readme_PCG.txt.
+   GWF2LPF7, GWF2BCF7, GWF2HUF7 -- Set HNEW=HNOFLO when a cell initially
+       has all transmissive terms as 0 rather than setting HNEW=888.88 .
+   GWF2BAS7 --  Added variable HDRY to module GWFBASMODULE.  The LPF, BCF,
+       HUF, MNW, UZF, and SFR Packages were modified to access HDRY through
+       GWFBASMODULE.
+       Added the ability to change the reference time step when computing
+       drawdown, which was also an option in MODFLOW-2000.  This is done
+       through the Output Control option. For each time step for which
+       output is desired, "DDREFERENCE" can be optionally specified at the
+       end of any "PERIOD n STEP n" line, and indicates that the heads
+       calculated at the end of the associated stress period and time step
+       are to be used as the reference heads for calculating drawdown for
+       all subsequent time steps up to the next occurrence of DDREFERENCE.
+       By default, the initial heads will be used for calculating drawdown.
+       For example, if the user specifies the following input line:
+          PERIOD 2 STEP 1 DDREFERENCE
+       then heads calculated at the end of time step 1 in stress period 2
+       will be used as the reference heads for calculating drawdown until
+       DDREFERENCE occurs in another "PERIOD n STEP n" line.
+   GWF2GAG7 -- Removed duplicate reference to variable RNF in the
+       USE GWFLAKMODULE statement in SGWF2GAG7LO.
+   OBS2BAS7 -- Fixed a problem where a head observation was incorrectly
+       omitted when some of the neighboring cells used in the horizontal
+       spatial interpolation were dry.
+   GWF2SFR7FM -- Fixed precision problem that caused convergence problems
+       for steady-state time steps.  Updated to the version used in GSFLOW.
+       See readme_SFR.txt.
+   GWF2LAK7 and GWF2UZF1 -- Updated to the version used in GSFLOW.  UZF
+       has a small change in input data.  See readme_LAK.txt and
+       readme_UZF.pdf.
+   GWF2CHD7, GWF2GHB7, GWF2RIV7, GWF2DRN7 -- Fixed bug that caused the
+       program to stop when the NOPRINT option is used with parameters.
+   GWF2HUF7 -- A bug was fixed to allow proper handling of SY parameters.
+       HUF was also modified to calculate vertical hydraulic conductivity
+       and specific yield for all cells in the uppermost cells at the
+       beginning of the simulation as required for use with UZF. See
+       readme_HUF.txt.
+
+o Version 1.4.00  11/02/2007
+   Added SUB-WT Package
+   GMG -- Added adaptive damping option as documented in "GMG_Damping.pdf"
+       and "Banta_damping_paper.pdf" in the doc directory.
+   GWF2LAK7 -- Corrected precision declaration for functions FINTERP,
+       DERIVTERP, and OUTFLWTERP.
+
+o Version 1.3.01
+   GWF2BAS7 -- MXPAR, the maximum number of parameters, increased from
+       500 to 999.
+
+o Version 1.3
+   GWF2GAG7 -- Removed duplicate reference to RNF in USE statement in
+       subroutine SGWF2GAG7LO.  Modifications to format statements.
+   GWF2UZF1 -- Fixed memory allocation problem when using UZF to simulate
+       discharge to land surface while not simulating unsaturated flow.
+       The calculation was changed for simulating head-dependent recharge
+       and discharge when the ground-water head is near or above land
+       surface.
+   GWF2SFR7 -- Fixed logic for reading mixed parameter and nonparameter
+       input data.
+   GWF2SFR7 -- Fixed problem where FLOWC was uninitialized when ICALC=0.
+       Added ability for SFR to be used with HUF.
+   GWF2RCH7, GWF2EVT7, GWF2ETS7 -- Added a check to not use the layer
+       indicator value if the indicator value is 0.
+   OBS2BAS7 -- Changed format for saving observations in a disk file to
+       write less digits..
+   OBS2BAS7 -- Fixed problem with head-change observations at cells that
+       have an initally dry simulated value, but values at later time are
+       wet.  The later values were being computed based on the dry value,
+       and now all of the values at later times will be dry.
+
+o Version 1.2.01  10/24/2006
+   GWF2SFR7 -- A bug was discovered in SFR7 when NSTRM is postive or when
+       NSTRM is negative and ISFROPT is 0. The error  occurs because record
+       6 is not read after the first stress period. This causes the read
+       sequence following stress period 2 to be incorrect. Many different
+       problems can occur due to this bug, including stopping of the model.
+
+o Version 1.2  10/16/2006
+   Added SFR, LAK, UZF, and GAG Packages
+   GWF2MNW7 -- Converted PLOSS to double precision
+   DE47 -- Added missing arguments in the call from MAIN to DE47AP
+   KDEP capability in GWF2HUF2 -- Corrected memory allocation for GS array
+          when IFKDEP is 0.
+   GWF2DRT7 -- A bug that caused a budget error when a drain-return cell 
+       is inactive has been fixed.  Now, if the return cell is inactive
+       (IBOUND=0) or constant-head (IBOUND<0), no return flow takes place,
+       and all drain flow exits the model.  Also a bug that caused an error
+       reading non-parameter data was fixed.
+   GWF2SUB7 -- Modified to allow comment lines to be inserted into the SUB
+       input file anywhere except where arrays are to be read by one of the
+       array-reader subroutines (U2DREL or U2DINT).
+
+Note to users of the Hydraulic-Conductivity Depth-Dependence (KDEP) capability:
+The memory allocation error for the GS array exists in the KDEP code
+beginning with its first release in version 1.12 of MODFLOW-2000 (MF2K)
+and continuing through version 1.15 of MF2K. The error was fixed beginning
+with version 1.16. The error also occurs in versions 1.0 and 1.1 of
+MODFLOW-2005.  The error has been found to cause problems in some (but not all)
+models that specify input variable IFKDEP equal to 0. Variable IFKDEP is a flag
+indicating the source of the array specifying reference-surface elevations used
+for the depth-dependent hydraulic-conductivity calculations. When IFKDEP = 0,
+the TOP array specified in the Discretization Package Input File is used; when
+IFKDEP = 1, the array is specified in the KDEP input file (variable RS). In
+some circumstances, specification of IFKDEP = 0 led to inadequate allocation
+of memory for the reference surface.  The error could cause errors in some of
+the budget calculations.  Models that specify IFKDEP = 1 should not be affected
+by this error.  If users are uncertain whether their simulations using KDEP are
+affected by this error, they are encouraged to run their data sets with MF2K
+version 1.16 (or higher) or MODFLOW-2005 version 1.2 (or higher) and compare the
+new results with those of the earlier version.
+
+
+o Version 1.1  05/18/2006
+   SGWF2LPF7DA -- Corrected deallocation statements for several variables
+   hufutl7.f -- Removed some unused code
+   De47.f -- Moved several variables into DE4MODULE to support Local Grid
+             Refinement (LGR)
+   GWF2BAS7AR -- added MFVNAM as an argument to allow different versions of
+                 MODFLOW to print a different version name -- e.g. MODFLOW-LGR
+                 as opposed to MODFLOW-2005.
+   Added DRT, ETS, RES, and SUB packages
+   Added Observation (OBS) Process
+   GWF2MNW7RP -- Corrected HDRY value when HUF is used
+              -- Fixed initialization problem with variable ICMN.
+   GWF2MNW7 -- Added an 18th element to the WELL2 list to store a well
+               identifier
+   GWF2STR7 -- Increased the number of digits for output of streamflow terms
+               in the Listing File.
+
+o Version 1.00 01/15/2006:
+
+This version is the initial release.
+

@@ -4,8 +4,10 @@ import os
 import numpy as np
 from osgeo import gdal
 
+import arcpy
+
 class BDflopy:
-    def __init__(self, modflowexe, indir, modeldir, outdir, demfilename):
+    def __init__(self, modflowexe, indir, modeldir, outdir, dempath):
         """
         Initialize BDflopy class.
 
@@ -13,16 +15,17 @@ class BDflopy:
         :param indir: Path to directory of raster inputs for BDSWEA.
         :param modeldir: Path to directory of outputs from BDSWEA.
         :param outdir: Path to directory where output files will be genearted.
-        :param demfilename: Name of DEM file in the input directory (e.g. 'dem.tif').
+        :param dempath: path to the dem file
 
         """
         self.modflowexe = modflowexe
         self.indir = indir
         self.modeldir = modeldir
         self.outdir = outdir
+        self.dempath = dempath
         if not os.path.isdir(self.outdir):
             os.makedirs(self.outdir)
-        self.setVariables(demfilename)
+        self.setVariables()
         self.setPaths()
         self.loadBdsweaData()
 
@@ -126,16 +129,13 @@ class BDflopy:
         self.setHeadPaths()
         self.setIBoundPaths()
 
-    def setVariables(self, demfilename):
+    def setVariables(self):
         """
         Set class variables.
-
-        :param demfilename: Name of DEM raster file.
 
         :return: None
         """
         self.driver = gdal.GetDriverByName('GTiff')
-        self.dempath = self.indir + "/" + demfilename
         demds = gdal.Open(self.dempath)
         self.geot = demds.GetGeoTransform()
         self.prj = demds.GetProjection()
@@ -238,7 +238,7 @@ class BDflopy:
             flopy.modflow.ModflowOc(self.mf[i])
             flopy.modflow.ModflowPcg(self.mf[i])
             self.mf[i].write_input()
-            print "MODFLOW " + self.mfnames[i] + " input written"
+            arcpy.AddMessage("MODFLOW " + self.mfnames[i] + " input written")
 
     def runModflow(self):
         """
@@ -248,7 +248,7 @@ class BDflopy:
         """
         for i in range(0, len(self.mf)):
             success, buff = self.mf[i].run_model()
-            print self.mfnames[i] + " model done"
+            arcpy.AddMessage(self.mfnames[i] + " model done")
 
     def saveResultsToRaster(self):
         """

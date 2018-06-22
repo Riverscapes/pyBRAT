@@ -1,0 +1,383 @@
+File problems.txt
+
+This file briefly describes the test problems distributed with
+MODFLOW-2005.  For each test problem, the name of the name file is
+the name of the test problem followed by a period and the extension
+"nam".  All files for a given test problem share the test-problem name
+as a common filename base.
+
+1. Test problem twri:
+
+  The example problem in Harbaugh (2005) without parameters
+
+  Grid dimensions: 3 Layers, 15 Rows, 15 Columns
+  Stress periods: 1 steady
+  Flow package: BCF
+  Stress packages: WEL, DRN, RCH
+  Solver: SIP
+  Types of parameters defined / package: none
+  
+2. Test problem twrip:
+
+  The example problem in Harbaugh (2005) with parameters
+
+  Grid dimensions: 3 Layers, 15 Rows, 15 Columns
+  Stress periods: 1 steady
+  Flow package: LPF
+  Stress packages: WEL, DRN, RCH
+  Solver: SIP
+  Types of parameters defined / package:
+    HK / LPF
+    VKCB / LPF
+    Q / WEL
+    DRN / DRN
+    RCH /RCH
+  
+
+3. Test problem BCF2SS:
+
+  Problem 1 in McDonald and others (1992) converted to MODFLOW-2005
+
+  Grid dimensions: 2 Layers, 10 Rows, 15 Columns
+  Stress periods: 2 steady
+  Flow package: BCF
+  Stress packages: WEL, RCH, RIV
+  Solver: PCG
+
+4. Test problem STR:
+
+  The example problem in OFR 88-729 (1989) converted to MODFLOW-2005
+
+  Grid dimensions: 1 Layers, 6 Rows, 6 Columns
+  Stress periods: 1 steady
+  Flow package: BCF
+  Stress packages: STR
+  Solver: SIP
+
+5. Test problem FHB:
+
+  The example problem in Leake and Lilly (1997) converted to MODFLOW-2005
+
+  Grid dimensions: 1 Layers, 3 Rows, 10 Columns
+  Stress periods: 3 transient
+  Flow package: BCF
+  Stress packages: FHB
+  Solver: SIP
+
+    
+6. Test problem mnw1:
+
+  Problem documented in Halford and Hanson (2002), modified to work with
+  MODFLOW-2005.
+
+  Grid dimensions: 2 Layers, 21 Rows, 14 Columns
+  Stress periods: 1 steady, 4 transient
+  Flow package: BCF
+  Stress packages: MNW, DRN, RCH, CHD
+  Solver: PCG
+  Types of parameters defined / package: none
+  
+7. Test case tc2hufv4:
+
+  Test case described in Anderman and Hill (2000) without parameter
+  estimation
+
+  Grid dimensions: 3 Layers, 18 Rows, 18 Columns
+  Stress periods: 1 steady
+  Flow package: HUF
+  Stress packages: WEL, DRN, EVT, GHB, RCH
+  Solver: PCG
+  Types of parameters defined / package:
+    HK / HUF
+    VK / HUF
+    DRN / DRN
+    EVT / EVT
+    GHB / GHB
+    RCH / RCH
+ 
+8. Test problem twrihfb:
+
+  Example problem in Harbaugh (2005) without parameters and modified to
+  test the HFB Package.  Hydraulic conductivity of two cells is raised in
+  the BCF input, and horizontal barriers are added to cause the
+  conductance to be nearly the same as before.
+
+  Grid dimensions: 3 Layers, 15 Rows, 15 Columns
+  Stress periods: 1 steady
+  Flow package: BCF and HFB
+  Stress packages: WEL, DRN, RCH
+  Solver: SIP
+  Types of parameters defined / package: none
+  
+9. Test case ibs2k:
+
+  This test case is the storage-depletion test problem described in
+  Leake and Prudic (1991) converted to MODFLOW-2005
+
+  Grid dimensions: 2 Layers, 10 Rows, 12 Columns
+  Stress periods: 3 transient
+  Flow package: BCF6
+  Stress packages: IBS
+  Solver: SIP
+  Types of parameters defined / package: none
+
+10. Test case RESTEST:
+
+  This test case is the example problem in Fenske and others (1996)
+  converted to MODFLOW-2005
+
+  Grid dimensions: 1 Layers, 12 Rows, 12 Columns
+  Stress periods: 3 transient
+  Flow package: BCF6
+  Stress packages: GHB, RES
+  Solver: SIP
+
+
+11. Test case etsdrt:
+
+  This test case is described in Banta (2000), but only the Ground-Water
+  Flow Process is included.  The Observation, Sensitivity, and
+  Parameter Estimation Processes were removed.
+
+  Grid dimensions: 1 Layer, 11 Rows, 11 Columns
+  Stress periods: 1 steady
+  Flow package: LPF1
+  Stress packages: DRT, ETS, RCH
+  Solver: PCG
+  Types of parameters defined / package: 
+    ETS / ETS
+    DRT / DRT
+    RCH / RCH
+    HK / LPF
+
+12. Test case tr2k_s3:
+
+  This test case is documented in Hoffman and others (2003).
+  
+  Grid dimensions: 3 Layers, 10 Rows, 10 Columns
+  Stress periods: 1 steady, 30 transient
+  Flow package: BCF6
+  Stress packages: SUB, WEL
+  Solver: SIP
+  Types of parameters defined / package: none
+
+13. Test case l1a2k:
+
+  This test case is the transient version of Test Simulation 1 in
+  Merritt and Konikow (2000) converted to MODFLOW-2005
+
+  Grid dimensions: 5 Layers, 17 Rows, 17 Columns
+  Stress periods: 1 transient
+  Flow package: BCF6
+  Stress packages: EVT, RCH, LAK, FHB
+  Solver: SIP
+  Types of parameters defined / package: none
+
+14a. Test case l1b2k:
+
+  This test case is the steady-state version of Test Simulation 1 in
+  Merritt and Konikow (2000) converted to MODFLOW-2005
+
+  Grid dimensions: 5 Layers, 17 Rows, 17 Columns
+  Stress periods: 1 steady
+  Flow package: BCF6
+  Stress packages: EVT, RCH, LAK, FHB
+  Solver: SIP
+  Types of parameters defined / package: none
+
+14b. Test case l1b2k_bath:
+
+  This test case is the steady-state version of Test Simulation 1 in
+  Merritt and Konikow (2000) converted to MODFLOW-2005. This is a 
+  modified version of l1b2k to include reading lake bathymetry
+  information from an external text file.
+
+  Grid dimensions: 5 Layers, 17 Rows, 17 Columns
+  Stress periods: 1 steady
+  Flow package: BCF6
+  Stress packages: EVT, RCH, LAK, FHB
+  Lake bathymetry file: lak1b_bath.txt 
+  Solver: SIP
+  Types of parameters defined / package: none
+
+15. Test case test1ss:
+
+  This test case is documented as the steady-state simulation 
+  of test simulation 1 in Appendix 2 of Prudic and others (2004).
+
+  Grid dimensions: 1 Layer, 15 Rows, 10 Columns
+  Stress periods: 1 steady
+  Flow package: LPF
+  Stress packages: SFR, GHB, EVT, RCH
+  Solver: SIP
+  Types of parameters defined / package: none
+
+16. Test case test1tr:
+
+  This test case is documented as the transient simulation 
+  of test simulation 1 in Appendix 2 of Prudic and others (2004).
+
+  Grid dimensions: 1 Layer, 15 Rows, 10 Columns
+  Stress periods: 2 transient
+  Flow package: LPF
+  Stress packages: SFR, GHB, EVT, RCH, WEL
+  Solver: SIP
+  Types of parameters defined / package: none
+  
+17a. Test case testsfr2:
+
+  This test case is documented as the hypothetical test simulation
+  in Niswonger and Prudic (2005).
+  
+  Grid dimensions: 1 Layer, 7 Rows, 100 Columns
+  Stress periods: 50 transient
+  Flow package: LPF
+  Stress packages: SFR, GHB
+  Solver: PCG
+  Types of parameters defined / package: none
+  
+17b. Test case testsfr2_tab:
+  
+  This test case is documented as the hypothetical test simulation
+  in Niswonger and Prudic (2005). This is a modified version of
+  the SFR2 test case to include specified inflows through 
+  tabular input files and use of key-word options. This problem
+  was also modified to use the SFR2 ICALC=1 option to test
+  smoothing of the specified width.
+  
+  Grid dimensions: 1 Layer, 7 Rows, 100 Columns
+  Stress periods: 50 transient
+  Flow package: LPF
+  Stress packages: SFR, GHB
+  Solver: PCG
+  Types of parameters defined / package: none
+  
+18.  Test case UZFtest2:
+
+  This is Test Simulation 2 documented in Niswonger, Prudic, and
+  Regan (2006).
+  
+  Grid dimensions: 1 Layer, 15 Rows, 10 Columns
+  Stress periods: 12 transient
+  Flow package: LPF
+  Stress packages: UZF, SFR, WEL, GHB
+  Solver: SIP
+  Types of parameters defined / package: none
+
+19.  Test case swtex4:
+
+  This is the example documented in Leake and Galloway (2007)
+
+  Grid dimensions 4 Layers, 20 Rows, 15 Columns
+  Stress Periods: 1 steady and 2 transient
+  Flow Package: LPF
+  Stress Packages: WEL, SWT
+  Solver: SIP
+ 
+ 20.  Test case MNW2-Fig28
+ 
+  This is the example documented in Konikow and others (2009)
+
+  Grid dimensions: 41 layers, 30 rows, 272 columns
+  Stress Periods: 1 steady and 2 transient
+  Flow Package: LPF
+  Stress packages: RCH, MNW2, WEL
+  Solver: PCG
+  Types of parameters defined / package: none
+
+21.  Test case swi2ex4sww:
+
+  This is Example 4 documented in Bakker and others (2013)
+
+  Grid dimensions: 2 layers, 61 rows, 61 columns
+  Stress Periods: 3 steady state
+  Flow Package: BCF
+  Stress packages: GHB, WEL, SWI2
+  Solver: PCG
+  Types of parameters defined / package: none
+
+
+REFERENCES
+
+Anderman, E.R., and Hill, M.C., 2000, MODFLOW-2000, the U.S. Geological
+Survey modular ground-water model -- Documentation of the
+Hydrogeologic-Unit Flow (HUF) Package: U.S. Geological Survey Open-File
+Report 00-342, 89 p.
+
+Bakker, M., Schaars, F., Hughes, J.D., Langevin, C.D., Dausman, A.M., 2013, 
+Documentation of the seawater intrusion (SWI2) package for MODFLOW: 
+U.S. Geological Survey Techniques and Methods, book 6, chap. A46, 47 p.
+
+Banta, E.R., 2000, MODFLOW-2000, the U.S. Geological Survey modular
+ground-water model -- Documentation of packages for simulating
+evapotranspiration with a segmented function (ETS1) and drains with return
+flow (DRT1): U.S. Geological Survey Open-File Report 00-466, 127 p.
+
+Fenske, J.P., Leake, S.A., and Prudic, D.E., 1996, Documentation of a
+computer program (RES1) to simulate leakage from reservoirs using the
+modular finite- difference ground-water flow model (MODFLOW): U.S.
+Geological Survey Open-File Report 96-364, 51 p.
+
+Halford, K.J. and Hanson, R.T., 2002, User guide for the Drawdown-Limited, 
+Multi-Node Well (MNW) Package for the U.S. Geological Survey's modular 
+three-dimensional finite-difference ground-water flow model, version 
+MODFLOW-96 and MODFLOW-2000: U.S. Geological Survey Open-File Report 02-293,
+33 p.
+
+Harbaugh, A.W., 2005, MODFLOW-2005, the U.S. Geological Survey modular
+ground-water model--the ground-water flow process: U.S. Geological Survey
+Techniques and Methods 6 A-16, 9 ch.
+
+Hoffmann, J., Leake, S.A., Galloway, D.L., and Wilson, A.M., 2003,
+MODFLOW-2000 Ground-Water Model--User Guide to the Subsidence and
+Aquifer-System Compaction (SUB) Package: U.S. Geological Survey Open-File
+Report 03-233, 44 p.
+
+Konikow, L.F., Hornberger, G.Z., Halford, K.J. and Hanson, R.T., 2009,
+Revised multi-node well (MNW2) package for MODFLOW ground-water flow
+model: U.S. Geological Survey Techniques and Methods 6-A30, 67 p.
+
+Leake, S.A. and Galloway, D.L., 2007, MODFLOW ground-water model -- User
+guide to the Subsidence and Aquifer-System Compaction Package (SUB-WT) for
+water-table aquifers: U.S. Geological Survey Techniques and Methods 6-A23,
+42 p.
+
+Leake, S.A., and Lilly, M.R., 1997, Documentation of a computer program
+(FHB1) for assignment of transient specified-flow and specified-head
+boundaries in applications of the modular finite- difference ground-
+water flow model (MODFLOW): U.S. Geological Survey Open-File Report
+97-571, 50 p.
+
+Leake, S.A. and Prudic, D.E., 1991, Documentation of a computer program
+to simulate aquifer-system compaction using the modular
+finite-difference ground-water flow model: U.S. Geological Survey
+Techniques of Water-Resources Investigations, Book 6, Chapter A2, 68 p.
+
+McDonald, M.G., Harbaugh, A.W., Orr, B.R., and Ackerman, D.J., 1992, A
+method of converting no-flow cells to variable-head cells for the U.S.
+Geological Survey modular finite-difference ground-water flow model:
+U.S. Geological Survey Open-File Report 91-536, 99 p.
+
+Merritt, L.M. and Konikow, L.F., 2000, Documentation of a computer
+program to simulate lake-aquifer interaction using the MODFLOW
+ground-water flow model and the MOC3D solute-transport model:  U.S.
+Geological Survey Water-Resources Investigations Report 00-4167, 146 p.
+
+Niswonger, R.G. and Prudic, D.E., 2005, Documentation of the Streamflow-
+Routing (SFR2) Package to include unsaturated flow beneath streams--
+A modification to SFR1: U.S. Geological Survey Techniques and Methods, 
+Book 6, Chap. A13, 47 p.
+
+Niswonger, R.G., Prudic, D.E., and Regan, R.S., 2006, Documentation of
+the Unsaturated-Zone Flow (UZF1) Package for modeling unsaturated flow
+between the land surface and the water table with MODFLOW-2005: U.S.
+Geological Techniques and Methods Book 6, Chapter A19, 62 p.
+
+Prudic, D.E., 1989, Documentation of a computer program to simulate
+stream-aquifer relations using a modular, finite-difference,
+ground-water flow model: U.S. Geological Survey Open-File Report
+88-729, 113 p.
+
+Prudic, D.E., Konikow, L.F., and Banta, E.R., 2004, A new streamflow-routing
+(SFR1) package to simulate stream-aquifer interaction with MODFLOW-2000:
+U.S. Geological Survey Open-File Report 2004-1042, 95 p.

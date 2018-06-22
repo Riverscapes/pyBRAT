@@ -1,0 +1,379 @@
+                                  MODFLOW-2005     
+      U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUND-WATER FLOW MODEL
+                            VERSION 1.11.00 8/8/2013
+
+ LIST FILE: etsdrt.lst
+                         UNIT   12
+#                                                                                                                                                                                                                                                                                                           
+# Global input files                                                                                                                                                                                                                                                                                        
+
+ OPENING etsdrt.dis
+ FILE TYPE:DIS   UNIT   21   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+#                                                                                                                                                                                                                                                                                                           
+# Flow process input files                                                                                                                                                                                                                                                                                  
+
+ OPENING etsdrt.bas
+ FILE TYPE:BAS6   UNIT   31   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING etsdrt.oc
+ FILE TYPE:OC   UNIT   32   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING etsdrt.lpf
+ FILE TYPE:LPF   UNIT   33   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING etsdrt.drt
+ FILE TYPE:DRT   UNIT   34   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING etsdrt.rch
+ FILE TYPE:RCH   UNIT   36   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING etsdrt.ets
+ FILE TYPE:ETS   UNIT   37   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING etsdrt.pcg
+ FILE TYPE:PCG   UNIT   39   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING etsdrt.pvl
+ FILE TYPE:PVAL   UNIT   45   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT   31
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   21
+ # DIS file for ets1, drt1, and etsdrt test cases.  Units: Days, Feet
+    1 LAYERS        11 ROWS        11 COLUMNS
+    1 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS FEET
+  Confining bed flag for each layer:
+   0
+
+                     DELR =  100.0000    
+
+                     DELC =  100.0000    
+
+ TOP ELEVATION OF LAYER 1 =  100.0000    
+
+   MODEL LAYER BOTTOM EL. =   0.00000     FOR LAYER   1
+
+
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1         0.000000          1                    1.000         SS
+
+ STEADY-STATE SIMULATION
+
+
+
+ 
+ # BAS file for ets1, drt1, and etsdrt test cases                                
+ THE FREE FORMAT OPTION HAS BEEN SELECTED
+
+
+
+                     BOUNDARY ARRAY FOR LAYER   1
+ READING ON UNIT   31 WITH FORMAT: (FREE)              
+
+ AQUIFER HEAD WILL BE SET TO  -999.00     AT ALL NO-FLOW NODES (IBOUND=0).
+
+
+
+                       INITIAL HEAD FOR LAYER   1
+ READING ON UNIT   31 WITH FORMAT: (FREE)              
+ # OC file for ets1, drt1, and etsdrt test cases
+
+ OUTPUT CONTROL IS SPECIFIED ONLY AT TIME STEPS FOR WHICH OUTPUT IS DESIRED
+ HEAD PRINT FORMAT CODE IS   8    DRAWDOWN PRINT FORMAT CODE IS   0
+ HEADS WILL BE SAVED ON UNIT    0    DRAWDOWNS WILL BE SAVED ON UNIT    0
+
+ PARAMETER VALUE INPUT FILE,  INPUT READ FROM UNIT   45
+ # PVAL file for etsdrt test case
+
+ NUMBER OF PARAMETER VALUES TO BE READ FROM PARAMETER VALUE FILE:    4
+
+ INFORMATION ON PARAMETERS LISTED IN PARAMETER FILE
+               VALUE IN
+    NAME     PARAMETER FILE
+ ----------  --------------
+ ETS-Max      0.10000E-01
+ DRT-Cond      2.0000    
+ Recharge     0.10000E-02
+ HydCond      0.50000E-01
+ -----------------------------------------------------------------------------
+ FOR THE PARAMETERS LISTED IN THE TABLE ABOVE, PARAMETER VALUES IN INDIVIDUAL
+ PACKAGE INPUT FILES ARE REPLACED BY THE VALUES FROM THE PARAMETER INPUT FILE.
+
+ LPF -- LAYER-PROPERTY FLOW PACKAGE, VERSION 7, 5/2/2005
+         INPUT READ FROM UNIT   33
+ # LPF file for etsdrt test case
+ HEAD AT CELLS THAT CONVERT TO DRY=   0.0000    
+     1 Named Parameters     
+
+   LAYER FLAGS:
+ LAYER       LAYTYP        LAYAVG         CHANI        LAYVKA        LAYWET
+ ---------------------------------------------------------------------------
+    1             1             0     1.000E+00             0             0
+
+   INTERPRETATION OF LAYER FLAGS:
+                        INTERBLOCK     HORIZONTAL    DATA IN
+         LAYER TYPE   TRANSMISSIVITY   ANISOTROPY   ARRAY VKA   WETTABILITY
+ LAYER      (LAYTYP)      (LAYAVG)       (CHANI)      (LAYVKA)      (LAYWET)
+ ---------------------------------------------------------------------------
+    1   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+
+ WETTING CAPABILITY IS NOT ACTIVE IN ANY LAYER
+
+ PARAMETERS DEFINED IN THE LPF PACKAGE
+
+ PARAMETER NAME:HydCond      TYPE:HK     CLUSTERS:   1
+ Parameter value from package file is:   5.00000E-02
+                LAYER:   1    MULTIPLIER ARRAY: NONE    ZONE ARRAY: ALL
+
+    HYD. COND. ALONG ROWS FOR LAYER   1 WILL BE DEFINED BY PARAMETERS
+ (PRINT FLAG=  -1)
+
+    HYD. COND. ALONG ROWS is defined by the following parameters:
+ HydCond   
+
+    HYD. COND. ALONG ROWS =  5.000000E-02 FOR LAYER   1
+
+      VERTICAL HYD. COND. =  1.000000E-02 FOR LAYER   1
+
+ RCH -- RECHARGE PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT   36
+ # RCH file for etsdrt test case
+     1 Named Parameters     
+ OPTION 1 -- RECHARGE TO TOP LAYER
+
+
+     1 Recharge parameters
+
+ PARAMETER NAME:Recharge     TYPE:RCH    CLUSTERS:   1
+ Parameter value from package file is:   1.00000E-03
+                MULTIPLIER ARRAY: none    ZONE ARRAY: all
+
+ ETS7 -- EVAPOTRANSPIRATION SEGMENTS PACKAGE, VERSION 7, 2/28/2006
+         INPUT READ FROM UNIT   37
+ # ETS input file for ets1 and etsdrt test cases
+ #
+ OPTION 1 -- EVAPOTRANSPIRATION FROM TOP LAYER
+     1 Named Parameters     
+     2 SEGMENTS DEFINE EVAPOTRANSPIRATION RATE FUNCTION
+
+
+     1 Evapotranspiration segments parameters
+
+ PARAMETER NAME:ETS-Max      TYPE:ETS    CLUSTERS:   1
+ Parameter value from package file is:   1.00000E-02
+                MULTIPLIER ARRAY: none    ZONE ARRAY: all
+
+ DRT7 -- DRAIN RETURN PACKAGE, VERSION 7, 2/28/2006
+ INPUT READ FROM UNIT   34
+ # DRT file for drt1 and etsdrt test cases
+ MAXIMUM OF      1 ACTIVE DRAINS WITH RETURN FLOW AT ONE TIME
+     1 Named Parameters         1 List entries
+ RETURN FLOW OPTION IS SELECTED
+
+
+     1 Drain-return parameters
+
+ PARAMETER NAME:DRT-Cond     TYPE:DRT 
+ Parameter value from package file is:    2.0000    
+   NUMBER OF ENTRIES:      1
+
+ DRAIN NO.  LAYER   ROW   COL     DRAIN EL.  STRESS FACTOR         
+ ------------------------------------------------------------------
+      1      1      5      8       60.00          1.0000    
+
+           ----DRAIN CELL----  --RECIPIENT CELL--   RETURN
+ DRAIN NO.  LAYER   ROW   COL   LAYER   ROW   COL    PROP.
+      1      1      5      8      1      7      3  0.400000
+
+ PCG -- CONJUGATE-GRADIENT SOLUTION PACKAGE, VERSION 7, 5/2/2005
+ # PCG file for ets1, drt1, and etsdrt test cases
+ #
+ MAXIMUM OF     60 CALLS OF SOLUTION ROUTINE
+ MAXIMUM OF      8 INTERNAL ITERATIONS PER CALL TO SOLUTION ROUTINE
+ MATRIX PRECONDITIONING TYPE :    1
+
+
+
+                                    SOLUTION BY THE CONJUGATE-GRADIENT METHOD
+                                   -------------------------------------------
+                    MAXIMUM NUMBER OF CALLS TO PCG ROUTINE =       60
+                        MAXIMUM ITERATIONS PER CALL TO PCG =        8
+                               MATRIX PRECONDITIONING TYPE =        1
+        RELAXATION FACTOR (ONLY USED WITH PRECOND. TYPE 1) =    0.10000E+01
+ PARAMETER OF POLYNOMIAL PRECOND. = 2 (2) OR IS CALCULATED :        2
+                         HEAD CHANGE CRITERION FOR CLOSURE =    0.10000E-03
+                     RESIDUAL CHANGE CRITERION FOR CLOSURE =    0.80000E+02
+            PCG HEAD AND RESIDUAL CHANGE PRINTOUT INTERVAL =        1
+     PRINTING FROM SOLVER IS LIMITED(1) OR SUPPRESSED (>1) =        0
+                            STEADY-STATE DAMPING PARAMETER =    0.10000E+01
+                               TRANSIENT DAMPING PARAMETER =    0.10000E+01
+1
+                            STRESS PERIOD NO.    1, LENGTH =   0.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =   0.000000    
+
+
+
+ RECH array defined by the following parameters:
+ Parameter:  recharge
+
+                 RECHARGE =  1.000000E-03
+
+        ET SURFACE (ETSS) =  100.0000    
+
+
+
+ ETSR array defined by the following parameters:
+ Parameter:  ETS-Max
+
+  EVAPOTRANS. RATE (ETSR) =  1.000000E-02
+
+  EXTINCTION DEPTH (ETSX) =   36.0000    
+
+ PXDP AND PETM ARRAYS FOR INTERSECTION    1 OF HEAD/ET RELATION:
+
+ EXTINCT. DEP. PROPORTION =  0.500000    
+
+       ET RATE PROPORTION =  1.000000E-01
+
+ Parameter:  DRT-Cond
+ DRAIN NO.  LAYER   ROW   COL     DRAIN EL.  CONDUCTANCE           
+ ------------------------------------------------------------------
+      1      1      5      8       60.00           2.000    
+
+           ----DRAIN CELL----  --RECIPIENT CELL--   RETURN
+ DRAIN NO.  LAYER   ROW   COL   LAYER   ROW   COL    PROP.
+      1      1      5      8      1      7      3  0.400000
+
+      1 DRAIN-RETURN CELLS
+ 
+ SOLVING FOR HEAD 
+
+
+     6 CALLS TO PCG ROUTINE FOR TIME STEP   1 IN STRESS PERIOD    1
+    27 TOTAL ITERATIONS
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION (1 INDICATES THE FIRST INNER ITERATION):
+
+    HEAD CHANGE    HEAD CHANGE    HEAD CHANGE    HEAD CHANGE    HEAD CHANGE 
+   LAYER,ROW,COL  LAYER,ROW,COL  LAYER,ROW,COL  LAYER,ROW,COL  LAYER,ROW,COL
+ ---------------------------------------------------------------------------
+  1   14.54      0  -2.044      0  0.3570      0  0.5893E-01  0  0.1407E-01
+   (  1,  7,  3)  (  1, 11,  6)  (  1,  2,  3)  (  1,  4,  3)  (  1,  1,  4)
+  0  0.1542E-02  0  0.3542E-03  0  0.4758E-04  1  -2.763      0 -0.3205    
+   (  1,  6,  4)  (  1,  2,  5)  (  1,  9,  7)  (  1,  7,  3)  (  1,  1,  5)
+  0 -0.4377E-01  0  0.9528E-02  0 -0.1749E-02  0 -0.2867E-03  0  0.5129E-04
+   (  1,  8,  2)  (  1,  1,  4)  (  1,  2,  6)  (  1,  3,  4)  (  1,  9,  6)
+  1  0.6498E-01  0  0.1310E-01  0 -0.2423E-02  0 -0.3766E-03  0 -0.7734E-04
+   (  1,  1,  4)  (  1, 11,  3)  (  1,  1,  5)  (  1,  1,  2)  (  1,  2,  2)
+  1  0.4841E-02  0  0.1120E-02  0  0.1241E-03  0  0.2487E-04  1 -0.3035E-03
+   (  1,  7,  3)  (  1,  1,  4)  (  1,  2,  2)  (  1,  2,  2)  (  1,  7,  3)
+  0 -0.5072E-04  1 -0.1384E-04
+   (  1,  1,  6)  (  1,  8,  2)
+
+ MAXIMUM RESIDUAL FOR EACH ITERATION (1 INDICATES THE FIRST INNER ITERATION):
+
+    RESIDUAL       RESIDUAL       RESIDUAL       RESIDUAL       RESIDUAL    
+   LAYER,ROW,COL  LAYER,ROW,COL  LAYER,ROW,COL  LAYER,ROW,COL  LAYER,ROW,COL
+ ---------------------------------------------------------------------------
+  1   8.394      0  -1.991      0  0.4503      0 -0.6148E-01  0 -0.1378E-01
+   (  1,  1, 10)  (  1,  1,  8)  (  1, 10,  8)  (  1,  3,  4)  (  1, 10,  8)
+  0 -0.3129E-02  0  0.3385E-03  0  0.7533E-04  1   1.803      0  0.3007    
+   (  1, 10,  8)  (  1,  5,  4)  (  1, 11, 10)  (  1,  8,  2)  (  1,  8,  2)
+  0  0.6076E-01  0  0.1247E-01  0  0.2315E-02  0 -0.4078E-03  0 -0.5952E-04
+   (  1, 10,  4)  (  1,  2,  6)  (  1,  3,  4)  (  1,  9,  6)  (  1,  2, 10)
+  1 -0.7072E-01  0 -0.1417E-01  0 -0.3036E-02  0  0.6486E-03  0 -0.9202E-04
+   (  1, 11,  3)  (  1,  2,  4)  (  1,  2,  6)  (  1,  2,  2)  (  1,  9,  6)
+  1  0.6171E-02  0  0.1277E-02  0  0.2075E-03  0  0.3383E-04  1  0.2432E-03
+   (  1,  3,  8)  (  1,  4,  7)  (  1,  5,  6)  (  1,  1, 10)  (  1, 11,  3)
+  0  0.4670E-04  1  0.1459E-04
+   (  1,  8,  2)  (  1,  8,  2)
+
+
+
+ OUTPUT CONTROL FOR STRESS PERIOD    1   TIME STEP    1
+    PRINT HEAD FOR ALL LAYERS
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   1 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+         1     2     3     4     5     6     7     8     9    10    11
+ .....................................................................
+   1   50.0  62.0  69.1  73.6  76.7  78.9  80.7  82.3  84.2  88.7 100.0
+   2   50.0  62.0  69.1  73.6  76.7  78.8  80.6  82.2  84.2  88.7 100.0
+   3   50.0  62.0  69.2  73.6  76.6  78.7  80.4  82.0  84.1  88.7 100.0
+   4   50.0  62.1  69.2  73.7  76.6  78.6  80.0  81.3  83.9  88.6 100.0
+   5   50.0  62.2  69.4  73.8  76.6  78.5  79.5  79.1  83.5  88.5 100.0
+   6   50.0  62.4  69.8  74.0  76.7  78.7  80.1  81.3  83.9  88.6 100.0
+   7   50.0  62.7  70.8  74.3  76.9  78.9  80.5  82.0  84.1  88.7 100.0
+   8   50.0  62.4  69.8  74.1  76.9  79.0  80.7  82.2  84.2  88.7 100.0
+   9   50.0  62.2  69.5  73.9  76.9  79.0  80.7  82.3  84.2  88.7 100.0
+  10   50.0  62.2  69.3  73.8  76.9  79.0  80.8  82.3  84.3  88.7 100.0
+  11   50.0  62.1  69.3  73.8  76.8  79.0  80.8  82.3  84.3  88.7 100.0
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   1
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =         585.5526
+            RECHARGE =           0.0000              RECHARGE =         990.0000
+         ET SEGMENTS =           0.0000           ET SEGMENTS =           0.0000
+        DRAINS (DRT) =           0.0000          DRAINS (DRT) =          15.3032
+
+            TOTAL IN =           0.0000              TOTAL IN =        1590.8558
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =         372.6607
+            RECHARGE =           0.0000              RECHARGE =           0.0000
+         ET SEGMENTS =           0.0000           ET SEGMENTS =        1179.9371
+        DRAINS (DRT) =           0.0000          DRAINS (DRT) =          38.2580
+
+           TOTAL OUT =           0.0000             TOTAL OUT =        1590.8560
+
+            IN - OUT =           0.0000              IN - OUT =      -1.2207E-04
+
+ PERCENT DISCREPANCY =           0.00     PERCENT DISCREPANCY =          -0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH  0.0000      0.0000      0.0000      0.0000      0.0000    
+ STRESS PERIOD TIME  0.0000      0.0000      0.0000      0.0000      0.0000    
+         TOTAL TIME  0.0000      0.0000      0.0000      0.0000      0.0000    
+1
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2013/07/31 13:33:53
+ Elapsed run time:  0.021 Seconds
+

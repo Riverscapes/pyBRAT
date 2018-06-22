@@ -1,0 +1,491 @@
+                                  MODFLOW-2005     
+      U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUND-WATER FLOW MODEL
+                            VERSION 1.11.00 8/8/2013
+
+ LIST FILE: bcf2ss.lst
+                         UNIT    7
+
+ OPENING bcf2ss.ba6
+ FILE TYPE:BAS6   UNIT    8   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING bcf2ss.bc6
+ FILE TYPE:BCF6   UNIT   11   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING bcf2ss.wel
+ FILE TYPE:WEL   UNIT   12   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING bcf2ss.riv
+ FILE TYPE:RIV   UNIT   14   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING bcf2ss.rch
+ FILE TYPE:RCH   UNIT   18   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING bcf2ss.pcg
+ FILE TYPE:PCG   UNIT   19   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING bcf2ss.oc
+ FILE TYPE:OC   UNIT   20   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING bcf2ss.dis
+ FILE TYPE:DIS   UNIT   10   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT    8
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   10
+    2 LAYERS        10 ROWS        15 COLUMNS
+    2 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS UNDEFINED
+  Confining bed flag for each layer:
+   1   0
+
+                     DELR =   500.000    
+
+                     DELC =   500.000    
+
+ TOP ELEVATION OF LAYER 1 =   150.000    
+
+   MODEL LAYER BOTTOM EL. =   50.0000     FOR LAYER   1
+
+ BOT. EL. OF QUASI-3D BED =   0.00000     FOR LAYER   1
+
+   MODEL LAYER BOTTOM EL. =  -50.0000     FOR LAYER   2
+
+
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1        1.0000000          1                    1.000         SS
+        2        1.0000000          1                    1.000         SS
+
+ STEADY-STATE SIMULATION
+
+
+
+ 
+ #Valley aquifer with 2 sand layers separated by silt.  Stress period 1 is natur 
+ # conditions.  Stress period 2 adds wells.                                      
+
+           BOUNDARY ARRAY =              0 FOR LAYER   1
+
+           BOUNDARY ARRAY =              1 FOR LAYER   2
+
+ AQUIFER HEAD WILL BE SET TO   999.99     AT ALL NO-FLOW NODES (IBOUND=0).
+
+             INITIAL HEAD =   0.00000     FOR LAYER   1
+
+             INITIAL HEAD =   0.00000     FOR LAYER   2
+
+ OUTPUT CONTROL IS SPECIFIED EVERY TIME STEP
+ HEAD PRINT FORMAT CODE IS  -4    DRAWDOWN PRINT FORMAT CODE IS  -4
+ HEADS WILL BE SAVED ON UNIT   50    DRAWDOWNS WILL BE SAVED ON UNIT   50
+
+ BCF -- BLOCK-CENTERED FLOW PACKAGE, VERSION 7, 5/2/2005
+         INPUT READ FROM UNIT 11
+ STEADY-STATE SIMULATION
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT 30
+ HEAD AT CELLS THAT CONVERT TO DRY=   777.77    
+ WETTING CAPABILITY IS ACTIVE
+ WETTING FACTOR=   1.00000     WETTING ITERATION INTERVAL=   1
+ FLAG THAT SPECIFIES THE EQUATION TO USE FOR HEAD AT WETTED CELLS=   0
+      LAYER  LAYER-TYPE CODE     INTERBLOCK T
+      --------------------------------------------
+         1            1          0 -- HARMONIC    
+         2            0          0 -- HARMONIC    
+
+ COLUMN TO ROW ANISOTROPY =  1.000000    
+
+    HYD. COND. ALONG ROWS =  10.00000     FOR LAYER   1
+
+ VERT HYD COND /THICKNESS =  1.000000E-03 FOR LAYER   1
+
+
+
+                   WETDRY PARAMETER FOR LAYER   1
+ READING ON UNIT   11 WITH FORMAT: (10F13.0)           
+
+         1     2     3     4     5     6     7     8     9    10    11    12    13    14    15
+ .............................................................................................
+   1     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   2     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   3     2.    2.    2.   -2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   4     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   5     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   6     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   7     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   8     2.    2.    2.   -2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+   9     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+  10     2.    2.    2.    2.    2.    2.    2.    2.   -2.   -2.   -2.   -2.   -2.   -2.   -2.
+
+     TRANSMIS. ALONG ROWS =   500.000     FOR LAYER   2
+
+ WEL -- WELL PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT   12
+ No named parameters
+ MAXIMUM OF      2 ACTIVE WELLS AT ONE TIME
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   30
+
+
+     0 Well parameters
+
+ RIV -- RIVER PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT   14
+ No named parameters
+ MAXIMUM OF     10 ACTIVE RIVER REACHES AT ONE TIME
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   30
+
+
+     0 River parameters
+
+ RCH -- RECHARGE PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT   18
+ No named parameters
+ OPTION 3 -- RECHARGE TO HIGHEST ACTIVE NODE IN EACH VERTICAL COLUMN
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   30
+
+
+     0 Recharge parameters
+
+ PCG -- CONJUGATE-GRADIENT SOLUTION PACKAGE, VERSION 7, 5/2/2005
+ MAXIMUM OF     40 CALLS OF SOLUTION ROUTINE
+ MAXIMUM OF     20 INTERNAL ITERATIONS PER CALL TO SOLUTION ROUTINE
+ MATRIX PRECONDITIONING TYPE :    1
+
+
+
+                                    SOLUTION BY THE CONJUGATE-GRADIENT METHOD
+                                   -------------------------------------------
+                    MAXIMUM NUMBER OF CALLS TO PCG ROUTINE =       40
+                        MAXIMUM ITERATIONS PER CALL TO PCG =       20
+                               MATRIX PRECONDITIONING TYPE =        1
+        RELAXATION FACTOR (ONLY USED WITH PRECOND. TYPE 1) =    0.10000E+01
+ PARAMETER OF POLYNOMIAL PRECOND. = 2 (2) OR IS CALCULATED :        2
+                         HEAD CHANGE CRITERION FOR CLOSURE =    0.10000E-02
+                     RESIDUAL CHANGE CRITERION FOR CLOSURE =    0.10000E+04
+            PCG HEAD AND RESIDUAL CHANGE PRINTOUT INTERVAL =        1
+     PRINTING FROM SOLVER IS LIMITED(1) OR SUPPRESSED (>1) =        1
+                            STEADY-STATE DAMPING PARAMETER =    0.10000E+01
+                               TRANSIENT DAMPING PARAMETER =    0.10000E+01
+1
+                            STRESS PERIOD NO.    1, LENGTH =  1.0000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =  1.0000000    
+
+      0 WELLS
+
+ REACH NO.  LAYER   ROW   COL     STAGE      CONDUCTANCE     BOTTOM EL.         
+ -------------------------------------------------------------------------------
+      1      2      1     15       0.000          0.1000E+05      -5.000    
+      2      2      2     15       0.000          0.1000E+05      -5.000    
+      3      2      3     15       0.000          0.1000E+05      -5.000    
+      4      2      4     15       0.000          0.1000E+05      -5.000    
+      5      2      5     15       0.000          0.1000E+05      -5.000    
+      6      2      6     15       0.000          0.1000E+05      -5.000    
+      7      2      7     15       0.000          0.1000E+05      -5.000    
+      8      2      8     15       0.000          0.1000E+05      -5.000    
+      9      2      9     15       0.000          0.1000E+05      -5.000    
+     10      2     10     15       0.000          0.1000E+05      -5.000    
+
+     10 RIVER REACHES
+
+                 RECHARGE =  4.000000E-03
+ 
+ SOLVING FOR HEAD 
+
+ CELL CONVERSIONS FOR ITER.=  2  LAYER=  1  STEP=  1  PERIOD=  1   (ROW,COL)
+    WET(  1,  1)   WET(  1,  2)   WET(  1,  3)   WET(  1,  4)   WET(  1,  5)   
+    WET(  1,  6)   WET(  1,  7)   WET(  1,  8)   WET(  1,  9)   WET(  1, 10)   
+    WET(  1, 11)   WET(  1, 12)   WET(  1, 13)   WET(  2,  1)   WET(  2,  2)   
+    WET(  2,  3)   WET(  2,  4)   WET(  2,  5)   WET(  2,  6)   WET(  2,  7)   
+    WET(  2,  8)   WET(  2,  9)   WET(  2, 10)   WET(  2, 11)   WET(  2, 12)   
+    WET(  2, 13)   WET(  3,  1)   WET(  3,  2)   WET(  3,  3)   WET(  3,  4)   
+    WET(  3,  5)   WET(  3,  6)   WET(  3,  7)   WET(  3,  8)   WET(  3,  9)   
+    WET(  3, 10)   WET(  3, 11)   WET(  3, 12)   WET(  3, 13)   WET(  4,  1)   
+    WET(  4,  2)   WET(  4,  3)   WET(  4,  4)   WET(  4,  5)   WET(  4,  6)   
+    WET(  4,  7)   WET(  4,  8)   WET(  4,  9)   WET(  4, 10)   WET(  4, 11)   
+    WET(  4, 12)   WET(  4, 13)   WET(  5,  1)   WET(  5,  2)   WET(  5,  3)   
+    WET(  5,  4)   WET(  5,  5)   WET(  5,  6)   WET(  5,  7)   WET(  5,  8)   
+    WET(  5,  9)   WET(  5, 10)   WET(  5, 11)   WET(  5, 12)   WET(  5, 13)   
+    WET(  6,  1)   WET(  6,  2)   WET(  6,  3)   WET(  6,  4)   WET(  6,  5)   
+    WET(  6,  6)   WET(  6,  7)   WET(  6,  8)   WET(  6,  9)   WET(  6, 10)   
+    WET(  6, 11)   WET(  6, 12)   WET(  6, 13)   WET(  7,  1)   WET(  7,  2)   
+    WET(  7,  3)   WET(  7,  4)   WET(  7,  5)   WET(  7,  6)   WET(  7,  7)   
+    WET(  7,  8)   WET(  7,  9)   WET(  7, 10)   WET(  7, 11)   WET(  7, 12)   
+    WET(  7, 13)   WET(  8,  1)   WET(  8,  2)   WET(  8,  3)   WET(  8,  4)   
+    WET(  8,  5)   WET(  8,  6)   WET(  8,  7)   WET(  8,  8)   WET(  8,  9)   
+    WET(  8, 10)   WET(  8, 11)   WET(  8, 12)   WET(  8, 13)   WET(  9,  1)   
+    WET(  9,  2)   WET(  9,  3)   WET(  9,  4)   WET(  9,  5)   WET(  9,  6)   
+    WET(  9,  7)   WET(  9,  8)   WET(  9,  9)   WET(  9, 10)   WET(  9, 11)   
+    WET(  9, 12)   WET(  9, 13)   WET( 10,  1)   WET( 10,  2)   WET( 10,  3)   
+    WET( 10,  4)   WET( 10,  5)   WET( 10,  6)   WET( 10,  7)   WET( 10,  8)   
+    WET( 10,  9)   WET( 10, 10)   WET( 10, 11)   WET( 10, 12)   WET( 10, 13)   
+
+
+     8 CALLS TO PCG ROUTINE FOR TIME STEP   1 IN STRESS PERIOD    1
+    91 TOTAL ITERATIONS
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       0       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   1 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12      13      14      15
+ ...........................................................................................................................
+   1   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.77  102.77   93.33   82.39   71.06  999.99  999.99
+   2   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+   3   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+   4   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+   5   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+   6   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+   7   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+   8   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+   9   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+  10   138.94  138.23  136.79  134.61  131.65  127.87  123.19  117.53  110.78  102.77   93.33   82.39   71.06  999.99  999.99
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP   1 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12      13      14      15
+ ...........................................................................................................................
+   1   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   2   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   3   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   4   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   5   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   6   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   7   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   8   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+   9   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+  10   137.46  136.72  135.24  132.97  129.89  125.92  120.98  114.93  107.58   98.63   87.60   73.72   55.50   29.50    1.50
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   1
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =           0.0000                 WELLS =           0.0000
+       RIVER LEAKAGE =           0.0000         RIVER LEAKAGE =           0.0000
+            RECHARGE =      150000.0000              RECHARGE =      150000.0000
+
+            TOTAL IN =      150000.0000              TOTAL IN =      150000.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =           0.0000                 WELLS =           0.0000
+       RIVER LEAKAGE =      150000.0000         RIVER LEAKAGE =      150000.0000
+            RECHARGE =           0.0000              RECHARGE =           0.0000
+
+           TOTAL OUT =      150000.0000             TOTAL OUT =      150000.0000
+
+            IN - OUT =           0.0000              IN - OUT =           0.0000
+
+ PERCENT DISCREPANCY =           0.00     PERCENT DISCREPANCY =           0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH  86400.      1440.0      24.000     1.00000     2.73785E-03
+ STRESS PERIOD TIME  86400.      1440.0      24.000     1.00000     2.73785E-03
+         TOTAL TIME  86400.      1440.0      24.000     1.00000     2.73785E-03
+1
+1
+                            STRESS PERIOD NO.    2, LENGTH =  1.0000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =  1.0000000    
+
+ WELL NO.  LAYER   ROW   COL   STRESS RATE         
+ --------------------------------------------------
+      1      2      3      4     -0.3500E+05
+      2      2      8      4     -0.3500E+05
+
+      2 WELLS
+
+ REUSING NON-PARAMETER RIVER REACHES FROM LAST STRESS PERIOD
+
+     10 RIVER REACHES
+
+ REUSING RECH FROM LAST STRESS PERIOD
+ 
+ SOLVING FOR HEAD 
+
+ CELL CONVERSIONS FOR ITER.=  2  LAYER=  1  STEP=  1  PERIOD=  2   (ROW,COL)
+    DRY(  1,  1)   DRY(  1,  2)   DRY(  1,  3)   DRY(  1,  4)   DRY(  1,  5)   
+    DRY(  1,  6)   DRY(  1,  7)   DRY(  1,  8)   DRY(  1,  9)   DRY(  1, 10)   
+    DRY(  1, 11)   DRY(  1, 12)   DRY(  1, 13)   DRY(  2,  1)   DRY(  2,  2)   
+    DRY(  2,  3)   DRY(  2,  4)   DRY(  2,  5)   DRY(  2,  6)   DRY(  2,  7)   
+    DRY(  2,  8)   DRY(  2,  9)   DRY(  2, 10)   DRY(  2, 11)   DRY(  2, 12)   
+    DRY(  2, 13)   DRY(  3,  1)   DRY(  3,  2)   DRY(  3,  3)   DRY(  3,  4)   
+    DRY(  3,  5)   DRY(  3,  6)   DRY(  3,  7)   DRY(  3,  8)   DRY(  3,  9)   
+    DRY(  3, 10)   DRY(  3, 11)   DRY(  3, 12)   DRY(  3, 13)   DRY(  4,  1)   
+    DRY(  4,  2)   DRY(  4,  3)   DRY(  4,  4)   DRY(  4,  5)   DRY(  4,  6)   
+    DRY(  4,  7)   DRY(  4,  8)   DRY(  4,  9)   DRY(  4, 10)   DRY(  4, 11)   
+    DRY(  4, 12)   DRY(  4, 13)   DRY(  5,  1)   DRY(  5,  2)   DRY(  5,  3)   
+    DRY(  5,  4)   DRY(  5,  5)   DRY(  5,  6)   DRY(  5,  7)   DRY(  5,  8)   
+    DRY(  5,  9)   DRY(  5, 10)   DRY(  5, 11)   DRY(  5, 12)   DRY(  5, 13)   
+    DRY(  6,  1)   DRY(  6,  2)   DRY(  6,  3)   DRY(  6,  4)   DRY(  6,  5)   
+    DRY(  6,  6)   DRY(  6,  7)   DRY(  6,  8)   DRY(  6,  9)   DRY(  6, 10)   
+    DRY(  6, 11)   DRY(  6, 12)   DRY(  6, 13)   DRY(  7,  1)   DRY(  7,  2)   
+    DRY(  7,  3)   DRY(  7,  4)   DRY(  7,  5)   DRY(  7,  6)   DRY(  7,  7)   
+    DRY(  7,  8)   DRY(  7,  9)   DRY(  7, 10)   DRY(  7, 11)   DRY(  7, 12)   
+    DRY(  7, 13)   DRY(  8,  1)   DRY(  8,  2)   DRY(  8,  3)   DRY(  8,  4)   
+    DRY(  8,  5)   DRY(  8,  6)   DRY(  8,  7)   DRY(  8,  8)   DRY(  8,  9)   
+    DRY(  8, 10)   DRY(  8, 11)   DRY(  8, 12)   DRY(  8, 13)   DRY(  9,  1)   
+    DRY(  9,  2)   DRY(  9,  3)   DRY(  9,  4)   DRY(  9,  5)   DRY(  9,  6)   
+    DRY(  9,  7)   DRY(  9,  8)   DRY(  9,  9)   DRY(  9, 10)   DRY(  9, 11)   
+    DRY(  9, 12)   DRY(  9, 13)   DRY( 10,  1)   DRY( 10,  2)   DRY( 10,  3)   
+    DRY( 10,  4)   DRY( 10,  5)   DRY( 10,  6)   DRY( 10,  7)   DRY( 10,  8)   
+    DRY( 10,  9)   DRY( 10, 10)   DRY( 10, 11)   DRY( 10, 12)   DRY( 10, 13)   
+
+ CELL CONVERSIONS FOR ITER.=  3  LAYER=  1  STEP=  1  PERIOD=  2   (ROW,COL)
+    WET(  1,  1)   WET(  1,  2)   WET(  1,  3)   WET(  1,  5)   WET(  1,  6)   
+    WET(  1,  7)   WET(  1,  8)   WET(  1,  9)   WET(  2,  1)   WET(  2,  2)   
+    WET(  2,  6)   WET(  2,  7)   WET(  2,  8)   WET(  2,  9)   WET(  3,  1)   
+    WET(  3,  2)   WET(  3,  6)   WET(  3,  7)   WET(  3,  8)   WET(  3,  9)   
+    WET(  4,  1)   WET(  4,  2)   WET(  4,  6)   WET(  4,  7)   WET(  4,  8)   
+    WET(  4,  9)   WET(  5,  1)   WET(  5,  2)   WET(  5,  3)   WET(  5,  5)   
+    WET(  5,  6)   WET(  5,  7)   WET(  5,  8)   WET(  5,  9)   WET(  6,  1)   
+    WET(  6,  2)   WET(  6,  3)   WET(  6,  5)   WET(  6,  6)   WET(  6,  7)   
+    WET(  6,  8)   WET(  6,  9)   WET(  7,  1)   WET(  7,  2)   WET(  7,  6)   
+    WET(  7,  7)   WET(  7,  8)   WET(  7,  9)   WET(  8,  1)   WET(  8,  2)   
+    WET(  8,  6)   WET(  8,  7)   WET(  8,  8)   WET(  8,  9)   WET(  9,  1)   
+    WET(  9,  2)   WET(  9,  6)   WET(  9,  7)   WET(  9,  8)   WET(  9,  9)   
+    WET( 10,  1)   WET( 10,  2)   WET( 10,  3)   WET( 10,  5)   WET( 10,  6)   
+    WET( 10,  7)   WET( 10,  8)   WET( 10,  9)   
+
+ CELL CONVERSIONS FOR ITER.=  4  LAYER=  1  STEP=  1  PERIOD=  2   (ROW,COL)
+    WET(  1,  4)   WET(  2,  3)   WET(  2,  5)   WET(  3,  3)   WET(  3,  5)   
+    WET(  4,  3)   WET(  4,  5)   WET(  5,  4)   WET(  6,  4)   WET(  7,  3)   
+    WET(  7,  5)   WET(  8,  3)   WET(  8,  5)   WET(  9,  3)   WET(  9,  5)   
+    WET( 10,  4)   
+
+ CELL CONVERSIONS FOR ITER.=  5  LAYER=  1  STEP=  1  PERIOD=  2   (ROW,COL)
+    WET(  2,  4)   WET(  4,  4)   WET(  7,  4)   WET(  9,  4)   
+
+
+    12 CALLS TO PCG ROUTINE FOR TIME STEP   1 IN STRESS PERIOD    2
+   109 TOTAL ITERATIONS
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       0       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   1 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12      13      14      15
+ ...........................................................................................................................
+   1    60.36   59.22   57.34   56.09   57.33   59.20   60.31   60.26   59.22  777.77  777.77  777.77  777.77  999.99  999.99
+   2    60.01   58.51   55.51   51.96   55.51   58.53   60.06   60.17   59.18  777.77  777.77  777.77  777.77  999.99  999.99
+   3    59.75   57.91   52.79  777.77   52.81   57.95   59.86   60.10   59.15  777.77  777.77  777.77  777.77  999.99  999.99
+   4    60.01   58.51   55.51   51.96   55.51   58.53   60.06   60.17   59.18  777.77  777.77  777.77  777.77  999.99  999.99
+   5    60.36   59.22   57.34   56.09   57.33   59.20   60.31   60.26   59.22  777.77  777.77  777.77  777.77  999.99  999.99
+   6    60.36   59.22   57.34   56.09   57.33   59.20   60.31   60.26   59.22  777.77  777.77  777.77  777.77  999.99  999.99
+   7    60.01   58.51   55.51   51.96   55.51   58.53   60.06   60.17   59.18  777.77  777.77  777.77  777.77  999.99  999.99
+   8    59.75   57.91   52.79  777.77   52.81   57.95   59.86   60.10   59.15  777.77  777.77  777.77  777.77  999.99  999.99
+   9    60.01   58.51   55.51   51.96   55.51   58.53   60.06   60.17   59.18  777.77  777.77  777.77  777.77  999.99  999.99
+  10    60.36   59.22   57.34   56.09   57.33   59.20   60.31   60.26   59.22  777.77  777.77  777.77  777.77  999.99  999.99
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP   1 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12      13      14      15
+ ...........................................................................................................................
+   1    56.94   55.65   53.51   51.92   53.51   55.63   56.86   56.69   54.83   50.81   44.80   36.80   26.80   14.80    0.80
+   2    56.53   54.71   51.06   46.65   51.06   54.72   56.55   56.58   54.79   50.80   44.80   36.80   26.80   14.80    0.80
+   3    56.18   53.71   47.14   29.89   47.15   53.74   56.28   56.50   54.77   50.79   44.80   36.80   26.80   14.80    0.80
+   4    56.53   54.71   51.06   46.65   51.06   54.72   56.55   56.58   54.79   50.80   44.80   36.80   26.80   14.80    0.80
+   5    56.94   55.65   53.51   51.92   53.51   55.63   56.86   56.69   54.83   50.81   44.80   36.80   26.80   14.80    0.80
+   6    56.94   55.65   53.51   51.92   53.51   55.63   56.86   56.69   54.83   50.81   44.80   36.80   26.80   14.80    0.80
+   7    56.53   54.71   51.06   46.65   51.06   54.72   56.55   56.58   54.79   50.80   44.80   36.80   26.80   14.80    0.80
+   8    56.18   53.71   47.14   29.89   47.15   53.74   56.28   56.50   54.77   50.79   44.80   36.80   26.80   14.80    0.80
+   9    56.53   54.71   51.06   46.65   51.06   54.72   56.55   56.58   54.79   50.80   44.80   36.80   26.80   14.80    0.80
+  10    56.94   55.65   53.51   51.92   53.51   55.63   56.86   56.69   54.83   50.81   44.80   36.80   26.80   14.80    0.80
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   2
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =           0.0000                 WELLS =           0.0000
+       RIVER LEAKAGE =           0.0000         RIVER LEAKAGE =           0.0000
+            RECHARGE =      300000.0000              RECHARGE =      150000.0000
+
+            TOTAL IN =      300000.0000              TOTAL IN =      150000.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =       70000.0000                 WELLS =       70000.0000
+       RIVER LEAKAGE =      230000.0000         RIVER LEAKAGE =       80000.0000
+            RECHARGE =           0.0000              RECHARGE =           0.0000
+
+           TOTAL OUT =      300000.0000             TOTAL OUT =      150000.0000
+
+            IN - OUT =           0.0000              IN - OUT =           0.0000
+
+ PERCENT DISCREPANCY =           0.00     PERCENT DISCREPANCY =           0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    2
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH  86400.      1440.0      24.000     1.00000     2.73785E-03
+ STRESS PERIOD TIME  86400.      1440.0      24.000     1.00000     2.73785E-03
+         TOTAL TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+1
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2013/07/31 13:33:53
+ Elapsed run time:  0.028 Seconds
+

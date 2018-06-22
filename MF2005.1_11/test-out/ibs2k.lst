@@ -1,0 +1,1121 @@
+                                  MODFLOW-2005     
+      U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUND-WATER FLOW MODEL
+                            VERSION 1.11.00 8/8/2013
+
+ LIST FILE: ibs2k.lst
+                         UNIT    1
+
+ OPENING ibs2k.ba6
+ FILE TYPE:BAS6   UNIT    2   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING ibs2k.bc6
+ FILE TYPE:BCF6   UNIT    7   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING ibs2k.dis
+ FILE TYPE:DIS   UNIT   10   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING ibs2k.oc
+ FILE TYPE:OC   UNIT   11   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING ibs2k.ibs
+ FILE TYPE:IBS   UNIT   13   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING ibs2k.sip
+ FILE TYPE:SIP   UNIT   19   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT    2
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   10
+    2 LAYERS        10 ROWS        12 COLUMNS
+    3 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS UNDEFINED
+  Confining bed flag for each layer:
+   0   0
+
+                     DELR =  1000.000    
+
+                     DELC =  1000.000    
+
+ TOP ELEVATION OF LAYER 1 =  -500.000    
+
+   MODEL LAYER BOTTOM EL. =  -600.000     FOR LAYER   1
+
+   MODEL LAYER BOTTOM EL. =  -700.000     FOR LAYER   2
+
+
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1        1000.0000         10                    1.500         TR
+        2        1000.0000         10                    1.500         TR
+        3        1000.0000         10                    1.500         TR
+
+ TRANSIENT SIMULATION
+
+
+
+ 
+ #MODULAR MODEL STORAGE-DEPLETION TEST PROBLEM     --TESTS CALCULATION OF ULTIMA 
+ #COMPACTION OF INTERBEDS                                                        
+
+
+
+                     BOUNDARY ARRAY FOR LAYER   1
+ READING ON UNIT    2 WITH FORMAT: (20I4)              
+
+                1           2           3           4           5           6           7           8           9          10
+               11          12
+ ............................................................................................................................
+   1           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   2           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   3           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   4           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   5           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   6           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   7           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   8           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   9           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+  10           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+
+
+
+                     BOUNDARY ARRAY FOR LAYER   2
+ READING ON UNIT    2 WITH FORMAT: (20I4)              
+
+                1           2           3           4           5           6           7           8           9          10
+               11          12
+ ............................................................................................................................
+   1           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   2           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   3           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   4           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   5           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   6           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   7           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   8           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+   9           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+  10           -1           1           1           1           1           1           1           1           1           1
+                1          -1
+
+ AQUIFER HEAD WILL BE SET TO   444.44     AT ALL NO-FLOW NODES (IBOUND=0).
+
+
+
+                       INITIAL HEAD FOR LAYER   1
+ READING ON UNIT    2 WITH FORMAT: (10F13.0)           
+
+            1           2           3           4           5           6           7           8           9          10
+           11          12
+ ........................................................................................................................
+   1    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   2    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   3    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   4    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   5    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   6    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   7    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   8    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   9    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+  10    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+
+
+
+                       INITIAL HEAD FOR LAYER   2
+ READING ON UNIT    2 WITH FORMAT: (10F13.0)           
+
+            1           2           3           4           5           6           7           8           9          10
+           11          12
+ ........................................................................................................................
+   1    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   2    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   3    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   4    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   5    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   6    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   7    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   8    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+   9    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+  10    0.000       11.00       12.00       13.00       14.00       15.00       16.00       17.00       18.00       19.00    
+        20.00       11.00    
+
+ OUTPUT CONTROL IS SPECIFIED EVERY TIME STEP
+ HEAD PRINT FORMAT CODE IS   5    DRAWDOWN PRINT FORMAT CODE IS   5
+ HEADS WILL BE SAVED ON UNIT    0    DRAWDOWNS WILL BE SAVED ON UNIT    0
+
+ BCF -- BLOCK-CENTERED FLOW PACKAGE, VERSION 7, 5/2/2005
+         INPUT READ FROM UNIT  7
+ TRANSIENT SIMULATION
+ HEAD AT CELLS THAT CONVERT TO DRY=  0.10000E+31
+ WETTING CAPABILITY IS NOT ACTIVE
+      LAYER  LAYER-TYPE CODE     INTERBLOCK T
+      --------------------------------------------
+         1            0          0 -- HARMONIC    
+         2            0          0 -- HARMONIC    
+
+ COLUMN TO ROW ANISOTROPY =  1.000000    
+
+     PRIMARY STORAGE COEF =  1.000000E-04 FOR LAYER   1
+
+     TRANSMIS. ALONG ROWS =  1000.000     FOR LAYER   1
+
+ VERT HYD COND /THICKNESS =  1.000000E-06 FOR LAYER   1
+
+     PRIMARY STORAGE COEF =  1.000000E-04 FOR LAYER   2
+
+     TRANSMIS. ALONG ROWS =  1000.000     FOR LAYER   2
+0IBS -- INTERBED STORAGE PACKAGE, VERSION 7, 12/27/2005 INPUT READ FROM UNIT 13
+0***NOTICE*** AS OF SEPTEMBER 2003, THE INTERBED STORAGE PACKAGE HAS 
+BEEN SUPERSEDED BY THE SUBSIDENCE AND AQUIFER-SYSTEM COMPACTION PACKAGE.
+ SUPPORT FOR IBS MAY BE DISCONTINUED IN THE FUTURE.
+ INTERBED STORAGE IN LAYER(S)  1
+
+
+
+              PRECONSOLIDATION HEAD FOR LAYER   1
+ READING ON UNIT   13 WITH FORMAT: (12F3.0)            
+
+            1           2           3           4           5           6           7           8           9          10
+           11          12
+ ........................................................................................................................
+   1    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   2    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   3    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   4    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   5    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   6    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   7    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   8    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+   9    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+  10    5.000       6.000       7.000       8.000       9.000      10.000       11.00       12.00       13.00       14.00    
+        15.00       16.00    
+
+ ELASTIC INTERBED STORAGE =  1.000000E-04 FOR LAYER   1
+
+  VIRGIN INTERBED STORAGE =  1.000000E-03 FOR LAYER   1
+
+      STARTING COMPACTION =   0.00000     FOR LAYER   1
+
+ SIP -- STRONGLY-IMPLICIT PROCEDURE SOLUTION PACKAGE
+                    VERSION 7, 5/2/2005 INPUT READ FROM UNIT   19
+ MAXIMUM OF  50 ITERATIONS ALLOWED FOR CLOSURE
+  5 ITERATION PARAMETERS
+
+          SOLUTION BY THE STRONGLY IMPLICIT PROCEDURE
+          -------------------------------------------
+ MAXIMUM ITERATIONS ALLOWED FOR CLOSURE =       50
+                 ACCELERATION PARAMETER =    1.00000    
+      HEAD CHANGE CRITERION FOR CLOSURE =    0.10000E-04
+      SIP HEAD CHANGE PRINTOUT INTERVAL =        1
+
+     CALCULATE ITERATION PARAMETERS FROM MODEL CALCULATED WSEED
+1
+                            STRESS PERIOD NO.    1, LENGTH =  1000.0000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =    10
+
+                               MULTIPLIER FOR DELT =     1.500
+
+                            INITIAL TIME STEP SIZE =   8.823783    
+ 
+ SOLVING FOR HEAD 
+
+ AVERAGE SEED = 0.00061654
+ MINIMUM SEED = 0.00061654
+
+     5 ITERATION PARAMETERS CALCULATED FROM AVERAGE SEED:
+
+  0.000000E+00 0.842424E+00 0.975170E+00 0.996087E+00 0.999383E+00
+
+    15 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+     -6.261        -3.498        -4.478        -1.528       -0.9372E-01
+  (  2, 10,  2) (  2,  1,  4) (  2, 10,  6) (  2,  1,  7) (  2, 10,  9)
+    -0.1287E-01    0.1572E-01    0.7545E-02    0.1865E-02    0.4866E-03
+  (  2,  1, 11) (  2,  9,  7) (  2, 10,  6) (  2,  4,  7) (  2,  5,  5)
+     0.1398E-03   -0.1231E-03   -0.6299E-04   -0.1349E-04   -0.5180E-05
+  (  2, 10,  9) (  2,  2,  7) (  2,  1,  6) (  2,  4,  4) (  2,  8,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.6261       -0.8487       -0.6972       -0.2087       -0.1250E-01
+  (  1, 10,  3) (  1,  2,  6) (  1,  6,  7) (  2,  1,  7) (  2, 10,  9)
+    -0.2047E-02    0.2251E-02    0.1303E-02    0.3824E-03   -0.3726E-04
+  (  2,  5, 10) (  2,  6,  5) (  2,  8,  5) (  2, 10,  7) (  2,  9,  5)
+     0.7807E-05
+  (  2,  6,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   3 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.3550       -0.5262       -0.4762       -0.1013        0.8762E-02
+  (  1, 10,  7) (  1,  2,  6) (  1,  6,  7) (  1,  1,  8) (  1,  2,  7)
+     0.1179E-02    0.1016E-02    0.5034E-03    0.1024E-03   -0.1722E-04
+  (  1,  6,  5) (  1,  6,  5) (  1,  6,  5) (  1, 10,  7) (  1,  1,  8)
+     0.4510E-05
+  (  1,  5,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+    11 ITERATIONS FOR TIME STEP   4 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1483       -0.2359       -0.2395       -0.6033E-01    0.4915E-02
+  (  1, 10,  7) (  1,  2,  6) (  1,  6,  7) (  1,  1,  8) (  1,  2,  7)
+     0.6911E-03    0.6295E-03    0.3206E-03    0.7272E-04   -0.1141E-04
+  (  1,  6,  5) (  1,  6,  5) (  1,  6,  5) (  1, 10,  8) (  1,  2,  8)
+     0.2795E-05
+  (  1,  5,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   5 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.4754E-01   -0.7814E-01   -0.8673E-01   -0.2460E-01    0.1896E-02
+  (  1, 10,  7) (  1,  2,  6) (  1,  7,  7) (  1,  1,  8) (  1,  2,  7)
+    -0.2658E-03    0.2613E-03    0.1371E-03    0.3505E-04   -0.4190E-05
+  (  1,  5, 10) (  1,  6,  5) (  1,  7,  5) (  1, 10,  7) (  1,  8,  4)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+    10 ITERATIONS FOR TIME STEP   6 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1119E-01   -0.1883E-01   -0.2231E-01   -0.6922E-02    0.4934E-03
+  (  1, 10,  7) (  1,  2,  6) (  1,  7,  7) (  1,  1,  8) (  1,  2,  7)
+    -0.7203E-04    0.7124E-04    0.3953E-04    0.1094E-04   -0.1321E-05
+  (  1,  5, 10) (  1,  6,  5) (  1,  7,  5) (  1, 10,  7) (  1,  8,  4)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     8 ITERATIONS FOR TIME STEP   7 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1873E-02   -0.3241E-02   -0.4013E-02   -0.1319E-02    0.8975E-04
+  (  1, 10,  7) (  1,  2,  6) (  1, 10,  7) (  1,  1,  8) (  1,  2,  7)
+    -0.1422E-04    0.1424E-04    0.7880E-05
+  (  1,  5, 10) (  1,  6,  5) (  1,  7,  5)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     6 ITERATIONS FOR TIME STEP   8 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.2206E-03   -0.3888E-03   -0.4968E-03   -0.1703E-03    0.1111E-04
+  (  1, 10,  7) (  1,  2,  6) (  1, 10,  7) (  1,  1,  7) (  1,  2,  7)
+    -0.1816E-05
+  (  1,  5, 10)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     5 ITERATIONS FOR TIME STEP   9 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1765E-04   -0.3201E-04   -0.4121E-04   -0.1459E-04    0.9634E-06
+  (  1, 10,  7) (  1,  2,  7) (  1,  6,  7) (  1,  1,  7) (  1,  2,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP  10 IN STRESS PERIOD    1
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.9362E-06
+  (  1, 10,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       0       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP  10 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   2    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   3    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   4    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   5    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   6    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   7    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   8    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   9    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+  10    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP  10 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   2    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   3    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   4    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   5    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   6    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   7    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   8    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   9    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+  10    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP   10, STRESS PERIOD   1
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =      199999.9375               STORAGE =       1.6095E-05
+       CONSTANT HEAD =    19683134.0000         CONSTANT HEAD =       19999.9863
+    INTERBED STORAGE =      549999.8125      INTERBED STORAGE =       1.4898E-04
+
+            TOTAL IN =    20433134.0000              TOTAL IN =       19999.9863
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =    20433138.0000         CONSTANT HEAD =       20000.0137
+    INTERBED STORAGE =           0.0000      INTERBED STORAGE =           0.0000
+
+           TOTAL OUT =    20433138.0000             TOTAL OUT =       20000.0137
+
+            IN - OUT =          -4.0000              IN - OUT =      -2.7344E-02
+
+ PERCENT DISCREPANCY =          -0.00     PERCENT DISCREPANCY =          -0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP   10 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 2.93082E+07 4.88471E+05  8141.2      339.22     0.92872    
+ STRESS PERIOD TIME 8.64000E+07 1.44000E+06  24000.     1000.00      2.7379    
+         TOTAL TIME 8.64000E+07 1.44000E+06  24000.     1000.00      2.7379    
+1
+1
+        SUBSIDENCE IN LAYER   1 AT END OF TIME STEP  10 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+            1           2           3           4           5           6           7           8           9          10
+           11          12
+ ........................................................................................................................
+   1    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   2    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   3    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   4    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   5    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   6    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   7    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   8    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   9    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+  10    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+1
+                            STRESS PERIOD NO.    2, LENGTH =  1000.0000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =    10
+
+                               MULTIPLIER FOR DELT =     1.500
+
+                            INITIAL TIME STEP SIZE =   8.823783    
+ 
+ SOLVING FOR HEAD 
+
+     1 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.6529E-06
+  (  1,  2,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.5437E-06
+  (  1, 10,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   3 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.4913E-06
+  (  1,  1,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   4 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.4537E-06
+  (  1,  2,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   5 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.3833E-06
+  (  1,  3,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   6 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.3299E-06
+  (  1,  6,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   7 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.2843E-06
+  (  1,  2,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   8 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.2534E-06
+  (  1,  4,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   9 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.2210E-06
+  (  1,  4,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP  10 IN STRESS PERIOD    2
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1900E-06
+  (  1,  4,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       0       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP  10 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   2    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   3    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   4    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   5    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   6    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   7    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   8    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   9    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+  10    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP  10 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   2    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   3    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   4    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   5    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   6    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   7    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   8    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   9    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+  10    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP   10, STRESS PERIOD   2
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =      199999.9375               STORAGE =       3.5845E-06
+       CONSTANT HEAD =    39683132.0000         CONSTANT HEAD =       19999.9961
+    INTERBED STORAGE =      550000.0000      INTERBED STORAGE =       2.8069E-05
+
+            TOTAL IN =    40433132.0000              TOTAL IN =       19999.9961
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =    40433144.0000         CONSTANT HEAD =       20000.0039
+    INTERBED STORAGE =           0.0000      INTERBED STORAGE =           0.0000
+
+           TOTAL OUT =    40433144.0000             TOTAL OUT =       20000.0039
+
+            IN - OUT =         -12.0000              IN - OUT =      -7.8125E-03
+
+ PERCENT DISCREPANCY =          -0.00     PERCENT DISCREPANCY =          -0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP   10 IN STRESS PERIOD    2
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 2.93082E+07 4.88471E+05  8141.2      339.22     0.92872    
+ STRESS PERIOD TIME 8.64000E+07 1.44000E+06  24000.     1000.00      2.7379    
+         TOTAL TIME 1.72800E+08 2.88000E+06  48000.      2000.0      5.4757    
+1
+1
+        SUBSIDENCE IN LAYER   1 AT END OF TIME STEP  10 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+            1           2           3           4           5           6           7           8           9          10
+           11          12
+ ........................................................................................................................
+   1    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   2    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   3    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   4    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   5    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   6    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   7    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   8    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   9    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+  10    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+1
+                            STRESS PERIOD NO.    3, LENGTH =  1000.0000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =    10
+
+                               MULTIPLIER FOR DELT =     1.500
+
+                            INITIAL TIME STEP SIZE =   8.823783    
+ 
+ SOLVING FOR HEAD 
+
+     1 ITERATIONS FOR TIME STEP   1 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1632E-06
+  (  1,  3,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   2 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1533E-06
+  (  1,  4,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   3 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1506E-06
+  (  1, 10,  8)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   4 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.1261E-06
+  (  1, 10,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   5 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.9786E-07
+  (  1,  9,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   6 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.8755E-07
+  (  1,  4,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   7 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.7123E-07
+  (  1,  4,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   8 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.6242E-07
+  (  1,  3,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP   9 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.5557E-07
+  (  1,  4,  6)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 0     TOTAL BUDGET PRINTOUT FLAG = 0
+ CELL-BY-CELL FLOW TERM FLAG = 0
+ REUSING PREVIOUS VALUES OF IOFLG
+ 
+ SOLVING FOR HEAD 
+     1 ITERATIONS FOR TIME STEP  10 IN STRESS PERIOD    3
+
+ MAXIMUM HEAD CHANGE FOR EACH ITERATION:
+
+    HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE   HEAD CHANGE
+  LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL LAYER,ROW,COL
+ ----------------------------------------------------------------------
+    -0.4694E-07
+  (  1,  3,  7)
+
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 0
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       0       0
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP  10 IN STRESS PERIOD    3
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   2    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   3    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   4    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   5    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   6    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   7    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   8    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   9    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+  10    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP  10 IN STRESS PERIOD    3
+  ---------------------------------------------------------------------------
+
+           1       2       3       4       5       6       7       8       9      10      11      12
+ ...................................................................................................
+   1    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   2    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   3    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   4    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   5    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   6    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   7    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   8    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+   9    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+  10    0.000   1.000   2.000   3.000   4.000   5.000   6.000   7.000   8.000   9.000  10.000  11.000
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP   10, STRESS PERIOD   3
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =      199999.9375               STORAGE =           0.0000
+       CONSTANT HEAD =    59683128.0000         CONSTANT HEAD =       20000.0000
+    INTERBED STORAGE =      550000.0000      INTERBED STORAGE =           0.0000
+
+            TOTAL IN =    60433128.0000              TOTAL IN =       20000.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =    60433144.0000         CONSTANT HEAD =       20000.0020
+    INTERBED STORAGE =           0.0000      INTERBED STORAGE =           0.0000
+
+           TOTAL OUT =    60433144.0000             TOTAL OUT =       20000.0020
+
+            IN - OUT =         -16.0000              IN - OUT =      -1.9531E-03
+
+ PERCENT DISCREPANCY =          -0.00     PERCENT DISCREPANCY =          -0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP   10 IN STRESS PERIOD    3
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 2.93082E+07 4.88471E+05  8141.2      339.22     0.92872    
+ STRESS PERIOD TIME 8.64000E+07 1.44000E+06  24000.     1000.00      2.7379    
+         TOTAL TIME 2.59200E+08 4.32000E+06  72000.      3000.0      8.2136    
+1
+1
+        SUBSIDENCE IN LAYER   1 AT END OF TIME STEP  10 IN STRESS PERIOD    3
+  ---------------------------------------------------------------------------
+
+            1           2           3           4           5           6           7           8           9          10
+           11          12
+ ........................................................................................................................
+   1    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   2    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   3    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   4    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   5    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   6    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   7    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   8    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+   9    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+  10    0.000      5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03  5.5000E-03
+       5.5000E-03   0.000    
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2013/07/31 13:33:53
+ Elapsed run time:  0.037 Seconds
+
