@@ -3,7 +3,7 @@ from bdflopy import BDflopy
 import arcpy
 import os
 
-def main(projectRoot, bratPath, demPath, flowAcc, flowDir):
+def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity):
     arcpy.AddMessage("start")
     projectFolder = makeFolder(projectRoot, "BDWS_Project")
     inputsFolder = makeFolder(projectFolder, "Inputs")
@@ -13,6 +13,12 @@ def main(projectRoot, bratPath, demPath, flowAcc, flowDir):
     demPath = copyIntoFolder(demPath, inputsFolder, "DEM")
     flowAcc = copyIntoFolder(flowAcc, inputsFolder, "FlowAccumulation")
     flowDir = copyIntoFolder(flowDir, inputsFolder, "FlowDir")
+    if horizontalKFN:
+        horizontalKFN = copyIntoFolder(horizontalKFN, inputsFolder, "HorizontalKSAT")
+    if verticalKFN:
+        verticalKFN = copyIntoFolder(verticalKFN, inputsFolder, "VerticalKSAT")
+    if fieldCapacity:
+        fieldCapacity = copyIntoFolder(fieldCapacity, inputsFolder, "FieldCapacity")
 
 
     model = BDLoG(bratPath, demPath, flowAcc, outDir, bratCap) #initialize BDLoG, sets varibles and loads inputs
@@ -28,23 +34,22 @@ def main(projectRoot, bratPath, demPath, flowAcc, flowDir):
     model.run() #run BDSWEA algorithm
     model.writeModflowFiles() #generate files needed to parameterize MODFLOW
     model.close() #close any files left open by BDLoG
-    print "bdswea done"
+    arcpy.AddMessage("bdswea done")
 
-    # #run groundwater storage estimation (MODFLOW)
-    # modflowexe = r"C:\Users\A02150284\Documents\MF2005.1_11\bin\mf2005" #path to MODFLOW-2005 executable
-    # indir = projectFolder + "/inputs" #location of input raste files
-    # modeldir = "tutorials/tutorial1/outputs" #BDSWEA output directory
-    # outdir = projectFolder + "/modflow" #directory to output MODFLOW results
-    # demfilename = "dem.tif" #name of input DEM
-    # hkfn = "/inputs/ksat.tif" #horizontal ksat in micrometers per second
-    # vkfn = "/inputs/kv.tif" #vertical ksat in micrometers per second
-    # fracfn = "/inputs/fc.tif" #field capacity as percentage
-    # kconv = 0.000001 #conversion of hkfn and vkfn to meters per second
-    # fconv = 0.01 #conversion of fracfn to a proportion
-    # gwmodel = BDflopy(modflowexe, indir, modeldir, outdir, demfilename) #initialize BDflopy, sets variables and loads inputs
-    # gwmodel.run(hkfn, vkfn, kconv, fracfn, fconv) #run BDflopy, this will write inputs for MODFLOW and then run MODFLOW
-    # gwmodel.close() #close any open files
-    # print "done"
+    if horizontalKFN and verticalKFN and fieldCapacity:
+        #run groundwater storage estimation (MODFLOW)
+        arcpy.AddMessage("Running BDflopy")
+        bratCodeFolder = os.path.dirname(os.path.abspath(__file__))
+        modflowexe = os.path.join(bratCodeFolder, r"MF2005.1_11\bin\mf2005") #path to MODFLOW-2005 executable
+        indir = projectFolder + "/inputs" #location of input raste files
+        modflowOutput = os.path.join(projectFolder, "modflow") #directory to output MODFLOW results
+        demfilename = os.path.basename(demPath) #name of input DEM
+        kconv = 0.000001 #conversion of hkfn and vkfn to meters per second
+        fconv = 0.01 #conversion of fracfn to a proportion
+        gwmodel = BDflopy(modflowexe, indir, outDir, modflowOutput, demPath) #initialize BDflopy, sets variables and loads inputs
+        gwmodel.run(horizontalKFN, verticalKFN, kconv, fieldCapacity, fconv) #run BDflopy, this will write inputs for MODFLOW and then run MODFLOW
+        gwmodel.close() #close any open files
+        arcpy.AddMessage("done")
 
 
 def copyIntoFolder(thingToCopy, copyFolderRoot, copyFolderName):
