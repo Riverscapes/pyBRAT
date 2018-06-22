@@ -3,7 +3,7 @@ from bdflopy import BDflopy
 import arcpy
 import os
 
-def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity):
+def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity, modflowexe):
     arcpy.AddMessage("start")
     projectFolder = makeFolder(projectRoot, "BDWS_Project")
     inputsFolder = makeFolder(projectFolder, "Inputs")
@@ -39,11 +39,9 @@ def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, vertic
     if horizontalKFN and verticalKFN and fieldCapacity:
         #run groundwater storage estimation (MODFLOW)
         arcpy.AddMessage("Running BDflopy")
-        bratCodeFolder = os.path.dirname(os.path.abspath(__file__))
-        modflowexe = os.path.join(bratCodeFolder, r"MF2005.1_11\bin\mf2005") #path to MODFLOW-2005 executable
+        modflowexe = r"C:\Users\A02150284\Downloads\MF2005.1_11\MF2005.1_11\bin\mf2005" #path to MODFLOW-2005 executable
         indir = projectFolder + "/inputs" #location of input raste files
         modflowOutput = os.path.join(projectFolder, "modflow") #directory to output MODFLOW results
-        demfilename = os.path.basename(demPath) #name of input DEM
         kconv = 0.000001 #conversion of hkfn and vkfn to meters per second
         fconv = 0.01 #conversion of fracfn to a proportion
         gwmodel = BDflopy(modflowexe, indir, outDir, modflowOutput, demPath) #initialize BDflopy, sets variables and loads inputs

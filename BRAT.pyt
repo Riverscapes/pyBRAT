@@ -981,7 +981,14 @@ class BDWS_Run(object):
             parameterType="Optional",
             direction="Input")
 
-        return [param0, param1, param2, param3, param4, param5, param6, param7]
+        param8 = arcpy.Parameter(
+            displayName="Modflow .exe file",
+            name="modflowexe",
+            datatype="DEFile",
+            parameterType="Optional",
+            direction="Input")
+
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -1008,5 +1015,6 @@ class BDWS_Run(object):
                       p[4].valueAsText,
                       p[5].valueAsText,
                       p[6].valueAsText,
-                      p[7].valueAsText)
+                      p[7].valueAsText,
+                      p[8].valueAsText)
         return
