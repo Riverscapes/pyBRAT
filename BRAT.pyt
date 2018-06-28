@@ -914,7 +914,7 @@ class Layer_Package_Generator_tool(object):
         Layer_Package_Generator.main(p[0].valueAsText, p[1].valueAsText)
         return
 
-"""
+
 class BDWS_Run(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
@@ -1007,15 +1007,14 @@ class BDWS_Run(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        reload(bdwsRun)
-        bdwsRun.main(p[0].valueAsText,
-                      p[1].valueAsText,
-                      p[2].valueAsText,
-                      p[3].valueAsText,
-                      p[4].valueAsText,
-                      p[5].valueAsText,
-                      p[6].valueAsText,
-                      p[7].valueAsText,
-                      p[8].valueAsText)
+        #reload(bdwsRun)
+        #bdwsRun.main(p[0].valueAsText,
+        #              p[1].valueAsText,
+        #              p[2].valueAsText,
+        #              p[3].valueAsText,
+        #              p[4].valueAsText,
+        #              p[5].valueAsText,
+        #              p[6].valueAsText,
+        #              p[7].valueAsText,
+        #              p[8].valueAsText)
         return
-"""
