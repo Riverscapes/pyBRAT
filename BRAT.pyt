@@ -13,7 +13,7 @@ import Summary_Report
 import Drainage_Area_Check
 import StreamObjects
 import Layer_Package_Generator
-#import bdwsRun
+import bdwsRun
 
 class Toolbox(object):
     def __init__(self):
@@ -25,7 +25,7 @@ class Toolbox(object):
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
                         Conflict_Potential_tool, Conservation_Restoration_tool, Conservation_Restoration_tool_v2, Summary_Report_tool,
-                        Drainage_Area_Check_tool, Layer_Package_Generator_tool] #, BDWS_Run]
+                        Drainage_Area_Check_tool, Layer_Package_Generator_tool, BDWS_Run]
 
 
 class BRAT_project_tool(object):
@@ -1007,14 +1007,14 @@ class BDWS_Run(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        #reload(bdwsRun)
-        #bdwsRun.main(p[0].valueAsText,
-        #              p[1].valueAsText,
-        #              p[2].valueAsText,
-        #              p[3].valueAsText,
-        #              p[4].valueAsText,
-        #              p[5].valueAsText,
-        #              p[6].valueAsText,
-        #              p[7].valueAsText,
-        #              p[8].valueAsText)
+        reload(bdwsRun)
+        bdwsRun.main(p[0].valueAsText,
+                      p[1].valueAsText,
+                      p[2].valueAsText,
+                      p[3].valueAsText,
+                      p[4].valueAsText,
+                      p[5].valueAsText,
+                      p[6].valueAsText,
+                      p[7].valueAsText,
+                      p[8].valueAsText)
         return
