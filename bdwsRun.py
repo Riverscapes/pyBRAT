@@ -36,7 +36,7 @@ def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, vertic
     model.close() #close any files left open by BDLoG
     arcpy.AddMessage("bdswea done")
 
-    if horizontalKFN and verticalKFN and fieldCapacity:
+    if horizontalKFN and verticalKFN and fieldCapacity and modflowexe:
         #run groundwater storage estimation (MODFLOW)
         arcpy.AddMessage("Running BDflopy")
         indir = projectFolder + "/inputs" #location of input raste files

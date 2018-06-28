@@ -66,6 +66,7 @@ def main(
         seg_network_copy = os.path.join(intermediateFolder, out_name + ".shp")
 
     if should_segment_network:
+        arcpy.AddMessage("Segmenting network by roads...")
         segment_by_roads(seg_network, seg_network_copy, road)
     else:
         arcpy.CopyFeatures_management(seg_network, seg_network_copy)
@@ -75,7 +76,7 @@ def main(
     # this field allows for more for more 'stable' joining
     fields = [f.name for f in arcpy.ListFields(seg_network_copy)]
     if 'ReachID' not in fields:
-        arcpy.AddField_management(seg_network_copy, 'ReachID', 'SHORT')
+        arcpy.AddField_management(seg_network_copy, 'ReachID', 'LONG')
         with arcpy.da.UpdateCursor(seg_network_copy, ['FID', 'ReachID']) as cursor:
             for row in cursor:
                 row[1] = row[0]
@@ -170,6 +171,13 @@ def segment_by_roads(seg_network, seg_network_copy, roads):
     arcpy.CopyFeatures_management(temp_layer, seg_network_copy)
 
     deleteWithArcpy([temp_layer, temp_seg_network_layer, temp_network])
+
+    fields = [f.name for f in arcpy.ListFields(seg_network_copy)]
+    if 'ReachID' in fields:
+        with arcpy.da.UpdateCursor(seg_network_copy, ['FID', 'ReachID']) as cursor:
+            for row in cursor:
+                row[1] = row[0]
+                cursor.updateRow(row)
 
 
 
@@ -383,10 +391,9 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 # conflict potential function
 # calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
 def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath):
-
     # create temp directory
     from shutil import rmtree
-    tempDir = projPath + '\Temp'
+    tempDir = os.path.join(projPath, 'Temp')
     if os.path.exists(tempDir):
         rmtree(tempDir)
     os.mkdir(tempDir)
@@ -443,7 +450,6 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     # here we only care about canals in the valley bottom
     if canal is not None:
         findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch)
-
     #rmtree(tempDir)
     """
     This is the section of code that stores intermediary data in memory. In ArcMap 10.6, that crashes the program,
@@ -621,7 +627,6 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         items = [lu_ras]
         for item in items:
             arcpy.Delete_management(item)
-
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")
 
@@ -650,7 +655,7 @@ def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, 
         zonalStatsWithinBuffer(buf, ed_roadad, 'MEAN', 'MEAN', out_network, new_field_name, scratch)
 
         # delete temp fcs, tbls, etc.
-        items = [ed_roadad]
+        items = []
         for item in items:
             arcpy.Delete_management(item)
 
