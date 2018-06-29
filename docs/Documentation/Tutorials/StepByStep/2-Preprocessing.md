@@ -3,7 +3,7 @@ title: Step 2 - Preprocessing Input Data
 weight: 2
 ---
 
-Some preprocessing of the following inputs in necessary before running the tools in the BRAT toolbox.
+Some preprocessing of the following inputs is necessary before running the tools in the BRAT toolbox.
 
 ## NHD Network
 
@@ -39,18 +39,24 @@ Table 1. Suitability of LANDFIRE Land Cover as Dam-building Material
 
 ## Land Use Raster
 
-Classify the land use raster according to water-related land use categories:
+**Optional and only necessary if running the conflict and management models** 
 
-- Add a new field (type short int) to the raster attribute table and name it "CODE"
-- Begin editing the raster.  Assign each row a value of 1, 2, or 3 in the  "CODE" field using Table 2.
+If using the Landfire existing vegetation type raster (e.g., 'us_140evt) to represent land use this pre-processing step can either be carried out manually or by running the 'LANDFIRE_LUCode.py' script which can found in the pyBRAT 'SupportingTools' folder
 
-Table 2. Suitability of LANDFIRE Land Cover as Dam-building Material 
+Classify the land use raster according to land use categories to characterize differing land use intensities:
 
-| CODE | Description           | Example land use categories              |
-| ---- | --------------------- | ---------------------------------------- |
-| 1    | Conservation Emphasis | Riparian, No Landuse, Open Water         |
-| 2    | Agricultural          | Agriculture, Irrigated, Non Irrigated, Naturally Irrigated |
-| 3    | Urban                 | Urban, Developed                         |
+- Add a new field (type double) to the raster attribute table and name it "LU_CODE"
+- Add a new field (type text) to the raster attribute table and name it "LUI_CLASS"
+- Begin editing the raster.  Assign each row a value in the  "LU_CODE" and "LUI_CLASS"  fields using Table 2.
+
+Table 2. Land Use Code and Class Descriptions 
+
+| LU_CODE | LUI_CLASS | Description | Example land use categories          |
+| ---- | ---- | --------------------- | ---------------------------------|
+| 0    | 'VeryLow' | Natural Setting, No Land Use | Riparian, Open Water  |
+| 0.33  | 'Low' | Lower Intensity Agricultural | Idle Cropland, Pasture, Hayland |
+| 0.66  | 'High' | Higher Intensity Agricultural | Row Crop, Orchard, Vineyard |
+| 1    | 'VeryHigh' | Urban or Developed                 | Developed, Quarries          |
 
 
 
