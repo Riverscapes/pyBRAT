@@ -147,6 +147,8 @@ def main(
     except IndexError:
         pass
 
+    runTests(seg_network_copy)
+
     arcpy.CheckInExtension("spatial")
 
 
@@ -1151,6 +1153,17 @@ def deleteWithArcpy(stuffToDelete):
     """
     for thing in stuffToDelete:
         arcpy.Delete_management(thing)
+
+
+
+def runTests(seg_network_copy):
+    """
+    Runs tests on the tool's output
+    :param seg_network_copy: The network that we want to test
+    :return:
+    """
+    from Tests import reach_id_is_unique
+    reach_id_is_unique(seg_network_copy)
 
 
 def getUUID():
