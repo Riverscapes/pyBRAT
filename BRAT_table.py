@@ -181,6 +181,38 @@ def segment_by_roads(seg_network, seg_network_copy, roads):
                 row[1] = row[0]
                 cursor.updateRow(row)
 
+    # get distance along route (LineID) for segment midpoints
+    midpoints = arcpy.FeatureVerticesToPoints_management(seg_network_copy, 'in_memory/midpoints', "MID")
+
+    arcpy.AddField_management(seg_network_copy, 'From_', 'DOUBLE')
+    arcpy.AddField_management(seg_network_copy, 'To_', 'DOUBLE')
+    with arcpy.da.UpdateCursor(seg_network_copy, ['StreamLen', 'From_', 'To_']) as cursor:
+        for row in cursor:
+            row[1] = 0.0
+            row[2] = row[0]
+            cursor.updateRow(row)
+
+    arcpy.CreateRoutes_lr(seg_network_copy, 'StreamID', 'in_memory/flowline_route', 'TWO_FIELDS', 'From_', 'To_')
+    routeTbl = arcpy.LocateFeaturesAlongRoutes_lr(midpoints, 'in_memory/flowline_route', 'StreamID',
+                                                  1.0, os.path.join(os.path.dirname(seg_network_copy), 'tbl_Routes.dbf'),
+                                                  'RID POINT MEAS')
+
+    distDict = {}
+    # add reach id distance values to dictionary
+    with arcpy.da.SearchCursor(routeTbl, ['ReachID', 'MEAS']) as cursor:
+        for row in cursor:
+            distDict[row[0]] = row[1]
+
+    # populate dictionary value to output field by ReachID
+    arcpy.AddField_management(seg_network_copy, 'ReachDist', 'DOUBLE')
+    with arcpy.da.UpdateCursor(seg_network_copy, ['ReachID', 'ReachDist']) as cursor:
+        for row in cursor:
+            aKey = row[0]
+            row[1] = distDict[aKey]
+            cursor.updateRow(row)
+
+    arcpy.Delete_management('in_memory')
+
 
 
 # zonal statistics within buffer function
