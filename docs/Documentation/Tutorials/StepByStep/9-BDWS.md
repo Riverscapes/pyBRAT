@@ -1,5 +1,5 @@
 ---
-title: Step 9 - Beaver Dam Water Storage
+title: Step 9 - BDWS (Optional)
 weight: 11
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Step 5 - BRAT Vegetation Dam Capacity Model
+weight: 7
 ---
 
 The vegetation dam capacity model estimates the maximum number of dams each reach could support based solely on the streamside and riparian vegetation.  The model predicts dam capacity for both the historic vegetation and existing vegetation.
