@@ -37,9 +37,8 @@ After any necessary regressions have been entered, save the changes to the scrip
 
 Inputs and Parameters:
 
-- **Input BRAT Network**: select the network that was created using the BRAT Table tool
-- **Select Hydrologic Region**:  enter the integer that was used to identify the regression you want to use.  In the example here we used the number 24.
-- **Set Scratch Workspace**: choose a file geodatabase to dump intermediate files. The default is ArcMap's default GDB.
+- **Input BRAT Network**  - select the network that was created using the BRAT Table tool
+- **Select Hydrologic Region** -  enter the integer that was used to identify the regression you want to use.  In the example here we used the number 24.
 
 
 
