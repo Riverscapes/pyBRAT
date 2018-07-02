@@ -214,7 +214,6 @@ def segment_by_roads(seg_network, seg_network_copy, roads):
     arcpy.Delete_management('in_memory')
 
 
-
 # zonal statistics within buffer function
 # dictionary join field function
 def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, scratch):
