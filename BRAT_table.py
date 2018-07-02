@@ -137,7 +137,7 @@ def main(
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    flowAccumulationSymLayer = os.path.join(symbologyFolder, "Flow_Accumulation.lyr")
+    flowAccumulationSymLayer = os.path.join(symbologyFolder, "Flow_Accumulation_10_4.lyr")
     makeLayer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flowAccumulationSymLayer, isRaster=True)
 
     makeLayers(seg_network_copy)
