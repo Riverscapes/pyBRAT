@@ -184,17 +184,21 @@ def segment_by_roads(seg_network, seg_network_copy, roads):
     # get distance along route (LineID) for segment midpoints
     midpoints = arcpy.FeatureVerticesToPoints_management(seg_network_copy, 'in_memory/midpoints', "MID")
 
-    arcpy.AddField_management(seg_network_copy, 'From_', 'DOUBLE')
-    arcpy.AddField_management(seg_network_copy, 'To_', 'DOUBLE')
-    with arcpy.da.UpdateCursor(seg_network_copy, ['StreamLen', 'From_', 'To_']) as cursor:
+    seg_network_dissolve = arcpy.Dissolve_management(seg_network, 'in_memory/seg_network_dissolve', 'StreamID', '',
+                                                     'SINGLE_PART', 'UNSPLIT_LINES')
+
+    arcpy.AddField_management(seg_network_dissolve, 'From_', 'DOUBLE')
+    arcpy.AddField_management(seg_network_dissolve, 'To_', 'DOUBLE')
+    with arcpy.da.UpdateCursor(seg_network_dissolve, ['SHAPE@Length', 'From_', 'To_']) as cursor:
         for row in cursor:
             row[1] = 0.0
             row[2] = row[0]
             cursor.updateRow(row)
 
-    arcpy.CreateRoutes_lr(seg_network_copy, 'StreamID', 'in_memory/flowline_route', 'TWO_FIELDS', 'From_', 'To_')
+    arcpy.CreateRoutes_lr(seg_network_dissolve, 'StreamID', 'in_memory/flowline_route', 'TWO_FIELDS', 'From_', 'To_')
     routeTbl = arcpy.LocateFeaturesAlongRoutes_lr(midpoints, 'in_memory/flowline_route', 'StreamID',
-                                                  1.0, os.path.join(os.path.dirname(seg_network_copy), 'tbl_Routes.dbf'),
+                                                  1.0,
+                                                  os.path.join(os.path.dirname(seg_network_copy), 'tbl_Routes.dbf'),
                                                   'RID POINT MEAS')
 
     distDict = {}
