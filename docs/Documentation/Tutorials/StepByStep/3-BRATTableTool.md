@@ -30,6 +30,11 @@ Figure 1. The BRAT Table tool interface
 - **Input Canal Feature Class** - select a feature class representing all canals within the study area
 - **Input Land Use Raster** - select the land use raster, making sure that the "LU_CODE" and "LUI_CLASS" fields have been added and populated.
 
+In addition, there are checkboxes that change the behavior of the tool in minor ways.
+
+- **Find Clusters** - This option will create a `ClusterID` field and populate it. This field is used in the Braid Handler to modify drainage area values. By creating them in the BRAT table, the technician can modify clusters to fit with what they want the tool to do. This is an advanced editing option, and not necessary for most users.
+- **Segment Network by Roads** - This option divides reaches based on the roads input. This can be useful if the user wants to compare the results of the model to field data collected from upstream and downstream of bridges. This is not necessary for most users, but can be useful.
+
 Click OK to run the tool.
 
 
