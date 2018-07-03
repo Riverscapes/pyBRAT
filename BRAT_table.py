@@ -1197,8 +1197,18 @@ def runTests(seg_network_copy):
     :param seg_network_copy: The network that we want to test
     :return:
     """
-    from Tests import reach_id_is_unique
-    reach_id_is_unique(seg_network_copy)
+    run_tests = True
+    if not run_tests: # don't run tests in execution
+        return
+    from Tests import test_reach_id_is_unique, report_exceptions, TestException
+    test_exceptions = []
+
+    try:
+        test_reach_id_is_unique(seg_network_copy)
+    except TestException as e:
+        test_exceptions.append(str(e))
+
+    report_exceptions(test_exceptions)
 
 
 def getUUID():

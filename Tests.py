@@ -11,7 +11,11 @@
 import arcpy
 
 
-def reach_id_is_unique(network):
+class TestException(Exception):
+    pass
+
+
+def test_reach_id_is_unique(network):
     """
     Makes sure that the Reach ID is unique
     :param network: The network to test
@@ -22,5 +26,20 @@ def reach_id_is_unique(network):
         for row in cursor:
             reach_id = row[0]
             if reach_id in reach_ids:
-                raise Exception("Multiple reachs have the same ReachID")
+                raise TestException("Multiple reaches have a ReachID of " + str(reach_id))
             reach_ids.append(reach_id)
+
+
+def report_exceptions(exceptions):
+    """
+    Reports the exceptions found during testing
+    :param exceptions: The list of exceptions found during testing
+    :return:
+    """
+    if len(exceptions) == 0:
+        arcpy.AddMessage("All tests passed")
+    else:
+        arcpy.AddMessage("The following exceptions were raised during testing:")
+        for exception in exceptions:
+            arcpy.AddError(exception)
+            arcpy.AddMessage("")
