@@ -609,10 +609,6 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                 for row in cursor:
                     tblDict[row[0]] = [row[1], row[2], row[3], row[4]]
             # populate flowline network out fields
-            arcpy.AddField_management(out_network, "iPC_VLowLU", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iPC_LowLU", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iPC_ModLU", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iPC_HighLU", 'DOUBLE')
 
             with arcpy.da.UpdateCursor(out_network, ['ReachID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
                 for row in cursor:
