@@ -66,7 +66,6 @@ def main(
         seg_network_copy = os.path.join(intermediateFolder, out_name + ".shp")
 
     if should_segment_network:
-        arcpy.AddMessage("Segmenting network by roads...")
         segment_by_roads(seg_network, seg_network_copy, road)
     else:
         arcpy.CopyFeatures_management(seg_network, seg_network_copy)
@@ -158,6 +157,8 @@ def segment_by_roads(seg_network, seg_network_copy, roads):
     :param roads: The shape file to segment by
     :return:
     """
+    arcpy.AddMessage("Segmenting network by roads...")
+
     temp_network = os.path.join(os.path.dirname(seg_network_copy), "temp.shp")
     temp_layer = "temp_lyr"
     temp_seg_network_layer = "seg_network_lyr"
@@ -596,7 +597,11 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                     cursor.updateRow(row)
             areaTbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['ReachID', 'LUI_CLASS'])
             areaPivTbl = arcpy.PivotTable_management(areaTbl, ['ReachID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
-
+            arcpy.DeleteField_management(areaPivTbl, 'VeryLow')
+            arcpy.DeleteField_management(areaPivTbl, "Low")
+            arcpy.DeleteField_management(areaPivTbl, "Moderate")
+            arcpy.DeleteField_management(areaPivTbl, "High")
+            sanitize_area_piv_tbl(areaPivTbl)
             # create empty dictionary to hold input table field values
             tblDict = {}
             # add values to dictionary
@@ -628,6 +633,34 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             arcpy.Delete_management(item)
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")
+
+
+def sanitize_area_piv_tbl(areaPivTbl):
+    """
+    Makes sure that the areaPivTbl has all the fields we need. If it doesn't, we'll add it.
+    :param areaPivTbl:
+    :return:
+    """
+    fields = [f.name for f in arcpy.ListFields(areaPivTbl)]
+    check_and_add_zero_fields(areaPivTbl, fields, 'VeryLow')
+    check_and_add_zero_fields(areaPivTbl, fields, 'Low')
+    check_and_add_zero_fields(areaPivTbl, fields, 'Moderate')
+    check_and_add_zero_fields(areaPivTbl, fields, 'High')
+
+
+def check_and_add_zero_fields(table, fields, field_name):
+    """
+    Checks that a field is in the table. If it isn't, we add it and populate it with zeros
+    :param table: The table that we want to check
+    :param fields: All the fields in the table (more efficient if doing multiple checks)
+    :param field_name: The name of the field we want to check for
+    :return:
+    """
+    if field_name not in fields:
+        arcpy.AddField_management(table, field_name, "DOUBLE")
+        arcpy.CalculateField_management(table, field_name, 0, "PYTHON")
+
+
 
 
 def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch):
