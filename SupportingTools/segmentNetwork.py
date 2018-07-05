@@ -21,6 +21,8 @@ import arcpy
 # outpath - name and path of output segmented flowline network
 # interval - reach spacing (in meters)
 # min_segLength - minimum segment (reach) length (in meters)
+nhd_flowline_path = None
+outpath = None
 
 interval = 300.0 # Default: 300.0
 min_segLength = 50.0 # Default: 50.0
@@ -177,12 +179,15 @@ def main(nhd_flowline_path, outpath):
 import argparse
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Segments the stream network given to it")
-    parser.add_argument('input_stream', help="The shape file given as input to the program")
-    parser.add_argument('-o' ,'--output_location', help="Path to where we should create the segmented stream network")
-    args = parser.parse_args()
-    if args.output_location:
-        main(args.input_stream, args.output_location)
+    if nhd_flowline_path is not None and outpath is not None:
+        main(nhd_flowline_path, outpath)
     else:
-        output_location = os.path.join(os.path.dirname(args.input_stream), "Segmented_Stream.shp")
-        main(args.input_stream, output_location)
+        parser = argparse.ArgumentParser(description="Segments the stream network given to it")
+        parser.add_argument('input_stream', help="The shape file given as input to the program")
+        parser.add_argument('-o' ,'--output_location', help="Path to where we should create the segmented stream network")
+        args = parser.parse_args()
+        if args.output_location:
+            main(args.input_stream, args.output_location)
+        else:
+            output_location = os.path.join(os.path.dirname(args.input_stream), "Segmented_Stream.shp")
+            main(args.input_stream, output_location)
