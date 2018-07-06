@@ -635,10 +635,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                     cursor.updateRow(row)
             areaTbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['ReachID', 'LUI_CLASS'])
             areaPivTbl = arcpy.PivotTable_management(areaTbl, ['ReachID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
-            arcpy.DeleteField_management(areaPivTbl, 'VeryLow')
-            arcpy.DeleteField_management(areaPivTbl, "Low")
-            arcpy.DeleteField_management(areaPivTbl, "Moderate")
-            arcpy.DeleteField_management(areaPivTbl, "High")
+
             sanitize_area_piv_tbl(areaPivTbl)
             # create empty dictionary to hold input table field values
             tblDict = {}
@@ -646,7 +643,12 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             with arcpy.da.SearchCursor(areaPivTbl, ['ReachID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
                 for row in cursor:
                     tblDict[row[0]] = [row[1], row[2], row[3], row[4]]
+
             # populate flowline network out fields
+            arcpy.AddField_management(out_network, "iPC_VLowLU", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iPC_LowLU", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iPC_ModLU", 'DOUBLE')
+            arcpy.AddField_management(out_network, "iPC_HighLU", 'DOUBLE')
 
             with arcpy.da.UpdateCursor(out_network, ['ReachID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
                 for row in cursor:
