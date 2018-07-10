@@ -254,7 +254,7 @@ def updateStreamDrainageValue(clusters, row, cursor):
     for cluster in clusters:
         if cluster.containsStream(row[0]):
             if row[1] == 0: # if it's a side channel
-                row[2] = sidechannelDAValue
+                row[2] = min(cluster.maxDA, sidechannelDAValue) # set the side channels DA to the placeholder value, or the highest value in the cluster (whichever is lower)
             else:
                 row[2] = cluster.maxDA
 
