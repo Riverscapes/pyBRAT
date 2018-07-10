@@ -225,6 +225,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     # get input raster stat value within each buffer
     # note: zonal stats as table does not support overlapping polygons so we will check which
     #       reach buffers output was produced for and which we need to run tool on again
+    scratch = 'C:\Users\A02150284\Documents\GISData\Temp'
     statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'ReachID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
     # get list of segment buffers where zonal stats tool produced output
     haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'ReachID')]
@@ -243,6 +244,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     # run zonal stats until we have output for each overlapping buffer segment
     stat = None
     tmp_buff_lyr = None
+    num_broken_repetitions = 0
     while len(needStatList) > 0:
         # create tuple of segment ids where still need raster values
         needStat = ()
@@ -263,6 +265,16 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
                 statDict[row[0]] = row[1]
         # create list of reaches that were run and remove from 'need to run' list
         haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'ReachID')]
+
+        if len(haveStatList2) == 0:
+            num_broken_repetitions += 1
+            if num_broken_repetitions >= 10:
+                arcpy.AddWarning("While calculating " + outFCField + ", the tool ran into an error. The following "+
+                                                                     "ReachIDs did not recieve correct values:\n"  +
+                                                                     str(needStatList))
+                for reachID in needStatList:
+                    statDict[reachID] = 0
+                needStatList = []
         for reach in haveStatList2:
             needStatList.remove(reach)
 
