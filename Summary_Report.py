@@ -68,6 +68,8 @@ def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):
         for row in cursor:
             damNum = row[-4]        # fourth to last attribute
             segLength = row[-3]   # third to last attribute
+            if segLength is None:
+                segLength = 0
             oCC_EX = row[-2]        # second to last attribute
             oCC_PT = row[-1]        # last attribute
 
@@ -109,6 +111,8 @@ def setOtherAttributes(outputPath, fields):
     with arcpy.da.UpdateCursor(outputPath, fields) as cursor:
         for row in cursor:
             segLength = row[-3] # third to last attribute
+            if segLength is None:
+                segLength = 0
             oCC_EX = row[-2] # second to last attribute
             oCC_PT = row[-1] # last attribute
 
