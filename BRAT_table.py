@@ -206,6 +206,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     stat = None
     tmp_buff_lyr = None
     num_broken_repetitions = 0
+    BROKEN_REPS_ALLOWED = 5
     while len(needStatList) > 0:
         # create tuple of segment ids where still need raster values
         needStat = ()
@@ -229,10 +230,17 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
 
         if len(haveStatList2) == 0:
             num_broken_repetitions += 1
-            if num_broken_repetitions >= 10:
-                arcpy.AddWarning("While calculating " + outFCField + ", the tool ran into an error. The following "+
-                                                                     "ReachIDs did not recieve correct values:\n"  +
-                                                                     str(needStatList))
+            if num_broken_repetitions >= BROKEN_REPS_ALLOWED:
+                warning_message = "While calculating " + outFCField + ", the tool ran into an error. The following "
+                warning_message += "ReachIDs did not recieve correct values:\n"
+                for reachID in needStatList:
+                    if reachID == needStatList[-1]:
+                        warning_message += "and "
+                    warning_message += str(reachID)
+                    if reachID != needStatList[-1]:
+                        warning_message += ", "
+                warning_message += "\n"
+                arcpy.AddWarning(warning_message)
                 for reachID in needStatList:
                     statDict[reachID] = 0
                 needStatList = []
