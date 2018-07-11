@@ -595,11 +595,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         lu_ras = Lookup(landuse, "LU_CODE")
         # calculate mean landuse value within 100 m buffer of each network segment
         zonalStatsWithinBuffer(buf_100m, lu_ras, 'MEAN', 'MEAN', out_network, "iPC_LU", scratch)
-
         # get percentage of each land use class in 100 m buffer of stream segment
-        fields = [f.name for f in arcpy.ListFields(landuse)]
+        fields = [f.name.upper() for f in arcpy.ListFields(landuse)]
 
-        if "LUI_Class" in fields:
+        if "LUI_CLASS" in fields:
             buf_fields = [f.name for f in arcpy.ListFields(buf_100m)]
             if 'oArea' not in buf_fields:
                 arcpy.AddField_management(buf_100m, 'oArea', 'DOUBLE')
@@ -643,6 +642,9 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                     except:
                         pass
             tblDict.clear()
+        else:
+            arcpy.AddWarning("No field named \"LU_CLASS\" in the land use raster. Make sure that this field exists" +
+                             " with no typos if you wish to use the data from the land use raster")
 
         # delete temp fcs, tbls, etc.
         items = [lu_ras]
