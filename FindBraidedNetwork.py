@@ -23,9 +23,8 @@ import sys
 import arcpy
 
 
-def main(fcStreamNetwork, canal):
+def main(fcStreamNetwork, canal, tempDir):
     # Polyline prep
-    tempFolder = "C:\Users\A02150284\Documents\GISData\Temp"
     listFields = arcpy.ListFields(fcStreamNetwork,"IsBraided")
     if len(listFields) is not 1:
         arcpy.AddField_management(fcStreamNetwork, "IsBraided", "SHORT", "", "", "", "", "NULLABLE")
@@ -35,13 +34,17 @@ def main(fcStreamNetwork, canal):
     if canal is None:
         findBraidedReaches(fcStreamNetwork)
     else:
-        handleCanals(fcStreamNetwork, canal, tempFolder)
+        handleCanals(fcStreamNetwork, canal, tempDir)
 
     return
 
 
 def handleCanals(streamNetwork, canal, tempFolder):
-    streamNetworkNoCanals = "in_memory/NoCanals"
+    if arcpy.GetInstallInfo()['Version'][0:4] == '10.5':
+        streamNetworkNoCanals = os.path.join(tempFolder, "NoCanals.shp")
+    else:
+        streamNetworkNoCanals = os.path.join('in_memory', 'NoCanals')
+
     arcpy.Erase_analysis(streamNetwork, canal, streamNetworkNoCanals)
     findBraidedReaches(streamNetworkNoCanals)
 
@@ -58,6 +61,7 @@ def handleCanals(streamNetwork, canal, tempFolder):
     arcpy.CalculateField_management("lyrBraidedReaches","IsBraided",1,"PYTHON")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMainstem",0,"PYTHON")
 
+    arcpy.Delete_management(streamNetworkNoCanals)
 
 
 def findBraidedReaches(fcLines):

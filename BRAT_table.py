@@ -19,6 +19,8 @@ import uuid
 import FindBraidedNetwork
 import BRAT_Braid_Handler
 
+reload(FindBraidedNetwork)
+reload(BRAT_Braid_Handler)
 
 def main(
     projPath,
@@ -120,7 +122,11 @@ def main(
 
     addMainstemAttribute(seg_network_copy)
     # find braided reaches
-    FindBraidedNetwork.main(seg_network_copy, canal)
+
+    tempDir = os.path.join(projPath, 'Temp')
+    if not os.path.exists(tempDir):
+        os.mkdir(tempDir)
+    FindBraidedNetwork.main(seg_network_copy, canal, tempDir)
 
     if findClusters:
         arcpy.AddMessage("Finding Clusters...")
