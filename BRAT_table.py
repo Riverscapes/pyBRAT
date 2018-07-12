@@ -19,6 +19,8 @@ import uuid
 import FindBraidedNetwork
 import BRAT_Braid_Handler
 
+reload(FindBraidedNetwork)
+reload(BRAT_Braid_Handler)
 
 def main(
     projPath,
@@ -120,7 +122,11 @@ def main(
 
     addMainstemAttribute(seg_network_copy)
     # find braided reaches
-    FindBraidedNetwork.main(seg_network_copy, canal)
+
+    tempDir = os.path.join(projPath, 'Temp')
+    if not os.path.exists(tempDir):
+        os.mkdir(tempDir)
+    FindBraidedNetwork.main(seg_network_copy, canal, tempDir)
 
     if findClusters:
         arcpy.AddMessage("Finding Clusters...")
@@ -245,6 +251,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     stat = None
     tmp_buff_lyr = None
     num_broken_repetitions = 0
+    BROKEN_REPS_ALLOWED = 5
     while len(needStatList) > 0:
         # create tuple of segment ids where still need raster values
         needStat = ()
@@ -268,10 +275,17 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
 
         if len(haveStatList2) == 0:
             num_broken_repetitions += 1
-            if num_broken_repetitions >= 10:
-                arcpy.AddWarning("While calculating " + outFCField + ", the tool ran into an error. The following "+
-                                                                     "ReachIDs did not recieve correct values:\n"  +
-                                                                     str(needStatList))
+            if num_broken_repetitions >= BROKEN_REPS_ALLOWED:
+                warning_message = "While calculating " + outFCField + ", the tool ran into an error. The following "
+                warning_message += "ReachIDs did not recieve correct values:\n"
+                for reachID in needStatList:
+                    if reachID == needStatList[-1]:
+                        warning_message += "and "
+                    warning_message += str(reachID)
+                    if reachID != needStatList[-1]:
+                        warning_message += ", "
+                warning_message += "\n"
+                arcpy.AddWarning(warning_message)
                 for reachID in needStatList:
                     statDict[reachID] = 0
                 needStatList = []
@@ -626,11 +640,10 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         lu_ras = Lookup(landuse, "LU_CODE")
         # calculate mean landuse value within 100 m buffer of each network segment
         zonalStatsWithinBuffer(buf_100m, lu_ras, 'MEAN', 'MEAN', out_network, "iPC_LU", scratch)
-
         # get percentage of each land use class in 100 m buffer of stream segment
-        fields = [f.name for f in arcpy.ListFields(landuse)]
+        fields = [f.name.upper() for f in arcpy.ListFields(landuse)]
 
-        if "LUI_Class" in fields:
+        if "LUI_CLASS" in fields:
             buf_fields = [f.name for f in arcpy.ListFields(buf_100m)]
             if 'oArea' not in buf_fields:
                 arcpy.AddField_management(buf_100m, 'oArea', 'DOUBLE')
@@ -674,6 +687,9 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
                     except:
                         pass
             tblDict.clear()
+        else:
+            arcpy.AddWarning("No field named \"LU_CLASS\" in the land use raster. Make sure that this field exists" +
+                             " with no typos if you wish to use the data from the land use raster")
 
         # delete temp fcs, tbls, etc.
         items = [lu_ras]
