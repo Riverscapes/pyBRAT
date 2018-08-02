@@ -1090,10 +1090,10 @@ def addMainstemAttribute(out_network):
     :param out_network: The network that we want to work with
     :return: None
     """
-    listFields = arcpy.ListFields(out_network,"IsMainstem")
+    listFields = arcpy.ListFields(out_network,"IsMainCh")
     if len(listFields) is not 1:
-        arcpy.AddField_management(out_network, "IsMainstem", "SHORT", "", "", "", "", "NULLABLE")
-    arcpy.CalculateField_management(out_network,"IsMainstem",1,"PYTHON")
+        arcpy.AddField_management(out_network, "IsMainCh", "SHORT", "", "", "", "", "NULLABLE")
+    arcpy.CalculateField_management(out_network,"IsMainCh",1,"PYTHON")
 
 
 def makeFolder(pathToLocation, newFolderName):
