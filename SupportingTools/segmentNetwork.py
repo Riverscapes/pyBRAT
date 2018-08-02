@@ -131,7 +131,7 @@ def main(nhd_flowline_path, outpath):
     flowline_seg = arcpy.SplitLineAtPoint_management(flowline_int, seg_pts, 'in_memory/flowline_seg', 1.0)
 
     # add and populate reach id and length fields
-    arcpy.AddField_management(flowline_seg, 'ReachID', 'SHORT')
+    arcpy.AddField_management(flowline_seg, 'ReachID', 'LONG')
     arcpy.AddField_management(flowline_seg, 'ReachLen', 'DOUBLE')
     ct = 1
     with arcpy.da.UpdateCursor(flowline_seg, ['ReachID', 'Shape@Length', 'ReachLen']) as cursor:
