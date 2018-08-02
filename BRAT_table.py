@@ -39,9 +39,11 @@ def main(
     landuse,
     out_name,
     findClusters,
-    should_segment_network):
+    should_segment_network,
+    is_verbose):
     findClusters = parseInputBool(findClusters)
     should_segment_network = parseInputBool(should_segment_network)
+    is_verbose = parseInputBool(is_verbose)
 
     scratch = 'in_memory'
     #arcpy.env.workspace = scratch
@@ -49,28 +51,11 @@ def main(
     arcpy.CheckOutExtension("Spatial")
 
     # --check input projections--
-    validateInputs(seg_network, road, railroad, canal)
+    validateInputs(seg_network, road, railroad, canal, is_verbose)
 
     # name and create output folder
-    j = 1
-    new_output_folder = os.path.join(projPath, "Output_" + str(j))
-    while os.path.exists(new_output_folder):
-        j += 1
-        new_output_folder = os.path.join(projPath, "Output_" + str(j))
-    os.mkdir(new_output_folder)
-
-    intermediateFolder = makeFolder(new_output_folder, "01_Intermediates")
-
-    # copy input segment network to output folder
-    if out_name.endswith('.shp'):
-        seg_network_copy = os.path.join(intermediateFolder, out_name)
-    else:
-        seg_network_copy = os.path.join(intermediateFolder, out_name + ".shp")
-
-    if should_segment_network:
-        segment_by_roads(seg_network, seg_network_copy, road)
-    else:
-        arcpy.CopyFeatures_management(seg_network, seg_network_copy)
+    new_output_folder, intermediateFolder, seg_network_copy = build_output_folder(projPath, out_name, seg_network, road,
+                                                                                  should_segment_network, is_verbose)
 
     # --check input network fields--
     # add flowline reach id field ('ReachID') if it doens't already exist
@@ -88,6 +73,8 @@ def main(
     buffersFolder = makeFolder(intermediateFolder, "01_Buffers")
 
     # create network segment midpoints
+    if is_verbose:
+        arcpy.AddMessage("Finding midpoints...")
     midpoints = arcpy.FeatureVerticesToPoints_management(seg_network_copy, scratch + "/midpoints", "MID")
     # remove unwanted fields from midpoints
     fields = arcpy.ListFields(midpoints)
@@ -98,6 +85,9 @@ def main(
             drop.append(field.name)
     if len(drop) > 0:
         arcpy.DeleteField_management(midpoints, drop)
+
+    if is_verbose:
+        arcpy.AddMessage("Making buffers...")
     # create midpoint 100 m buffer
     midpoint_buffer = arcpy.Buffer_analysis(midpoints, scratch + "/midpoint_buffer", "100 Meters")
     # create network 30 m buffer
@@ -120,18 +110,7 @@ def main(
         arcpy.AddMessage('Adding "iPC" attributes to network')
         ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
 
-    addMainstemAttribute(seg_network_copy)
-    # find braided reaches
-
-    tempDir = os.path.join(projPath, 'Temp')
-    if not os.path.exists(tempDir):
-        os.mkdir(tempDir)
-    FindBraidedNetwork.main(seg_network_copy, canal, tempDir)
-
-    if findClusters:
-        arcpy.AddMessage("Finding Clusters...")
-        clusters = BRAT_Braid_Handler.findClusters(seg_network_copy)
-        BRAT_Braid_Handler.addClusterID(seg_network_copy, clusters)
+    handle_braids(seg_network_copy, canal, projPath, findClusters)
 
     # run write xml function
     arcpy.AddMessage('Writing project xml')
@@ -157,7 +136,34 @@ def main(
     arcpy.CheckInExtension("spatial")
 
 
-def segment_by_roads(seg_network, seg_network_copy, roads):
+def build_output_folder(proj_path, out_name, seg_network, road, should_segment_network, is_verbose):
+    if is_verbose:
+        arcpy.AddMessage("Building folder structure...")
+    j = 1
+    new_output_folder = os.path.join(proj_path, "Output_" + str(j))
+    while os.path.exists(new_output_folder):
+        j += 1
+        new_output_folder = os.path.join(proj_path, "Output_" + str(j))
+    os.mkdir(new_output_folder)
+
+    intermediateFolder = makeFolder(new_output_folder, "01_Intermediates")
+
+    # copy input segment network to output folder
+    if out_name.endswith('.shp'):
+        seg_network_copy = os.path.join(intermediateFolder, out_name)
+    else:
+        seg_network_copy = os.path.join(intermediateFolder, out_name + ".shp")
+
+    if should_segment_network:
+        segment_by_roads(seg_network, seg_network_copy, road, is_verbose)
+    else:
+        arcpy.CopyFeatures_management(seg_network, seg_network_copy)
+
+    return new_output_folder, intermediateFolder, seg_network_copy
+
+
+
+def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
     """
     Segments the seg_network by roads, and puts segmented network at seg_network_copy
     :param seg_network: Path to the seg_network that we want to segment further
@@ -180,6 +186,9 @@ def segment_by_roads(seg_network, seg_network_copy, roads):
     arcpy.CopyFeatures_management(temp_layer, seg_network_copy)
 
     deleteWithArcpy([temp_layer, temp_seg_network_layer, temp_network])
+
+    if is_verbose:
+        arcpy.AddMessage("Adjusting ReachDist...")
 
     fields = [f.name for f in arcpy.ListFields(seg_network_copy)]
     if 'ReachID' in fields:
@@ -1088,15 +1097,18 @@ def writexml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_netw
         exxml.write()
 
 
-def validateInputs(seg_network, road, railroad, canal):
+def validateInputs(seg_network, road, railroad, canal, is_verbose):
     """
     Checks if the spatial references are correct and that the inputs are what we want
     :param seg_network: The stream network shape file
     :param road: The roads shapefile
     :param railroad: The railroads shape file
     :param canal: The canals shapefile
+    :param is_verbose: Tells us if we should print out extra debug messages
     :return:
     """
+    if is_verbose:
+        arcpy.AddMessage("Validating inputs...")
     try:
         networkSR = arcpy.Describe(seg_network).spatialReference
     except:
@@ -1210,6 +1222,21 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     new_layer_instance.description = description
     new_layer_instance.save()
     return new_layer_save
+
+
+def handle_braids(seg_network_copy, canal, projPath, findClusters):
+    addMainstemAttribute(seg_network_copy)
+    # find braided reaches
+
+    tempDir = os.path.join(projPath, 'Temp')
+    if not os.path.exists(tempDir):
+        os.mkdir(tempDir)
+    FindBraidedNetwork.main(seg_network_copy, canal, tempDir)
+
+    if findClusters:
+        arcpy.AddMessage("Finding Clusters...")
+        clusters = BRAT_Braid_Handler.findClusters(seg_network_copy)
+        BRAT_Braid_Handler.addClusterID(seg_network_copy, clusters)
 
 
 def makeBufferLayers(buffers_folder):
