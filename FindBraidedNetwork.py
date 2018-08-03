@@ -27,10 +27,10 @@ def main(fcStreamNetwork, canal, tempDir, is_verbose):
     # Polyline prep
     if is_verbose:
         arcpy.AddMessage("Finding multithreaded streams...")
-    listFields = arcpy.ListFields(fcStreamNetwork,"IsBraided")
+    listFields = arcpy.ListFields(fcStreamNetwork,"IsMultiCh")
     if len(listFields) is not 1:
-        arcpy.AddField_management(fcStreamNetwork, "IsBraided", "SHORT", "", "", "", "", "NULLABLE")
-    arcpy.CalculateField_management(fcStreamNetwork,"IsBraided",0,"PYTHON")
+        arcpy.AddField_management(fcStreamNetwork, "IsMultiCh", "SHORT", "", "", "", "", "NULLABLE")
+    arcpy.CalculateField_management(fcStreamNetwork,"IsMultiCh",0,"PYTHON")
 
     # Process
     if canal is None:
@@ -52,7 +52,7 @@ def handleCanals(streamNetwork, canal, tempFolder, is_verbose):
     arcpy.Erase_analysis(streamNetwork, canal, streamNetworkNoCanals)
     findBraidedReaches(streamNetworkNoCanals, is_verbose)
 
-    with arcpy.da.UpdateCursor(streamNetworkNoCanals, "IsBraided") as cursor: # delete non-braided reaches
+    with arcpy.da.UpdateCursor(streamNetworkNoCanals, "IsMultiCh") as cursor: # delete non-braided reaches
         for row in cursor:
             if row[0] == 0:
                 cursor.deleteRow()
@@ -62,8 +62,8 @@ def handleCanals(streamNetwork, canal, tempFolder, is_verbose):
 
     arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrNoCanals",'',"NEW_SELECTION")
 
-    arcpy.CalculateField_management("lyrBraidedReaches","IsBraided",1,"PYTHON")
-    arcpy.CalculateField_management("lyrBraidedReaches","IsMainstem",0,"PYTHON")
+    arcpy.CalculateField_management("lyrBraidedReaches","IsMultiCh",1,"PYTHON")
+    arcpy.CalculateField_management("lyrBraidedReaches","IsMainCh",0,"PYTHON")
 
     arcpy.Delete_management(streamNetworkNoCanals)
 
@@ -84,8 +84,8 @@ def findBraidedReaches(fcLines, is_verbose):
     arcpy.MakeFeatureLayer_management(fcLines,"lyrBraidedReaches")
     arcpy.MakeFeatureLayer_management("in_memory/DonutPolygons","lyrDonuts")
     arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrDonuts",'',"NEW_SELECTION")
-    arcpy.CalculateField_management("lyrBraidedReaches","IsBraided",1,"PYTHON")
-    arcpy.CalculateField_management("lyrBraidedReaches","IsMainstem",0,"PYTHON")
+    arcpy.CalculateField_management("lyrBraidedReaches","IsMultiCh",1,"PYTHON")
+    arcpy.CalculateField_management("lyrBraidedReaches","IsMainCh",0,"PYTHON")
 
 # # Run as Script # # 
 if __name__ == "__main__":
