@@ -132,7 +132,7 @@ def main(
     except IndexError:
         pass
 
-    runTests(seg_network_copy)
+    runTests(seg_network_copy, is_verbose)
 
     arcpy.CheckInExtension("spatial")
 
