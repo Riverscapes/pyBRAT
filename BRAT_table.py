@@ -22,6 +22,7 @@ import BRAT_Braid_Handler
 reload(FindBraidedNetwork)
 reload(BRAT_Braid_Handler)
 
+
 def main(
     projPath,
     projName,
@@ -99,18 +100,18 @@ def main(
 
     # run geo attributes function
     arcpy.AddMessage('Adding "iGeo" attributes to network')
-    igeo_attributes(seg_network_copy, inDEM, FlowAcc, midpoint_buffer, scratch)
+    igeo_attributes(seg_network_copy, inDEM, FlowAcc, midpoint_buffer, scratch, is_verbose)
 
     # run vegetation attributes function
     arcpy.AddMessage('Adding "iVeg" attributes to network')
-    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, seg_network_copy, scratch)
+    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, seg_network_copy, scratch, is_verbose)
 
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
         arcpy.AddMessage('Adding "iPC" attributes to network')
-        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath)
+        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose)
 
-    handle_braids(seg_network_copy, canal, projPath, findClusters)
+    handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose)
 
     # run write xml function
     arcpy.AddMessage('Writing project xml')
@@ -168,7 +169,7 @@ def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
     Segments the seg_network by roads, and puts segmented network at seg_network_copy
     :param seg_network: Path to the seg_network that we want to segment further
     :param seg_network_copy: Path to where we want the new network to go
-    :param roads: The shape file to segment by
+    :param roads: The shape file we use to segment
     :return:
     """
     arcpy.AddMessage("Segmenting network by roads...")
@@ -320,7 +321,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
 
 # geo attributes function
 # calculates min and max elevation, length, slope, and drainage area for each flowline segment
-def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
+def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_verbose):
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -336,7 +337,8 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
             for row in cursor:
                 row[1] = row[0]
                 cursor.updateRow(row)
-
+    if is_verbose:
+        arcpy.AddMessage("Preprocessing DEM...")
     #  --smooth input dem by 3x3 cell window--
     #  define raster environment settings
     desc = arcpy.Describe(inDEM)
@@ -351,6 +353,8 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
 
     # function to attribute start/end elevation (dem z) to each flowline segment
     def zSeg(vertexType, outField):
+        if is_verbose:
+            arcpy.AddMessage("Find values for " + outField)
         # create start/end points for each flowline reach segment
         tmp_pts = os.path.join(scratch, 'tmp_pts')
         arcpy.FeatureVerticesToPoints_management(out_network, tmp_pts, vertexType)
@@ -375,24 +379,22 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
     arcpy.CalculateField_management(out_network, "iGeo_Len", '!shape.length@meters!', "PYTHON_9.3")
     arcpy.AddField_management(out_network, "iGeo_Slope", "DOUBLE")
     with arcpy.da.UpdateCursor(out_network, ["iGeo_ElMax", "iGeo_ElMin", "iGeo_Len", "iGeo_Slope"]) as cursor:
+        if is_verbose:
+            arcpy.AddMessage("Finding iGeo_Slope...")
         for row in cursor:
             row[3] = (abs(row[0] - row[1]))/row[2]
-            cursor.updateRow(row)
-    with arcpy.da.UpdateCursor(out_network, "iGeo_Slope") as cursor: # fix slope values of 0
-        for row in cursor:
-            if row[0] == 0.0:
-                row[0] = 0.0001
+            if row[3] == 0.0:
+                row[3] = 0.0001
             cursor.updateRow(row)
 
     # get DA values
     if FlowAcc is None:
         arcpy.AddMessage("calculating drainage area")
         calc_drain_area(DEM, inDEM)
-    # todo: try and figure out what this elif is doing
-    elif os.path.exists(os.path.dirname(inDEM) + "/Flow"):
-        pass
-    else:
+    elif not os.path.exists(os.path.dirname(inDEM) + "/Flow"): # if there's no folder for the flow accumulation, make one
         os.mkdir(os.path.dirname(inDEM) + "/Flow")
+        if is_verbose:
+            arcpy.AddMessage("Copying drainage area raster...")
         arcpy.CopyRaster_management(FlowAcc, os.path.dirname(inDEM) + "/Flow/" + os.path.basename(FlowAcc))
 
     if FlowAcc is None:
@@ -404,6 +406,8 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
     # add drainage area 'iGeo_DA' field to flowline network
     arcpy.AddField_management(out_network, "iGeo_DA", "DOUBLE")
     # get max drainage area within 100 m midpoint buffer
+    if is_verbose:
+        arcpy.AddMessage("Finding values for iGeo_DA")
     zonalStatsWithinBuffer(midpoint_buffer, DrArea, "MAXIMUM", 'MAX', out_network, "iGeo_DA", scratch)
 
     # replace '0' drainage area values with tiny value
@@ -416,7 +420,7 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch):
 
 # vegetation attributes function
 # calculates both existing and potential mean vegetation value within 30 m and 100 m buffer of each stream segment
-def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch):
+def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch, is_verbose):
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -426,15 +430,21 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
             arcpy.DeleteField_management(out_network, field)
 
     # --existing vegetation values--
+    if is_verbose:
+        arcpy.AddMessage("Making current veg lookup raster...")
     veg_lookup = Lookup(coded_veg, "VEG_CODE")
     # add mean veg value 'iVeg_100EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100EX", "DOUBLE")
     # get mean existing veg value within 100 m buffer
+    if is_verbose:
+        arcpy.AddMessage("Finding iVeg_100EX...")
     zonalStatsWithinBuffer(buf_100m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100EX", scratch)
 
     # add mean veg value 'iVeg_VT30EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30EX", "DOUBLE")
     # get mean existing veg value within 30 m buffer
+    if is_verbose:
+        arcpy.AddMessage("Finding iVeg_30EX...")
     zonalStatsWithinBuffer(buf_30m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30EX", scratch)
 
     # delete temp fcs, tbls, etc.
@@ -443,16 +453,22 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
         arcpy.Delete_management(item)
 
     # --historic (i.e., potential) vegetation values--
+    if is_verbose:
+        arcpy.AddMessage("Making historic veg lookup raster...")
     hist_veg_lookup = Lookup(coded_hist, "VEG_CODE")
 
     # add mean veg value 'iVeg_100PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100PT", "DOUBLE")
     # get mean potential veg value within 100 m buffer
+    if is_verbose:
+        arcpy.AddMessage("Finding iVeg_100PT...")
     zonalStatsWithinBuffer(buf_100m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100PT", scratch)
 
     # add mean veg value 'iVeg_30PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30PT", "DOUBLE")
     # get mean potential veg value within 30 m buffer
+    if is_verbose:
+        arcpy.AddMessage("Finding iVeg_30PT...")
     zonalStatsWithinBuffer(buf_30m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30PT", scratch)
 
     # delete temp fcs, tbls, etc.
@@ -463,8 +479,10 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 
 # conflict potential function
 # calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
-def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath):
+def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose):
     # create temp directory
+    if is_verbose:
+        arcpy.AddMessage("Deleting and remaking temp dir...")
     from shutil import rmtree
     tempDir = os.path.join(projPath, 'Temp')
     if os.path.exists(tempDir):
@@ -480,6 +498,8 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
     # calculate minimum distance from road-stream crossings ('iPC_RoadX')
     if road is not None:
+        if is_verbose:
+            arcpy.AddMessage("Finding iPC_RoadX values...")
         arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
         roadx = tempDir + "\\roadx.shp"
         # create points at road-stream intersections
@@ -512,17 +532,17 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     # calculate mean distance from adjacent roads ('iPC_RoadAd')
     # here we only care about roads in the valley bottom
     if road is not None:
-        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "road_ad", "iPC_RoadAd", scratch)
+        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "road_ad", "iPC_RoadAd", scratch, is_verbose)
 
     # calculate mean distance from railroads ('iPC_RR')
     # here we only care about railroads in the valley bottom
     if railroad is not None:
-        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroad", "iPC_RR", scratch)
+        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroad", "iPC_RR", scratch, is_verbose)
 
     # calculate mean distance from canals ('iPC_Canal')
     # here we only care about canals in the valley bottom
     if canal is not None:
-        findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch)
+        findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose)
     #rmtree(tempDir)
     """
     This is the section of code that stores intermediary data in memory. In ArcMap 10.6, that crashes the program,
@@ -644,6 +664,8 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
     # calculate mean landuse value ('iPC_LU')
     if landuse is not None:
+        if is_verbose:
+            arcpy.AddMessage("Finding iPC_LU values...")
         arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
         # create raster with just landuse code values
         lu_ras = Lookup(landuse, "LU_CODE")
@@ -736,7 +758,9 @@ def check_and_add_zero_fields(table, fields, field_name):
 
 
 
-def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch):
+def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch, is_verbose):
+    if is_verbose:
+        arcpy.AddMessage("Finding " + new_field_name + " values...")
     arcpy.AddField_management(out_network, new_field_name, "DOUBLE")
     # clip roads to the valley bottom
     feature_subset = arcpy.Clip_analysis(feature, valley_bottom, os.path.join(temp_dir, temp_name + '_subset.shp'))
@@ -1224,14 +1248,16 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     return new_layer_save
 
 
-def handle_braids(seg_network_copy, canal, projPath, findClusters):
+def handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose):
+    if is_verbose:
+        arcpy.AddMessage("Finding multi-threaded attributes...")
     addMainstemAttribute(seg_network_copy)
     # find braided reaches
 
     tempDir = os.path.join(projPath, 'Temp')
     if not os.path.exists(tempDir):
         os.mkdir(tempDir)
-    FindBraidedNetwork.main(seg_network_copy, canal, tempDir)
+    FindBraidedNetwork.main(seg_network_copy, canal, tempDir, is_verbose)
 
     if findClusters:
         arcpy.AddMessage("Finding Clusters...")
@@ -1277,12 +1303,14 @@ def deleteWithArcpy(stuffToDelete):
 
 
 
-def runTests(seg_network_copy):
+def runTests(seg_network_copy, is_verbose):
     """
     Runs tests on the tool's output
     :param seg_network_copy: The network that we want to test
     :return:
     """
+    if is_verbose:
+        arcpy.AddMessage("Running tests...")
     run_tests = True
     if not run_tests: # don't run tests in execution
         return

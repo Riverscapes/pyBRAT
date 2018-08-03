@@ -23,8 +23,10 @@ import sys
 import arcpy
 
 
-def main(fcStreamNetwork, canal, tempDir):
+def main(fcStreamNetwork, canal, tempDir, is_verbose):
     # Polyline prep
+    if is_verbose:
+        arcpy.AddMessage("Finding multithreaded streams...")
     listFields = arcpy.ListFields(fcStreamNetwork,"IsBraided")
     if len(listFields) is not 1:
         arcpy.AddField_management(fcStreamNetwork, "IsBraided", "SHORT", "", "", "", "", "NULLABLE")
@@ -32,21 +34,23 @@ def main(fcStreamNetwork, canal, tempDir):
 
     # Process
     if canal is None:
-        findBraidedReaches(fcStreamNetwork)
+        findBraidedReaches(fcStreamNetwork, is_verbose)
     else:
-        handleCanals(fcStreamNetwork, canal, tempDir)
+        handleCanals(fcStreamNetwork, canal, tempDir, is_verbose)
 
     return
 
 
-def handleCanals(streamNetwork, canal, tempFolder):
+def handleCanals(streamNetwork, canal, tempFolder, is_verbose):
+    if is_verbose:
+        arcpy.AddMessage("Removing canals that were given from the stream network for the purposes of multithreadedness...")
     if arcpy.GetInstallInfo()['Version'][0:4] == '10.5':
         streamNetworkNoCanals = os.path.join(tempFolder, "NoCanals.shp")
     else:
         streamNetworkNoCanals = os.path.join('in_memory', 'NoCanals')
 
     arcpy.Erase_analysis(streamNetwork, canal, streamNetworkNoCanals)
-    findBraidedReaches(streamNetworkNoCanals)
+    findBraidedReaches(streamNetworkNoCanals, is_verbose)
 
     with arcpy.da.UpdateCursor(streamNetworkNoCanals, "IsBraided") as cursor: # delete non-braided reaches
         for row in cursor:
@@ -64,8 +68,9 @@ def handleCanals(streamNetwork, canal, tempFolder):
     arcpy.Delete_management(streamNetworkNoCanals)
 
 
-def findBraidedReaches(fcLines):
-
+def findBraidedReaches(fcLines, is_verbose):
+    if is_verbose:
+        arcpy.AddMessage("Calculating multithreadedness...")
     # Clear temporary data
     if arcpy.Exists("in_memory//DonutPolygons"):
         arcpy.Delete_management("in_memory//DonutPolygons")
