@@ -16,27 +16,60 @@ cluster_id = 0 # Provides a consistent way to refer to clusters, that give more 
 CLUSTERFIELDNAME = "ClusterID"
 
 
-def main(inputNetwork):
+def main(input_network):
     """
     The main function, where we go through the stream network and handle whatever we need to
-    :param inputNetwork: The stream network that we want to give mainstem values
+    :param input_network: The stream network that we want to give mainstem values
     :return: None
     """
-    if not hasClusterIDs(inputNetwork):
+    checkInput(input_network)
+    if not hasClusterIDs(input_network):
         arcpy.AddMessage("Finding clusters...")
-        clusters = findClusters(inputNetwork)
+        clusters = findClusters(input_network)
 
-        handleClusters(inputNetwork, clusters)
+        handleClusters(input_network, clusters)
     else:
         arcpy.AddMessage("Finding clusters based on the ClusterID field")
-        clusters = getClustersFromIDs(inputNetwork)
+        clusters = getClustersFromIDs(input_network)
 
         for i in range(len(clusters)):
             clusters[i].id = i+1
 
-        updateNetworkDrainageValues(inputNetwork, clusters)
+        updateNetworkDrainageValues(input_network, clusters)
 
-    makeLayers(inputNetwork)
+    makeLayers(input_network)
+
+
+def checkInput(input_network):
+    """
+    Checks that the input given has the fields needed for the program
+
+    Primarily updates field names to comply with 3.0.18 name standards. This makes sure that networks produced with old
+    pyBRAT can still be given as input
+    :param input_network: The network given
+    :return: None
+    """
+    fields = [f.name for f in arcpy.ListFields(input_network)]
+    renameField(input_network, fields, "IsBraided", "IsMultiCh")
+    renameField(input_network, fields, "IsMainstem", "IsMainCh")
+
+
+def renameField(input_network, fields, old_name, new_name):
+    """
+    Checks that the network has the field, and renames an old version if necessary
+    :param input_network:
+    :param fields:
+    :param old_name:
+    :param new_name:
+    :return:
+    """
+    if new_name not in fields:
+        if old_name in fields:
+            arcpy.AlterField_management(input_network, old_name, new_field_name=new_name)
+        else:
+            raise Exception("Field " + new_name + " is a required field in the input network to run the BRAT Braid Handler")
+
+
 
 
 def getClustersFromIDs(inputNetwork):
@@ -46,7 +79,7 @@ def getClustersFromIDs(inputNetwork):
     :return: List of clusters
     """
     clusters = []
-    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'ReachID', "IsBraided"]
+    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'ReachID', "IsMultiCh"]
     with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
         for polyline, clusterID, drainageArea, segID, isBraided in cursor:
             if clusterID != -1 and isBraided == 1:
@@ -90,7 +123,7 @@ def findClusters(inputNetwork):
     :return: An array of clusters
     """
     clusters = []
-    fields = ['SHAPE@', 'ReachID', 'iGeo_DA', 'IsBraided']
+    fields = ['SHAPE@', 'ReachID', 'iGeo_DA', 'IsMultiCh']
     with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
         for polyline, stream_id, drainageArea, isBraided in cursor:
             if isBraided:
@@ -218,7 +251,7 @@ def addClusterID(inputNetwork, clusters):
     for i in range(len(clusters)):
         clusters[i].id = i + 1
 
-    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', CLUSTERFIELDNAME, 'IsBraided']) as cursor:
+    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', CLUSTERFIELDNAME, 'IsMultiCh']) as cursor:
         for row in cursor:
             if row[2] == 1: # If the stream is braided. If it isn't, we don't care about its cluster id
                 for cluster in clusters:
@@ -235,7 +268,7 @@ def updateNetworkDrainageValues(inputNetwork, clusters):
     :return: None
     """
     arcpy.AddMessage("Updating Drainage Area Values...")
-    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', 'IsMainstem', 'iGeo_DA', 'IsBraided']) as cursor:
+    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', 'IsMainCh', 'iGeo_DA', 'IsMultiCh']) as cursor:
         for row in cursor:
             if row[3] == 1:
                 updateStreamDrainageValue(clusters, row, cursor)

@@ -5,7 +5,7 @@ weight: 11
 
 ## Running the Beaver Dam Water Storage (BDWS) Tool
 
-PyBRAT has an experimental wrapper that feeds input into the BDWS tool, developed by Konrad Hafen. If you want to use this wrapper, currently you will need to download the development branch of pyBRAT. Full documentation on installing dependencies, preparing inputs, and running the tool are available at the following link: [https://konradhafen.github.io/beaver-dam-water-storage/](https://konradhafen.github.io/beaver-dam-water-storage/)
+PyBRAT has an [experimental wrapper](https://konradhafen.github.io/beaver-dam-water-storage/) that feeds input into the BDWS tool, developed by Konrad Hafen. If you want to use this wrapper, currently you will need to download the development branch of pyBRAT. Full documentation on installing dependencies, preparing inputs, and running the tool are available [here](https://konradhafen.github.io/beaver-dam-water-storage/).
 
 If you want to run BDFlopy, you will need to enter the optional inputs. If you do not enter these inputs, the tool will simply run the BDLoG and BDSWEA tools.
 
