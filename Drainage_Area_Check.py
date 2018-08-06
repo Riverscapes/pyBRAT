@@ -153,7 +153,8 @@ def fix_problem_streams(stream_network, problem_streams):
 
 def write_problem_streams(stream_network, problem_streams):
     with open(os.path.join(os.path.dirname(stream_network), "ProblemStreamsList.txt"), 'w') as file:
-        file.write("Something")
+        file.write("This is a list of all streams that were changed by the Drainage Area Check\n")
+        file.write("Number of streams edited: " + str(len(problem_streams)) + '\n\n')
         for problem_stream in problem_streams:
             file.write("Altered Reach #" + str(problem_stream.reach_id) + '\n')
 
