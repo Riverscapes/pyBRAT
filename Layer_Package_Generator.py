@@ -37,7 +37,7 @@ def makeLayerPackage(outputFolder, layerPackageName):
     inputsLayer = getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd)
     BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
     intermediatesLayer = getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd)
-    outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd)
+    outputLayer = groupLayers(emptyGroupLayer, "Output", [intermediatesLayer, BRATLayer], df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
     layerPackage = os.path.join(outputFolder, layerPackageName)
