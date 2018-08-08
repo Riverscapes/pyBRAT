@@ -241,7 +241,6 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     # get input raster stat value within each buffer
     # note: zonal stats as table does not support overlapping polygons so we will check which
     #       reach buffers output was produced for and which we need to run tool on again
-    scratch = 'C:\Users\A02150284\Documents\GISData\Temp'
     statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'ReachID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
     # get list of segment buffers where zonal stats tool produced output
     haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'ReachID')]
