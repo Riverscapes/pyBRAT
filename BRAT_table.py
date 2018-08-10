@@ -187,7 +187,10 @@ def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
     arcpy.CopyFeatures_management(temp_layer, seg_network_copy)
 
     deleteWithArcpy([temp_layer, temp_seg_network_layer, temp_network])
+    addReachDist(seg_network, seg_network_copy, is_verbose)
 
+
+def addReachDist(seg_network, seg_network_copy, is_verbose):
     if is_verbose:
         arcpy.AddMessage("Adjusting ReachDist...")
 
