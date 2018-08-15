@@ -39,7 +39,7 @@ def main(nhd_flowline_path, outpath):
 
     #  select lines from original nhd that are not coded as pipeline (fcdoe 428**)
     arcpy.MakeFeatureLayer_management(nhd_flowline_path, 'nhd_flowline_lyr')
-    quer = '"FCODE" >=42800 AND "FCODE" <= 42813'
+    quer = """ "FTYPE" = 428 OR "FTYPE" = 420 OR "FTYPE" = 566"""
     arcpy.SelectLayerByAttribute_management('nhd_flowline_lyr', 'NEW_SELECTION', quer)
     arcpy.SelectLayerByAttribute_management('nhd_flowline_lyr', 'SWITCH_SELECTION')
     flowline_sel = arcpy.CopyFeatures_management('nhd_flowline_lyr', 'in_memory/flowline_selection')
