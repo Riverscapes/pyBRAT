@@ -115,7 +115,15 @@ class BRAT_project_tool(object):
             direction="Input",
             multiValue=True)
 
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9]
+        param10 = arcpy.Parameter(
+            displayName="Select land ownership datasets",
+            name="ownership",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input",
+            multiValue=True)
+
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10]
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
@@ -144,7 +152,8 @@ class BRAT_project_tool(object):
                         p[6].valueAsText,
                         p[7].valueAsText,
                         p[8].valueAsText,
-                        p[9].valueAsText)
+                        p[9].valueAsText,
+                        p[10].valueAsText)
         return
 
 
