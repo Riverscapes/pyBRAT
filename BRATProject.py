@@ -53,7 +53,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     exVegRiparianSymbology = os.path.join(symbologyFolder, "Existing_Veg_Riparian.lyr")
     histVegRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
-    landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster_10_6.lyr")
+    landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster.lyr")
     landOwnershipSymbology = os.path.join(symbologyFolder, "SurfaceManagementAgency.lyr")
     canalsSymbology = os.path.join(symbologyFolder, "Canals.lyr")
     roadsSymbology = os.path.join(symbologyFolder, "Roads.lyr")
@@ -145,8 +145,8 @@ def makeTopoLayers(topoFolder):
     """
     sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
-    demSymbology = os.path.join(symbologyFolder, "DEM_10_4.lyr")
-    slopeSymbology = os.path.join(symbologyFolder, "Slope_10_4.lyr")
+    demSymbology = os.path.join(symbologyFolder, "DEM.lyr")
+    slopeSymbology = os.path.join(symbologyFolder, "Slope.lyr")
     layers = []
 
     for folder in os.listdir(topoFolder):
