@@ -117,6 +117,18 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
 
+    veg_folder_name = "VegDamCapacity"
+    veg_group_layer_name = "Overall Vegetation Dam Capacity"
+    veg_folder_path = findFolder(intermediatesFolder, veg_folder_name)
+    if veg_folder_path:
+        veg_layers = findLayersInFolder(veg_folder_path)
+        if len(veg_layers) == 2:
+            desc = arcpy.Describe(veg_layers[0])
+            if "Existing" in desc.nameString:
+                veg_layers = [veg_layers[1], veg_layers[0]]
+
+        intermediate_layers.append(groupLayers(emptyGroupLayer, veg_group_layer_name, veg_layers, df, mxd))
+
     return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
 
 
@@ -136,6 +148,7 @@ def findAndGroupLayers(layers_list, folderBase, folderName, groupLayerName, empt
     folderPath = findFolder(folderBase, folderName)
     if folderPath:
         layers = findLayersInFolder(folderPath)
+
         layers_list.append(groupLayers(emptyGroupLayer, groupLayerName, layers, df, mxd))
 
 
