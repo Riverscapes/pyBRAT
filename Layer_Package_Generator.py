@@ -72,7 +72,7 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     exVegLayers = findInstanceLayers(exVegFolder)
     exVegLayer = groupLayers(emptyGroupLayer, "Existing Vegetation Dam Capacity", exVegLayers, df, mxd)
     histVegLayers = findInstanceLayers(histVegFolder)
-    histVegLayer = groupLayers(emptyGroupLayer, "Potential Vegetation Dam Capacity", histVegLayers, df, mxd)
+    histVegLayer = groupLayers(emptyGroupLayer, "Historic Vegetation Dam Capacity", histVegLayers, df, mxd)
     vegLayer = groupLayers(emptyGroupLayer, "Vegetation", [exVegLayer, histVegLayer], df, mxd)
 
     networkLayers = findInstanceLayers(networkFolder)
