@@ -67,13 +67,13 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     exVegDestinations = copyMultiInputToFolder(exVegFolder, ex_veg, "Ex_Veg", isRaster=True)
     makeInputLayers(exVegDestinations, "Existing Vegetation", symbologyLayer=None, isRaster=True)
     makeInputLayers(exVegDestinations, "Existing Vegetation Suitability", symbologyLayer=exVegSuitabilitySymbology, isRaster=True)
-    makeInputLayers(exVegDestinations, "Existing Riparin Vegetation", symbologyLayer=exVegRiparianSymbology, isRaster=True)
+    makeInputLayers(exVegDestinations, "Existing Riparian Vegetation", symbologyLayer=exVegRiparianSymbology, isRaster=True)
 
     # add the historic veg inputs to project
     histVegDestinations = copyMultiInputToFolder(histVegFolder, hist_veg, "Hist_Veg", isRaster=True)
     makeInputLayers(histVegDestinations, "Historic Vegetation", symbologyLayer=None, isRaster=True)
     makeInputLayers(histVegDestinations, "Historic Vegetation Suitability", symbologyLayer=histVegSuitabilitySymbology, isRaster=True)
-    makeInputLayers(histVegDestinations, "Historic Riparin Vegetation", symbologyLayer=histVegRiparianSymbology, isRaster=True)
+    makeInputLayers(histVegDestinations, "Historic Riparian Vegetation", symbologyLayer=histVegRiparianSymbology, isRaster=True)
 
     # add the network inputs to project
     networkDestinations = copyMultiInputToFolder(networkFolder, network, "Network", isRaster=False)
