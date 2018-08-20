@@ -42,10 +42,12 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     railroadFolder = makeFolder(conflictFolder, "03_Railroads")
     canalsFolder = makeFolder(conflictFolder, "04_Canals")
     landUseFolder = makeFolder(conflictFolder, "05_LandUse")
-    landOwnershipFolder = makeFolder(conflictFolder, "05_LandOwnership")
+    landOwnershipFolder = makeFolder(conflictFolder, "06_LandOwnership")
 
     sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
+
+    # Gets all of our symbology variables set up
     exVegSymbology = os.path.join(symbologyFolder, "Existing_Veg_Raster.lyr")
     histVegSymbology = os.path.join(symbologyFolder, "Historic_Veg_Raster.lyr")
     exVegSuitabilitySymbology = os.path.join(symbologyFolder, "Existing_Veg_Suitability.lyr")
