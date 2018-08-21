@@ -61,6 +61,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     roadsSymbology = os.path.join(symbologyFolder, "Roads.lyr")
     railroadsSymbology = os.path.join(symbologyFolder, "Railroads.lyr")
     valleyBottomSymbology = os.path.join(symbologyFolder, "ValleyBottom.lyr")
+    valleyBottomOutlineSymbology = os.path.join(symbologyFolder, "ValleyBottom_Outline.lyr")
     flowDirectionSymbology = os.path.join(symbologyFolder, "Network_FlowDirection.lyr")
 
     # add the existing veg inputs to project
@@ -92,7 +93,8 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     # add the conflict inputs to the project
     if valley is not None:
         vallyBottomDestinations = copyMultiInputToFolder(valleyBottomFolder, valley, "Valley", isRaster=False)
-        makeInputLayers(vallyBottomDestinations, "Valley Bottom", symbologyLayer=valleyBottomSymbology, isRaster=False)
+        makeInputLayers(vallyBottomDestinations, "Valley Bottom Fill", symbologyLayer=valleyBottomSymbology, isRaster=False)
+        makeInputLayers(vallyBottomDestinations, "Valley Bottom Outline", symbologyLayer=valleyBottomOutlineSymbology, isRaster=False)
 
     # add road layers to the project
     if road is not None:
