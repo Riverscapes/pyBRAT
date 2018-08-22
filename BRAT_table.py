@@ -1277,7 +1277,6 @@ def makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology
     """
     for fileName in os.listdir(buffers_folder):
         if fileName.endswith(".shp"):
-            arcpy.AddMessage(fileName)
             new_layer_name = fileName[:-4]
             filePath = os.path.join(buffers_folder, fileName)
             given_symbology = None
