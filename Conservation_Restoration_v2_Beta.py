@@ -135,7 +135,7 @@ def makeLayers(out_network):
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     managementLayer = os.path.join(symbologyFolder, "Management_Zones_v2_Beta.lyr")
 
-    makeLayer(output_folder, out_network, "Beaver_Management_Zones_v2_Beta", managementLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "Beaver Management Zones v2 Beta", managementLayer, isRaster=False)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer, isRaster, description="Made Up Description"):
