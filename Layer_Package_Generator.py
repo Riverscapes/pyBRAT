@@ -51,6 +51,17 @@ def checkIntermediates(intermediates_folder, symbologyFolder):
     check_buffer_layers(intermediates_folder, symbologyFolder)
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "LandUse", "Land Use Intensity", "iPC_LU")
 
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Drainage_Area_Feature_Class.lyr", brat_table_file, "TopographicIndex", "Drainage Area", "iGeo_DA")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Slope_Feature_Class.lyr", brat_table_file, "TopographicIndex", "Reach Slope", "iGeo_Slope")
+
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "BraidHandler", "Mainstem Braids", "IsMainCh")
+
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Highflow_Streampower.lyr", brat_table_file, "Hydrology", "Highflow Streampower", "iHyd_SP2")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_Streampower.lyr", brat_table_file, "Hydrology", "Baseflow Streampower", "iHyd_SPLow")
+
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Existing_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Capacity", "oVC_EX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Historic_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Capacity", "oVC_PT")
+
 
 def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
                              layer_name, field_for_layer, layer_file_name=None):
@@ -76,6 +87,8 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
 
     layer_folder = findFolder(intermediates_folder, folder_name)
     layer_path = os.path.join(layer_folder, layer_file_name)
+    if not layer_path.endswith(".lyr"):
+        layer_path += '.lyr'
 
     if not os.path.exists(layer_path):
         makeLayer(layer_folder, brat_table_file, layer_name, layer_symbology, fileName=layer_file_name)
@@ -166,7 +179,9 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     new_layer = new_layer_name
     if fileName is None:
         fileName = new_layer_name.replace(" ", "")
-    new_layer_save = os.path.join(output_folder, fileName + ".lyr")
+    new_layer_save = os.path.join(output_folder, fileName)
+    if not new_layer_save.endswith(".lyr"):
+        new_layer_save += ".lyr"
 
     if isRaster:
         try:
