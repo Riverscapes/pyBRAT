@@ -49,6 +49,39 @@ def checkIntermediates(intermediates_folder, symbologyFolder):
         return
 
     check_buffer_layers(intermediates_folder, symbologyFolder)
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "LandUse", "Land Use Intensity", "iPC_LU")
+
+
+def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
+                             layer_name, field_for_layer, layer_file_name=None):
+    """
+
+    :param intermediates_folder: The
+    :param symbology_folder:
+    :param symbology_layer_name:
+    :param brat_table_file:
+    :param folder_name:
+    :param layer_name:
+    :param field_for_layer:
+    :param layer_file_name:
+    :return:
+    """
+    fields = [f.name for f in arcpy.ListFields(brat_table_file)]
+    if field_for_layer not in fields: # we don't want to create the layer if the field isn't in the BRAT table file
+        return
+
+    if layer_file_name == None:
+        layer_file_name = layer_name.replace(" ", "")
+    layer_symbology = os.path.join(symbology_folder, symbology_layer_name)
+
+    layer_folder = findFolder(intermediates_folder, folder_name)
+    layer_path = os.path.join(layer_folder, layer_file_name)
+
+    if not os.path.exists(layer_path):
+        makeLayer(layer_folder, brat_table_file, layer_name, layer_symbology, fileName=layer_file_name)
+
+
+
 
 def find_BRAT_table_output(intermediates_folder):
     """
@@ -78,6 +111,10 @@ def check_buffer_layers(intermediates_folder, symbology_folder):
     buffer_100m_symbology = os.path.join(symbology_folder, "buffer_100m.lyr")
     check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology)
 
+    buffer_30m = os.path.join(buffer_folder, "buffer_30m.shp")
+    buffer_30m_layer = os.path.join(buffer_folder, "buffer_30m.lyr")
+    buffer_30m_symbology = os.path.join(symbology_folder, "buffer_30m.lyr")
+    check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology)
 
 
 def checkAnalyses(analysesFolder, symbologyFolder):
@@ -115,7 +152,7 @@ def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False):
         makeLayer(output_folder, base_path, layer_name, symbology_layer, isRaster=isRaster)
 
 
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description", fileName=None):
     """
     Creates a layer and applies a symbology to it
     :param output_folder: Where we want to put the layer
@@ -127,10 +164,9 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     :return: The path to the new layer
     """
     new_layer = new_layer_name
-    new_layer_file_name = new_layer_name.replace(" ", "")
-    new_layer_save = os.path.join(output_folder, new_layer_file_name)
-    if not new_layer_save.endswith(".lyr"):
-        new_layer_save += ".lyr"
+    if fileName is None:
+        fileName = new_layer_name.replace(" ", "")
+    new_layer_save = os.path.join(output_folder, fileName + ".lyr")
 
     if isRaster:
         try:
