@@ -1,32 +1,174 @@
-
-
 import arcpy
 import os
 
+
 def main(output_folder, layer_package_name):
-    makeLayerPackage(output_folder, layer_package_name)
+    """
+    Generates a layer package from a BRAT project
+    :param output_folder: What output folder we want to use for our layer package
+    :param layer_package_name: What we want to name our layer package
+    :return:
+    """
+    intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
+    analysesFolder = os.path.join(output_folder, "02_Analyses")
+    projectFolder = os.path.dirname(output_folder)
+    inputsFolder = findFolder(projectFolder, "Inputs")
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+
+    checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
+
+    #makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name)
 
 
-def makeLayerPackage(outputFolder, layerPackageName):
+def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder):
+    """
+    Checks for what layers exist, and creates them if they do not exist
+    :param intermediatesFolder: Where our intermediates are kept
+    :param analysesFolder: Where our analyses are kept
+    :param inputsFolder: Where our inputs are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    checkIntermediates(intermediatesFolder, symbologyFolder)
+    checkAnalyses(analysesFolder, symbologyFolder)
+    checkInputs(inputsFolder, symbologyFolder)
+
+
+def checkIntermediates(intermediates_folder, symbologyFolder):
+    """
+    Checks for all the intermediate layers
+    :param intermediates_folder: Where our intermediates are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    brat_table_file = find_BRAT_table_output(intermediates_folder)
+    if brat_table_file == "":
+        arcpy.AddMessage("Could not find BRAT Table output in intermediates, so could not generate layers for them")
+        return
+
+    check_buffer_layers(intermediates_folder, symbologyFolder)
+
+def find_BRAT_table_output(intermediates_folder):
+    """
+    Finds the path to the BRAT Table output for use in generating layers
+    :param intermediates_folder: Where the BRAT Table output should be
+    :return:
+    """
+    brat_table_file = ""
+    for dir in os.listdir(intermediates_folder):
+        if dir.endswith(".shp"):
+            brat_table_file = os.path.join(intermediates_folder, dir)
+
+    return brat_table_file
+
+
+def check_buffer_layers(intermediates_folder, symbology_folder):
+    """
+    Finds the buffer folder, and checks that it has the
+    :param intermediates_folder:
+    :param symbology_folder:
+    :return:
+    """
+    buffer_folder = findFolder(intermediates_folder, "Buffers")
+
+    buffer_100m = os.path.join(buffer_folder, "buffer_100m.shp")
+    buffer_100m_layer = os.path.join(buffer_folder, "buffer_100m.lyr")
+    buffer_100m_symbology = os.path.join(symbology_folder, "buffer_100m.lyr")
+    check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology)
+
+
+
+def checkAnalyses(analysesFolder, symbologyFolder):
+    """
+    Checks for all the intermediate layers
+    :param analysesFolder: Where our analyses are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    pass
+
+
+def checkInputs(inputsFolder, symbologyFolder):
+    """
+    Checks for all the intermediate layers
+    :param inputsFolder: Where our inputs are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    pass
+
+
+def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False):
+    """
+    If the base exists, but the layer does not, makes the layer
+    :param layer_path: The layer we want to check for
+    :param base_path: The file that the layer is based off of
+    :param symbology_layer: The symbology to apply to the new layer (if necessary)
+    :param isRaster: If the new layer is a raster
+    :return:
+    """
+    if not os.path.exists(layer_path) and os.path.exists(base_path):
+        output_folder = os.path.dirname(layer_path)
+        layer_name = os.path.basename(layer_path)
+        makeLayer(output_folder, base_path, layer_name, symbology_layer, isRaster=isRaster)
+
+
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder: Where we want to put the layer
+    :param layer_base: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
+    :return: The path to the new layer
+    """
+    new_layer = new_layer_name
+    new_layer_file_name = new_layer_name.replace(" ", "")
+    new_layer_save = os.path.join(output_folder, new_layer_file_name)
+    if not new_layer_save.endswith(".lyr"):
+        new_layer_save += ".lyr"
+
+    if isRaster:
+        try:
+            arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        except arcpy.ExecuteError as err:
+            if err[0][6:12] == "000873":
+                arcpy.AddError(err)
+                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
+                raise Exception
+            else:
+                raise arcpy.ExecuteError(err)
+
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
+    if symbology_layer:
+        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
+
+
+def makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layerPackageName):
     """
     Makes a layer package for the project
-    :param outputFolder: The folder that we want to base our layer package off of
+    :param output_folder: The folder that we want to base our layer package off of
     :param layerPackageName: The name of the layer package that we'll make
     :return:
     """
-    if layerPackageName == "" or layerPackageName==None:
+    if layerPackageName == "" or layerPackageName is None:
         layerPackageName = "LayerPackage"
     if not layerPackageName.endswith(".lpk"):
         layerPackageName += ".lpk"
 
     arcpy.AddMessage("Making Layer Package...")
-    intermediatesFolder = os.path.join(outputFolder, "01_Intermediates")
-    analysesFolder = os.path.join(outputFolder, "02_Analyses")
-    projectFolder = os.path.dirname(outputFolder)
-    inputsFolder = findFolder(projectFolder, "Inputs")
-
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     emptyGroupLayer = os.path.join(symbologyFolder, "EmptyGroupLayer.lyr")
 
     mxd = arcpy.mapping.MapDocument("CURRENT")
@@ -40,7 +182,7 @@ def makeLayerPackage(outputFolder, layerPackageName):
     outputLayer = groupLayers(emptyGroupLayer, "Output", [intermediatesLayer, BRATLayer], df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
-    layerPackage = os.path.join(outputFolder, layerPackageName)
+    layerPackage = os.path.join(output_folder, layerPackageName)
     arcpy.PackageLayer_management(outputLayer, layerPackage)
 
 
