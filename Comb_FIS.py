@@ -278,9 +278,10 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
 
     # calculate dam count (mCC_**_Ct) for each reach as density * reach length
     arcpy.AddField_management(in_network, mcc_field, 'DOUBLE')
-    with arcpy.da.UpdateCursor(in_network, [mcc_field, out_field, 'iGeo_Length']) as cursor:
+    with arcpy.da.UpdateCursor(in_network, [mcc_field, out_field, 'iGeo_Len']) as cursor:
         for row in cursor:
-            row[0] = row[1] * row[2]
+            len_km = row[2] * 0.001
+            row[0] = row[1] * len_km
             cursor.updateRow(row)
 
     # if model_run == 'ex':
