@@ -59,9 +59,11 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     if model_run == 'pt':
         out_field = "oCC_PT"
         veg_field = "oVC_PT"
+        mcc_field = "mCC_PT_Ct"
     else:
         out_field = "oCC_EX"
         veg_field = "oVC_EX"
+        mcc_field = "mCC_EX_Ct"
 
     # check for oCC_* field in the network attribute table and delete if exists
     if out_field in fields:
@@ -273,6 +275,20 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     items = [columns, out, x, mfx, defuzz_centroid]
     for item in items:
         del item
+
+    # calculate dam count (mCC_**_Ct) for each reach as density * reach length
+    arcpy.AddField_management(in_network, mcc_field, 'DOUBLE')
+    with arcpy.da.UpdateCursor(in_network, [mcc_field, out_field, 'iGeo_Length']) as cursor:
+        for row in cursor:
+            row[0] = row[1] * row[2]
+            cursor.updateRow(row)
+
+    # if model_run == 'ex':
+    #     arcpy.AddField_management(in_network, 'mCC_EX_PT', 'DOUBLE')
+    #     with arcpy.da.UpdateCursor(in_network, ['mCC_EX_PT', 'mCC_EX_Ct', 'mCC_PT_Ct']) as cursor:
+    #         for row in cursor:
+    #             row[0] = row[1] / row[2]
+    #             cursor.updateRow(row)
 
 def addxmloutput(projPath, in_network, out_network):
     """add the capacity output to the project xml file"""
