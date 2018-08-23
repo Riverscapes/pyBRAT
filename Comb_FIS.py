@@ -59,9 +59,11 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     if model_run == 'pt':
         out_field = "oCC_PT"
         veg_field = "oVC_PT"
+        mcc_field = "mCC_PT_Ct"
     else:
         out_field = "oCC_EX"
         veg_field = "oVC_EX"
+        mcc_field = "mCC_EX_Ct"
 
     # check for oCC_* field in the network attribute table and delete if exists
     if out_field in fields:
@@ -274,6 +276,21 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     for item in items:
         del item
 
+    # calculate dam count (mCC_**_Ct) for each reach as density * reach length
+    arcpy.AddField_management(in_network, mcc_field, 'DOUBLE')
+    with arcpy.da.UpdateCursor(in_network, [mcc_field, out_field, 'iGeo_Len']) as cursor:
+        for row in cursor:
+            len_km = row[2] * 0.001
+            row[0] = row[1] * len_km
+            cursor.updateRow(row)
+
+    # if model_run == 'ex':
+    #     arcpy.AddField_management(in_network, 'mCC_EX_PT', 'DOUBLE')
+    #     with arcpy.da.UpdateCursor(in_network, ['mCC_EX_PT', 'mCC_EX_Ct', 'mCC_PT_Ct']) as cursor:
+    #         for row in cursor:
+    #             row[0] = row[1] / row[2]
+    #             cursor.updateRow(row)
+
 def addxmloutput(projPath, in_network, out_network):
     """add the capacity output to the project xml file"""
 
@@ -313,7 +330,7 @@ def makeLayers(out_network, out_name):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     existingCapacityLayer = os.path.join(symbologyFolder, "Existing_Capacity.lyr")
-    historicCapacityLayer = os.path.join(symbologyFolder, "Potential_Capacity.lyr")
+    historicCapacityLayer = os.path.join(symbologyFolder, "Historic_Capacity.lyr")
 
     makeLayer(output_folder, out_network, "Existing Capacity", existingCapacityLayer, isRaster=False)
     makeLayer(output_folder, out_network, "Potential Capacity", historicCapacityLayer, isRaster=False)
