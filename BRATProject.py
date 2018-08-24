@@ -83,7 +83,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True, fileName="HistVegSuitability")
     makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histRiparianSymbology, isRaster=True, checkField="Riparian")
     makeInputLayers(histVegDestinations, "Veg Type - BPS", symbologyLayer=histVegBPSSymbology, isRaster=True)
-    makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSSymbology, isRaster=True)
+    makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
 
 
     # add the network inputs to project
@@ -161,7 +161,6 @@ def makeTopoLayers(topoFolder):
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
     demSymbology = os.path.join(symbologyFolder, "DEM.lyr")
     slopeSymbology = os.path.join(symbologyFolder, "Slope.lyr")
-    layers = []
 
     for folder in os.listdir(topoFolder):
         demFolderPath = os.path.join(topoFolder, folder)
@@ -169,7 +168,7 @@ def makeTopoLayers(topoFolder):
         for fileName in os.listdir(demFolderPath):
             if fileName.endswith(".tif"):
                 demFile = os.path.join(demFolderPath, fileName)
-                layers.append(makeLayer(demFolderPath, demFile, "DEM", demSymbology, isRaster=True))
+                makeLayer(demFolderPath, demFile, "DEM", demSymbology, isRaster=True)
 
         hillshadeFolder = makeFolder(demFolderPath, "Hillshade")
         hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
