@@ -122,7 +122,7 @@ def main(
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    flowAccumulationSymLayer = os.path.join(symbologyFolder, "Flow_Accumulation_10_4.lyr")
+    flowAccumulationSymLayer = os.path.join(symbologyFolder, "Flow_Accumulation.lyr")
     makeLayer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flowAccumulationSymLayer, isRaster=True)
 
     makeLayers(seg_network_copy)
@@ -1204,8 +1204,10 @@ def makeLayers(out_network):
     landUseSymbology = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
     slopeSymbology = os.path.join(symbologyFolder, "Slope_Feature_Class.lyr")
     drainAreaSymbology = os.path.join(symbologyFolder, "Drainage_Area_Feature_Class.lyr")
+    buffer_30m_symbology = os.path.join(symbologyFolder, "buffer_30m.lyr")
+    buffer_100m_symbology = os.path.join(symbologyFolder, "buffer_100m.lyr")
 
-    makeBufferLayers(buffers_folder)
+    makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
     makeLayer(land_use_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
     makeLayer(topo_folder, out_network, "Reach Slope", slopeSymbology, isRaster=False)
     makeLayer(topo_folder, out_network, "Drainage Area", drainAreaSymbology, isRaster=False)
@@ -1267,7 +1269,7 @@ def handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose):
         BRAT_Braid_Handler.addClusterID(seg_network_copy, clusters)
 
 
-def makeBufferLayers(buffers_folder):
+def makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology):
     """
     Makes a layer for each buffer
     :param buffers_folder: The path to the buffers folder
@@ -1275,16 +1277,14 @@ def makeBufferLayers(buffers_folder):
     """
     for fileName in os.listdir(buffers_folder):
         if fileName.endswith(".shp"):
-            new_layer = fileName[:-4]
+            new_layer_name = fileName[:-4]
             filePath = os.path.join(buffers_folder, fileName)
-            new_layer_save = filePath[:-4] + ".lyr"
-
-            arcpy.MakeFeatureLayer_management(filePath, new_layer)
-            arcpy.SaveToLayerFile_management(new_layer, new_layer_save)
-
-            new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-            new_layer_instance.description = "Buffer Layer"
-            new_layer_instance.save()
+            given_symbology = None
+            if "30m" in fileName:
+                given_symbology = buffer_30m_symbology
+            elif "100m" in fileName:
+                given_symbology = buffer_100m_symbology
+            makeLayer(buffers_folder, filePath, new_layer_name, given_symbology)
 
 
 def parseInputBool(given_input):

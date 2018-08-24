@@ -1,32 +1,227 @@
-
-
 import arcpy
 import os
 
+
 def main(output_folder, layer_package_name):
-    makeLayerPackage(output_folder, layer_package_name)
+    """
+    Generates a layer package from a BRAT project
+    :param output_folder: What output folder we want to use for our layer package
+    :param layer_package_name: What we want to name our layer package
+    :return:
+    """
+    intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
+    analysesFolder = os.path.join(output_folder, "02_Analyses")
+    projectFolder = os.path.dirname(output_folder)
+    inputsFolder = findFolder(projectFolder, "Inputs")
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+
+    checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
+
+    #makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name)
 
 
-def makeLayerPackage(outputFolder, layerPackageName):
+def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder):
+    """
+    Checks for what layers exist, and creates them if they do not exist
+    :param intermediatesFolder: Where our intermediates are kept
+    :param analysesFolder: Where our analyses are kept
+    :param inputsFolder: Where our inputs are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    checkIntermediates(intermediatesFolder, symbologyFolder)
+    checkAnalyses(analysesFolder, symbologyFolder)
+    checkInputs(inputsFolder, symbologyFolder)
+
+
+def checkIntermediates(intermediates_folder, symbologyFolder):
+    """
+    Checks for all the intermediate layers
+    :param intermediates_folder: Where our intermediates are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    brat_table_file = find_BRAT_table_output(intermediates_folder)
+    if brat_table_file == "":
+        arcpy.AddMessage("Could not find BRAT Table output in intermediates, so could not generate layers for them")
+        return
+
+    check_buffer_layers(intermediates_folder, symbologyFolder)
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "LandUse", "Land Use Intensity", "iPC_LU")
+
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Drainage_Area_Feature_Class.lyr", brat_table_file, "TopographicIndex", "Drainage Area", "iGeo_DA")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Slope_Feature_Class.lyr", brat_table_file, "TopographicIndex", "Reach Slope", "iGeo_Slope")
+
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "BraidHandler", "Mainstem Braids", "IsMainCh")
+
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Highflow_Streampower.lyr", brat_table_file, "Hydrology", "Highflow Streampower", "iHyd_SP2")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_Streampower.lyr", brat_table_file, "Hydrology", "Baseflow Streampower", "iHyd_SPLow")
+
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Existing_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Capacity", "oVC_EX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Historic_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Capacity", "oVC_PT")
+
+
+def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
+                             layer_name, field_for_layer, layer_file_name=None):
+    """
+
+    :param intermediates_folder: The
+    :param symbology_folder:
+    :param symbology_layer_name:
+    :param brat_table_file:
+    :param folder_name:
+    :param layer_name:
+    :param field_for_layer:
+    :param layer_file_name:
+    :return:
+    """
+    fields = [f.name for f in arcpy.ListFields(brat_table_file)]
+    if field_for_layer not in fields: # we don't want to create the layer if the field isn't in the BRAT table file
+        return
+
+    if layer_file_name == None:
+        layer_file_name = layer_name.replace(" ", "")
+    layer_symbology = os.path.join(symbology_folder, symbology_layer_name)
+
+    layer_folder = findFolder(intermediates_folder, folder_name)
+
+    if layer_folder == None:
+        layer_folder = makeFolder(intermediates_folder, findAvailableNum(intermediates_folder) + "_" + folder_name)
+
+    layer_path = os.path.join(layer_folder, layer_file_name)
+    if not layer_path.endswith(".lyr"):
+        layer_path += '.lyr'
+
+    if not os.path.exists(layer_path):
+        makeLayer(layer_folder, brat_table_file, layer_name, layer_symbology, fileName=layer_file_name)
+
+
+def find_BRAT_table_output(intermediates_folder):
+    """
+    Finds the path to the BRAT Table output for use in generating layers
+    :param intermediates_folder: Where the BRAT Table output should be
+    :return:
+    """
+    brat_table_file = ""
+    for dir in os.listdir(intermediates_folder):
+        if dir.endswith(".shp"):
+            brat_table_file = os.path.join(intermediates_folder, dir)
+
+    return brat_table_file
+
+
+def check_buffer_layers(intermediates_folder, symbology_folder):
+    """
+    Finds the buffer folder, and checks that it has the
+    :param intermediates_folder:
+    :param symbology_folder:
+    :return:
+    """
+    buffer_folder = findFolder(intermediates_folder, "Buffers")
+
+    buffer_100m = os.path.join(buffer_folder, "buffer_100m.shp")
+    buffer_100m_layer = os.path.join(buffer_folder, "buffer_100m.lyr")
+    buffer_100m_symbology = os.path.join(symbology_folder, "buffer_100m.lyr")
+    check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology)
+
+    buffer_30m = os.path.join(buffer_folder, "buffer_30m.shp")
+    buffer_30m_layer = os.path.join(buffer_folder, "buffer_30m.lyr")
+    buffer_30m_symbology = os.path.join(symbology_folder, "buffer_30m.lyr")
+    check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology)
+
+
+def checkAnalyses(analysesFolder, symbologyFolder):
+    """
+    Checks for all the intermediate layers
+    :param analysesFolder: Where our analyses are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    pass
+
+
+def checkInputs(inputsFolder, symbologyFolder):
+    """
+    Checks for all the intermediate layers
+    :param inputsFolder: Where our inputs are kept
+    :param symbologyFolder: Where we pull symbology from
+    :return:
+    """
+    pass
+
+
+def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False):
+    """
+    If the base exists, but the layer does not, makes the layer
+    :param layer_path: The layer we want to check for
+    :param base_path: The file that the layer is based off of
+    :param symbology_layer: The symbology to apply to the new layer (if necessary)
+    :param isRaster: If the new layer is a raster
+    :return:
+    """
+    if not os.path.exists(layer_path) and os.path.exists(base_path):
+        output_folder = os.path.dirname(layer_path)
+        layer_name = os.path.basename(layer_path)
+        makeLayer(output_folder, base_path, layer_name, symbology_layer, isRaster=isRaster)
+
+
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description", fileName=None):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder: Where we want to put the layer
+    :param layer_base: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
+    :return: The path to the new layer
+    """
+    new_layer = new_layer_name
+    if fileName is None:
+        fileName = new_layer_name.replace(" ", "")
+    new_layer_save = os.path.join(output_folder, fileName)
+    if not new_layer_save.endswith(".lyr"):
+        new_layer_save += ".lyr"
+
+    if isRaster:
+        try:
+            arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        except arcpy.ExecuteError as err:
+            if err[0][6:12] == "000873":
+                arcpy.AddError(err)
+                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
+                raise Exception
+            else:
+                raise arcpy.ExecuteError(err)
+
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
+    if symbology_layer:
+        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
+
+
+def makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layerPackageName):
     """
     Makes a layer package for the project
-    :param outputFolder: The folder that we want to base our layer package off of
+    :param output_folder: The folder that we want to base our layer package off of
     :param layerPackageName: The name of the layer package that we'll make
     :return:
     """
-    if layerPackageName == "" or layerPackageName==None:
+    if layerPackageName == "" or layerPackageName is None:
         layerPackageName = "LayerPackage"
     if not layerPackageName.endswith(".lpk"):
         layerPackageName += ".lpk"
 
     arcpy.AddMessage("Making Layer Package...")
-    intermediatesFolder = os.path.join(outputFolder, "01_Intermediates")
-    analysesFolder = os.path.join(outputFolder, "02_Analyses")
-    projectFolder = os.path.dirname(outputFolder)
-    inputsFolder = findFolder(projectFolder, "Inputs")
-
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     emptyGroupLayer = os.path.join(symbologyFolder, "EmptyGroupLayer.lyr")
 
     mxd = arcpy.mapping.MapDocument("CURRENT")
@@ -40,7 +235,7 @@ def makeLayerPackage(outputFolder, layerPackageName):
     outputLayer = groupLayers(emptyGroupLayer, "Output", [intermediatesLayer, BRATLayer], df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
-    layerPackage = os.path.join(outputFolder, layerPackageName)
+    layerPackage = os.path.join(output_folder, layerPackageName)
     arcpy.PackageLayer_management(outputLayer, layerPackage)
 
 
@@ -72,7 +267,7 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     exVegLayers = findInstanceLayers(exVegFolder)
     exVegLayer = groupLayers(emptyGroupLayer, "Existing Vegetation Dam Capacity", exVegLayers, df, mxd)
     histVegLayers = findInstanceLayers(histVegFolder)
-    histVegLayer = groupLayers(emptyGroupLayer, "Potential Vegetation Dam Capacity", histVegLayers, df, mxd)
+    histVegLayer = groupLayers(emptyGroupLayer, "Historic Vegetation Dam Capacity", histVegLayers, df, mxd)
     vegLayer = groupLayers(emptyGroupLayer, "Vegetation", [exVegLayer, histVegLayer], df, mxd)
 
     networkLayers = findInstanceLayers(networkFolder)
@@ -117,6 +312,18 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
 
+    veg_folder_name = "VegDamCapacity"
+    veg_group_layer_name = "Overall Vegetation Dam Capacity"
+    veg_folder_path = findFolder(intermediatesFolder, veg_folder_name)
+    if veg_folder_path:
+        veg_layers = findLayersInFolder(veg_folder_path)
+        if len(veg_layers) == 2:
+            desc = arcpy.Describe(veg_layers[0])
+            if "Existing" in desc.nameString:
+                veg_layers = [veg_layers[1], veg_layers[0]]
+
+        intermediate_layers.append(groupLayers(emptyGroupLayer, veg_group_layer_name, veg_layers, df, mxd))
+
     return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
 
 
@@ -136,6 +343,7 @@ def findAndGroupLayers(layers_list, folderBase, folderName, groupLayerName, empt
     folderPath = findFolder(folderBase, folderName)
     if folderPath:
         layers = findLayersInFolder(folderPath)
+
         layers_list.append(groupLayers(emptyGroupLayer, groupLayerName, layers, df, mxd))
 
 
@@ -191,8 +399,38 @@ def findFolder(folderLocation, folderName):
         if folder.endswith(folderName):
             return os.path.join(folderLocation, folder)
 
-    arcpy.AddMessage(folderName + " layer was not found, and so will not be in the layer package")
     return None
+
+
+def makeFolder(pathToLocation, newFolderName):
+    """
+    Makes a folder and returns the path to it
+    :param pathToLocation: Where we want to put the folder
+    :param newFolderName: What the folder will be called
+    :return: String
+    """
+    newFolder = os.path.join(pathToLocation, newFolderName)
+    if not os.path.exists(newFolder):
+        os.mkdir(newFolder)
+    return newFolder
+
+
+def findAvailableNum(folderRoot):
+    """
+    Tells us the next number for a folder in the directory given
+    :param folderRoot: Where we want to look for a number
+    :return: A string, containing a number
+    """
+    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
+    POSSIBLENUMS = range(1, 100)
+    for i in POSSIBLENUMS:
+        stringVersion = str(i)
+        if i < 10:
+            stringVersion = '0' + stringVersion
+        if stringVersion not in takenNums:
+            return stringVersion
+    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
+    return "100"
 
 
 def groupLayers(groupLayer, groupName, layers, df, mxd, removeLayer=True):
