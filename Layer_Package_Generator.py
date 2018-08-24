@@ -32,7 +32,7 @@ def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyF
     :return:
     """
     checkIntermediates(intermediatesFolder, symbologyFolder)
-    checkAnalyses(analysesFolder, symbologyFolder)
+    check_analyses(analysesFolder, symbologyFolder)
     checkInputs(inputsFolder, symbologyFolder)
 
 
@@ -132,14 +132,47 @@ def check_buffer_layers(intermediates_folder, symbology_folder):
     check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology)
 
 
-def checkAnalyses(analysesFolder, symbologyFolder):
+def check_analyses(analyses_folder, symbology_folder):
     """
     Checks for all the intermediate layers
-    :param analysesFolder: Where our analyses are kept
-    :param symbologyFolder: Where we pull symbology from
+    :param analyses_folder: Where our analyses are kept
+    :param symbology_folder: Where we pull symbology from
     :return:
     """
-    pass
+    check_analyses_layer(analyses_folder, "Beaver Management Zones v2 Beta", symbology_folder, "Management_Zones_v2_Beta.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, "Conflict Potential", symbology_folder, "Conflict.lyr", "oPC_Score")
+    check_analyses_layer(analyses_folder, "Existing Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
+    check_analyses_layer(analyses_folder, "Historic Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_PT")
+
+
+
+def check_analyses_layer(analyses_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
+    if layer_file_name is None:
+        layer_file_name = layer_name.replace(" ", "") + ".lyr"
+
+    layer_file = os.path.join(analyses_folder, layer_file_name)
+    if os.path.exists(layer_file): # if the layer already exists, we don't care, we can exit the function
+        return
+
+    shape_file = find_shape_file_with_field(analyses_folder, field_name)
+    if shape_file is None:
+        return
+
+    layer_symbology = os.path.join(symbology_folder, symbology_file_name)
+
+    makeLayer(analyses_folder, shape_file, layer_name, symbology_layer=layer_symbology)
+
+
+
+def find_shape_file_with_field(folder, field_name):
+    for file in os.listdir(folder):
+        if file.endswith(".shp"):
+            file_path = os.path.join(folder, file)
+            file_fields = [f.name for f in arcpy.ListFields(file_path)]
+            if field_name in file_fields:
+                return file_path
+    return None
+
 
 
 def checkInputs(inputsFolder, symbologyFolder):
