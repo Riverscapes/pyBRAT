@@ -98,6 +98,21 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
         makeLayer(layer_folder, brat_table_file, layer_name, layer_symbology, fileName=layer_file_name)
 
 
+def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False):
+    """
+    If the base exists, but the layer does not, makes the layer
+    :param layer_path: The layer we want to check for
+    :param base_path: The file that the layer is based off of
+    :param symbology_layer: The symbology to apply to the new layer (if necessary)
+    :param isRaster: If the new layer is a raster
+    :return:
+    """
+    if not os.path.exists(layer_path) and os.path.exists(base_path):
+        output_folder = os.path.dirname(layer_path)
+        layer_name = os.path.basename(layer_path)
+        makeLayer(output_folder, base_path, layer_name, symbology_layer, isRaster=isRaster)
+
+
 def find_BRAT_table_output(intermediates_folder):
     """
     Finds the path to the BRAT Table output for use in generating layers
@@ -147,6 +162,17 @@ def check_analyses(analyses_folder, symbology_folder):
 
 
 def check_analyses_layer(analyses_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
+    """
+    Checks if an analyses layer exists. If it does not, it looks for a shape file that can create the proper symbology.
+    If it finds a proper shape file, it creates the layer that was missing
+    :param analyses_folder: The root of the analyses folder
+    :param layer_name: The name of the layer to create
+    :param symbology_folder: The path to the symbology folder
+    :param symbology_file_name: The name of the symbology layer we want to pull from
+    :param field_name: The name of the field we'll be basing our symbology off of
+    :param layer_file_name: The name of the layer file (if different from the layer_name without spaces)
+    :return:
+    """
     if layer_file_name is None:
         layer_file_name = layer_name.replace(" ", "") + ".lyr"
 
@@ -174,7 +200,6 @@ def find_shape_file_with_field(folder, field_name):
     return None
 
 
-
 def checkInputs(inputsFolder, symbologyFolder):
     """
     Checks for all the intermediate layers
@@ -182,22 +207,171 @@ def checkInputs(inputsFolder, symbologyFolder):
     :param symbologyFolder: Where we pull symbology from
     :return:
     """
-    pass
+
+    vegetationFolder = findFolder(inputsFolder, "Vegetation")
+    networkFolder = findFolder(inputsFolder, "Network")
+    topoFolder = findFolder(inputsFolder, "Topography")
+    conflictFolder = findFolder(inputsFolder, "Conflict")
+
+    exVegFolder = findFolder(vegetationFolder, "ExistingVegetation")
+    histVegFolder = findFolder(vegetationFolder, "HistoricVegetation")
+
+    valleyBottomFolder = findFolder(conflictFolder, "ValleyBottom")
+    roadFolder = findFolder(conflictFolder, "Roads")
+    railroadFolder = findFolder(conflictFolder, "Railroads")
+    canalsFolder = findFolder(conflictFolder, "Canals")
+    landUseFolder = findFolder(conflictFolder, "LandUse")
+    landOwnershipFolder = findFolder(conflictFolder, "LandOwnership")
+
+    exVegSuitabilitySymbology = os.path.join(symbologyFolder, "Existing_Veg_Suitability.lyr")
+    exVegRiparianSymbology = os.path.join(symbologyFolder, "Existing_Veg_Riparian.lyr")
+    exVegEVTTypeSymbology = os.path.join(symbologyFolder, "ExistingVeg_EVT_Type.lyr")
+    exVegEVTClassSymbology = os.path.join(symbologyFolder, "ExistingVeg_EVT_Class.lyr")
+    exVegClassNameSymbology = os.path.join(symbologyFolder, "ExistingVeg_ClassName.lyr")
+
+    histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
+    histRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
+    histVegBPSSymbology = os.path.join(symbologyFolder, "HistoricVegType_BPS.lyr")
+    histVegBPSNameSymbology = os.path.join(symbologyFolder, "HistoricVegType_BPS_Name.lyr")
+
+    networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
+    landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster.lyr")
+    landOwnershipSymbology = os.path.join(symbologyFolder, "SurfaceManagementAgency.lyr")
+    canalsSymbology = os.path.join(symbologyFolder, "Canals.lyr")
+    roadsSymbology = os.path.join(symbologyFolder, "Roads.lyr")
+    railroadsSymbology = os.path.join(symbologyFolder, "Railroads.lyr")
+    valleyBottomSymbology = os.path.join(symbologyFolder, "ValleyBottom.lyr")
+    valleyBottomOutlineSymbology = os.path.join(symbologyFolder, "ValleyBottom_Outline.lyr")
+    flowDirectionSymbology = os.path.join(symbologyFolder, "Network_FlowDirection.lyr")
+
+    exVegDestinations = findDestinations(exVegFolder)
+    makeInputLayers(exVegDestinations, "Existing Vegetation Suitability for Beaver Dam Building", symbologyLayer=exVegSuitabilitySymbology, isRaster=True, fileName="ExVegSuitability")
+    makeInputLayers(exVegDestinations, "Existing Riparian", symbologyLayer=exVegRiparianSymbology, isRaster=True)
+    makeInputLayers(exVegDestinations, "Veg Type - EVT Type", symbologyLayer=exVegEVTTypeSymbology, isRaster=True)
+    makeInputLayers(exVegDestinations, "Veg Type - EVT Class", symbologyLayer=exVegEVTClassSymbology, isRaster=True)
+    makeInputLayers(exVegDestinations, "Veg Type - ClassName", symbologyLayer=exVegClassNameSymbology, isRaster=True)
+
+    histVegDestinations = findDestinations(histVegFolder)
+    makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True, fileName="HistVegSuitability")
+    makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histRiparianSymbology, isRaster=True, checkField="Riparian")
+    makeInputLayers(histVegDestinations, "Veg Type - BPS", symbologyLayer=histVegBPSSymbology, isRaster=True)
+    makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
+
+    networkDestinations = findDestinations(networkFolder)
+    makeInputLayers(networkDestinations, "Network", symbologyLayer=networkSymbology, isRaster=False)
+    makeInputLayers(networkDestinations, "Flow Direction", symbologyLayer=flowDirectionSymbology, isRaster=False)
+
+    makeTopoLayers(topoFolder)
+
+    # add landuse raster to the project
+    if landUseFolder is not None:
+        landuseDestinations = findDestinations(landUseFolder)
+        makeInputLayers(landuseDestinations, "Land Use Raster", symbologyLayer=landuseSymbology, isRaster=True)
+
+    # add the conflict inputs to the project
+    if valleyBottomFolder is not None:
+        vallyBottomDestinations = findDestinations(valleyBottomFolder)
+        makeInputLayers(vallyBottomDestinations, "Valley Bottom Fill", symbologyLayer=valleyBottomSymbology, isRaster=False)
+        makeInputLayers(vallyBottomDestinations, "Valley Bottom Outline", symbologyLayer=valleyBottomOutlineSymbology, isRaster=False)
+
+    # add road layers to the project
+    if roadFolder is not None:
+        roadDestinations = findDestinations(roadFolder)
+        makeInputLayers(roadDestinations, "Roads", symbologyLayer=roadsSymbology, isRaster=False)
+
+    # add railroad layers to the project
+    if railroadFolder is not None:
+        rrDestinations = findDestinations(railroadFolder)
+        makeInputLayers(rrDestinations, "Railroads", symbologyLayer=railroadsSymbology, isRaster=False)
+
+    # add canal layers to the project
+    if canalsFolder is not None:
+        canalDestinations = findDestinations(canalsFolder)
+        makeInputLayers(canalDestinations, "Canals", symbologyLayer=canalsSymbology, isRaster=False)
+
+    # add land ownership layers to the project
+    if landOwnershipFolder is not None:
+        ownershipDestinations = findDestinations(landOwnershipFolder)
+        makeInputLayers(ownershipDestinations, "Land Ownership", symbologyLayer=landOwnershipSymbology, isRaster=False)
 
 
-def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False):
+def makeTopoLayers(topoFolder):
     """
-    If the base exists, but the layer does not, makes the layer
-    :param layer_path: The layer we want to check for
-    :param base_path: The file that the layer is based off of
-    :param symbology_layer: The symbology to apply to the new layer (if necessary)
-    :param isRaster: If the new layer is a raster
+    Writes the layers
+    :param topoFolder: We want to make layers for the stuff in this folder
     :return:
     """
-    if not os.path.exists(layer_path) and os.path.exists(base_path):
-        output_folder = os.path.dirname(layer_path)
-        layer_name = os.path.basename(layer_path)
-        makeLayer(output_folder, base_path, layer_name, symbology_layer, isRaster=isRaster)
+    sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
+    demSymbology = os.path.join(symbologyFolder, "DEM.lyr")
+    slopeSymbology = os.path.join(symbologyFolder, "Slope.lyr")
+
+    for folder in os.listdir(topoFolder):
+        demFolderPath = os.path.join(topoFolder, folder)
+        for fileName in os.listdir(demFolderPath):
+            if fileName.endswith(".tif"):
+                demFile = os.path.join(demFolderPath, fileName)
+                if not os.path.exists(os.path.join(demFolderPath, "DEM.lyr")) and os.path.exists(demFile):
+                    makeLayer(demFolderPath, demFile, "DEM", demSymbology, isRaster=True)
+
+        hillshadeFolder = findFolder(demFolderPath, "Hillshade")
+        hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
+        if not os.path.exists(os.path.join(hillshadeFolder, "Hillshade")) and os.path.exists(hillshadeFile):
+            makeLayer(hillshadeFolder, hillshadeFile, "Hillshade", isRaster=True)
+
+        slopeFolder = findFolder(demFolderPath, "Slope")
+        slopeFile = os.path.join(slopeFolder, "Slope.tif")
+        if not os.path.exists(os.path.join(slopeFolder, "Slope.lyr")) and os.path.exists(slopeFile):
+            makeLayer(slopeFolder, slopeFile, "Slope", slopeSymbology, isRaster=True)
+
+
+def findDestinations(root_folder):
+    """
+    Finds all the .shp and .tif files in a directory, and returns an array with the paths to them
+    :param root_folder:
+    :return:
+    """
+    destinations = []
+    for root, dirs, files in os.walk(root_folder):
+        for file in files:
+            if file.endswith(".shp") or file.endswith('.tif'):
+                destinations.append(os.path.join(root, file))
+    return destinations
+
+
+def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, fileName=None, checkField=None):
+    """
+    Makes the layers for everything in the folder
+    :param destinations: A list of paths to our inputs
+    :param layerName: The name of the layer
+    :param isRaster: Whether or not it's a raster
+    :param symbologyLayer: The base for the symbology
+    :param fileName: The name for the file (if it's different from the layerName)
+    :param checkField: The name of the field that the symbology is based on
+    :return:
+    """
+    if fileName == None:
+        fileName = layerName
+    for destination in destinations:
+        skip_loop = False
+        destDirName = os.path.dirname(destination)
+
+        if fileName is None:
+            fileName = layerName.replace(" ", "")
+        new_layer_save = os.path.join(destDirName, fileName)
+        if not new_layer_save.endswith(".lyr"):
+            new_layer_save += ".lyr"
+
+        if os.path.exists(new_layer_save):
+            skip_loop = True
+        if checkField:
+            fields = [f.name for f in arcpy.ListFields(destination)]
+            if checkField not in fields:
+                # Skip the loop if the base doesn't support
+                skip_loop = True
+
+        if not skip_loop:
+            makeLayer(destDirName, destination, layerName, symbology_layer=symbologyLayer, isRaster=isRaster, fileName=fileName)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description", fileName=None):
@@ -213,7 +387,8 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     """
     new_layer = new_layer_name
     if fileName is None:
-        fileName = new_layer_name.replace(" ", "")
+        fileName = new_layer_name
+    fileName = fileName.replace(' ', '')
     new_layer_save = os.path.join(output_folder, fileName)
     if not new_layer_save.endswith(".lyr"):
         new_layer_save += ".lyr"
