@@ -19,7 +19,7 @@ import sys
 import string
 
 
-def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal):
+def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = projPath
@@ -42,13 +42,21 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     railroadFolder = makeFolder(conflictFolder, "03_Railroads")
     canalsFolder = makeFolder(conflictFolder, "04_Canals")
     landUseFolder = makeFolder(conflictFolder, "05_LandUse")
+    landOwnershipFolder = makeFolder(conflictFolder, "06_LandOwnership")
 
     sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
+
+    # Gets all of our symbology variables set up
     exVegSymbology = os.path.join(symbologyFolder, "Existing_Veg_Raster.lyr")
     histVegSymbology = os.path.join(symbologyFolder, "Historic_Veg_Raster.lyr")
+    exVegSuitabilitySymbology = os.path.join(symbologyFolder, "Existing_Veg_Suitability.lyr")
+    histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
+    exVegRiparianSymbology = os.path.join(symbologyFolder, "Existing_Veg_Riparian.lyr")
+    histVegRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
-    landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster_10_4.lyr")
+    landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster_10_6.lyr")
+    landOwnershipSymbology = os.path.join(symbologyFolder, "SurfaceManagementAgency.lyr")
     canalsSymbology = os.path.join(symbologyFolder, "Canals.lyr")
     roadsSymbology = os.path.join(symbologyFolder, "Roads.lyr")
     railroadsSymbology = os.path.join(symbologyFolder, "Railroads.lyr")
@@ -58,11 +66,14 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     # add the existing veg inputs to project
     exVegDestinations = copyMultiInputToFolder(exVegFolder, ex_veg, "Ex_Veg", isRaster=True)
     makeInputLayers(exVegDestinations, "Existing Vegetation", symbologyLayer=None, isRaster=True)
-
+    makeInputLayers(exVegDestinations, "Existing Vegetation Suitability", symbologyLayer=exVegSuitabilitySymbology, isRaster=True)
+    makeInputLayers(exVegDestinations, "Existing Riparin Vegetation", symbologyLayer=exVegRiparianSymbology, isRaster=True)
 
     # add the historic veg inputs to project
     histVegDestinations = copyMultiInputToFolder(histVegFolder, hist_veg, "Hist_Veg", isRaster=True)
     makeInputLayers(histVegDestinations, "Historic Vegetation", symbologyLayer=None, isRaster=True)
+    makeInputLayers(histVegDestinations, "Historic Vegetation Suitability", symbologyLayer=histVegSuitabilitySymbology, isRaster=True)
+    makeInputLayers(histVegDestinations, "Historic Riparin Vegetation", symbologyLayer=histVegRiparianSymbology, isRaster=True)
 
     # add the network inputs to project
     networkDestinations = copyMultiInputToFolder(networkFolder, network, "Network", isRaster=False)
@@ -98,6 +109,10 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
         canalDestinations = copyMultiInputToFolder(canalsFolder, canal, "Canals", isRaster=False)
         makeInputLayers(canalDestinations, "Canals", symbologyLayer=canalsSymbology, isRaster=False)
 
+    # add land ownership layers to the project
+    if ownership is not None:
+        ownershipDestinations = copyMultiInputToFolder(landOwnershipFolder, ownership, "Land Ownership", isRaster=False)
+        makeInputLayers(ownershipDestinations, "Land Ownership", symbologyLayer=landOwnershipSymbology, isRaster=False)
 
 def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
     """
@@ -234,4 +249,5 @@ if __name__ == '__main__':
         sys.argv[7],
         sys.argv[8],
         sys.argv[9],
-        sys.argv[10])
+        sys.argv[10],
+        sys.argv[11])

@@ -37,7 +37,7 @@ def makeLayerPackage(outputFolder, layerPackageName):
     inputsLayer = getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd)
     BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
     intermediatesLayer = getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd)
-    outputLayer = groupLayers(emptyGroupLayer, "Output", [BRATLayer, intermediatesLayer], df, mxd)
+    outputLayer = groupLayers(emptyGroupLayer, "Output", [intermediatesLayer, BRATLayer], df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
     layerPackage = os.path.join(outputFolder, layerPackageName)
@@ -82,7 +82,7 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     hillshadeLayers = find_dem_derivative(topoFolder, "Hillshade")
     slopeLayers = find_dem_derivative(topoFolder, "Slope")
     flowLayers = find_dem_derivative(topoFolder, "Flow")
-    topoLayer = groupLayers(emptyGroupLayer, "Topography", demLayers + hillshadeLayers + slopeLayers + flowLayers, df, mxd)
+    topoLayer = groupLayers(emptyGroupLayer, "Topography", hillshadeLayers + demLayers + slopeLayers + flowLayers, df, mxd)
 
     valleyLayers = findInstanceLayers(valleyFolder)
     valleyLayer = groupLayers(emptyGroupLayer, "Valley Bottom", valleyLayers, df, mxd)
