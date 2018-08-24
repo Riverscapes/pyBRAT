@@ -86,14 +86,16 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
     layer_symbology = os.path.join(symbology_folder, symbology_layer_name)
 
     layer_folder = findFolder(intermediates_folder, folder_name)
+
+    if layer_folder == None:
+        layer_folder = makeFolder(intermediates_folder, findAvailableNum(intermediates_folder) + "_" + folder_name)
+
     layer_path = os.path.join(layer_folder, layer_file_name)
     if not layer_path.endswith(".lyr"):
         layer_path += '.lyr'
 
     if not os.path.exists(layer_path):
         makeLayer(layer_folder, brat_table_file, layer_name, layer_symbology, fileName=layer_file_name)
-
-
 
 
 def find_BRAT_table_output(intermediates_folder):
@@ -397,8 +399,38 @@ def findFolder(folderLocation, folderName):
         if folder.endswith(folderName):
             return os.path.join(folderLocation, folder)
 
-    arcpy.AddMessage(folderName + " layer was not found, and so will not be in the layer package")
     return None
+
+
+def makeFolder(pathToLocation, newFolderName):
+    """
+    Makes a folder and returns the path to it
+    :param pathToLocation: Where we want to put the folder
+    :param newFolderName: What the folder will be called
+    :return: String
+    """
+    newFolder = os.path.join(pathToLocation, newFolderName)
+    if not os.path.exists(newFolder):
+        os.mkdir(newFolder)
+    return newFolder
+
+
+def findAvailableNum(folderRoot):
+    """
+    Tells us the next number for a folder in the directory given
+    :param folderRoot: Where we want to look for a number
+    :return: A string, containing a number
+    """
+    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
+    POSSIBLENUMS = range(1, 100)
+    for i in POSSIBLENUMS:
+        stringVersion = str(i)
+        if i < 10:
+            stringVersion = '0' + stringVersion
+        if stringVersion not in takenNums:
+            return stringVersion
+    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
+    return "100"
 
 
 def groupLayers(groupLayer, groupName, layers, df, mxd, removeLayer=True):
