@@ -202,8 +202,8 @@ def makeLayers(inputNetwork):
     existingVegSymbology = os.path.join(symbologyFolder, "Existing_Veg_Capacity.lyr")
     historicVegSymbology = os.path.join(symbologyFolder, "Historic_Veg_Capacity.lyr")
 
-    makeLayer(veg_folder, inputNetwork, "Existing Veg Dam Capacity", existingVegSymbology, isRaster=False)
-    makeLayer(veg_folder, inputNetwork, "Historic Veg Dam Capacity", historicVegSymbology, isRaster=False)
+    makeLayer(veg_folder, inputNetwork, "Existing Veg Dam Building Capacity", existingVegSymbology, isRaster=False)
+    makeLayer(veg_folder, inputNetwork, "Historic Veg Dam Building Capacity", historicVegSymbology, isRaster=False)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
