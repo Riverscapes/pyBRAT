@@ -29,7 +29,7 @@ def main(input_network):
 
         handleClusters(input_network, clusters)
     else:
-        arcpy.AddMessage("Finding clusters based on the ClusterID field")
+        arcpy.AddMessage("Finding clusters based on the ClusterID field...")
 
         # Check to make sure that if 'IsMultiCh' = '0' that 'ClusterID' = '-1'
         # Ensures that stream segments identified as NOT being multi channeled won't
