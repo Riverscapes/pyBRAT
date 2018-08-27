@@ -19,7 +19,7 @@ def main(output_folder, layer_package_name):
 
     checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
 
-    #makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name)
+    makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name)
 
 
 def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder):
@@ -255,7 +255,7 @@ def checkInputs(inputsFolder, symbologyFolder):
     makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True, fileName="HistVegSuitability")
     makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histRiparianSymbology, isRaster=True, checkField="Riparian")
     makeInputLayers(histVegDestinations, "Veg Type - BPS", symbologyLayer=histVegBPSSymbology, isRaster=True)
-    makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
+    #makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
 
     networkDestinations = findDestinations(networkFolder)
     makeInputLayers(networkDestinations, "Network", symbologyLayer=networkSymbology, isRaster=False)
