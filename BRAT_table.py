@@ -245,6 +245,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     # note: zonal stats as table does not support overlapping polygons so we will check which
     #       reach buffers output was produced for and which we need to run tool on again
     statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'ReachID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
+
     # get list of segment buffers where zonal stats tool produced output
     haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'ReachID')]
     # create dictionary to hold all reach buffer min dem z values
@@ -493,63 +494,36 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    drop = ["iPC_RoadX", "iPC_RoadAd", "iPC_RR", "iPC_Canal", "iPC_LU"]
+    drop = ["iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal", "iPC_LU"]
     for field in fields:
         if field in drop:
             arcpy.DeleteField_management(out_network, field)
 
-    # calculate minimum distance from road-stream crossings ('iPC_RoadX')
+    # calculate mean distance from road-stream crossings ('iPC_RoadX'), roads ('iPC_Road') and roads clipped to the valley bottom ('iPC_RoadVB')
     if road is not None:
-        if is_verbose:
-            arcpy.AddMessage("Finding iPC_RoadX values...")
-        arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
         roadx = tempDir + "\\roadx.shp"
         # create points at road-stream intersections
         arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
-        # get count of road-stream intersections
-        roadx_mts = tempDir + "\\roadx_mts.shp"
-        arcpy.MultipartToSinglepart_management(roadx, roadx_mts)
-        roadxcount = arcpy.GetCount_management(roadx_mts)
-        roadxct = int(roadxcount.getOutput(0))
-        # if there are no road-stream crossings, set 'iPC_RoadsX' to high value (10000 m)
-        if roadxct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        # if there are road-stream crossings, calculate distance
-        else:
-            # set extent to the stream network
-            arcpy.env.extent = out_network
-            # calculate euclidean distance from road-stream crossings
-            ed_roadx = EucDistance(roadx, cell_size = 5)  # cell size of 5 m
-            # get minimum distance from road-stream crossings within 30 m buffer of each network segment
-            zonalStatsWithinBuffer(buf_30m, ed_roadx, "MINIMUM", 'MIN', out_network, "iPC_RoadX", scratch)
+        findDistanceFromFeature(out_network, roadx, valley_bottom, tempDir, buf_30m, "roadx", "iPC_RoadX", scratch, is_verbose, clip_feature = False)
 
-            # delete temp fcs, tbls, etc.
-            items = [ed_roadx]
-            for item in items:
-                arcpy.Delete_management(item)
-
-    # calculate mean distance from adjacent roads ('iPC_RoadAd')
-    # here we only care about roads in the valley bottom
+    # calculate mean distance from road-stream crossings ('iPC_RoadX'), roads ('iPC_Road') and roads clipped to the valley bottom ('iPC_RoadVB')
     if road is not None:
-        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "road_ad", "iPC_RoadAd", scratch, is_verbose)
+        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "roadvb", "iPC_RoadVB", scratch, is_verbose, clip_feature = True)
+        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "road", "iPC_Road", scratch, is_verbose, clip_feature = False)
 
-    # calculate mean distance from railroads ('iPC_RR')
-    # here we only care about railroads in the valley bottom
+    # calculate mean distance from railroads ('iPC_Rail') and railroads clipped to valley bottom ('iPC_RailVB')
     if railroad is not None:
-        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroad", "iPC_RR", scratch, is_verbose)
+        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroadvb", "iPC_RailVB", scratch, is_verbose, clip_feature = True)
+        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroad", "iPC_Rail", scratch, is_verbose, clip_feature = False)
 
-    # calculate mean distance from canals ('iPC_Canal')
-    # here we only care about canals in the valley bottom
+    # calculate minimum distance from canals ('iPC_Canal')
     if canal is not None:
-        findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose)
+        findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
 
     # calculate mean landuse value ('iPC_LU')
     if landuse is not None:
         if is_verbose:
-            arcpy.AddMessage("Finding iPC_LU values...")
+            arcpy.AddMessage("Calculating iPC_LU values...")
         arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
         # create raster with just landuse code values
         lu_ras = Lookup(landuse, "LU_CODE")
@@ -640,38 +614,41 @@ def check_and_add_zero_fields(table, fields, field_name):
         arcpy.CalculateField_management(table, field_name, 0, "PYTHON")
 
 
-
-
-def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch, is_verbose):
+def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch, is_verbose, clip_feature = False):
     if is_verbose:
-        arcpy.AddMessage("Finding " + new_field_name + " values...")
+        arcpy.AddMessage("Calculating " + new_field_name + " values...")
     arcpy.AddField_management(out_network, new_field_name, "DOUBLE")
-    # clip roads to the valley bottom
-    feature_subset = arcpy.Clip_analysis(feature, valley_bottom, os.path.join(temp_dir, temp_name + '_subset.shp'))
-    # get count of roads in the valley bottom
-    feature_mts = arcpy.MultipartToSinglepart_management(feature_subset, os.path.join(temp_dir, temp_name + "_mts.shp"))
+
+    if clip_feature == True:
+        # clip input feature to the valley bottom
+        feature_subset = arcpy.Clip_analysis(feature, valley_bottom, os.path.join(temp_dir, temp_name + '_subset.shp'))
+        # convert feature for count purposes
+        feature_mts = arcpy.MultipartToSinglepart_management(feature_subset, os.path.join(temp_dir, temp_name + "_mts.shp"))
+    else:
+        feature_mts = arcpy.MultipartToSinglepart_management(feature, os.path.join(temp_dir, temp_name + "_mts.shp"))
+        feature_subset = feature
+
     count = arcpy.GetCount_management(feature_mts)
     ct = int(count.getOutput(0))
-    # if there are no roads in the valley bottom, set 'iPC_RoadsAd' to high value (10000 m)
+    # if there are features, then set the distance from to high value (10000 m)
     if ct < 1:
         with arcpy.da.UpdateCursor(out_network, new_field_name) as cursor:
             for row in cursor:
                 row[0] = 10000.0
                 cursor.updateRow(row)
-    # if there are roads in the valley bottom, calculate distance
+    # if there are features, calculate distance
     else:
         # set extent to the stream network
         arcpy.env.extent = out_network
-        # calculate euclidean distance from roads in the valley bottom
-        ed_roadad = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
-        # get mean distance from roads in the valley bottom within 30 m buffer of each network segment
-        zonalStatsWithinBuffer(buf, ed_roadad, 'MEAN', 'MEAN', out_network, new_field_name, scratch)
+        # calculate euclidean distance from input features
+        ed_feature = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
+        # get min distance from feature in the within 30 m buffer of each network segment
+        zonalStatsWithinBuffer(buf, ed_feature, 'MINIMUM', 'MIN', out_network, new_field_name, scratch)
 
         # delete temp fcs, tbls, etc.
         items = []
         for item in items:
             arcpy.Delete_management(item)
-
 
 # calculate drainage area function
 def calc_drain_area(DEM, inputDEM):
