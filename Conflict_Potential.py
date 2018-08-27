@@ -20,7 +20,6 @@ import uuid
 def main(
     projPath,
     in_network,
-    landuse,
     CrossingLow,
     CrossingHigh,
     AdjLow,
@@ -43,17 +42,14 @@ def main(
     # CanalHigh = 200
     # RRLow = 30
     # RRHigh = 100
+    out_network = find_oPC_Score(out_name, in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch)
 
-    # function to calculate slope-intercept equation based on user inputs
-    def slopeInt(lowValue, highValue):
-        x1 = lowValue
-        y1 = 0.99
-        x2 = highValue
-        y2 = 0.01
-        m = (y2 - y1)/(x2 - x1) # calculate slope
-        b = y1 - (m * x1) # calculate y-intercept
-        return [m, b]
+    addxmloutput(projPath, in_network, out_network)
 
+    makeLayers(out_network)
+
+
+def find_oPC_Score(out_name, in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch):
     if out_name.endswith('.shp'):
         out_network = os.path.join(os.path.dirname(in_network), out_name)
     else:
@@ -221,9 +217,18 @@ def main(
     arcpy.Delete_management(out_table)
     arcpy.Delete_management(opc_score_table)
 
-    addxmloutput(projPath, in_network, out_network)
+    return out_network
 
-    makeLayers(out_network)
+
+# function to calculate slope-intercept equation based on user inputs
+def slopeInt(lowValue, highValue):
+    x1 = lowValue
+    y1 = 0.99
+    x2 = highValue
+    y2 = 0.01
+    m = (y2 - y1)/(x2 - x1) # calculate slope
+    b = y1 - (m * x1) # calculate y-intercept
+    return [m, b]
 
 
 def addxmloutput(projPath, in_network, out_network):

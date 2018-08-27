@@ -331,10 +331,13 @@ def makeLayers(out_network, out_name):
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     existingCapacityLayer = os.path.join(symbologyFolder, "Existing_Capacity.lyr")
     historicCapacityLayer = os.path.join(symbologyFolder, "Historic_Capacity.lyr")
+    existingCapacityCountLayer = os.path.join(symbologyFolder, "Existing_Capacity_Count.lyr")
+    historicCapacityCountLayer = os.path.join(symbologyFolder, "Historic_Capacity_Count.lyr")
 
-    makeLayer(output_folder, out_network, "Existing Capacity", existingCapacityLayer, isRaster=False)
-    makeLayer(output_folder, out_network, "Potential Capacity", historicCapacityLayer, isRaster=False)
-
+    makeLayer(output_folder, out_network, "Existing Dam Building Capacity", existingCapacityLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "Historic Dam Building Capacity", historicCapacityLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "Existing Dam Complex Size", existingCapacityCountLayer, isRaster=False)
+    makeLayer(output_folder, out_network, "Historic Dam Complex Size", historicCapacityCountLayer, isRaster=False)
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
     """

@@ -1277,12 +1277,13 @@ def makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology
     """
     for fileName in os.listdir(buffers_folder):
         if fileName.endswith(".shp"):
-            new_layer_name = fileName[:-4]
             filePath = os.path.join(buffers_folder, fileName)
             given_symbology = None
             if "30m" in fileName:
+                new_layer_name = "30 m Buffer"
                 given_symbology = buffer_30m_symbology
             elif "100m" in fileName:
+                new_layer_name = "100 m Buffer"
                 given_symbology = buffer_100m_symbology
             makeLayer(buffers_folder, filePath, new_layer_name, given_symbology)
 

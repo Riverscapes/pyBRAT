@@ -135,11 +135,11 @@ def makeLayers(inputNetwork):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
-    highflowSymbology = os.path.join(symbologyFolder, "Highflow_Streampower.lyr")
-    baseflowSymbology = os.path.join(symbologyFolder, "Baseflow_Streampower.lyr")
+    highflowSymbology = os.path.join(symbologyFolder, "Highflow_StreamPower.lyr")
+    baseflowSymbology = os.path.join(symbologyFolder, "Baseflow_StreamPower.lyr")
 
-    makeLayer(hydrology_folder, inputNetwork, "Highflow Streampower", highflowSymbology, isRaster=False)
-    makeLayer(hydrology_folder, inputNetwork, "Baseflow Streampower", baseflowSymbology, isRaster=False)
+    makeLayer(hydrology_folder, inputNetwork, "Highflow Stream Power", highflowSymbology, isRaster=False)
+    makeLayer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, isRaster=False)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):

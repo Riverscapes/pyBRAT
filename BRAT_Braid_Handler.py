@@ -30,6 +30,18 @@ def main(input_network):
         handleClusters(input_network, clusters)
     else:
         arcpy.AddMessage("Finding clusters based on the ClusterID field")
+
+        # Check to make sure that if 'IsMultiCh' = '0' that 'ClusterID' = '-1'
+        # Ensures that stream segments identified as NOT being multi channeled won't
+        # be included in DA update
+        with arcpy.da.UpdateCursor(input_network, [CLUSTERFIELDNAME, 'IsMultiCh', 'IsMainCh']) as cursor:
+            for row in cursor:
+                if row[1] == 0:  # If the stream is braided. If it isn't, we don't care about its cluster id
+                    row[0] = -1
+                if row[0] == -1:
+                    row[2] = 1
+                cursor.updateRow(row)
+
         clusters = getClustersFromIDs(input_network)
 
         for i in range(len(clusters)):
@@ -68,8 +80,6 @@ def renameField(input_network, fields, old_name, new_name):
             arcpy.AlterField_management(input_network, old_name, new_field_name=new_name)
         else:
             raise Exception("Field " + new_name + " is a required field in the input network to run the BRAT Braid Handler")
-
-
 
 
 def getClustersFromIDs(inputNetwork):
