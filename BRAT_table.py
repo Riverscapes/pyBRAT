@@ -315,6 +315,8 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
             except:
                 pass
     statDict.clear()
+
+
     # delete temp fcs, tbls, etc.
     #items = [statTbl, haveStatList, haveStatList2, needStatList, stat, tmp_buff_lyr, needStat]
     items = [statTbl, stat, tmp_buff_lyr]
@@ -584,6 +586,19 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         items = [lu_ras]
         for item in items:
             arcpy.Delete_management(item)
+
+    # calculate min distance of all 'iPC' distance fields
+    arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal"]
+    for field in dist_fields:
+        if field not in fields:
+            dist_fields.remove(field)
+    with arcpy.da.UpdateCursor(out_network, dist_fields) as cursor:
+        for row in cursor:
+            row[0] = min(row[1:])
+            cursor.updateRow(row)
+
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")
 
@@ -1054,12 +1069,14 @@ def makeLayers(out_network):
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(out_network)
     buffers_folder = os.path.join(intermediates_folder, "01_Buffers")
-    land_use_folder = makeFolder(intermediates_folder, "02_LandUse")
-    topo_folder = makeFolder(intermediates_folder, "03_TopographicIndex")
+    topo_folder = makeFolder(intermediates_folder, "02_TopographicIndex")
+    conflict_folder = makeFolder(intermediates_folder, "03_HumanBeaverConflict")
+
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
+    distSymbology = os.path.join(symbologyFolder, "Distance_To_Infrastructure.lyr")
     landUseSymbology = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
     slopeSymbology = os.path.join(symbologyFolder, "Slope_Feature_Class.lyr")
     drainAreaSymbology = os.path.join(symbologyFolder, "Drainage_Area_Feature_Class.lyr")
@@ -1067,12 +1084,28 @@ def makeLayers(out_network):
     buffer_100m_symbology = os.path.join(symbologyFolder, "buffer_100m.lyr")
 
     makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
-    makeLayer(land_use_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
     makeLayer(topo_folder, out_network, "Reach Slope", slopeSymbology, isRaster=False)
     makeLayer(topo_folder, out_network, "Drainage Area", drainAreaSymbology, isRaster=False)
 
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    if 'iPC_LU' in fields:
+        makeLayer(conflict_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
+    if 'iPC_RoadX' in fields:
+        makeLayer(conflict_folder, out_network, "Distance to Road Crossing", distSymbology, isRaster=False, symbology_field = 'iPC_RoadX')
+    if 'iPC_Road' in fields:
+        makeLayer(conflict_folder, out_network, "Distance to Road", distSymbology, isRaster=False, symbology_field = 'iPC_Road')
+    if 'iPC_RoadVB' in fields:
+        makeLayer(conflict_folder, out_network, "Distance to Road in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RoadVB')
+    if 'iPC_Rail' in fields:
+        makeLayer(conflict_folder, out_network, "Distance to Railroad", distSymbology, isRaster=False, symbology_field = 'iPC_Rail')
+    if 'iPC_RailVB' in fields:
+        makeLayer(conflict_folder, out_network, "Distance to Railroad in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RailVB')
+    if 'iPC_Canal' in fields:
+        makeLayer(conflict_folder, out_network, "Distance to Canal", distSymbology, isRaster=False, symbology_field = 'iPC_Canal')
+    if 'oPC_Dist' in fields:
+        makeLayer(conflict_folder, out_network, "Distance to Closest Infrastructure", distSymbology, isRaster=False, symbology_field = 'oPC_Dist')
 
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description", symbology_field = None):
     """
     Creates a layer and applies a symbology to it
     :param output_folder: Where we want to put the layer
@@ -1107,6 +1140,8 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
     new_layer_instance = arcpy.mapping.Layer(new_layer_save)
     new_layer_instance.description = description
+    if symbology_field:
+        new_layer_instance.symbology.valueField = symbology_field
     new_layer_instance.save()
     return new_layer_save
 
