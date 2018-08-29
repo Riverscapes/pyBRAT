@@ -9,10 +9,10 @@ def main(output_folder, layer_package_name):
     :param layer_package_name: What we want to name our layer package
     :return:
     """
-    intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
-    analysesFolder = os.path.join(output_folder, "02_Analyses")
     projectFolder = os.path.dirname(output_folder)
     inputsFolder = findFolder(projectFolder, "Inputs")
+    intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
+    analysesFolder = os.path.join(output_folder, "02_Analyses")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -32,7 +32,7 @@ def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyF
     :return:
     """
     checkIntermediates(intermediatesFolder, symbologyFolder)
-    check_analyses(analysesFolder, symbologyFolder)
+    checkAnalyses(analysesFolder, symbologyFolder)
     checkInputs(inputsFolder, symbologyFolder)
 
 
@@ -49,18 +49,26 @@ def checkIntermediates(intermediates_folder, symbologyFolder):
         return
 
     check_buffer_layers(intermediates_folder, symbologyFolder)
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "LandUse", "Land Use Intensity", "iPC_LU")
 
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Drainage_Area_Feature_Class.lyr", brat_table_file, "TopographicIndex", "Drainage Area", "iGeo_DA")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Slope_Feature_Class.lyr", brat_table_file, "TopographicIndex", "Reach Slope", "iGeo_Slope")
 
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "HumanBeaverConflict", "Land Use Intensity", "iPC_LU")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Canal", "iPC_Canal")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Closest Infrastructure", "oPC_Dist")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Railroad", "iPC_Rail")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road Crossing", "iPC_RoadX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road", "iPC_Road")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road in Valley Bottom", "iPC_RoadVB")
+
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "BraidHandler", "Mainstem Braids", "IsMainCh")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Highflow_Streampower.lyr", brat_table_file, "Hydrology", "Highflow Streampower", "iHyd_SP2")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_Streampower.lyr", brat_table_file, "Hydrology", "Baseflow Streampower", "iHyd_SPLow")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Highflow_StreamPower.lyr", brat_table_file, "Hydrology", "Highflow Stream Power", "iHyd_SP2")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_StreamPower.lyr", brat_table_file, "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Existing_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Capacity", "oVC_EX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Historic_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Capacity", "oVC_PT")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Existing_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Building Capacity", "oVC_EX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Historic_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Building Capacity", "oVC_PT")
 
 
 def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
@@ -98,7 +106,7 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
         makeLayer(layer_folder, brat_table_file, layer_name, layer_symbology, fileName=layer_file_name)
 
 
-def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False):
+def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False, layer_name = None):
     """
     If the base exists, but the layer does not, makes the layer
     :param layer_path: The layer we want to check for
@@ -109,7 +117,8 @@ def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False):
     """
     if not os.path.exists(layer_path) and os.path.exists(base_path):
         output_folder = os.path.dirname(layer_path)
-        layer_name = os.path.basename(layer_path)
+        if layer_name is None:
+            layer_name = os.path.basename(layer_path)
         makeLayer(output_folder, base_path, layer_name, symbology_layer, isRaster=isRaster)
 
 
@@ -139,26 +148,29 @@ def check_buffer_layers(intermediates_folder, symbology_folder):
     buffer_100m = os.path.join(buffer_folder, "buffer_100m.shp")
     buffer_100m_layer = os.path.join(buffer_folder, "buffer_100m.lyr")
     buffer_100m_symbology = os.path.join(symbology_folder, "buffer_100m.lyr")
-    check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology)
+    check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology, isRaster = False, layer_name = '100 m Buffer')
 
     buffer_30m = os.path.join(buffer_folder, "buffer_30m.shp")
     buffer_30m_layer = os.path.join(buffer_folder, "buffer_30m.lyr")
     buffer_30m_symbology = os.path.join(symbology_folder, "buffer_30m.lyr")
-    check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology)
+    check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology, isRaster = False, layer_name = '30 m Buffer')
 
 
-def check_analyses(analyses_folder, symbology_folder):
+def checkAnalyses(analyses_folder, symbology_folder):
     """
     Checks for all the intermediate layers
     :param analyses_folder: Where our analyses are kept
     :param symbology_folder: Where we pull symbology from
     :return:
     """
-    check_analyses_layer(analyses_folder, "Beaver Management Zones v2 Beta", symbology_folder, "Management_Zones_v2_Beta.lyr", "oPBRC")
-    check_analyses_layer(analyses_folder, "Conflict Potential", symbology_folder, "Conflict.lyr", "oPC_Score")
-    check_analyses_layer(analyses_folder, "Existing Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
-    check_analyses_layer(analyses_folder, "Historic Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_PT")
+    check_analyses_layer(analyses_folder, "Existing Dam Building Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
+    check_analyses_layer(analyses_folder, "Historic Dam Building Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_PT")
+    check_analyses_layer(analyses_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
+    check_analyses_layer(analyses_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_PT_Ct")
 
+    check_analyses_layer(analyses_folder, "Beaver Management Zones", symbology_folder, "BeaverManagementZones.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Dam_Building_Not_Likely.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, "Restoration or Conservation Opportunities", symbology_folder, "Restoration_Conservation_Opportunities.lyr", "oPBRC")
 
 
 def check_analyses_layer(analyses_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
@@ -499,7 +511,7 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     landUseLayer = groupLayers(emptyGroupLayer, "Land Use", landUseLayers, df, mxd)
     conflictLayer = groupLayers(emptyGroupLayer, "Conflict Layers", [valleyLayer, roadLayer, railroadLayer, canalLayer, landUseLayer], df, mxd)
 
-    return groupLayers(emptyGroupLayer, "Inputs", [vegLayer, networkLayer, topoLayer, conflictLayer], df, mxd)
+    return groupLayers(emptyGroupLayer, "Inputs", [topoLayer, vegLayer, networkLayer, conflictLayer], df, mxd)
 
 
 def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
@@ -513,24 +525,24 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     """
     intermediate_layers = []
 
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Buffers", "Buffers", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "LandUse", "Land Use Intensity", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic Index", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid Handler", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "HumanBeaverConflict", "Human Beaver Conflict", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid Handler", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic Index", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Buffers", "Buffers", emptyGroupLayer, df, mxd)
 
-    veg_folder_name = "VegDamCapacity"
-    veg_group_layer_name = "Overall Vegetation Dam Capacity"
-    veg_folder_path = findFolder(intermediatesFolder, veg_folder_name)
-    if veg_folder_path:
-        veg_layers = findLayersInFolder(veg_folder_path)
-        if len(veg_layers) == 2:
-            desc = arcpy.Describe(veg_layers[0])
-            if "Existing" in desc.nameString:
-                veg_layers = [veg_layers[1], veg_layers[0]]
-
-        intermediate_layers.append(groupLayers(emptyGroupLayer, veg_group_layer_name, veg_layers, df, mxd))
+    # veg_folder_name = "VegDamCapacity"
+    # veg_group_layer_name = "Overall Vegetation Dam Capacity"
+    # veg_folder_path = findFolder(intermediatesFolder, veg_folder_name)
+    # if veg_folder_path:
+    #     veg_layers = findLayersInFolder(veg_folder_path)
+    #     if len(veg_layers) == 2:
+    #         desc = arcpy.Describe(veg_layers[0])
+    #         if "Existing" in desc.nameString:
+    #             veg_layers = [veg_layers[1], veg_layers[0]]
+    #
+    #     intermediate_layers.append(groupLayers(emptyGroupLayer, veg_group_layer_name, veg_layers, df, mxd))
 
     return groupLayers(emptyGroupLayer, "Intermediates", intermediate_layers, df, mxd)
 
