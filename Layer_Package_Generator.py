@@ -241,10 +241,10 @@ def checkInputs(inputsFolder, symbologyFolder):
     exVegEVTClassSymbology = os.path.join(symbologyFolder, "ExistingVeg_EVT_Class.lyr")
     exVegClassNameSymbology = os.path.join(symbologyFolder, "ExistingVeg_ClassName.lyr")
 
-    histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
-    histRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
-    histVegBPSSymbology = os.path.join(symbologyFolder, "HistoricVegType_BPS.lyr")
-    histVegBPSNameSymbology = os.path.join(symbologyFolder, "HistoricVegType_BPS_Name.lyr")
+    histVegGroupVeg = os.path.join(symbologyFolder, "BPS_GroupVeg.lyr")
+    histVegBPSNameSymbology = os.path.join(symbologyFolder, "BPS_NAME_symbology.lyr")
+    histVegVegCode = os.path.join(symbologyFolder, "BPS_VEG_Code.lyr")
+    histVegRiparian = os.path.join(symbologyFolder, "BPS_Riparian.lyr")
 
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
     landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster.lyr")
@@ -264,10 +264,10 @@ def checkInputs(inputsFolder, symbologyFolder):
     makeInputLayers(exVegDestinations, "Veg Type - ClassName", symbologyLayer=exVegClassNameSymbology, isRaster=True)
 
     histVegDestinations = findDestinations(histVegFolder)
-    makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True, fileName="HistVegSuitability")
-    makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histRiparianSymbology, isRaster=True, checkField="Riparian")
-    makeInputLayers(histVegDestinations, "Veg Type - BPS", symbologyLayer=histVegBPSSymbology, isRaster=True)
-    #makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
+    makeInputLayers(histVegDestinations, "Vegetation Suitability", symbologyLayer=histVegVegCode, isRaster=True)
+    makeInputLayers(histVegDestinations, "Veg Type - Veg Group", symbologyLayer=histVegGroupVeg, isRaster=True)
+    makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
+    makeInputLayers(histVegDestinations, "Riparian", symbologyLayer=histVegRiparian, isRaster=True, checkField="Riparian")
 
     networkDestinations = findDestinations(networkFolder)
     makeInputLayers(networkDestinations, "Network", symbologyLayer=networkSymbology, isRaster=False)
