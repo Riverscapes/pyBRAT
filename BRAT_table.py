@@ -658,7 +658,10 @@ def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, 
         # calculate euclidean distance from input features
         ed_feature = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
         # get min distance from feature in the within 30 m buffer of each network segment
-        zonalStatsWithinBuffer(buf, ed_feature, 'MINIMUM', 'MIN', out_network, new_field_name, scratch)
+        if new_field_name == 'iPC_RoadX':
+            zonalStatsWithinBuffer(buf, ed_feature, 'MINIMUM', 'MIN', out_network, new_field_name, scratch)
+        else:
+            zonalStatsWithinBuffer(buf, ed_feature, 'MEAN', 'MEAN', out_network, new_field_name, scratch)
 
         # delete temp fcs, tbls, etc.
         items = []
