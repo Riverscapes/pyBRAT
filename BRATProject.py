@@ -161,6 +161,7 @@ def makeTopoLayers(topoFolder):
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
     demSymbology = os.path.join(symbologyFolder, "DEM.lyr")
     slopeSymbology = os.path.join(symbologyFolder, "Slope.lyr")
+    hillshadeSymbology = os.path.join(symbologyFolder, "Hillshade.lyr")
 
     for folder in os.listdir(topoFolder):
         demFolderPath = os.path.join(topoFolder, folder)
@@ -173,7 +174,7 @@ def makeTopoLayers(topoFolder):
         hillshadeFolder = makeFolder(demFolderPath, "Hillshade")
         hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
         arcpy.HillShade_3d(demFile, hillshadeFile)
-        makeLayer(hillshadeFolder, hillshadeFile, "Hillshade", isRaster=True)
+        makeLayer(hillshadeFolder, hillshadeFile, "Hillshade", hillshadeSymbology, isRaster=True)
 
         slopeFolder = makeFolder(demFolderPath, "Slope")
         slopeFile = os.path.join(slopeFolder, "Slope.tif")
