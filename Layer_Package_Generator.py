@@ -237,11 +237,11 @@ def checkInputs(inputsFolder, symbologyFolder):
 
     exVegSuitabilitySymbology = os.path.join(symbologyFolder, "Existing_Veg_Suitability.lyr")
     exVegRiparianSymbology = os.path.join(symbologyFolder, "Existing_Veg_Riparian.lyr")
-    exVegEVTTypeSymbology = os.path.join(symbologyFolder, "ExistingVeg_EVT_Type.lyr")
-    exVegEVTClassSymbology = os.path.join(symbologyFolder, "ExistingVeg_EVT_Class.lyr")
-    exVegClassNameSymbology = os.path.join(symbologyFolder, "ExistingVeg_ClassName.lyr")
+    exVegEVTTypeSymbology = os.path.join(symbologyFolder, "Existing_Veg_EVT_Type.lyr")
+    exVegEVTClassSymbology = os.path.join(symbologyFolder, "Existing_Veg_EVT_Class.lyr")
+    exVegClassNameSymbology = os.path.join(symbologyFolder, "Existing_Veg_ClassName.lyr")
 
-    histVegGroupVeg = os.path.join(symbologyFolder, "BPS_GroupVeg.lyr")
+    histVegGroupSymbology = os.path.join(symbologyFolder, "Historic_Veg_BPS_Type.lyr")
     histVegBPSNameSymbology = os.path.join(symbologyFolder, "BPS_NAME_symbology.lyr")
     histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
     histVegRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
@@ -265,7 +265,7 @@ def checkInputs(inputsFolder, symbologyFolder):
 
     histVegDestinations = findDestinations(histVegFolder)
     makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True)
-    makeInputLayers(histVegDestinations, "Veg Type - Veg Group", symbologyLayer=histVegGroupVeg, isRaster=True)
+    makeInputLayers(histVegDestinations, "Veg Type - BPS Type", symbologyLayer=histVegGroupSymbology, isRaster=True, checkField="GROUPVEG")
     makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
     makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histVegRiparianSymbology, isRaster=True, checkField="GROUPVEG")
 
