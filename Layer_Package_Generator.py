@@ -488,7 +488,7 @@ def getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd):
     exVegLayer = groupLayers(emptyGroupLayer, "Existing Vegetation Dam Capacity", exVegLayers, df, mxd)
     histVegLayers = findInstanceLayers(histVegFolder)
     histVegLayer = groupLayers(emptyGroupLayer, "Historic Vegetation Dam Capacity", histVegLayers, df, mxd)
-    vegLayer = groupLayers(emptyGroupLayer, "Vegetation", [exVegLayer, histVegLayer], df, mxd)
+    vegLayer = groupLayers(emptyGroupLayer, "Vegetation", [histVegLayer, exVegLayer], df, mxd)
 
     networkLayers = findInstanceLayers(networkFolder)
     networkLayer = groupLayers(emptyGroupLayer, "Network", networkLayers, df, mxd)
@@ -525,8 +525,8 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     """
     intermediate_layers = []
 
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "HumanBeaverConflict", "Human Beaver Conflict", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid Handler", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic Index", emptyGroupLayer, df, mxd)
