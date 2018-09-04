@@ -243,7 +243,7 @@ def checkInputs(inputsFolder, symbologyFolder):
 
     histVegGroupVeg = os.path.join(symbologyFolder, "BPS_GroupVeg.lyr")
     histVegBPSNameSymbology = os.path.join(symbologyFolder, "BPS_NAME_symbology.lyr")
-    histVegVegCode = os.path.join(symbologyFolder, "BPS_VEG_Code.lyr")
+    histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
     histVegRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
 
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
@@ -264,7 +264,7 @@ def checkInputs(inputsFolder, symbologyFolder):
     makeInputLayers(exVegDestinations, "Veg Type - ClassName", symbologyLayer=exVegClassNameSymbology, isRaster=True)
 
     histVegDestinations = findDestinations(histVegFolder)
-    makeInputLayers(histVegDestinations, "Vegetation Suitability", symbologyLayer=histVegVegCode, isRaster=True)
+    makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True)
     makeInputLayers(histVegDestinations, "Veg Type - Veg Group", symbologyLayer=histVegGroupVeg, isRaster=True)
     makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
     makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histVegRiparianSymbology, isRaster=True, checkField="GROUPVEG")

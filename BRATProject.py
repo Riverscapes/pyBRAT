@@ -56,7 +56,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
 
     histVegGroupVeg = os.path.join(symbologyFolder, "BPS_GroupVeg.lyr")
     histVegBPSNameSymbology = os.path.join(symbologyFolder, "BPS_NAME_symbology.lyr")
-    histVegVegCode = os.path.join(symbologyFolder, "BPS_VEG_Code.lyr")
+    histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
     histVegRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
 
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
@@ -80,7 +80,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
 
     # add the historic veg inputs to project
     histVegDestinations = copyMultiInputToFolder(histVegFolder, hist_veg, "Hist_Veg", isRaster=True)
-    makeInputLayers(histVegDestinations, "Vegetation Suitability", symbologyLayer=histVegVegCode, isRaster=True)
+    makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True, fileName="HistVegSuitability")
     makeInputLayers(histVegDestinations, "Veg Type - Veg Group", symbologyLayer=histVegGroupVeg, isRaster=True)
     makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
     makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histVegRiparianSymbology, isRaster=True, checkField="GROUPVEG")
