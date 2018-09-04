@@ -244,7 +244,7 @@ def checkInputs(inputsFolder, symbologyFolder):
     histVegGroupVeg = os.path.join(symbologyFolder, "BPS_GroupVeg.lyr")
     histVegBPSNameSymbology = os.path.join(symbologyFolder, "BPS_NAME_symbology.lyr")
     histVegVegCode = os.path.join(symbologyFolder, "BPS_VEG_Code.lyr")
-    histVegRiparian = os.path.join(symbologyFolder, "BPS_Riparian.lyr")
+    histVegRiparian = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
 
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
     landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster.lyr")
@@ -267,7 +267,7 @@ def checkInputs(inputsFolder, symbologyFolder):
     makeInputLayers(histVegDestinations, "Vegetation Suitability", symbologyLayer=histVegVegCode, isRaster=True)
     makeInputLayers(histVegDestinations, "Veg Type - Veg Group", symbologyLayer=histVegGroupVeg, isRaster=True)
     makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
-    makeInputLayers(histVegDestinations, "Riparian", symbologyLayer=histVegRiparian, isRaster=True, checkField="Riparian")
+    makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histVegRiparian, isRaster=True, checkField="GROUPVEG")
 
     networkDestinations = findDestinations(networkFolder)
     makeInputLayers(networkDestinations, "Network", symbologyLayer=networkSymbology, isRaster=False)
