@@ -106,7 +106,7 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
         makeLayer(layer_folder, brat_table_file, layer_name, layer_symbology, fileName=layer_file_name)
 
 
-def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False, layer_name = None):
+def check_layer(layer_path, base_path, symbology_layer=None, isRaster=False, layer_name=None):
     """
     If the base exists, but the layer does not, makes the layer
     :param layer_path: The layer we want to check for
@@ -146,12 +146,12 @@ def check_buffer_layers(intermediates_folder, symbology_folder):
     buffer_folder = findFolder(intermediates_folder, "Buffers")
 
     buffer_100m = os.path.join(buffer_folder, "buffer_100m.shp")
-    buffer_100m_layer = os.path.join(buffer_folder, "buffer_100m.lyr")
+    buffer_100m_layer = os.path.join(buffer_folder, "100mBuffer.lyr")
     buffer_100m_symbology = os.path.join(symbology_folder, "buffer_100m.lyr")
     check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology, isRaster = False, layer_name = '100 m Buffer')
 
     buffer_30m = os.path.join(buffer_folder, "buffer_30m.shp")
-    buffer_30m_layer = os.path.join(buffer_folder, "buffer_30m.lyr")
+    buffer_30m_layer = os.path.join(buffer_folder, "30mBuffer.lyr")
     buffer_30m_symbology = os.path.join(symbology_folder, "buffer_30m.lyr")
     check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology, isRaster = False, layer_name = '30 m Buffer')
 
@@ -219,7 +219,6 @@ def checkInputs(inputsFolder, symbologyFolder):
     :param symbologyFolder: Where we pull symbology from
     :return:
     """
-
     vegetationFolder = findFolder(inputsFolder, "Vegetation")
     networkFolder = findFolder(inputsFolder, "Network")
     topoFolder = findFolder(inputsFolder, "Topography")
@@ -370,10 +369,9 @@ def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, file
 
         if fileName is None:
             fileName = layerName.replace(" ", "")
-        new_layer_save = os.path.join(destDirName, fileName)
+        new_layer_save = os.path.join(destDirName, fileName.replace(' ', ''))
         if not new_layer_save.endswith(".lyr"):
             new_layer_save += ".lyr"
-
         if os.path.exists(new_layer_save):
             skip_loop = True
         if checkField:
@@ -422,10 +420,11 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     if symbology_layer:
         arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
 
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
-    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-    new_layer_instance.description = description
-    new_layer_instance.save()
+    if not os.path.exists(new_layer_save):
+        arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
+        new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+        new_layer_instance.description = description
+        new_layer_instance.save()
     return new_layer_save
 
 
@@ -525,12 +524,36 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
     """
     intermediate_layers = []
 
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "HumanBeaverConflict", "Human Beaver Conflict", emptyGroupLayer, df, mxd)
+    # findAndGroupLayers(intermediate_layers, intermediatesFolder, "HumanBeaverConflict", "Human Beaver Conflict", emptyGroupLayer, df, mxd)
+    folder_path = findFolder(intermediatesFolder, "HumanBeaverConflict")
+    if folder_path:
+        sorted_conflict_layers = []
+        wanted_conflict_layers = []
+        existing_conflict_layers = findLayersInFolder(folder_path)
+
+        wanted_conflict_layers.append(os.path.join(folder_path, "DistancetoCanal.lyr"))
+        wanted_conflict_layers.append(os.path.join(folder_path, "DistancetoRailroad.lyr"))
+        wanted_conflict_layers.append(os.path.join(folder_path, "DistancetoRailroadinValleyBottom.lyr"))
+        wanted_conflict_layers.append(os.path.join(folder_path, "DistancetoRoad.lyr"))
+        wanted_conflict_layers.append(os.path.join(folder_path, "DistancetoRoadCrossing.lyr"))
+        wanted_conflict_layers.append(os.path.join(folder_path, "DistancetoRoadinValleyBottom.lyr"))
+        wanted_conflict_layers.append(os.path.join(folder_path, "DistancetoClosestInfrastructure.lyr"))
+        wanted_conflict_layers.append(os.path.join(folder_path, "LandUseIntensity.lyr"))
+
+
+        for layer in wanted_conflict_layers:
+            if layer in existing_conflict_layers:
+                sorted_conflict_layers.append(layer)
+
+        intermediate_layers.append(groupLayers(emptyGroupLayer, "Human Beaver Conflict", sorted_conflict_layers, df, mxd))
+
+        arcpy.AddMessage(str(sorted_conflict_layers))
+
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
+    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Buffers", "Buffers", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "Hydrology", "Hydrology", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "BraidHandler", "Braid Handler", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "TopographicIndex", "Topographic Index", emptyGroupLayer, df, mxd)
-    findAndGroupLayers(intermediate_layers, intermediatesFolder, "Buffers", "Buffers", emptyGroupLayer, df, mxd)
 
     # veg_folder_name = "VegDamCapacity"
     # veg_group_layer_name = "Overall Vegetation Dam Capacity"
