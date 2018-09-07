@@ -327,7 +327,7 @@ def makeTopoLayers(topoFolder):
 
         hillshadeFolder = findFolder(demFolderPath, "Hillshade")
         hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
-        if not os.path.exists(os.path.join(hillshadeFolder, "Hillshade")) and os.path.exists(hillshadeFile):
+        if not os.path.exists(os.path.join(hillshadeFolder, "Hillshade.lyr")) and os.path.exists(hillshadeFile):
             makeLayer(hillshadeFolder, hillshadeFile, "Hillshade", isRaster=True)
 
         slopeFolder = findFolder(demFolderPath, "Slope")
@@ -446,7 +446,7 @@ def makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsF
     mxd = arcpy.mapping.MapDocument("CURRENT")
     df = arcpy.mapping.ListDataFrames(mxd)[0]
 
-    outputLayers = findLayersInFolder(analysesFolder)
+    outputLayers = get_output_layers(analysesFolder)
 
     inputsLayer = getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd)
     BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
@@ -456,6 +456,16 @@ def makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsF
 
     layerPackage = os.path.join(output_folder, layerPackageName)
     arcpy.PackageLayer_management(outputLayer, layerPackage)
+
+
+def get_output_layers(analyses_folder):
+    """
+    Returns the
+    :param analyses_folder:
+    :return:
+    """
+    return findLayersInFolder(analyses_folder) #placeholder until we've fixed changed folder structure
+
 
 
 
