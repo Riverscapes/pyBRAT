@@ -327,8 +327,8 @@ def makeLayers(out_network, out_name):
     arcpy.AddMessage("Making layers...")
     analyses_folder = os.path.dirname(out_network)
     output_folder = makeFolder(analyses_folder, findAvailableNum(analyses_folder) + "_Capacity")
-    historic_folder = makeFolder(output_folder, findAvailableNum(output_folder) + "_Historic")
-    existing_folder = makeFolder(output_folder, findAvailableNum(output_folder) + "_Existing")
+    historic_folder = makeFolder(output_folder, findAvailableNum(output_folder) + "_HistoricCapacity")
+    existing_folder = makeFolder(output_folder, findAvailableNum(output_folder) + "_ExistingCapacity")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')

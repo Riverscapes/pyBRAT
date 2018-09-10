@@ -174,17 +174,22 @@ def checkAnalyses(analyses_folder, symbology_folder):
     :param symbology_folder: Where we pull symbology from
     :return:
     """
-    check_analyses_layer(analyses_folder, "Existing Dam Building Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
-    check_analyses_layer(analyses_folder, "Historic Dam Building Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_PT")
-    check_analyses_layer(analyses_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
-    check_analyses_layer(analyses_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_PT_Ct")
+    capacity_folder = findFolder(analyses_folder, "Capacity")
+    historic_capacity_folder = findFolder(capacity_folder, "HistoricCapacity")
+    existing_capacity_folder = findFolder(capacity_folder, "ExistingCapacity")
+    management_folder = findFolder(analyses_folder, "Management")
 
-    check_analyses_layer(analyses_folder, "Beaver Management Zones", symbology_folder, "BeaverManagementZones.lyr", "oPBRC")
-    check_analyses_layer(analyses_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Dam_Building_Not_Likely.lyr", "oPBRC")
-    check_analyses_layer(analyses_folder, "Restoration or Conservation Opportunities", symbology_folder, "Restoration_Conservation_Opportunities.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Building Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_PT")
+    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_PT_Ct")
+
+    check_analyses_layer(analyses_folder, management_folder, "Beaver Management Zones", symbology_folder, "BeaverManagementZones.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Dam_Building_Not_Likely.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "Restoration_Conservation_Opportunities.lyr", "oPBRC")
 
 
-def check_analyses_layer(analyses_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
+def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
     """
     Checks if an analyses layer exists. If it does not, it looks for a shape file that can create the proper symbology.
     If it finds a proper shape file, it creates the layer that was missing
@@ -199,7 +204,7 @@ def check_analyses_layer(analyses_folder, layer_name, symbology_folder, symbolog
     if layer_file_name is None:
         layer_file_name = layer_name.replace(" ", "") + ".lyr"
 
-    layer_file = os.path.join(analyses_folder, layer_file_name)
+    layer_file = os.path.join(layer_base_folder, layer_file_name)
     if os.path.exists(layer_file): # if the layer already exists, we don't care, we can exit the function
         return
 
@@ -209,7 +214,7 @@ def check_analyses_layer(analyses_folder, layer_name, symbology_folder, symbolog
 
     layer_symbology = os.path.join(symbology_folder, symbology_file_name)
 
-    makeLayer(analyses_folder, shape_file, layer_name, symbology_layer=layer_symbology)
+    makeLayer(layer_base_folder, shape_file, layer_name, symbology_layer=layer_symbology)
 
 
 
@@ -413,26 +418,38 @@ def makeLayerPackage(output_folder, intermediatesFolder, analysesFolder, inputsF
     mxd = arcpy.mapping.MapDocument("CURRENT")
     df = arcpy.mapping.ListDataFrames(mxd)[0]
 
-    outputLayers = get_output_layers(analysesFolder)
-
+    analyses_layer = get_analyses_layer(analysesFolder, emptyGroupLayer, df, mxd)
     inputsLayer = getInputsLayer(emptyGroupLayer, inputsFolder, df, mxd)
-    BRATLayer = groupLayers(emptyGroupLayer, "Beaver Restoration Assessment Tool - BRAT", outputLayers, df, mxd)
     intermediatesLayer = getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd)
-    outputLayer = groupLayers(emptyGroupLayer, "Output", [intermediatesLayer, BRATLayer], df, mxd)
+    outputLayer = groupLayers(emptyGroupLayer, "Output", [intermediatesLayer, analyses_layer], df, mxd)
     outputLayer = groupLayers(emptyGroupLayer, layerPackageName[:-4], [outputLayer, inputsLayer], df, mxd, removeLayer=False)
 
     layerPackage = os.path.join(output_folder, layerPackageName)
     arcpy.PackageLayer_management(outputLayer, layerPackage)
 
 
-def get_output_layers(analyses_folder):
+def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     """
-    Returns the
+    Returns the layers we want for the 'Output' section
     :param analyses_folder:
     :return:
     """
-    return findLayersInFolder(analyses_folder) #placeholder until we've fixed changed folder structure
+    capacity_folder = findFolder(analyses_folder, "Capacity")
+    existing_capacity_folder = findFolder(capacity_folder, "ExistingCapacity")
+    historic_capacity_folder = findFolder(capacity_folder, "HistoricCapacity")
+    management_folder = findFolder(analyses_folder, "Management")
 
+    existing_capacity_layers = findLayersInFolder(existing_capacity_folder)
+    existing_capacity_layer = groupLayers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd)
+    historic_capacity_layers = findLayersInFolder(historic_capacity_folder)
+    historic_capacity_layer = groupLayers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd)
+    management_layers = findLayersInFolder(management_folder)
+    management_layer = groupLayers(empty_group_layer, "Management", management_layers, df, mxd)
+
+    capacity_layer = groupLayers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df, mxd)
+    output_layer = groupLayers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer], df, mxd)
+
+    return output_layer
 
 
 
@@ -523,8 +540,6 @@ def getIntermediatesLayers(emptyGroupLayer, intermediatesFolder, df, mxd):
                 sorted_conflict_layers.append(layer)
 
         intermediate_layers.append(groupLayers(emptyGroupLayer, "Human Beaver Conflict", sorted_conflict_layers, df, mxd))
-
-        arcpy.AddMessage(str(sorted_conflict_layers))
 
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "VegDamCapacity", "Overall Vegetation Dam Capacity", emptyGroupLayer, df, mxd)
     findAndGroupLayers(intermediate_layers, intermediatesFolder, "Buffers", "Buffers", emptyGroupLayer, df, mxd)
