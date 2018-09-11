@@ -2,6 +2,7 @@ from bdws import BDLoG, BDSWEA
 from bdflopy import BDflopy
 import arcpy
 import os
+from SupportingFunctions import makeFolder, findAvailableNum
 
 def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity, modflowexe):
     arcpy.AddMessage("Running BDLoG...")
@@ -54,34 +55,3 @@ def copyIntoFolder(thingToCopy, copyFolderRoot, copyFolderName):
     copyPath = os.path.join(copyFolder, os.path.basename(thingToCopy))
     arcpy.Copy_management(thingToCopy, copyPath)
     return copyPath
-
-
-def makeFolder(pathToLocation, newFolderName):
-    """
-    Makes a folder and returns the path to it
-    :param pathToLocation: Where we want to put the folder
-    :param newFolderName: What the folder will be called
-    :return: String
-    """
-    newFolder = os.path.join(pathToLocation, newFolderName)
-    if not os.path.exists(newFolder):
-        os.mkdir(newFolder)
-    return newFolder
-
-
-def findAvailableNum(folderRoot):
-    """
-    Tells us the next number for a folder in the directory given
-    :param folderRoot: Where we want to look for a number
-    :return: A string, containing a number
-    """
-    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
-    POSSIBLENUMS = range(1, 100)
-    for i in POSSIBLENUMS:
-        stringVersion = str(i)
-        if i < 10:
-            stringVersion = '0' + stringVersion
-        if stringVersion not in takenNums:
-            return stringVersion
-    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
-    return "100"

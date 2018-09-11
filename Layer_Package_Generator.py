@@ -42,6 +42,7 @@ def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyF
     :param symbologyFolder: Where we pull symbology from
     :return:
     """
+    arcpy.AddMessage("Recreating missing layers (if possible)...")
     checkIntermediates(intermediatesFolder, symbologyFolder)
     checkAnalyses(analysesFolder, symbologyFolder)
     checkInputs(inputsFolder, symbologyFolder)
