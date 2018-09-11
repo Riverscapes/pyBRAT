@@ -2,6 +2,9 @@
 # Name:        BRAT Braid Handler
 # Purpose:     Handles the braid clusters in a stream network
 #
+# Note: This tool is referred to in outputs as "anabranch handler", not "braid handler", for technical reasons. Out of a
+# fear of breaking things, this name change generally has not been carried over to the code.
+#
 # Author:      Braden Anderson
 #
 # Created:     03/2018
@@ -312,7 +315,7 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    braid_folder_name = findAvailableNum(intermediates_folder) + "_BraidHandler"
+    braid_folder_name = findAvailableNum(intermediates_folder) + "_AnabranchHandler"
     braid_folder = makeFolder(intermediates_folder, braid_folder_name)
 
 
@@ -321,7 +324,7 @@ def makeLayers(inputNetwork):
 
     mainstemSymbology = os.path.join(symbologyFolder, "Mainstems.lyr")
 
-    makeLayer(braid_folder, inputNetwork, "Mainstem Braids", mainstemSymbology, isRaster=False)
+    makeLayer(braid_folder, inputNetwork, "Anabranch Types", mainstemSymbology, isRaster=False)
 
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):

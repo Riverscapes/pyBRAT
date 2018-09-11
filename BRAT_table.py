@@ -1072,8 +1072,8 @@ def makeLayers(out_network):
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(out_network)
     buffers_folder = os.path.join(intermediates_folder, "01_Buffers")
-    topo_folder = makeFolder(intermediates_folder, "02_TopographicIndex")
-    conflict_folder = makeFolder(intermediates_folder, "03_HumanBeaverConflict")
+    topo_folder = makeFolder(intermediates_folder, "02_TopographicMetrics")
+    anthropogenic_metrics_folder = makeFolder(intermediates_folder, "03_AnthropogenicMetrics")
 
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
@@ -1092,21 +1092,21 @@ def makeLayers(out_network):
 
     fields = [f.name for f in arcpy.ListFields(out_network)]
     if 'iPC_LU' in fields:
-        makeLayer(conflict_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
+        makeLayer(anthropogenic_metrics_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
     if 'iPC_RoadX' in fields:
-        makeLayer(conflict_folder, out_network, "Distance to Road Crossing", distSymbology, isRaster=False, symbology_field = 'iPC_RoadX')
+        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Road Crossing", distSymbology, isRaster=False, symbology_field = 'iPC_RoadX')
     if 'iPC_Road' in fields:
-        makeLayer(conflict_folder, out_network, "Distance to Road", distSymbology, isRaster=False, symbology_field = 'iPC_Road')
+        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Road", distSymbology, isRaster=False, symbology_field = 'iPC_Road')
     if 'iPC_RoadVB' in fields:
-        makeLayer(conflict_folder, out_network, "Distance to Road in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RoadVB')
+        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Road in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RoadVB')
     if 'iPC_Rail' in fields:
-        makeLayer(conflict_folder, out_network, "Distance to Railroad", distSymbology, isRaster=False, symbology_field = 'iPC_Rail')
+        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Railroad", distSymbology, isRaster=False, symbology_field = 'iPC_Rail')
     if 'iPC_RailVB' in fields:
-        makeLayer(conflict_folder, out_network, "Distance to Railroad in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RailVB')
+        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Railroad in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RailVB')
     if 'iPC_Canal' in fields:
-        makeLayer(conflict_folder, out_network, "Distance to Canal", distSymbology, isRaster=False, symbology_field = 'iPC_Canal')
+        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Canal", distSymbology, isRaster=False, symbology_field = 'iPC_Canal')
     if 'oPC_Dist' in fields:
-        makeLayer(conflict_folder, out_network, "Distance to Closest Infrastructure", distSymbology, isRaster=False, symbology_field = 'oPC_Dist')
+        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", distSymbology, isRaster=False, symbology_field = 'oPC_Dist')
 
 def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description", symbology_field = None):
     """
