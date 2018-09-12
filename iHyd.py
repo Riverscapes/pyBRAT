@@ -13,7 +13,7 @@ import arcpy
 import numpy as np
 import os
 import sys
-from SupportingFunctions import makeLayer, makeFolder, findAvailableNum
+from SupportingFunctions import make_layer, make_folder, find_available_num
 
 
 def main(
@@ -130,8 +130,8 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    hydrology_folder_name = findAvailableNum(intermediates_folder) + "_Hydrology"
-    hydrology_folder = makeFolder(intermediates_folder, hydrology_folder_name)
+    hydrology_folder_name = find_available_num(intermediates_folder) + "_Hydrology"
+    hydrology_folder = make_folder(intermediates_folder, hydrology_folder_name)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -139,8 +139,8 @@ def makeLayers(inputNetwork):
     highflowSymbology = os.path.join(symbologyFolder, "Highflow_StreamPower.lyr")
     baseflowSymbology = os.path.join(symbologyFolder, "Baseflow_StreamPower.lyr")
 
-    makeLayer(hydrology_folder, inputNetwork, "Highflow Stream Power", highflowSymbology, isRaster=False)
-    makeLayer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, isRaster=False)
+    make_layer(hydrology_folder, inputNetwork, "Highflow Stream Power", highflowSymbology, is_raster=False)
+    make_layer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, is_raster=False)
 
 
 if __name__ == '__main__':

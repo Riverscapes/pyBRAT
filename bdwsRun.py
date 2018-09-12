@@ -2,13 +2,13 @@ from bdws import BDLoG, BDSWEA
 from bdflopy import BDflopy
 import arcpy
 import os
-from SupportingFunctions import makeFolder, findAvailableNum
+from SupportingFunctions import make_folder, find_available_num
 
 def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity, modflowexe):
     arcpy.AddMessage("Running BDLoG...")
-    projectFolder = makeFolder(projectRoot, "BDWS_Project")
-    inputsFolder = makeFolder(projectFolder, "Inputs")
-    outDir = makeFolder(projectFolder, "Output")
+    projectFolder = make_folder(projectRoot, "BDWS_Project")
+    inputsFolder = make_folder(projectFolder, "Inputs")
+    outDir = make_folder(projectFolder, "Output")
     bratCap = 1.0 #proportion (0-1) of maximum estimted dam capacity (from BRAT) for scenario
     bratPath = copyIntoFolder(bratPath, inputsFolder, "BRAT")
     demPath = copyIntoFolder(demPath, inputsFolder, "DEM")
@@ -51,7 +51,7 @@ def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, vertic
 
 
 def copyIntoFolder(thingToCopy, copyFolderRoot, copyFolderName):
-    copyFolder = makeFolder(copyFolderRoot, findAvailableNum(copyFolderRoot) + '_' + copyFolderName)
+    copyFolder = make_folder(copyFolderRoot, find_available_num(copyFolderRoot) + '_' + copyFolderName)
     copyPath = os.path.join(copyFolder, os.path.basename(thingToCopy))
     arcpy.Copy_management(thingToCopy, copyPath)
     return copyPath

@@ -14,7 +14,7 @@
 import arcpy
 import os
 from StreamObjects import Cluster, BraidStream
-from SupportingFunctions import makeLayer, makeFolder, findAvailableNum
+from SupportingFunctions import make_layer, make_folder, find_available_num
 
 cluster_id = 0 # Provides a consistent way to refer to clusters, that give more information that a UUID
 CLUSTERFIELDNAME = "ClusterID"
@@ -316,8 +316,8 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    braid_folder_name = findAvailableNum(intermediates_folder) + "_AnabranchHandler"
-    braid_folder = makeFolder(intermediates_folder, braid_folder_name)
+    braid_folder_name = find_available_num(intermediates_folder) + "_AnabranchHandler"
+    braid_folder = make_folder(intermediates_folder, braid_folder_name)
 
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
@@ -325,5 +325,5 @@ def makeLayers(inputNetwork):
 
     mainstemSymbology = os.path.join(symbologyFolder, "Mainstems.lyr")
 
-    makeLayer(braid_folder, inputNetwork, "Anabranch Types", mainstemSymbology, isRaster=False)
+    make_layer(braid_folder, inputNetwork, "Anabranch Types", mainstemSymbology, is_raster=False)
 

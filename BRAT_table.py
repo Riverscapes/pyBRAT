@@ -18,7 +18,7 @@ import datetime
 import uuid
 import FindBraidedNetwork
 import BRAT_Braid_Handler
-from SupportingFunctions import makeLayer, makeFolder
+from SupportingFunctions import make_layer, make_folder
 
 reload(FindBraidedNetwork)
 reload(BRAT_Braid_Handler)
@@ -72,7 +72,7 @@ def main(
 
     # --create network buffers for analyses--
     # create 'Buffers' folder if it doesn't exist
-    buffersFolder = makeFolder(intermediateFolder, "01_Buffers")
+    buffersFolder = make_folder(intermediateFolder, "01_Buffers")
 
     # create network segment midpoints
     if is_verbose:
@@ -124,7 +124,7 @@ def main(
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     flowAccumulationSymLayer = os.path.join(symbologyFolder, "Flow_Accumulation.lyr")
-    makeLayer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flowAccumulationSymLayer, isRaster=True)
+    make_layer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flowAccumulationSymLayer, is_raster=True)
 
     makeLayers(seg_network_copy)
     try:
@@ -148,7 +148,7 @@ def build_output_folder(proj_path, out_name, seg_network, road, should_segment_n
         new_output_folder = os.path.join(proj_path, "Output_" + str(j))
     os.mkdir(new_output_folder)
 
-    intermediateFolder = makeFolder(new_output_folder, "01_Intermediates")
+    intermediateFolder = make_folder(new_output_folder, "01_Intermediates")
 
     # copy input segment network to output folder
     if out_name.endswith('.shp'):
@@ -1060,8 +1060,8 @@ def makeLayers(out_network):
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(out_network)
     buffers_folder = os.path.join(intermediates_folder, "01_Buffers")
-    topo_folder = makeFolder(intermediates_folder, "02_TopographicMetrics")
-    anthropogenic_metrics_folder = makeFolder(intermediates_folder, "03_AnthropogenicMetrics")
+    topo_folder = make_folder(intermediates_folder, "02_TopographicMetrics")
+    anthropogenic_metrics_folder = make_folder(intermediates_folder, "03_AnthropogenicMetrics")
 
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
@@ -1074,27 +1074,27 @@ def makeLayers(out_network):
     buffer_30m_symbology = os.path.join(symbologyFolder, "buffer_30m.lyr")
     buffer_100m_symbology = os.path.join(symbologyFolder, "buffer_100m.lyr")
 
-    makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
-    makeLayer(topo_folder, out_network, "Reach Slope", slopeSymbology, isRaster=False)
-    makeLayer(topo_folder, out_network, "Drainage Area", drainAreaSymbology, isRaster=False)
+    make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
+    make_layer(topo_folder, out_network, "Reach Slope", slopeSymbology, is_raster=False)
+    make_layer(topo_folder, out_network, "Drainage Area", drainAreaSymbology, is_raster=False)
 
     fields = [f.name for f in arcpy.ListFields(out_network)]
     if 'iPC_LU' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
+        make_layer(anthropogenic_metrics_folder, out_network, "Land Use Intensity", landUseSymbology, is_raster=False)
     if 'iPC_RoadX' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Road Crossing", distSymbology, isRaster=False, symbology_field = 'iPC_RoadX')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road Crossing", distSymbology, is_raster=False, symbology_field ='iPC_RoadX')
     if 'iPC_Road' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Road", distSymbology, isRaster=False, symbology_field = 'iPC_Road')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road", distSymbology, is_raster=False, symbology_field ='iPC_Road')
     if 'iPC_RoadVB' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Road in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RoadVB')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road in Valley Bottom", distSymbology, is_raster=False, symbology_field ='iPC_RoadVB')
     if 'iPC_Rail' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Railroad", distSymbology, isRaster=False, symbology_field = 'iPC_Rail')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad", distSymbology, is_raster=False, symbology_field ='iPC_Rail')
     if 'iPC_RailVB' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Railroad in Valley Bottom", distSymbology, isRaster=False, symbology_field = 'iPC_RailVB')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad in Valley Bottom", distSymbology, is_raster=False, symbology_field ='iPC_RailVB')
     if 'iPC_Canal' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Canal", distSymbology, isRaster=False, symbology_field = 'iPC_Canal')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Canal", distSymbology, is_raster=False, symbology_field ='iPC_Canal')
     if 'oPC_Dist' in fields:
-        makeLayer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", distSymbology, isRaster=False, symbology_field = 'oPC_Dist')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", distSymbology, is_raster=False, symbology_field ='oPC_Dist')
 
 
 def handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose):
@@ -1114,7 +1114,7 @@ def handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose):
         BRAT_Braid_Handler.addClusterID(seg_network_copy, clusters)
 
 
-def makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology):
+def make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology):
     """
     Makes a layer for each buffer
     :param buffers_folder: The path to the buffers folder
@@ -1130,7 +1130,7 @@ def makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology
             elif "100m" in fileName:
                 new_layer_name = "100 m Buffer"
                 given_symbology = buffer_100m_symbology
-            makeLayer(buffers_folder, filePath, new_layer_name, given_symbology)
+            make_layer(buffers_folder, filePath, new_layer_name, given_symbology)
 
 
 def parseInputBool(given_input):

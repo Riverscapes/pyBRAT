@@ -14,7 +14,7 @@ import sys
 import os
 import projectxml
 import uuid
-from SupportingFunctions import makeLayer, makeFolder, findAvailableNum
+from SupportingFunctions import make_layer, make_folder, find_available_num
 
 
 def main(projPath, in_network, out_name):
@@ -131,7 +131,7 @@ def makeLayers(out_network):
     """
     arcpy.AddMessage("Making layers...")
     analyses_folder = os.path.dirname(out_network)
-    output_folder = makeFolder(analyses_folder, findAvailableNum(analyses_folder) + "_Management")
+    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Management")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -139,9 +139,9 @@ def makeLayers(out_network):
     managementLayer2 = os.path.join(symbologyFolder, "Dam_Building_Not_Likely.lyr")
     managementLayer3 = os.path.join(symbologyFolder, "Restoration_Conservation_Opportunities.lyr")
 
-    makeLayer(output_folder, out_network, "Beaver Management Zones", managementLayer, isRaster=False)
-    makeLayer(output_folder, out_network, "Unsuitable or Limited Opportunities", managementLayer2, isRaster=False)
-    makeLayer(output_folder, out_network, "Restoration or Conservation Opportunities", managementLayer3, isRaster=False)
+    make_layer(output_folder, out_network, "Beaver Management Zones", managementLayer, is_raster=False)
+    make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", managementLayer2, is_raster=False)
+    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", managementLayer3, is_raster=False)
 
 
 

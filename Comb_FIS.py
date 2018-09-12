@@ -18,7 +18,7 @@ import sys
 import projectxml
 import uuid
 import xml.etree.ElementTree as ET
-from SupportingFunctions import makeLayer, makeFolder, findAvailableNum
+from SupportingFunctions import make_layer, make_folder, find_available_num
 
 def main(
     projPath,
@@ -29,7 +29,7 @@ def main(
     scratch = 'in_memory'
 
     output_folder = os.path.dirname(os.path.dirname(in_network))
-    analyses_folder = makeFolder(output_folder, "02_Analyses")
+    analyses_folder = make_folder(output_folder, "02_Analyses")
     if out_name.endswith('.shp'):
         out_network = os.path.join(analyses_folder, out_name)
     else:
@@ -326,9 +326,9 @@ def makeLayers(out_network, out_name):
     """
     arcpy.AddMessage("Making layers...")
     analyses_folder = os.path.dirname(out_network)
-    output_folder = makeFolder(analyses_folder, findAvailableNum(analyses_folder) + "_Capacity")
-    historic_folder = makeFolder(output_folder, findAvailableNum(output_folder) + "_HistoricCapacity")
-    existing_folder = makeFolder(output_folder, findAvailableNum(output_folder) + "_ExistingCapacity")
+    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Capacity")
+    historic_folder = make_folder(output_folder, find_available_num(output_folder) + "_HistoricCapacity")
+    existing_folder = make_folder(output_folder, find_available_num(output_folder) + "_ExistingCapacity")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -337,10 +337,10 @@ def makeLayers(out_network, out_name):
     existingCapacityCountLayer = os.path.join(symbologyFolder, "Existing_Capacity_Count.lyr")
     historicCapacityCountLayer = os.path.join(symbologyFolder, "Historic_Capacity_Count.lyr")
 
-    makeLayer(existing_folder, out_network, "Existing Dam Building Capacity", existingCapacityLayer, isRaster=False)
-    makeLayer(historic_folder, out_network, "Historic Dam Building Capacity", historicCapacityLayer, isRaster=False)
-    makeLayer(existing_folder, out_network, "Existing Dam Complex Size", existingCapacityCountLayer, isRaster=False)
-    makeLayer(historic_folder, out_network, "Historic Dam Complex Size", historicCapacityCountLayer, isRaster=False)
+    make_layer(existing_folder, out_network, "Existing Dam Building Capacity", existingCapacityLayer, is_raster=False)
+    make_layer(historic_folder, out_network, "Historic Dam Building Capacity", historicCapacityLayer, is_raster=False)
+    make_layer(existing_folder, out_network, "Existing Dam Complex Size", existingCapacityCountLayer, is_raster=False)
+    make_layer(historic_folder, out_network, "Historic Dam Complex Size", historicCapacityCountLayer, is_raster=False)
 
 
 def getUUID():

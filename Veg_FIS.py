@@ -15,7 +15,7 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
-from SupportingFunctions import makeFolder, makeLayer, findAvailableNum
+from SupportingFunctions import make_folder, make_layer, find_available_num
 
 
 def main(in_network):
@@ -194,8 +194,8 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    veg_folder_name = findAvailableNum(intermediates_folder) + "_VegDamCapacity"
-    veg_folder = makeFolder(intermediates_folder, veg_folder_name)
+    veg_folder_name = find_available_num(intermediates_folder) + "_VegDamCapacity"
+    veg_folder = make_folder(intermediates_folder, veg_folder_name)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -203,8 +203,8 @@ def makeLayers(inputNetwork):
     existingVegSymbology = os.path.join(symbologyFolder, "Existing_Veg_Capacity.lyr")
     historicVegSymbology = os.path.join(symbologyFolder, "Historic_Veg_Capacity.lyr")
 
-    makeLayer(veg_folder, inputNetwork, "Existing Veg Dam Building Capacity", existingVegSymbology, isRaster=False)
-    makeLayer(veg_folder, inputNetwork, "Historic Veg Dam Building Capacity", historicVegSymbology, isRaster=False)
+    make_layer(veg_folder, inputNetwork, "Existing Veg Dam Building Capacity", existingVegSymbology, is_raster=False)
+    make_layer(veg_folder, inputNetwork, "Historic Veg Dam Building Capacity", historicVegSymbology, is_raster=False)
 
 
 if __name__ == '__main__':

@@ -15,7 +15,7 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import makeFolder, makeLayer
+from SupportingFunctions import make_folder, make_layer
 
 
 def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
@@ -26,22 +26,22 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     if not os.path.exists(projPath):
         os.mkdir(projPath)
 
-    inputsFolder = makeFolder(projPath, "Inputs")
+    inputsFolder = make_folder(projPath, "Inputs")
 
-    vegetationFolder = makeFolder(inputsFolder, "01_Vegetation")
-    networkFolder = makeFolder(inputsFolder, "02_Network")
-    topoFolder = makeFolder(inputsFolder, "03_Topography")
-    anthropogenicFolder = makeFolder(inputsFolder, "04_Anthropogenic")
+    vegetationFolder = make_folder(inputsFolder, "01_Vegetation")
+    networkFolder = make_folder(inputsFolder, "02_Network")
+    topoFolder = make_folder(inputsFolder, "03_Topography")
+    anthropogenicFolder = make_folder(inputsFolder, "04_Anthropogenic")
 
-    exVegFolder = makeFolder(vegetationFolder, "01_ExistingVegetation")
-    histVegFolder = makeFolder(vegetationFolder, "02_HistoricVegetation")
+    exVegFolder = make_folder(vegetationFolder, "01_ExistingVegetation")
+    histVegFolder = make_folder(vegetationFolder, "02_HistoricVegetation")
 
-    valleyBottomFolder = makeFolder(anthropogenicFolder, "01_ValleyBottom")
-    roadFolder = makeFolder(anthropogenicFolder, "02_Roads")
-    railroadFolder = makeFolder(anthropogenicFolder, "03_Railroads")
-    canalsFolder = makeFolder(anthropogenicFolder, "04_Canals")
-    landUseFolder = makeFolder(anthropogenicFolder, "05_LandUse")
-    landOwnershipFolder = makeFolder(anthropogenicFolder, "06_LandOwnership")
+    valleyBottomFolder = make_folder(anthropogenicFolder, "01_ValleyBottom")
+    roadFolder = make_folder(anthropogenicFolder, "02_Roads")
+    railroadFolder = make_folder(anthropogenicFolder, "03_Railroads")
+    canalsFolder = make_folder(anthropogenicFolder, "04_Canals")
+    landUseFolder = make_folder(anthropogenicFolder, "05_LandUse")
+    landOwnershipFolder = make_folder(anthropogenicFolder, "06_LandOwnership")
 
     sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
@@ -138,7 +138,7 @@ def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
     i = 1
     destinations = []
     for inputPath in splitInput:
-        newSubFolder = makeFolder(folderPath, subFolderName + "_" + str(i))
+        newSubFolder = make_folder(folderPath, subFolderName + "_" + str(i))
         destinationPath = os.path.join(newSubFolder, os.path.basename(inputPath))
 
         if isRaster:
@@ -168,18 +168,18 @@ def makeTopoLayers(topoFolder):
         for fileName in os.listdir(demFolderPath):
             if fileName.endswith(".tif"):
                 demFile = os.path.join(demFolderPath, fileName)
-                makeLayer(demFolderPath, demFile, "DEM", demSymbology, isRaster=True)
+                make_layer(demFolderPath, demFile, "DEM", demSymbology, is_raster=True)
 
-        hillshadeFolder = makeFolder(demFolderPath, "Hillshade")
+        hillshadeFolder = make_folder(demFolderPath, "Hillshade")
         hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
         arcpy.HillShade_3d(demFile, hillshadeFile)
-        makeLayer(hillshadeFolder, hillshadeFile, "Hillshade", hillshadeSymbology, isRaster=True)
+        make_layer(hillshadeFolder, hillshadeFile, "Hillshade", hillshadeSymbology, is_raster=True)
 
-        slopeFolder = makeFolder(demFolderPath, "Slope")
+        slopeFolder = make_folder(demFolderPath, "Slope")
         slopeFile = os.path.join(slopeFolder, "Slope.tif")
         outSlope = arcpy.sa.Slope(demFile)
         outSlope.save(slopeFile)
-        makeLayer(slopeFolder, slopeFile, "Slope", slopeSymbology, isRaster=True)
+        make_layer(slopeFolder, slopeFile, "Slope", slopeSymbology, is_raster=True)
 
 
 def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, fileName=None, checkField=None):
@@ -202,7 +202,7 @@ def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, file
             if checkField not in fields:
                 # Stop execution if the field we're checking for is not in the layer base
                 return
-        makeLayer(destDirName, destination, layerName, symbology_layer=symbologyLayer, isRaster=isRaster, fileName=fileName)
+        make_layer(destDirName, destination, layerName, symbology_layer=symbologyLayer, is_raster=isRaster, file_name=fileName)
 
 
 if __name__ == '__main__':

@@ -15,7 +15,7 @@ import os
 import sys
 import projectxml
 import uuid
-from SupportingFunctions import findAvailableNum, makeFolder, makeLayer
+from SupportingFunctions import find_available_num, make_folder, make_layer
 
 
 def main(
@@ -266,13 +266,13 @@ def makeLayers(out_network):
     arcpy.AddMessage("Making layers...")
 
     analyses_folder = os.path.dirname(out_network)
-    output_folder = makeFolder(analyses_folder, findAvailableNum(analyses_folder) + "_Conflict")
+    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Conflict")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     conflictLayer = os.path.join(symbologyFolder, "Conflict.lyr")
 
-    makeLayer(output_folder, out_network, "Conflict Potential", conflictLayer, isRaster=False)
+    make_layer(output_folder, out_network, "Conflict Potential", conflictLayer, is_raster=False)
 
 
 def getUUID():
