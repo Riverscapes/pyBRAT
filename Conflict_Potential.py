@@ -16,6 +16,9 @@ import sys
 import projectxml
 import uuid
 from SupportingFunctions import find_available_num, make_folder, make_layer
+reload(make_layer)
+reload(make_folder)
+reload(find_available_num)
 
 
 def main(

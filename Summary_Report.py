@@ -16,7 +16,6 @@ def main(bratOutput, dams, outputName):
     :param bratOutput: The output of BRAT (a polyline shapefile)
     :param dams: A shapefile containing a point for each dam
     :param outputName: The name of the output shape file
-    :param layerPackageName: The name for the layer package
     :return:
     """
     arcpy.env.overwriteOutput = True

@@ -16,6 +16,9 @@ import numpy as np
 import os
 import sys
 from SupportingFunctions import make_folder, make_layer, find_available_num
+reload(make_layer)
+reload(make_folder)
+reload(find_available_num)
 
 
 def main(in_network):

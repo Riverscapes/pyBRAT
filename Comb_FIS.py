@@ -19,6 +19,9 @@ import projectxml
 import uuid
 import xml.etree.ElementTree as ET
 from SupportingFunctions import make_layer, make_folder, find_available_num
+reload(make_layer)
+reload(make_folder)
+reload(find_available_num)
 
 def main(
     projPath,

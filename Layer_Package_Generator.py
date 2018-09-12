@@ -11,6 +11,10 @@
 import arcpy
 import os
 from SupportingFunctions import find_folder, find_available_num, make_folder, make_layer
+reload(make_layer)
+reload(make_folder)
+reload(find_available_num)
+reload(find_folder)
 
 
 def main(output_folder, layer_package_name):
