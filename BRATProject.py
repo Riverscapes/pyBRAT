@@ -16,8 +16,6 @@ import os
 import arcpy
 import sys
 from SupportingFunctions import make_folder, make_layer
-reload(make_layer)
-reload(make_folder)
 
 
 def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):

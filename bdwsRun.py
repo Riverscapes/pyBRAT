@@ -3,8 +3,7 @@ from bdflopy import BDflopy
 import arcpy
 import os
 from SupportingFunctions import make_folder, find_available_num
-reload(make_folder)
-reload(find_available_num)
+
 
 def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity, modflowexe):
     arcpy.AddMessage("Running BDLoG...")

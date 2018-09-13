@@ -15,9 +15,6 @@ import arcpy
 import os
 from StreamObjects import Cluster, BraidStream
 from SupportingFunctions import make_layer, make_folder, find_available_num
-reload(make_layer)
-reload(make_folder)
-reload(find_available_num)
 
 cluster_id = 0 # Provides a consistent way to refer to clusters, that give more information that a UUID
 CLUSTERFIELDNAME = "ClusterID"

@@ -11,13 +11,9 @@
 import arcpy
 import os
 from SupportingFunctions import find_folder, find_available_num, make_folder, make_layer
-reload(make_layer)
-reload(make_folder)
-reload(find_available_num)
-reload(find_folder)
 
 
-def main(output_folder, layer_package_name):
+def main(output_folder, layer_package_name, clipping_network):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package

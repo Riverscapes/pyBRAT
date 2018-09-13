@@ -22,8 +22,6 @@ from SupportingFunctions import make_layer, make_folder
 
 reload(FindBraidedNetwork)
 reload(BRAT_Braid_Handler)
-reload(make_layer)
-reload(make_folder)
 
 
 def main(
