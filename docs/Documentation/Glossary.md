@@ -61,6 +61,64 @@ These are values that are presently generated and used by the latest version of 
 - Generation Method: BRAT Table Tool
 
 **iVeg_100EX -** The average VEG_CODE value on the existing vegetation raster within a 100m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iVeg_30EX -** The average VEG_CODE value on the existing vegetation raster within a 30m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iVeg_100PT -** The average VEG_CODE value on the historic vegetation raster within a 100m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iVeg_30PT -** The average VEG_CODE value on the historic vegetation raster within a 30m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_RoadX -** The distance of the reach to the nearest point where a road crosses the stream.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_Road -** The distance of the reach to the closest road.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_RoadVB -** The distance of the reach to the closest road in the valley bottom.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_Rail -** The distance of the reach to the closest railroad.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_RailVB -** The distance of the reach to the closest road in the valley bottom.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**oPC_Dist -** The smallest value found in "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", and "iPC_RailVB". 
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_LU -** The average land use value in a 100m buffer around the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_VLowLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_LowLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_ModLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_HighLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
 
 
 ## Depreciated pyBRAT Values
