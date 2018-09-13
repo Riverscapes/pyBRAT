@@ -840,7 +840,7 @@ class Layer_Package_Generator_tool(object):
             direction="Input")
 
         param2 = arcpy.Parameter(
-            displayName="Give us a stream network to clip the layer package to",
+            displayName="Give a stream network to clip the layer package networks to",
             name="clipping_network",
             datatype="DEFeatureClass",
             parameterType="Optional",

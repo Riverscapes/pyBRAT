@@ -18,6 +18,7 @@ def main(output_folder, layer_package_name, clipping_network):
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
     :param layer_package_name: What we want to name our layer package
+    :param clipping_network: What we want to clip our network to
     :return:
     """
     projectFolder = os.path.dirname(output_folder)
@@ -28,12 +29,12 @@ def main(output_folder, layer_package_name, clipping_network):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
-    checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
+    check_for_layers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
 
-    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name)
+    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
 
 
-def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder):
+def check_for_layers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder):
     """
     Checks for what layers exist, and creates them if they do not exist
     :param intermediatesFolder: Where our intermediates are kept
@@ -43,12 +44,12 @@ def checkForLayers(intermediatesFolder, analysesFolder, inputsFolder, symbologyF
     :return:
     """
     arcpy.AddMessage("Recreating missing layers (if possible)...")
-    checkIntermediates(intermediatesFolder, symbologyFolder)
-    checkAnalyses(analysesFolder, symbologyFolder)
+    check_intermediates(intermediatesFolder, symbologyFolder)
+    check_analyses(analysesFolder, symbologyFolder)
     check_inputs(inputsFolder, symbologyFolder)
 
 
-def checkIntermediates(intermediates_folder, symbologyFolder):
+def check_intermediates(intermediates_folder, symbologyFolder):
     """
     Checks for all the intermediate layers
     :param intermediates_folder: Where our intermediates are kept
@@ -168,7 +169,7 @@ def check_buffer_layers(intermediates_folder, symbology_folder):
     check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology, is_raster= False, layer_name ='30 m Buffer')
 
 
-def checkAnalyses(analyses_folder, symbology_folder):
+def check_analyses(analyses_folder, symbology_folder):
     """
     Checks for all the intermediate layers
     :param analyses_folder: Where our analyses are kept
@@ -401,17 +402,20 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
             make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster, file_name=file_name)
 
 
-def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name):
+def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name, clipping_network):
     """
     Makes a layer package for the project
     :param output_folder: The folder that we want to base our layer package off of
     :param layer_package_name: The name of the layer package that we'll make
+    :param clipping_network: What we want to clip our network to
     :return:
     """
     if layer_package_name == "" or layer_package_name is None:
         layer_package_name = "LayerPackage"
     if not layer_package_name.endswith(".lpk"):
         layer_package_name += ".lpk"
+
+    new_source = None
 
     arcpy.AddMessage("Making Layer Package...")
     empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
