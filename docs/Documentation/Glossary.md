@@ -120,6 +120,27 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "DOUBLE"
 - Generation Method: BRAT Table Tool
 
+**IsMultiCh -** An integer value. If the reach is part of a multi-branch system, the value will be 1. Otherwise, it will be 0.
+- Field Type: "LONG"
+- Generation Method: BRAT Table Tool
+
+**IsMainCh -** An integer value. If the reach is the primary branch of a multi-branch system, the value will be 1. Otherwise, it will be 0. Defaults to a value of 1 for non-multibranch reaches, a value of 0 for multi-branch reaches. Must be manually edited to indicate main channels in order to properly use the optional Braid Handler tool.
+- Field Type: "LONG"
+- Generation Method: BRAT Table Tool
+
+**ClusterID -** If the reach is not part of a multi-branch system, this wil have a value of -1. Otherwise, every reach in a cluster of multi-branch reaches will share a ClusterID value. This value will be used for fixing multi-branch drainage area values in the optional Braid Handler tool. If the technician wants to, they can manually edit these values.
+- Field Type: "LONG"
+- Generation Method: BRAT Table Tool or the Braid Handler tool
+
+**iHyd_QLow -** The value for low stream flow in the reach.
+- Field Type: "DOUBLE"
+- Generation Method: iHyd tool
+
+**iHyd_Q2 -** The value for high stream flow in the reach.
+- Field Type: "DOUBLE"
+- Generation Method: iHyd tool
+
+**oVC_PT**
 
 ## Depreciated pyBRAT Values
 These are values that were once used by pyBRAT, but were discontinued for one reason or another.
