@@ -75,7 +75,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     makeInputLayers(exVegDestinations, "Existing Riparian", symbologyLayer=exVegRiparianSymbology, isRaster=True, checkField="EVT_PHYS")
     makeInputLayers(exVegDestinations, "Veg Type - EVT Type", symbologyLayer=exVegEVTTypeSymbology, isRaster=True, checkField="EVT_PHYS")
     makeInputLayers(exVegDestinations, "Veg Type - EVT Class", symbologyLayer=exVegEVTClassSymbology, isRaster=True)
-    makeInputLayers(exVegDestinations, "Veg Type - EVT Class Name", symbologyLayer=exVegClassNameSymbology, isRaster=True)
+    # makeInputLayers(exVegDestinations, "Veg Type - EVT Class Name", symbologyLayer=exVegClassNameSymbology, isRaster=True)
 
 
     # add the historic veg inputs to project
