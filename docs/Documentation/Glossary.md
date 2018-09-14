@@ -61,7 +61,86 @@ These are values that are presently generated and used by the latest version of 
 - Generation Method: BRAT Table Tool
 
 **iVeg_100EX -** The average VEG_CODE value on the existing vegetation raster within a 100m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
 
+**iVeg_30EX -** The average VEG_CODE value on the existing vegetation raster within a 30m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iVeg_100PT -** The average VEG_CODE value on the historic vegetation raster within a 100m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iVeg_30PT -** The average VEG_CODE value on the historic vegetation raster within a 30m buffer of the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_RoadX -** The distance of the reach to the nearest point where a road crosses the stream.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_Road -** The distance of the reach to the closest road.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_RoadVB -** The distance of the reach to the closest road in the valley bottom.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_Rail -** The distance of the reach to the closest railroad.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_RailVB -** The distance of the reach to the closest road in the valley bottom.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**oPC_Dist -** The smallest value found in "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", and "iPC_RailVB". 
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_LU -** The average land use value in a 100m buffer around the reach.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_VLowLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_LowLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_ModLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**iPC_HighLU -** The percentage of cells in the buffer classified as having a low land use value.
+- Field Type: "DOUBLE"
+- Generation Method: BRAT Table Tool
+
+**IsMultiCh -** An integer value. If the reach is part of a multi-branch system, the value will be 1. Otherwise, it will be 0.
+- Field Type: "LONG"
+- Generation Method: BRAT Table Tool
+
+**IsMainCh -** An integer value. If the reach is the primary branch of a multi-branch system, the value will be 1. Otherwise, it will be 0. Defaults to a value of 1 for non-multibranch reaches, a value of 0 for multi-branch reaches. Must be manually edited to indicate main channels in order to properly use the optional Braid Handler tool.
+- Field Type: "LONG"
+- Generation Method: BRAT Table Tool
+
+**ClusterID -** If the reach is not part of a multi-branch system, this wil have a value of -1. Otherwise, every reach in a cluster of multi-branch reaches will share a ClusterID value. This value will be used for fixing multi-branch drainage area values in the optional Braid Handler tool. If the technician wants to, they can manually edit these values.
+- Field Type: "LONG"
+- Generation Method: BRAT Table Tool or the Braid Handler tool
+
+**iHyd_QLow -** The value for low stream flow in the reach.
+- Field Type: "DOUBLE"
+- Generation Method: iHyd tool
+
+**iHyd_Q2 -** The value for high stream flow in the reach.
+- Field Type: "DOUBLE"
+- Generation Method: iHyd tool
+
+**oVC_PT**
 
 ## Depreciated pyBRAT Values
 These are values that were once used by pyBRAT, but were discontinued for one reason or another.
