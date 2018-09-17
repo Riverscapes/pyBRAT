@@ -17,7 +17,7 @@ from StreamObjects import Cluster, BraidStream
 from SupportingFunctions import make_layer, make_folder, find_available_num
 
 cluster_id = 0 # Provides a consistent way to refer to clusters, that give more information that a UUID
-CLUSTERFIELDNAME = "ClusterID"
+CLUSTER_FIELD_NAME = "ClusterID"
 
 
 def main(input_network):
@@ -26,19 +26,19 @@ def main(input_network):
     :param input_network: The stream network that we want to give mainstem values
     :return: None
     """
-    checkInput(input_network)
-    if not hasClusterIDs(input_network):
+    check_input(input_network)
+    if not has_cluster_ids(input_network):
         arcpy.AddMessage("Finding clusters...")
-        clusters = findClusters(input_network)
+        clusters = find_clusters(input_network)
 
-        handleClusters(input_network, clusters)
+        handle_clusters(input_network, clusters)
     else:
         arcpy.AddMessage("Finding clusters based on the ClusterID field...")
 
         # Check to make sure that if 'IsMultiCh' = '0' that 'ClusterID' = '-1'
         # Ensures that stream segments identified as NOT being multi channeled won't
         # be included in DA update
-        with arcpy.da.UpdateCursor(input_network, [CLUSTERFIELDNAME, 'IsMultiCh', 'IsMainCh']) as cursor:
+        with arcpy.da.UpdateCursor(input_network, [CLUSTER_FIELD_NAME, 'IsMultiCh', 'IsMainCh']) as cursor:
             for row in cursor:
                 if row[1] == 0:  # If the stream is braided. If it isn't, we don't care about its cluster id
                     row[0] = -1
@@ -46,17 +46,17 @@ def main(input_network):
                     row[2] = 1
                 cursor.updateRow(row)
 
-        clusters = getClustersFromIDs(input_network)
+        clusters = get_clusters_from_ids(input_network)
 
         for i in range(len(clusters)):
             clusters[i].id = i+1
 
-        updateNetworkDrainageValues(input_network, clusters)
+        update_network_drainage_values(input_network, clusters)
 
-    makeLayers(input_network)
+    make_layers(input_network)
 
 
-def checkInput(input_network):
+def check_input(input_network):
     """
     Checks that the input given has the fields needed for the program
 
@@ -66,11 +66,11 @@ def checkInput(input_network):
     :return: None
     """
     fields = [f.name for f in arcpy.ListFields(input_network)]
-    renameField(input_network, fields, "IsBraided", "IsMultiCh")
-    renameField(input_network, fields, "IsMainstem", "IsMainCh")
+    rename_field(input_network, fields, "IsBraided", "IsMultiCh")
+    rename_field(input_network, fields, "IsMainstem", "IsMainCh")
 
 
-def renameField(input_network, fields, old_name, new_name):
+def rename_field(input_network, fields, old_name, new_name):
     """
     Checks that the network has the field, and renames an old version if necessary
     :param input_network:
@@ -86,91 +86,91 @@ def renameField(input_network, fields, old_name, new_name):
             raise Exception("Field " + new_name + " is a required field in the input network to run the BRAT Braid Handler")
 
 
-def getClustersFromIDs(inputNetwork):
+def get_clusters_from_ids(input_network):
     """
     Returns an array of clusters based on the Cluster ID elements that they already have
-    :param inputNetwork: The stream network
+    :param input_network: The stream network
     :return: List of clusters
     """
     clusters = []
-    fields = ['SHAPE@', CLUSTERFIELDNAME, "iGeo_DA", 'ReachID', "IsMultiCh"]
-    with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
-        for polyline, clusterID, drainageArea, segID, isBraided in cursor:
-            if clusterID != -1 and isBraided == 1:
-                newStream = BraidStream(polyline, segID, drainageArea)
-                addStreamToClustersWithID(newStream, clusterID, clusters)
+    fields = ['SHAPE@', CLUSTER_FIELD_NAME, "iGeo_DA", 'ReachID', "IsMultiCh"]
+    with arcpy.da.SearchCursor(input_network, fields) as cursor:
+        for polyline, stream_cluster_id, drainage_area, seg_id, is_braided in cursor:
+            if stream_cluster_id != -1 and is_braided == 1:
+                newStream = BraidStream(polyline, seg_id, drainage_area)
+                add_stream_to_clusters_with_id(newStream, stream_cluster_id, clusters)
 
     return clusters
 
 
-def addStreamToClustersWithID(newStream, clusterID, clusters):
+def add_stream_to_clusters_with_id(new_stream, cluster_id, clusters):
     """
     Adds clusters to the stream based on the
-    :param newStream: The stream we want to add
-    :param clusterID: The cluster we want to add it to
+    :param new_stream: The stream we want to add
+    :param cluster_id: The cluster we want to add it to
     :param clusters: The clusters we've already made
     :return: None
     """
     for cluster in clusters:
-        if cluster.id == clusterID:
-            cluster.addStream(newStream)
+        if cluster.id == cluster_id:
+            cluster.add_stream(new_stream)
             return #if we found the stream, we end now
 
     # If the for loop didn't return, add a new cluster with the new stream as the first stream
-    newCluster = Cluster(clusterID)
-    newCluster.addStream(newStream)
-    clusters.append(newCluster)
+    new_cluster = Cluster(cluster_id)
+    new_cluster.add_stream(new_stream)
+    clusters.append(new_cluster)
 
 
-def hasClusterIDs(inputNetwork):
-    fields = arcpy.ListFields(inputNetwork)
+def has_cluster_ids(input_network):
+    fields = arcpy.ListFields(input_network)
     for field in fields:
-        if field.name == CLUSTERFIELDNAME:
+        if field.name == CLUSTER_FIELD_NAME:
             return True
     return False
 
 
-def findClusters(inputNetwork):
+def find_clusters(input_network):
     """
     Where we find all the clusters in the stream network
-    :param inputNetwork: The stream network whose clusters we want to find
+    :param input_network: The stream network whose clusters we want to find
     :return: An array of clusters
     """
     clusters = []
     fields = ['SHAPE@', 'ReachID', 'iGeo_DA', 'IsMultiCh']
-    with arcpy.da.SearchCursor(inputNetwork, fields) as cursor:
-        for polyline, stream_id, drainageArea, isBraided in cursor:
-            if isBraided:
-                addStreamToClusters(clusters, polyline, stream_id, drainageArea)
+    with arcpy.da.SearchCursor(input_network, fields) as cursor:
+        for polyline, stream_id, drainage_area, is_braided in cursor:
+            if is_braided:
+                add_stream_to_clusters(clusters, polyline, stream_id, drainage_area)
 
     return clusters
 
 
-def addStreamToClusters(clusters, polyline, stream_id, drainageArea):
+def add_stream_to_clusters(clusters, polyline, stream_id, drainage_area):
     """
     Adds the stream to the list of clusters that we have
     :param clusters: A list of clusters
     :param polyline: The geoprocessing object that contains a bunch of points we need
     :param stream_id: The stream's ID, which we'll use to compare against the original stream when it comes time to update it
-    :param drainageArea: The stream's drainage area
+    :param drainage_area: The stream's drainage area
     :return: None
     """
-    newStream = BraidStream(polyline, stream_id, drainageArea)
-    connectedClusters = findConnectedClusters(clusters, newStream)
+    new_stream = BraidStream(polyline, stream_id, drainage_area)
+    connected_clusters = find_connected_clusters(clusters, new_stream)
 
-    if len(connectedClusters) == 0:
+    if len(connected_clusters) == 0:
         global cluster_id # Allows us to modify cluster_id, so it always keeps count properly
         new_cluster = Cluster(cluster_id)
         cluster_id += 1
-        new_cluster.addStream(newStream)
+        new_cluster.add_stream(new_stream)
         clusters.append(new_cluster)
-    elif len(connectedClusters) == 1:
-        i = connectedClusters[0]
-        clusters[i].addStream(newStream)
-    elif len(connectedClusters) == 2:
-        cluster_one = clusters[connectedClusters[0]]
-        cluster_two = clusters[connectedClusters[1]]
-        new_cluster = mergeClusters(cluster_one, cluster_two, newStream)
+    elif len(connected_clusters) == 1:
+        i = connected_clusters[0]
+        clusters[i].add_stream(new_stream)
+    elif len(connected_clusters) == 2:
+        cluster_one = clusters[connected_clusters[0]]
+        cluster_two = clusters[connected_clusters[1]]
+        new_cluster = merge_clusters(cluster_one, cluster_two, new_stream)
 
         clusters.remove(cluster_one)
         clusters.remove(cluster_two)
@@ -178,46 +178,46 @@ def addStreamToClusters(clusters, polyline, stream_id, drainageArea):
 
 
 
-def findConnectedClusters(clusters, newStream):
+def find_connected_clusters(clusters, new_stream):
     """
     Finds all the clusters that the polyline connects to, and returns an array of all those available
     :param clusters: A list of clusters
-    :param newStream: The stream we care about
+    :param new_stream: The stream we care about
     :return: A list of indexes for clusters that are connected to the stream
     """
-    connectedClusters = []
+    connected_clusters = []
 
     for i in range(len(clusters)):
-        if isInCluster(newStream, clusters[i]):
-            connectedClusters.append(i)
+        if is_in_cluster(new_stream, clusters[i]):
+            connected_clusters.append(i)
 
-    return connectedClusters
+    return connected_clusters
 
 
-def isInCluster(stream, cluster):
+def is_in_cluster(stream, cluster):
     """
     Returns true if the stream is connected to the cluster, false otherwise
     :param stream: The stream we care about
     :param cluster: The cluster we're examining
     :return: Boolean
     """
-    streamEndpoints = []
+    stream_endpoints = []
 
     boundary = stream.polyline.boundary()
-    streamEndpoints.append(boundary.firstPoint)
-    streamEndpoints.append(boundary.lastPoint)
+    stream_endpoints.append(boundary.firstPoint)
+    stream_endpoints.append(boundary.lastPoint)
 
-    clusterEndpoints = cluster.endpoints
+    cluster_endpoints = cluster.endpoints
 
-    for clusterEndpoint in clusterEndpoints:
-        for streamEndpoint in streamEndpoints:
-            if clusterEndpoint.equals(streamEndpoint):
+    for cluster_endpoint in cluster_endpoints:
+        for stream_endpoint in stream_endpoints:
+            if cluster_endpoint.equals(stream_endpoint):
                 return True
 
     return False
 
 
-def mergeClusters(cluster_one, cluster_two, new_stream):
+def merge_clusters(cluster_one, cluster_two, new_stream):
     """
     Merges two clusters and a new stream and returns them up
     :param cluster_one: The first cluster to merge
@@ -231,41 +231,41 @@ def mergeClusters(cluster_one, cluster_two, new_stream):
 
     new_cluster.merge(cluster_one, cluster_two)
 
-    new_cluster.addStream(new_stream)
+    new_cluster.add_stream(new_stream)
 
     return new_cluster
 
 
 
-def handleClusters(inputNetwork, clusters):
+def handle_clusters(input_network, clusters):
     """
     Takes the clusters and applies the drainage area that we want to it
-    :param inputNetwork: The network that we were given at first
+    :param input_network: The network that we were given at first
     :param clusters: The list of clusters that we're working with
     :return: None
     """
-    addClusterID(inputNetwork, clusters)
-    updateNetworkDrainageValues(inputNetwork, clusters)
+    add_cluster_id(input_network, clusters)
+    update_network_drainage_values(input_network, clusters)
 
 
-def addClusterID(inputNetwork, clusters):
+def add_cluster_id(input_network, clusters):
     """
     Adds cluster ID attribute to the input network
-    :param inputNetwork: The network to add this info to
+    :param input_network: The network to add this info to
     :param clusters: The list of clusters that we're dealing with
     :return: None
     """
     arcpy.AddMessage("Adding clusterID to the input network...")
 
-    listFields = arcpy.ListFields(inputNetwork, CLUSTERFIELDNAME)
-    if len(listFields) is not 1:
-        arcpy.AddField_management(inputNetwork, CLUSTERFIELDNAME, "SHORT", "", "", "", "", "NULLABLE")
-    arcpy.CalculateField_management(inputNetwork, CLUSTERFIELDNAME, -1, "PYTHON")
+    list_fields = arcpy.ListFields(input_network, CLUSTER_FIELD_NAME)
+    if len(list_fields) is not 1:
+        arcpy.AddField_management(input_network, CLUSTER_FIELD_NAME, "SHORT", "", "", "", "", "NULLABLE")
+    arcpy.CalculateField_management(input_network, CLUSTER_FIELD_NAME, -1, "PYTHON")
 
     for i in range(len(clusters)):
         clusters[i].id = i + 1
 
-    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', CLUSTERFIELDNAME, 'IsMultiCh']) as cursor:
+    with arcpy.da.UpdateCursor(input_network, ['ReachID', CLUSTER_FIELD_NAME, 'IsMultiCh']) as cursor:
         for row in cursor:
             if row[2] == 1: # If the stream is braided. If it isn't, we don't care about its cluster id
                 for cluster in clusters:
@@ -274,21 +274,21 @@ def addClusterID(inputNetwork, clusters):
                 cursor.updateRow(row)
 
 
-def updateNetworkDrainageValues(inputNetwork, clusters):
+def update_network_drainage_values(input_network, clusters):
     """
     Updates all the streams in our clusters based on whether or not they are mainstems
-    :param inputNetwork: The network we gave as an input
+    :param input_network: The network we gave as an input
     :param clusters: The list of clusters for us to work with
     :return: None
     """
     arcpy.AddMessage("Updating Drainage Area Values...")
-    with arcpy.da.UpdateCursor(inputNetwork, ['ReachID', 'IsMainCh', 'iGeo_DA', 'IsMultiCh']) as cursor:
+    with arcpy.da.UpdateCursor(input_network, ['ReachID', 'IsMainCh', 'iGeo_DA', 'IsMultiCh']) as cursor:
         for row in cursor:
             if row[3] == 1:
-                updateStreamDrainageValue(clusters, row, cursor)
+                update_stream_drainage_value(clusters, row, cursor)
 
 
-def updateStreamDrainageValue(clusters, row, cursor):
+def update_stream_drainage_value(clusters, row, cursor):
     """
     Updates the drainage area values for a single stream in the network
     :param clusters: The list of clusters we got earlier
@@ -296,34 +296,34 @@ def updateStreamDrainageValue(clusters, row, cursor):
     :param cursor: The cursor we're using for the stream network
     :return: None
     """
-    sidechannelDAValue = 25.0
+    sidechannel_da_value = 25.0
 
     for cluster in clusters:
         if cluster.containsStream(row[0]):
             if row[1] == 0: # if it's a side channel
-                row[2] = min(cluster.maxDA, sidechannelDAValue) # set the side channels DA to the placeholder value, or the highest value in the cluster (whichever is lower)
+                row[2] = min(cluster.maxDA, sidechannel_da_value) # set the side channels DA to the placeholder value, or the highest value in the cluster (whichever is lower)
             else:
                 row[2] = cluster.maxDA
 
     cursor.updateRow(row)
 
 
-def makeLayers(inputNetwork):
+def make_layers(input_network):
     """
     Makes the layers for the modified output
-    :param inputNetwork: The path to the network that we'll make a layer from
+    :param input_network: The path to the network that we'll make a layer from
     :return:
     """
     arcpy.AddMessage("Making layers...")
-    intermediates_folder = os.path.dirname(inputNetwork)
+    intermediates_folder = os.path.dirname(input_network)
     braid_folder_name = find_available_num(intermediates_folder) + "_AnabranchHandler"
     braid_folder = make_folder(intermediates_folder, braid_folder_name)
 
 
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    trib_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
-    mainstemSymbology = os.path.join(symbologyFolder, "Mainstems.lyr")
+    mainstem_symbology = os.path.join(symbology_folder, "Mainstems.lyr")
 
-    make_layer(braid_folder, inputNetwork, "Anabranch Types", mainstemSymbology, is_raster=False)
+    make_layer(braid_folder, input_network, "Anabranch Types", mainstem_symbology, is_raster=False)
 

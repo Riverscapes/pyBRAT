@@ -20,7 +20,7 @@ class Cluster:
         self.maxDA = 0.0
         self.id = given_id
 
-    def addStream(self, newStream):
+    def add_stream(self, newStream):
         self.streams.append(newStream)
         boundary = newStream.polyline.boundary()
         self.endpoints.append(boundary.firstPoint)

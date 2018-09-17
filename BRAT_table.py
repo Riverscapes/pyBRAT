@@ -1109,8 +1109,8 @@ def handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose)
 
     if find_clusters:
         arcpy.AddMessage("Finding Clusters...")
-        clusters = BRAT_Braid_Handler.findClusters(seg_network_copy)
-        BRAT_Braid_Handler.addClusterID(seg_network_copy, clusters)
+        clusters = BRAT_Braid_Handler.find_clusters(seg_network_copy)
+        BRAT_Braid_Handler.add_cluster_id(seg_network_copy, clusters)
 
 
 def make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology):
