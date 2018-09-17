@@ -13,6 +13,7 @@ import arcpy
 import numpy as np
 import os
 import sys
+from SupportingFunctions import make_layer, make_folder, find_available_num
 
 
 def main(
@@ -129,8 +130,8 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    hydrology_folder_name = findAvailableNum(intermediates_folder) + "_Hydrology"
-    hydrology_folder = makeFolder(intermediates_folder, hydrology_folder_name)
+    hydrology_folder_name = find_available_num(intermediates_folder) + "_Hydrology"
+    hydrology_folder = make_folder(intermediates_folder, hydrology_folder_name)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -138,78 +139,8 @@ def makeLayers(inputNetwork):
     highflowSymbology = os.path.join(symbologyFolder, "Highflow_StreamPower.lyr")
     baseflowSymbology = os.path.join(symbologyFolder, "Baseflow_StreamPower.lyr")
 
-    makeLayer(hydrology_folder, inputNetwork, "Highflow Stream Power", highflowSymbology, isRaster=False)
-    makeLayer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, isRaster=False)
-
-
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
-    """
-    Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the layer
-    :param layer_base: What we should base the layer off of
-    :param new_layer_name: What the layer should be called
-    :param symbology_layer: The symbology that we will import
-    :param isRaster: Tells us if it's a raster or not
-    :param description: The discription to give to the layer file
-    :return: The path to the new layer
-    """
-    new_layer = new_layer_name
-    new_layer_file_name = new_layer_name.replace(" ", "")
-    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
-
-    if isRaster:
-        try:
-            arcpy.MakeRasterLayer_management(layer_base, new_layer)
-        except arcpy.ExecuteError as err:
-            if err[0][6:12] == "000873":
-                arcpy.AddError(err)
-                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
-                raise Exception
-            else:
-                raise arcpy.ExecuteError(err)
-
-    else:
-        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
-
-    if symbology_layer:
-        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
-    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-    new_layer_instance.description = description
-    new_layer_instance.save()
-    return new_layer_save
-
-
-def makeFolder(pathToLocation, newFolderName):
-    """
-    Makes a folder and returns the path to it
-    :param pathToLocation: Where we want to put the folder
-    :param newFolderName: What the folder will be called
-    :return: String
-    """
-    newFolder = os.path.join(pathToLocation, newFolderName)
-    if not os.path.exists(newFolder):
-        os.mkdir(newFolder)
-    return newFolder
-
-
-def findAvailableNum(folderRoot):
-    """
-    Tells us the next number for a folder in the directory given
-    :param folderRoot: Where we want to look for a number
-    :return: A string, containing a number
-    """
-    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
-    POSSIBLENUMS = range(1, 100)
-    for i in POSSIBLENUMS:
-        stringVersion = str(i)
-        if i < 10:
-            stringVersion = '0' + stringVersion
-        if stringVersion not in takenNums:
-            return stringVersion
-    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
-    return "100"
+    make_layer(hydrology_folder, inputNetwork, "Highflow Stream Power", highflowSymbology, is_raster=False)
+    make_layer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, is_raster=False)
 
 
 if __name__ == '__main__':

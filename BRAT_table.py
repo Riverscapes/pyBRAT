@@ -18,6 +18,7 @@ import datetime
 import uuid
 import FindBraidedNetwork
 import BRAT_Braid_Handler
+from SupportingFunctions import make_layer, make_folder
 
 reload(FindBraidedNetwork)
 reload(BRAT_Braid_Handler)
@@ -71,11 +72,11 @@ def main(
 
     # --create network buffers for analyses--
     # create 'Buffers' folder if it doesn't exist
-    buffersFolder = makeFolder(intermediateFolder, "01_Buffers")
+    buffersFolder = make_folder(intermediateFolder, "01_Buffers")
 
     # create network segment midpoints
     if is_verbose:
-        arcpy.AddMessage("Finding midpoints...")
+        arcpy.AddMessage("Finding network segment midpoints...")
     midpoints = arcpy.FeatureVerticesToPoints_management(seg_network_copy, scratch + "/midpoints", "MID")
     # remove unwanted fields from midpoints
     fields = arcpy.ListFields(midpoints)
@@ -99,22 +100,22 @@ def main(
     arcpy.Buffer_analysis(seg_network_copy, buf_100m, "100 Meters", "", "ROUND")
 
     # run geo attributes function
-    arcpy.AddMessage('Adding "iGeo" attributes to network')
+    arcpy.AddMessage('Adding "iGeo" attributes to network...')
     igeo_attributes(seg_network_copy, inDEM, FlowAcc, midpoint_buffer, scratch, is_verbose)
 
     # run vegetation attributes function
-    arcpy.AddMessage('Adding "iVeg" attributes to network')
+    arcpy.AddMessage('Adding "iVeg" attributes to network...')
     iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, seg_network_copy, scratch, is_verbose)
 
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
-        arcpy.AddMessage('Adding "iPC" attributes to network')
+        arcpy.AddMessage('Adding "iPC" attributes to network...')
         ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose)
 
     handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose)
 
     # run write xml function
-    arcpy.AddMessage('Writing project xml')
+    arcpy.AddMessage('Writing project xml...')
     if FlowAcc is None:
         DrAr = os.path.dirname(inDEM) + "/Flow/DrainArea_sqkm.tif"
     else:
@@ -123,7 +124,7 @@ def main(
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     flowAccumulationSymLayer = os.path.join(symbologyFolder, "Flow_Accumulation.lyr")
-    makeLayer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flowAccumulationSymLayer, isRaster=True)
+    make_layer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flowAccumulationSymLayer, is_raster=True)
 
     makeLayers(seg_network_copy)
     try:
@@ -147,7 +148,7 @@ def build_output_folder(proj_path, out_name, seg_network, road, should_segment_n
         new_output_folder = os.path.join(proj_path, "Output_" + str(j))
     os.mkdir(new_output_folder)
 
-    intermediateFolder = makeFolder(new_output_folder, "01_Intermediates")
+    intermediateFolder = make_folder(new_output_folder, "01_Intermediates")
 
     # copy input segment network to output folder
     if out_name.endswith('.shp'):
@@ -192,7 +193,7 @@ def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
 
 def addReachDist(seg_network, seg_network_copy, is_verbose):
     if is_verbose:
-        arcpy.AddMessage("Adjusting ReachDist...")
+        arcpy.AddMessage("Calculating ReachDist...")
 
     fields = [f.name for f in arcpy.ListFields(seg_network_copy)]
     if 'ReachID' in fields:
@@ -245,6 +246,7 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
     # note: zonal stats as table does not support overlapping polygons so we will check which
     #       reach buffers output was produced for and which we need to run tool on again
     statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'ReachID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
+
     # get list of segment buffers where zonal stats tool produced output
     haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'ReachID')]
     # create dictionary to hold all reach buffer min dem z values
@@ -314,6 +316,8 @@ def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, 
             except:
                 pass
     statDict.clear()
+
+
     # delete temp fcs, tbls, etc.
     #items = [statTbl, haveStatList, haveStatList2, needStatList, stat, tmp_buff_lyr, needStat]
     items = [statTbl, stat, tmp_buff_lyr]
@@ -356,7 +360,7 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
     # function to attribute start/end elevation (dem z) to each flowline segment
     def zSeg(vertexType, outField):
         if is_verbose:
-            arcpy.AddMessage("Find values for " + outField)
+            arcpy.AddMessage("Calculating values for " + outField + "...")
         # create start/end points for each flowline reach segment
         tmp_pts = os.path.join(scratch, 'tmp_pts')
         arcpy.FeatureVerticesToPoints_management(out_network, tmp_pts, vertexType)
@@ -382,7 +386,7 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
     arcpy.AddField_management(out_network, "iGeo_Slope", "DOUBLE")
     with arcpy.da.UpdateCursor(out_network, ["iGeo_ElMax", "iGeo_ElMin", "iGeo_Len", "iGeo_Slope"]) as cursor:
         if is_verbose:
-            arcpy.AddMessage("Finding iGeo_Slope...")
+            arcpy.AddMessage("Calculating iGeo_Slope...")
         for row in cursor:
             row[3] = (abs(row[0] - row[1]))/row[2]
             if row[3] == 0.0:
@@ -391,7 +395,7 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
 
     # get DA values
     if FlowAcc is None:
-        arcpy.AddMessage("calculating drainage area")
+        arcpy.AddMessage("Calculating drainage area...")
         calc_drain_area(DEM, inDEM)
     elif not os.path.exists(os.path.dirname(inDEM) + "/Flow"): # if there's no folder for the flow accumulation, make one
         os.mkdir(os.path.dirname(inDEM) + "/Flow")
@@ -409,7 +413,7 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
     arcpy.AddField_management(out_network, "iGeo_DA", "DOUBLE")
     # get max drainage area within 100 m midpoint buffer
     if is_verbose:
-        arcpy.AddMessage("Finding values for iGeo_DA")
+        arcpy.AddMessage("Calculating iGeo_DA...")
     zonalStatsWithinBuffer(midpoint_buffer, DrArea, "MAXIMUM", 'MAX', out_network, "iGeo_DA", scratch)
 
     # replace '0' drainage area values with tiny value
@@ -433,20 +437,20 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 
     # --existing vegetation values--
     if is_verbose:
-        arcpy.AddMessage("Making current veg lookup raster...")
+        arcpy.AddMessage("Creating current veg lookup raster...")
     veg_lookup = Lookup(coded_veg, "VEG_CODE")
     # add mean veg value 'iVeg_100EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100EX", "DOUBLE")
     # get mean existing veg value within 100 m buffer
     if is_verbose:
-        arcpy.AddMessage("Finding iVeg_100EX...")
+        arcpy.AddMessage("Calculating iVeg_100EX...")
     zonalStatsWithinBuffer(buf_100m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100EX", scratch)
 
     # add mean veg value 'iVeg_VT30EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30EX", "DOUBLE")
     # get mean existing veg value within 30 m buffer
     if is_verbose:
-        arcpy.AddMessage("Finding iVeg_30EX...")
+        arcpy.AddMessage("Calculating iVeg_30EX...")
     zonalStatsWithinBuffer(buf_30m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30EX", scratch)
 
     # delete temp fcs, tbls, etc.
@@ -456,21 +460,21 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 
     # --historic (i.e., potential) vegetation values--
     if is_verbose:
-        arcpy.AddMessage("Making historic veg lookup raster...")
+        arcpy.AddMessage("Creating historic veg lookup raster...")
     hist_veg_lookup = Lookup(coded_hist, "VEG_CODE")
 
     # add mean veg value 'iVeg_100PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100PT", "DOUBLE")
     # get mean potential veg value within 100 m buffer
     if is_verbose:
-        arcpy.AddMessage("Finding iVeg_100PT...")
+        arcpy.AddMessage("Calculating iVeg_100PT...")
     zonalStatsWithinBuffer(buf_100m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100PT", scratch)
 
     # add mean veg value 'iVeg_30PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30PT", "DOUBLE")
     # get mean potential veg value within 30 m buffer
     if is_verbose:
-        arcpy.AddMessage("Finding iVeg_30PT...")
+        arcpy.AddMessage("Calculating iVeg_30PT...")
     zonalStatsWithinBuffer(buf_30m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30PT", scratch)
 
     # delete temp fcs, tbls, etc.
@@ -493,181 +497,36 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    drop = ["iPC_RoadX", "iPC_RoadAd", "iPC_RR", "iPC_Canal", "iPC_LU"]
+    drop = ["iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal", "iPC_LU"]
     for field in fields:
         if field in drop:
             arcpy.DeleteField_management(out_network, field)
 
-    # calculate minimum distance from road-stream crossings ('iPC_RoadX')
+    # calculate mean distance from road-stream crossings ('iPC_RoadX'), roads ('iPC_Road') and roads clipped to the valley bottom ('iPC_RoadVB')
     if road is not None:
-        if is_verbose:
-            arcpy.AddMessage("Finding iPC_RoadX values...")
-        arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
         roadx = tempDir + "\\roadx.shp"
         # create points at road-stream intersections
         arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
-        # get count of road-stream intersections
-        roadx_mts = tempDir + "\\roadx_mts.shp"
-        arcpy.MultipartToSinglepart_management(roadx, roadx_mts)
-        roadxcount = arcpy.GetCount_management(roadx_mts)
-        roadxct = int(roadxcount.getOutput(0))
-        # if there are no road-stream crossings, set 'iPC_RoadsX' to high value (10000 m)
-        if roadxct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        # if there are road-stream crossings, calculate distance
-        else:
-            # set extent to the stream network
-            arcpy.env.extent = out_network
-            # calculate euclidean distance from road-stream crossings
-            ed_roadx = EucDistance(roadx, cell_size = 5)  # cell size of 5 m
-            # get minimum distance from road-stream crossings within 30 m buffer of each network segment
-            zonalStatsWithinBuffer(buf_30m, ed_roadx, "MINIMUM", 'MIN', out_network, "iPC_RoadX", scratch)
+        findDistanceFromFeature(out_network, roadx, valley_bottom, tempDir, buf_30m, "roadx", "iPC_RoadX", scratch, is_verbose, clip_feature = False)
 
-            # delete temp fcs, tbls, etc.
-            items = [ed_roadx]
-            for item in items:
-                arcpy.Delete_management(item)
-
-    # calculate mean distance from adjacent roads ('iPC_RoadAd')
-    # here we only care about roads in the valley bottom
+    # calculate mean distance from road-stream crossings ('iPC_RoadX'), roads ('iPC_Road') and roads clipped to the valley bottom ('iPC_RoadVB')
     if road is not None:
-        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "road_ad", "iPC_RoadAd", scratch, is_verbose)
+        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "roadvb", "iPC_RoadVB", scratch, is_verbose, clip_feature = True)
+        findDistanceFromFeature(out_network, road, valley_bottom, tempDir, buf_30m, "road", "iPC_Road", scratch, is_verbose, clip_feature = False)
 
-    # calculate mean distance from railroads ('iPC_RR')
-    # here we only care about railroads in the valley bottom
+    # calculate mean distance from railroads ('iPC_Rail') and railroads clipped to valley bottom ('iPC_RailVB')
     if railroad is not None:
-        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroad", "iPC_RR", scratch, is_verbose)
+        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroadvb", "iPC_RailVB", scratch, is_verbose, clip_feature = True)
+        findDistanceFromFeature(out_network, railroad, valley_bottom, tempDir, buf_30m, "railroad", "iPC_Rail", scratch, is_verbose, clip_feature = False)
 
-    # calculate mean distance from canals ('iPC_Canal')
-    # here we only care about canals in the valley bottom
+    # calculate minimum distance from canals ('iPC_Canal')
     if canal is not None:
-        findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose)
-    #rmtree(tempDir)
-    """
-    This is the section of code that stores intermediary data in memory. In ArcMap 10.6, that crashes the program,
-    so we're getting rid of it for now, and using a temp dir instead
-    # get iPC_RoadX
-    arcpy.AddField_management(out_network, "iPC_RoadX", "DOUBLE")
-    if road is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
-        roadx = scratch + "/roadx"
-        arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
-        roadx_mts = scratch + "/roadx_mts"
-        arcpy.MultipartToSinglepart_management(roadx, roadx_mts)
-
-        roadxcount = arcpy.GetCount_management(roadx_mts)
-        roadxct = int(roadxcount.getOutput(0))
-        if roadxct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_RoadX") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        else:
-            arcpy.env.extent = out_network
-            # calculate euclidean distance from road-stream crossings
-            ed_roadx = EucDistance(roadx, cell_size=5)  # cell size of 5 m
-            # get minimum distance from road-stream crossings within 30 m buffer of each network segment
-            roadxTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadx, scratch + "/roadxTbl", 'DATA', "MINIMUM")
-            # populate flowline network min distance 'iPC_RoadX' field
-            dictJoinField(roadxTbl, 'MIN', out_network, "iPC_RoadX")
-            # delete temp fcs, tbls, etc.
-            items = [ed_roadx, roadxTbl]
-            for item in items:
-                arcpy.Delete_management(item)
-
-    # iPC_RoadAd
-    arcpy.AddField_management(out_network, "iPC_RoadAd", "DOUBLE")
-    if road is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
-        road_subset = arcpy.Clip_analysis(road, valley_bottom, scratch + '/road_subset')
-        road_mts = arcpy.MultipartToSinglepart_management(road_subset, scratch + "/road_mts")
-        roadcount = arcpy.GetCount_management(road_mts)
-        roadct = int(roadcount.getOutput(0))
-        if roadct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_RoadAd") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        else:
-            arcpy.env.extent = out_network
-            ed_roadad = EucDistance(road_subset, "", 5)
-            roadadjTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_roadad, scratch + "/roadadjTbl", 'DATA', "MEAN") # might try mean here to make it less restrictive
-            # populate flowline network adjacent road distance "iPC_RoadAd" field
-            dictJoinField(roadadjTbl, 'MEAN', out_network, "iPC_RoadAd")
-            items = [ed_roadad, roadadjTbl]
-            for item in items:
-                arcpy.Delete_management(item)
-
-    # iPC_RR
-    arcpy.AddField_management(out_network, "iPC_RR")
-    if railroad is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
-        rr_subset = arcpy.Clip_analysis(railroad, valley_bottom, scratch + '/rr_subset')
-        rr_mts = arcpy.MultipartToSinglepart_management(rr_subset, scratch + "/rr_mts")
-        rrcount = arcpy.GetCount_management(rr_mts)
-        rrct = int(rrcount.getOutput(0))
-        if rrct < 1:
-
-            with arcpy.da.UpdateCursor(out_network, "iPC_RR") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        else:
-            arcpy.env.extent = out_network
-            ed_rr = EucDistance(rr_subset, "", 30)
-            rrTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_rr, scratch + "/rrTable", 'DATA', "MEAN")
-            dictJoinField(rrTbl, 'MEAN', out_network, "iPC_RR")
-            items = [ed_rr, rrTbl]
-            for item in items:
-                arcpy.Delete_management(item)
-
-    #iPC_Canal
-    arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
-    if canal is None:
-        with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
-            for row in cursor:
-                row[0] = 10000.0
-                cursor.updateRow(row)
-    else:
-        canal_subset = arcpy.Clip_analysis(canal, valley_bottom, scratch + '/canal_subset')
-        canal_mts = arcpy.MultipartToSinglepart_management(canal_subset, scratch + "/canal_mts")
-
-        canalcount = arcpy.GetCount_management(canal_mts)
-        canalct = int(canalcount.getOutput(0))
-        if canalct < 1:
-            with arcpy.da.UpdateCursor(out_network, "iPC_Canal") as cursor:
-                for row in cursor:
-                    row[0] = 10000.0
-                    cursor.updateRow(row)
-        else:
-            arcpy.env.extent = out_network
-            ed_canal = EucDistance(canal_subset, "", 30)
-            canalTbl = ZonalStatisticsAsTable(buf_30m, "SegID", ed_canal, scratch + "/canalTbl", 'DATA', "MEAN")
-            dictJoinField(canalTbl, 'MEAN', out_network, "iPC_Canal")
-            items = [ed_canal, canalTbl]
-            for item in items:
-                arcpy.Delete_management(item)   
-    """ ##The code that supports in memory scratch spaces
+        findDistanceFromFeature(out_network, canal, valley_bottom, tempDir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
 
     # calculate mean landuse value ('iPC_LU')
     if landuse is not None:
         if is_verbose:
-            arcpy.AddMessage("Finding iPC_LU values...")
+            arcpy.AddMessage("Calculating iPC_LU values...")
         arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
         # create raster with just landuse code values
         lu_ras = Lookup(landuse, "LU_CODE")
@@ -728,6 +587,19 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         items = [lu_ras]
         for item in items:
             arcpy.Delete_management(item)
+
+    # calculate min distance of all 'iPC' distance fields
+    arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal"]
+    for field in dist_fields:
+        if field not in fields:
+            dist_fields.remove(field)
+    with arcpy.da.UpdateCursor(out_network, dist_fields) as cursor:
+        for row in cursor:
+            row[0] = min(row[1:])
+            cursor.updateRow(row)
+
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")
 
@@ -758,38 +630,44 @@ def check_and_add_zero_fields(table, fields, field_name):
         arcpy.CalculateField_management(table, field_name, 0, "PYTHON")
 
 
-
-
-def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch, is_verbose):
+def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch, is_verbose, clip_feature = False):
     if is_verbose:
-        arcpy.AddMessage("Finding " + new_field_name + " values...")
+        arcpy.AddMessage("Calculating " + new_field_name + " values...")
     arcpy.AddField_management(out_network, new_field_name, "DOUBLE")
-    # clip roads to the valley bottom
-    feature_subset = arcpy.Clip_analysis(feature, valley_bottom, os.path.join(temp_dir, temp_name + '_subset.shp'))
-    # get count of roads in the valley bottom
-    feature_mts = arcpy.MultipartToSinglepart_management(feature_subset, os.path.join(temp_dir, temp_name + "_mts.shp"))
+
+    if clip_feature == True:
+        # clip input feature to the valley bottom
+        feature_subset = arcpy.Clip_analysis(feature, valley_bottom, os.path.join(temp_dir, temp_name + '_subset.shp'))
+        # convert feature for count purposes
+        feature_mts = arcpy.MultipartToSinglepart_management(feature_subset, os.path.join(temp_dir, temp_name + "_mts.shp"))
+    else:
+        feature_mts = arcpy.MultipartToSinglepart_management(feature, os.path.join(temp_dir, temp_name + "_mts.shp"))
+        feature_subset = feature
+
     count = arcpy.GetCount_management(feature_mts)
     ct = int(count.getOutput(0))
-    # if there are no roads in the valley bottom, set 'iPC_RoadsAd' to high value (10000 m)
+    # if there are features, then set the distance from to high value (10000 m)
     if ct < 1:
         with arcpy.da.UpdateCursor(out_network, new_field_name) as cursor:
             for row in cursor:
                 row[0] = 10000.0
                 cursor.updateRow(row)
-    # if there are roads in the valley bottom, calculate distance
+    # if there are features, calculate distance
     else:
         # set extent to the stream network
         arcpy.env.extent = out_network
-        # calculate euclidean distance from roads in the valley bottom
-        ed_roadad = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
-        # get mean distance from roads in the valley bottom within 30 m buffer of each network segment
-        zonalStatsWithinBuffer(buf, ed_roadad, 'MEAN', 'MEAN', out_network, new_field_name, scratch)
+        # calculate euclidean distance from input features
+        ed_feature = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
+        # get min distance from feature in the within 30 m buffer of each network segment
+        if new_field_name == 'iPC_RoadX':
+            zonalStatsWithinBuffer(buf, ed_feature, 'MINIMUM', 'MIN', out_network, new_field_name, scratch)
+        else:
+            zonalStatsWithinBuffer(buf, ed_feature, 'MEAN', 'MEAN', out_network, new_field_name, scratch)
 
         # delete temp fcs, tbls, etc.
         items = []
         for item in items:
             arcpy.Delete_management(item)
-
 
 # calculate drainage area function
 def calc_drain_area(DEM, inputDEM):
@@ -1173,19 +1051,6 @@ def addMainstemAttribute(out_network):
     arcpy.CalculateField_management(out_network,"IsMainCh",1,"PYTHON")
 
 
-def makeFolder(pathToLocation, newFolderName):
-    """
-    Makes a folder and returns the path to it
-    :param pathToLocation: Where we want to put the folder
-    :param newFolderName: What the folder will be called
-    :return: String
-    """
-    newFolder = os.path.join(pathToLocation, newFolderName)
-    if not os.path.exists(newFolder):
-        os.mkdir(newFolder)
-    return newFolder
-
-
 def makeLayers(out_network):
     """
     Writes the layers
@@ -1195,61 +1060,41 @@ def makeLayers(out_network):
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(out_network)
     buffers_folder = os.path.join(intermediates_folder, "01_Buffers")
-    land_use_folder = makeFolder(intermediates_folder, "02_LandUse")
-    topo_folder = makeFolder(intermediates_folder, "03_TopographicIndex")
+    topo_folder = make_folder(intermediates_folder, "02_TopographicMetrics")
+    anthropogenic_metrics_folder = make_folder(intermediates_folder, "03_AnthropogenicMetrics")
+
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
+    distSymbology = os.path.join(symbologyFolder, "Distance_To_Infrastructure.lyr")
     landUseSymbology = os.path.join(symbologyFolder, "Land_Use_Intensity.lyr")
     slopeSymbology = os.path.join(symbologyFolder, "Slope_Feature_Class.lyr")
     drainAreaSymbology = os.path.join(symbologyFolder, "Drainage_Area_Feature_Class.lyr")
     buffer_30m_symbology = os.path.join(symbologyFolder, "buffer_30m.lyr")
     buffer_100m_symbology = os.path.join(symbologyFolder, "buffer_100m.lyr")
 
-    makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
-    makeLayer(land_use_folder, out_network, "Land Use Intensity", landUseSymbology, isRaster=False)
-    makeLayer(topo_folder, out_network, "Reach Slope", slopeSymbology, isRaster=False)
-    makeLayer(topo_folder, out_network, "Drainage Area", drainAreaSymbology, isRaster=False)
+    make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
+    make_layer(topo_folder, out_network, "Reach Slope", slopeSymbology, is_raster=False)
+    make_layer(topo_folder, out_network, "Drainage Area", drainAreaSymbology, is_raster=False)
 
-
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
-    """
-    Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the layer
-    :param layer_base: What we should base the layer off of
-    :param new_layer_name: What the layer should be called
-    :param symbology_layer: The symbology that we will import
-    :param isRaster: Tells us if it's a raster or not
-    :param description: The discription to give to the layer file
-    :return: The path to the new layer
-    """
-    new_layer = new_layer_name
-    new_layer_file_name = new_layer_name.replace(" ", "")
-    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
-
-    if isRaster:
-        try:
-            arcpy.MakeRasterLayer_management(layer_base, new_layer)
-        except arcpy.ExecuteError as err:
-            if err[0][6:12] == "000873":
-                arcpy.AddError(err)
-                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
-                raise Exception
-            else:
-                raise arcpy.ExecuteError(err)
-
-    else:
-        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
-
-    if symbology_layer:
-        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
-    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-    new_layer_instance.description = description
-    new_layer_instance.save()
-    return new_layer_save
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    if 'iPC_LU' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Land Use Intensity", landUseSymbology, is_raster=False)
+    if 'iPC_RoadX' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road Crossing", distSymbology, is_raster=False, symbology_field ='iPC_RoadX')
+    if 'iPC_Road' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road", distSymbology, is_raster=False, symbology_field ='iPC_Road')
+    if 'iPC_RoadVB' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road in Valley Bottom", distSymbology, is_raster=False, symbology_field ='iPC_RoadVB')
+    if 'iPC_Rail' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad", distSymbology, is_raster=False, symbology_field ='iPC_Rail')
+    if 'iPC_RailVB' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad in Valley Bottom", distSymbology, is_raster=False, symbology_field ='iPC_RailVB')
+    if 'iPC_Canal' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Canal", distSymbology, is_raster=False, symbology_field ='iPC_Canal')
+    if 'oPC_Dist' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", distSymbology, is_raster=False, symbology_field ='oPC_Dist')
 
 
 def handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose):
@@ -1269,7 +1114,7 @@ def handle_braids(seg_network_copy, canal, projPath, findClusters, is_verbose):
         BRAT_Braid_Handler.addClusterID(seg_network_copy, clusters)
 
 
-def makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology):
+def make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology):
     """
     Makes a layer for each buffer
     :param buffers_folder: The path to the buffers folder
@@ -1285,7 +1130,7 @@ def makeBufferLayers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology
             elif "100m" in fileName:
                 new_layer_name = "100 m Buffer"
                 given_symbology = buffer_100m_symbology
-            makeLayer(buffers_folder, filePath, new_layer_name, given_symbology)
+            make_layer(buffers_folder, filePath, new_layer_name, given_symbology)
 
 
 def parseInputBool(given_input):
@@ -1303,7 +1148,6 @@ def deleteWithArcpy(stuffToDelete):
     """
     for thing in stuffToDelete:
         arcpy.Delete_management(thing)
-
 
 
 def runTests(seg_network_copy, is_verbose):

@@ -7,7 +7,6 @@ import Veg_FIS
 import Comb_FIS
 import Conflict_Potential
 import Conservation_Restoration
-import Conservation_Restoration_v2_Beta
 import BRAT_Braid_Handler
 import Summary_Report
 import Drainage_Area_Check
@@ -23,9 +22,7 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-                        Conflict_Potential_tool, Conservation_Restoration_tool, Conservation_Restoration_tool_v2, Summary_Report_tool,
-                        Drainage_Area_Check_tool, Layer_Package_Generator_tool]
-
+        Conservation_Restoration_tool, Summary_Report_tool, Drainage_Area_Check_tool, Layer_Package_Generator_tool]
 
 class BRAT_project_tool(object):
     def __init__(self):
@@ -663,64 +660,7 @@ class Conflict_Potential_tool(object):
 class Conservation_Restoration_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 7. BRAT Conservation and Restoration Model"
-        self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, potential (i.e., historic) dam capacity, and human-beaver conflict potential score"
-        self.canRunInBackground = False
-
-    def getParameterInfo(self):
-        """Define parameter definitions"""
-        param0 = arcpy.Parameter(
-            displayName="Select project folder",
-            name="projPath",
-            datatype="DEFolder",
-            parameterType="Required",
-            direction="Input")
-
-        param1 = arcpy.Parameter(
-            displayName="Select conflict model output network",
-            name="in_network",
-            datatype="DEFeatureClass",
-            parameterType="Required",
-            direction="Input")
-        param1.filter.list = ["Polyline"]
-
-        param2 = arcpy.Parameter(
-            displayName="Name conservation restoration model output feature class",
-            name="out_name",
-            datatype="GPString",
-            parameterType="Required",
-            direction="Input")
-        # param2.symbology = os.path.join(os.path.dirname(__file__), "oPBRC.lyr")
-
-        return [param0, param1, param2]
-
-    def isLicensed(self):
-        """Set whether the tool is licensed to execute."""
-        return True
-
-    def updateParameters(self, parameters):
-        """Modify the values and properties of parameters before internal
-        validation is performed.  This method is called whenever a parameter
-        has been changed."""
-        return
-
-    def updateMessages(self, parameters):
-        """Modify the messages created by internal validation for each tool
-        parameter.  This method is called after internal validation."""
-        return
-
-    def execute(self, p, messages):
-        """The source code of the tool."""
-        reload(Conservation_Restoration)
-        Conservation_Restoration.main(p[0].valueAsText,
-                                      p[1].valueAsText,
-                                      p[2].valueAsText)
-        return
-
-class Conservation_Restoration_tool_v2(object):
-    def __init__(self):
-        """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 7.1 BRAT Conservation and Restoration Model (version 2 Beta)"
+        self.label = "Step 6. BRAT Conservation and Restoration Model"
         self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, potential (i.e., historic) dam capacity, and human-beaver conflict potential score"
         self.canRunInBackground = False
 
@@ -768,8 +708,8 @@ class Conservation_Restoration_tool_v2(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        reload(Conservation_Restoration_v2_Beta)
-        Conservation_Restoration_v2_Beta.main(p[0].valueAsText,
+        reload(Conservation_Restoration)
+        Conservation_Restoration.main(p[0].valueAsText,
                                       p[1].valueAsText,
                                       p[2].valueAsText)
         return
@@ -777,7 +717,7 @@ class Conservation_Restoration_tool_v2(object):
 class Summary_Report_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 8. Summary Report"
+        self.label = "Step 7. Summary Report"
         self.description = "Tests the results of BRAT against data on beaver dam sites"
         self.canRunInBackground = False
 
@@ -899,7 +839,15 @@ class Layer_Package_Generator_tool(object):
             parameterType="Optional",
             direction="Input")
 
-        return [param0, param1]
+        param2 = arcpy.Parameter(
+            displayName="Give a stream network to clip the layer package networks to",
+            name="clipping_network",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input")
+        param1.filter.list = ["Polyline"]
+
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -919,5 +867,5 @@ class Layer_Package_Generator_tool(object):
     def execute(self, p, messages):
         """The source code of the tool."""
         reload(Layer_Package_Generator)
-        Layer_Package_Generator.main(p[0].valueAsText, p[1].valueAsText)
+        Layer_Package_Generator.main(p[0].valueAsText, p[1].valueAsText, p[2].valueAsText)
         return
