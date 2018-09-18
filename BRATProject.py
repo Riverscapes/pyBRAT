@@ -122,7 +122,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
 
     # add land ownership layers to the project
     if ownership is not None:
-        ownershipDestinations = copyMultiInputToFolder(landOwnershipFolder, ownership, "Land Ownership", isRaster=False)
+        ownershipDestinations = copyMultiInputToFolder(landOwnershipFolder, ownership, "Land_Ownership", isRaster=False)
         makeInputLayers(ownershipDestinations, "Land Ownership", symbologyLayer=landOwnershipSymbology, isRaster=False)
 
 def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
@@ -193,8 +193,8 @@ def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, file
     :param checkField: The name of the field that the symbology is based on
     :return:
     """
-    if fileName == None:
-        fileName = layerName
+    # if fileName == None:
+    #     fileName = layerName
     for destination in destinations:
         destDirName = os.path.dirname(destination)
         if checkField:
