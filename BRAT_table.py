@@ -15,6 +15,7 @@ import os
 import sys
 import projectxml
 import datetime
+from rasterstats import zonal_stats
 import uuid
 import FindBraidedNetwork
 import BRAT_Braid_Handler
@@ -91,7 +92,8 @@ def main(
     if is_verbose:
         arcpy.AddMessage("Making buffers...")
     # create midpoint 100 m buffer
-    midpoint_buffer = arcpy.Buffer_analysis(midpoints, scratch + "/midpoint_buffer", "100 Meters")
+    midpoint_buffer = os.path.join(buffersFolder, "midpoint_buffer_100m.shp")
+    arcpy.Buffer_analysis(midpoints, midpoint_buffer, "100 Meters")
     # create network 30 m buffer
     buf_30m = os.path.join(buffersFolder, "buffer_30m.shp")
     arcpy.Buffer_analysis(seg_network_copy, buf_30m, "30 Meters", "", "ROUND")
@@ -101,11 +103,11 @@ def main(
 
     # run geo attributes function
     arcpy.AddMessage('Adding "iGeo" attributes to network...')
-    igeo_attributes(seg_network_copy, inDEM, FlowAcc, midpoint_buffer, scratch, is_verbose)
+    igeo_attributes(seg_network_copy, inDEM, FlowAcc, midpoint_buffer, scratch, is_verbose, projPath)
 
     # run vegetation attributes function
     arcpy.AddMessage('Adding "iVeg" attributes to network...')
-    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, seg_network_copy, scratch, is_verbose)
+    iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, seg_network_copy, is_verbose, projPath)
 
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
@@ -241,93 +243,40 @@ def addReachDist(seg_network, seg_network_copy, is_verbose):
 
 # zonal statistics within buffer function
 # dictionary join field function
-def zonalStatsWithinBuffer(buffer, ras, statType, statField, outFC, outFCField, scratch):
+def zonalStatsWithinBuffer(buffer, ras, statType, outFC, outFCField):
     # get input raster stat value within each buffer
-    # note: zonal stats as table does not support overlapping polygons so we will check which
-    #       reach buffers output was produced for and which we need to run tool on again
-    statTbl = arcpy.sa.ZonalStatisticsAsTable(buffer, 'ReachID', ras, os.path.join(scratch, 'statTbl'), 'DATA', statType)
-
-    # get list of segment buffers where zonal stats tool produced output
-    haveStatList = [row[0] for row in arcpy.da.SearchCursor(statTbl, 'ReachID')]
-    # create dictionary to hold all reach buffer min dem z values
+    statsShp = zonal_stats(buffer, ras, stats = statType, geojson_out = True)
+    # create and populate dictionary of buffer ReachID and stat values
     statDict = {}
-    # add buffer raster stat values to dictionary
-    with arcpy.da.SearchCursor(statTbl, ['ReachID', statField]) as cursor:
-        for row in cursor:
-            statDict[row[0]] = row[1]
-    # create list of overlapping buffer reaches (i.e., where zonal stats tool did not produce output)
-    needStatList = []
-    with arcpy.da.SearchCursor(buffer, ['ReachID']) as cursor:
-        for row in cursor:
-            if row[0] not in haveStatList:
-                needStatList.append(row[0])
-    # run zonal stats until we have output for each overlapping buffer segment
-    stat = None
-    tmp_buff_lyr = None
-    num_broken_repetitions = 0
-    BROKEN_REPS_ALLOWED = 5
-    while len(needStatList) > 0:
-        # create tuple of segment ids where still need raster values
-        needStat = ()
-        for reach in needStatList:
-            if reach not in needStat:
-                needStat += (reach,)
-        # use the segment id tuple to create selection query and run zonal stats tool
-        if len(needStat) == 1:
-            quer = '"ReachID" = ' + str(needStat[0])
-        else:
-            quer = '"ReachID" IN ' + str(needStat)
-        tmp_buff_lyr = arcpy.MakeFeatureLayer_management(buffer, 'tmp_buff_lyr')
-        arcpy.SelectLayerByAttribute_management(tmp_buff_lyr, 'NEW_SELECTION', quer)
-        stat = arcpy.sa.ZonalStatisticsAsTable(tmp_buff_lyr, 'ReachID', ras, os.path.join(scratch, 'stat'), 'DATA', statType)
-        # add segment stat values from zonal stats table to main dictionary
-        with arcpy.da.SearchCursor(stat, ['ReachID', statField]) as cursor:
-            for row in cursor:
-                statDict[row[0]] = row[1]
-        # create list of reaches that were run and remove from 'need to run' list
-        haveStatList2 = [row[0] for row in arcpy.da.SearchCursor(stat, 'ReachID')]
 
-        if len(haveStatList2) == 0:
-            num_broken_repetitions += 1
-            if num_broken_repetitions >= BROKEN_REPS_ALLOWED:
-                warning_message = "While calculating " + outFCField + ", the tool ran into an error. The following "
-                warning_message += "ReachIDs did not recieve correct values:\n"
-                for reachID in needStatList:
-                    if reachID == needStatList[-1]:
-                        warning_message += "and "
-                    warning_message += str(reachID)
-                    if reachID != needStatList[-1]:
-                        warning_message += ", "
-                warning_message += "\n"
-                arcpy.AddWarning(warning_message)
-                for reachID in needStatList:
-                    statDict[reachID] = 0
-                needStatList = []
-        for reach in haveStatList2:
-            needStatList.remove(reach)
+    for shp in statsShp:
+        key = int(shp['properties']['ReachID'])
+        value = shp['properties'][statType]
+        statDict[key] = value
 
     # populate dictionary value to output field by ReachID
     with arcpy.da.UpdateCursor(outFC, ['ReachID', outFCField]) as cursor:
         for row in cursor:
             try:
-                aKey = row[0]
+                aKey = int(row[0])
                 row[1] = statDict[aKey]
                 cursor.updateRow(row)
             except:
                 pass
+
     statDict.clear()
+    del statsShp
 
-
-    # delete temp fcs, tbls, etc.
-    #items = [statTbl, haveStatList, haveStatList2, needStatList, stat, tmp_buff_lyr, needStat]
-    items = [statTbl, stat, tmp_buff_lyr]
-    for item in items:
-        if item is not None:
-            arcpy.Delete_management(item)
 
 # geo attributes function
 # calculates min and max elevation, length, slope, and drainage area for each flowline segment
-def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_verbose):
+def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_verbose, projPath):
+
+    from shutil import rmtree
+    tempDir = os.path.join(projPath, 'Temp')
+    if os.path.exists(tempDir):
+        rmtree(tempDir)
+    os.mkdir(tempDir)
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -355,7 +304,9 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
     neighborhood = NbrRectangle(3, 3, "CELL")
     tmpDEM = FocalStatistics(inDEM, neighborhood, 'MEAN')
     # clip smoothed dem to input dem
-    DEM = ExtractByMask(tmpDEM, inDEM)
+    clipDEM = ExtractByMask(tmpDEM, inDEM)
+    DEM = os.path.join(tempDir, 'smDEM.tif')
+    arcpy.CopyRaster_management(clipDEM, DEM)
 
     # function to attribute start/end elevation (dem z) to each flowline segment
     def zSeg(vertexType, outField):
@@ -365,11 +316,12 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
         tmp_pts = os.path.join(scratch, 'tmp_pts')
         arcpy.FeatureVerticesToPoints_management(out_network, tmp_pts, vertexType)
         # create 30 meter buffer around each start/end point
-        tmp_buff = os.path.join(scratch, 'tmp_buff')
+        #tmp_buff = os.path.join(scratch, 'tmp_buff')
+        tmp_buff = os.path.join(projPath, 'tmp_buff.shp')
         arcpy.Buffer_analysis(tmp_pts, tmp_buff, '30 Meters')
         # get min dem z value within each buffer
         arcpy.AddField_management(out_network, outField, "DOUBLE")
-        zonalStatsWithinBuffer(tmp_buff, DEM, 'MINIMUM', 'MIN', out_network, outField, scratch)
+        zonalStatsWithinBuffer(tmp_buff, DEM, "min", out_network, outField)
 
         # delete temp fcs, tbls, etc.
         items = [tmp_pts, tmp_buff]
@@ -414,7 +366,7 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
     # get max drainage area within 100 m midpoint buffer
     if is_verbose:
         arcpy.AddMessage("Calculating iGeo_DA...")
-    zonalStatsWithinBuffer(midpoint_buffer, DrArea, "MAXIMUM", 'MAX', out_network, "iGeo_DA", scratch)
+    zonalStatsWithinBuffer(midpoint_buffer, DrArea, "max", out_network, "iGeo_DA")
 
     # replace '0' drainage area values with tiny value
     with arcpy.da.UpdateCursor(out_network, ["iGeo_DA"]) as cursor:
@@ -426,7 +378,13 @@ def igeo_attributes(out_network, inDEM, FlowAcc, midpoint_buffer, scratch, is_ve
 
 # vegetation attributes function
 # calculates both existing and potential mean vegetation value within 30 m and 100 m buffer of each stream segment
-def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch, is_verbose):
+def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, is_verbose, projPath):
+
+    from shutil import rmtree
+    tempDir = os.path.join(projPath, 'Temp')
+    if os.path.exists(tempDir):
+        rmtree(tempDir)
+    os.mkdir(tempDir)
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -438,20 +396,22 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
     # --existing vegetation values--
     if is_verbose:
         arcpy.AddMessage("Creating current veg lookup raster...")
-    veg_lookup = Lookup(coded_veg, "VEG_CODE")
+    veg_lookup = os.path.join(projPath, 'veg_lookup.tif')
+    tmp_veg_lookup = Lookup(coded_veg, "VEG_CODE")
+    arcpy.CopyRaster_management(tmp_veg_lookup, veg_lookup)
     # add mean veg value 'iVeg_100EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100EX", "DOUBLE")
     # get mean existing veg value within 100 m buffer
     if is_verbose:
         arcpy.AddMessage("Calculating iVeg_100EX...")
-    zonalStatsWithinBuffer(buf_100m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100EX", scratch)
+    zonalStatsWithinBuffer(buf_100m, veg_lookup, "mean", out_network, "iVeg_100EX")
 
     # add mean veg value 'iVeg_VT30EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30EX", "DOUBLE")
     # get mean existing veg value within 30 m buffer
     if is_verbose:
         arcpy.AddMessage("Calculating iVeg_30EX...")
-    zonalStatsWithinBuffer(buf_30m, veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30EX", scratch)
+    zonalStatsWithinBuffer(buf_30m, veg_lookup, "mean", out_network, "iVeg_30EX")
 
     # delete temp fcs, tbls, etc.
     items = [veg_lookup]
@@ -461,21 +421,22 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
     # --historic (i.e., potential) vegetation values--
     if is_verbose:
         arcpy.AddMessage("Creating historic veg lookup raster...")
-    hist_veg_lookup = Lookup(coded_hist, "VEG_CODE")
+    hist_veg_lookup = os.path.join(projPath, 'hist_veg_lookup.tif')
+    arcpy.CopyRaster_management(Lookup(coded_hist, "VEG_CODE"), hist_veg_lookup)
 
     # add mean veg value 'iVeg_100PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_100PT", "DOUBLE")
     # get mean potential veg value within 100 m buffer
     if is_verbose:
         arcpy.AddMessage("Calculating iVeg_100PT...")
-    zonalStatsWithinBuffer(buf_100m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_100PT", scratch)
+    zonalStatsWithinBuffer(buf_100m, hist_veg_lookup, "mean", out_network, "iVeg_100PT")
 
     # add mean veg value 'iVeg_30PT' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30PT", "DOUBLE")
     # get mean potential veg value within 30 m buffer
     if is_verbose:
         arcpy.AddMessage("Calculating iVeg_30PT...")
-    zonalStatsWithinBuffer(buf_30m, hist_veg_lookup, 'MEAN', 'MEAN', out_network, "iVeg_30PT", scratch)
+    zonalStatsWithinBuffer(buf_30m, hist_veg_lookup, "mean", out_network, "iVeg_30PT")
 
     # delete temp fcs, tbls, etc.
     items = [hist_veg_lookup]
@@ -529,9 +490,11 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             arcpy.AddMessage("Calculating iPC_LU values...")
         arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
         # create raster with just landuse code values
-        lu_ras = Lookup(landuse, "LU_CODE")
+        lu_ras = os.path.join(tempDir, 'lu_lookup.tif')
+        tmp_lu_ras = Lookup(landuse, "LU_CODE")
+        arcpy.CopyRaster_management(tmp_lu_ras, lu_ras)
         # calculate mean landuse value within 100 m buffer of each network segment
-        zonalStatsWithinBuffer(buf_100m, lu_ras, 'MEAN', 'MEAN', out_network, "iPC_LU", scratch)
+        zonalStatsWithinBuffer(buf_100m, lu_ras, "mean", out_network, "iPC_LU")
         # get percentage of each land use class in 100 m buffer of stream segment
         fields = [f.name.upper() for f in arcpy.ListFields(landuse)]
 
@@ -593,7 +556,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
     fields = [f.name for f in arcpy.ListFields(out_network)]
     dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal"]
     for field in dist_fields:
-        if field not in fields:
+        if field not in fields[:]:
             dist_fields.remove(field)
     with arcpy.da.UpdateCursor(out_network, dist_fields) as cursor:
         for row in cursor:
@@ -657,12 +620,14 @@ def findDistanceFromFeature(out_network, feature, valley_bottom, temp_dir, buf, 
         # set extent to the stream network
         arcpy.env.extent = out_network
         # calculate euclidean distance from input features
-        ed_feature = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
+        ed_feature = os.path.join(temp_dir, temp_name + "_dist.tif")
+        tmp_ed_feature = EucDistance(feature_subset, cell_size = 5) # cell size of 5 m
+        arcpy.CopyRaster_management(tmp_ed_feature, ed_feature)
         # get min distance from feature in the within 30 m buffer of each network segment
         if new_field_name == 'iPC_RoadX':
-            zonalStatsWithinBuffer(buf, ed_feature, 'MINIMUM', 'MIN', out_network, new_field_name, scratch)
+            zonalStatsWithinBuffer(buf, ed_feature, "min", out_network, new_field_name)
         else:
-            zonalStatsWithinBuffer(buf, ed_feature, 'MEAN', 'MEAN', out_network, new_field_name, scratch)
+            zonalStatsWithinBuffer(buf, ed_feature, "mean", out_network, new_field_name)
 
         # delete temp fcs, tbls, etc.
         items = []
