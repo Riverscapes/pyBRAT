@@ -17,7 +17,7 @@ import uuid
 from SupportingFunctions import make_layer, make_folder, find_available_num
 
 
-def main(projPath, in_network, out_name):
+def main(projPath, in_network):
 
     arcpy.env.overwriteOutput = True
 

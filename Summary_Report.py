@@ -10,12 +10,11 @@
 import os
 import arcpy
 
-def main(bratOutput, dams, outputName):
+def main(bratOutput, dams):
     """
     The main function
     :param bratOutput: The output of BRAT (a polyline shapefile)
     :param dams: A shapefile containing a point for each dam
-    :param outputName: The name of the output shape file
     :return:
     """
     arcpy.env.overwriteOutput = True

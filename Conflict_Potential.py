@@ -28,8 +28,7 @@ def main(
     CanalLow,
     CanalHigh,
     RRLow,
-    RRHigh,
-    out_name):
+    RRHigh):
 
     scratch = 'in_memory'
 
@@ -43,14 +42,14 @@ def main(
     # CanalHigh = 200
     # RRLow = 30
     # RRHigh = 100
-    out_network = find_oPC_Score(out_name, in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch)
+    out_network = find_oPC_Score(in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch)
 
     addxmloutput(projPath, in_network, out_network)
 
     makeLayers(out_network)
 
 
-def find_oPC_Score(out_name, in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch):
+def find_oPC_Score(in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch):
     # if out_name.endswith('.shp'):
     #     out_network = os.path.join(os.path.dirname(in_network), out_name)
     # else:

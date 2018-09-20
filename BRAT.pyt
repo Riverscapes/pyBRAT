@@ -616,15 +616,7 @@ class Conflict_Potential_tool(object):
             direction="Input")
         param9.value = 100.0
 
-        param10 = arcpy.Parameter(
-            displayName = "Name conflict potential model output network",
-            name = "out_name",
-            datatype="GPString",
-            parameterType="Required",
-            direction="Input")
-        # param10.symbology = os.path.join(os.path.dirname(__file__), "oPC.lyr")
-
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -653,8 +645,7 @@ class Conflict_Potential_tool(object):
                                 p[6].value,
                                 p[7].value,
                                 p[8].value,
-                                p[9].value,
-                                p[10].valueAsText)
+                                p[9].value)
         return
 
 class Conservation_Restoration_tool(object):
@@ -681,15 +672,7 @@ class Conservation_Restoration_tool(object):
             direction="Input")
         param1.filter.list = ["Polyline"]
 
-        param2 = arcpy.Parameter(
-            displayName="Name conservation restoration model output feature class",
-            name="out_name",
-            datatype="GPString",
-            parameterType="Required",
-            direction="Input")
-        # param2.symbology = os.path.join(os.path.dirname(__file__), "oPBRC.lyr")
-
-        return [param0, param1, param2]
+        return [param0, param1]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -710,8 +693,7 @@ class Conservation_Restoration_tool(object):
         """The source code of the tool."""
         reload(Conservation_Restoration)
         Conservation_Restoration.main(p[0].valueAsText,
-                                      p[1].valueAsText,
-                                      p[2].valueAsText)
+                                      p[1].valueAsText)
         return
 
 class Summary_Report_tool(object):
@@ -739,14 +721,7 @@ class Summary_Report_tool(object):
             parameterType="Optional",
             direction="Input")
 
-        param2 = arcpy.Parameter(
-            displayName="Name the validation shape file output",
-            name="out_name",
-            datatype="GPString",
-            parameterType="Required",
-            direction="Input")
-
-        return [param0, param1, param2]
+        return [param0, param1]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -767,8 +742,7 @@ class Summary_Report_tool(object):
         """The source code of the tool."""
         reload(Summary_Report)
         Summary_Report.main(p[0].valueAsText,
-                            p[1].valueAsText,
-                            p[2].valueAsText)
+                            p[1].valueAsText)
         return
 
 
