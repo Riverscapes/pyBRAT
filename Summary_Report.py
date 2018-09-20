@@ -19,11 +19,12 @@ def main(bratOutput, dams, outputName):
     :return:
     """
     arcpy.env.overwriteOutput = True
-    if outputName.endswith('.shp'):
-        outNetwork = os.path.join(os.path.dirname(bratOutput), outputName)
-    else:
-        outNetwork = os.path.join(os.path.dirname(bratOutput), outputName + ".shp")
-    arcpy.Delete_management(outNetwork)
+    # if outputName.endswith('.shp'):
+    #     outNetwork = os.path.join(os.path.dirname(bratOutput), outputName)
+    # else:
+    #     outNetwork = os.path.join(os.path.dirname(bratOutput), outputName + ".shp")
+    # arcpy.Delete_management(outNetwork)
+    outNetwork = bratOutput
 
     damFields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
     otherFields = ['Ex_Categor', 'Pt_Categor', 'mCC_EX_Ct', 'mCC_PT_Ct', 'mCC_EXtoPT']
@@ -35,7 +36,7 @@ def main(bratOutput, dams, outputName):
         arcpy.AddMessage("Adding fields that need dam input...")
         setDamAttributes(bratOutput, outNetwork, dams, damFields + ['Join_Count'] + inputFields, newFields)
     else:
-        arcpy.CopyFeatures_management(bratOutput, outNetwork)
+        # arcpy.CopyFeatures_management(bratOutput, outNetwork)
         addFields(outNetwork, otherFields)
 
     arcpy.AddMessage("Adding fields that don't need dam input...")
