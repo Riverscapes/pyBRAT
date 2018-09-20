@@ -416,21 +416,55 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
         layer_package_name += ".lpk"
 
     new_source = None
+    if clipping_network is not None:
+        new_source = get_new_source(clipping_network, analyses_folder)
 
-    arcpy.AddMessage("Making Layer Package...")
-    empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
+    # arcpy.AddMessage("Making Layer Package...")
+    # empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
+    #
+    # mxd = arcpy.mapping.MapDocument("CURRENT")
+    # df = arcpy.mapping.ListDataFrames(mxd)[0]
+    #
+    # analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd)
+    # inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
+    # intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)
+    # output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
+    # output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
+    #
+    # layer_package = os.path.join(output_folder, layer_package_name)
+    # arcpy.PackageLayer_management(output_layer, layer_package)
 
-    mxd = arcpy.mapping.MapDocument("CURRENT")
-    df = arcpy.mapping.ListDataFrames(mxd)[0]
 
-    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd)
-    inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
-    intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)
-    output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
-    output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
+def get_new_source(clipping_network, analyses_folder):
+    """
+    Creates a temporary shape file that will be the source for the clipped regions
+    :param clipping_network: What we want to clip our source to
+    :param analyses_folder: The path to the analyses folder, where our existing source file should be
+    :return:
+    """
+    old_source = get_old_source(analyses_folder)
+    old_source_layer = "old_source_lyr"
+    arcpy.MakeFeatureLayer_management(old_source, old_source_layer)
 
-    layer_package = os.path.join(output_folder, layer_package_name)
-    arcpy.PackageLayer_management(output_layer, layer_package)
+    arcpy.SelectLayerByLocation_management(old_source_layer, "INTERSECT", clipping_network)
+
+    new_source = os.path.join(analyses_folder, "Temp.shp")
+    arcpy.CopyFeatures_management(old_source_layer, new_source)
+    return new_source
+
+
+
+
+def get_old_source(analyses_folder):
+    """
+    Looks for the old source in the analyses folder.
+    Assumes that the only shape file in the analyses folder is the old source
+    :param analyses_folder: The path to the analyses folder
+    :return:
+    """
+    for file in os.listdir(analyses_folder):
+        if file.endswith(".shp"):
+            return os.path.join(analyses_folder, file)
 
 
 def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
