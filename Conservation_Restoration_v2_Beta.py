@@ -114,7 +114,8 @@ def addxmloutput(projPath, in_network, out_network):
         for j in range(len(a)):
             if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find("02_Analyses"):]):
                 outrz = realizations[i]
-
+    
+    outrz = realizations[i]
     exxml.addOutput("BRAT Analysis", "Vector", "BRAT Management Output version 2 Beta", out_network[out_network.find("02_Analyses"):],
                     outrz, guid=getUUID())
 
