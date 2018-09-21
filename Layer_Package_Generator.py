@@ -419,20 +419,20 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     if clipping_network is not None:
         new_source = get_new_source(clipping_network, analyses_folder)
 
-    # arcpy.AddMessage("Making Layer Package...")
-    # empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
-    #
-    # mxd = arcpy.mapping.MapDocument("CURRENT")
-    # df = arcpy.mapping.ListDataFrames(mxd)[0]
-    #
-    # analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd)
-    # inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
-    # intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)
-    # output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
-    # output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
-    #
-    # layer_package = os.path.join(output_folder, layer_package_name)
-    # arcpy.PackageLayer_management(output_layer, layer_package)
+    arcpy.AddMessage("Making Layer Package...")
+    empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
+
+    mxd = arcpy.mapping.MapDocument("CURRENT")
+    mxd.relativePaths = False
+    df = arcpy.mapping.ListDataFrames(mxd)[0]
+    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source)
+    inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
+    intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)
+    output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
+    output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
+
+    layer_package = os.path.join(output_folder, layer_package_name)
+    arcpy.PackageLayer_management(output_layer, layer_package)
 
 
 def get_new_source(clipping_network, analyses_folder):
@@ -444,15 +444,17 @@ def get_new_source(clipping_network, analyses_folder):
     """
     old_source = get_old_source(analyses_folder)
     old_source_layer = "old_source_lyr"
+    if arcpy.Exists(old_source_layer):
+        arcpy.Delete_management(old_source_layer)
     arcpy.MakeFeatureLayer_management(old_source, old_source_layer)
 
     arcpy.SelectLayerByLocation_management(old_source_layer, "INTERSECT", clipping_network)
 
     new_source = os.path.join(analyses_folder, "Temp.shp")
+    if os.path.exists(new_source):
+        arcpy.Delete_management(new_source)
     arcpy.CopyFeatures_management(old_source_layer, new_source)
     return new_source
-
-
 
 
 def get_old_source(analyses_folder):
@@ -467,7 +469,7 @@ def get_old_source(analyses_folder):
             return os.path.join(analyses_folder, file)
 
 
-def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
+def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source):
     """
     Returns the layers we want for the 'Output' section
     :param analyses_folder:
@@ -479,11 +481,11 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     management_folder = find_folder(analyses_folder, "Management")
 
     existing_capacity_layers = find_layers_in_folder(existing_capacity_folder)
-    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd)
+    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd, new_source)
     historic_capacity_layers = find_layers_in_folder(historic_capacity_folder)
-    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd)
+    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd, new_source)
     management_layers = find_layers_in_folder(management_folder)
-    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd)
+    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd, new_source)
 
     capacity_layer = group_layers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df, mxd)
     output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer], df, mxd)
@@ -661,16 +663,7 @@ def find_layers_in_folder(folder_root):
     return layers
 
 
-def change_layer_source(layer_path, new_source=None):
-    """
-    Changes the layer source to a clipped version
-    :param layer_path:
-    :param new_source: The new source
-    :return:
-    """
-
-
-def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
+def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remove_layer=True):
     """
     Groups a bunch of layers together
     :param group_layer: The empty group layer we'll add stuff to
@@ -688,10 +681,17 @@ def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
     group_layer = arcpy.mapping.ListLayers(mxd, group_name, df)[0]
 
     for layer in layers:
-        if not isinstance(layer, arcpy.mapping.Layer):
-            layer_instance = arcpy.mapping.Layer(layer)
-        else:
+        if isinstance(layer, arcpy.mapping.Layer):
             layer_instance = layer
+        else:
+            layer_instance = arcpy.mapping.Layer(layer)
+
+        if new_source is not None:
+            if layer_instance.isFeatureLayer:
+                old_source = layer_instance.dataSource
+                layer_instance.replaceDataSource(old_source, 'SHAPEFILE_WORKSPACE', new_source, '')
+                layer_instance.save()
+
         arcpy.mapping.AddLayerToGroup(df, group_layer, layer_instance)
 
     if remove_layer:

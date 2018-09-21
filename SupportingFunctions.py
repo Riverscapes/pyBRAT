@@ -71,6 +71,9 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
     if file_name is None:
         file_name = new_layer_name.replace(' ', '')
     new_layer_save = os.path.join(output_folder, file_name)
+    if os.path.exists(new_layer_save):
+        return new_layer_save
+
     if not new_layer_save.endswith(".lyr"):
         new_layer_save += ".lyr"
 
@@ -86,7 +89,14 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
                 raise arcpy.ExecuteError(err)
 
     else:
+        if arcpy.Exists(new_layer):
+            arcpy.Delete_management(new_layer)
         arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+        # except arcpy.ExecuteError as err:
+        #     if err[0][6:12] == "000725":
+        #         return new_layer_save
+        #     else:
+        #         raise arcpy.ExecuteError(err)
 
     if symbology_layer:
         arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
