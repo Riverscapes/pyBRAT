@@ -688,8 +688,8 @@ def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remo
 
         if new_source is not None and layer_instance.isFeatureLayer:
             old_source = layer_instance.dataSource
-            layer_instance.replaceDataSource(old_source, 'NONE', new_source, '')
-            #layer_instance.replaceDataSource(new_source, 'SHAPEFILE_WORKSPACE', old_source, '')
+            # layer_instance.replaceDataSource(old_source, 'NONE', new_source, '')
+            layer_instance.replaceDataSource(new_source, 'SHAPEFILE_WORKSPACE', old_source, '')
             layer_instance.save()
 
         arcpy.mapping.AddLayerToGroup(df, group_layer, layer_instance)
