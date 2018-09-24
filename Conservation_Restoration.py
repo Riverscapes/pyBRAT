@@ -89,9 +89,9 @@ def main(projPath, in_network, out_name):
                 row[0] = 'Long-Term: Moderate Potential, Short-Term: Unsuitable'
             cursor.updateRow(row)
 
-    addxmloutput(projPath, in_network, out_network)
-
     makeLayers(out_network)
+
+    addxmloutput(projPath, in_network, out_network)
 
     return out_network
 
@@ -110,6 +110,7 @@ def addxmloutput(projPath, in_network, out_network):
     exxml = projectxml.ExistingXML(xmlfile)
 
     realizations = exxml.rz.findall("BRAT")
+    outrz = None
     for i in range(len(realizations)):
         a = realizations[i].findall(".//Path")
         for j in range(len(a)):
