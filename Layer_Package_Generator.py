@@ -21,6 +21,7 @@ def main(output_folder, layer_package_name, clipping_network):
     :param clipping_network: What we want to clip our network to
     :return:
     """
+    arcpy.CheckOutExtension('defense')
     projectFolder = os.path.dirname(output_folder)
     inputsFolder = find_folder(projectFolder, "Inputs")
     intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
@@ -559,7 +560,6 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
     """
     intermediate_layers = []
 
-    # findAndGroupLayers(intermediate_layers, intermediatesFolder, "HumanBeaverConflict", "Human Beaver Conflict", emptyGroupLayer, df, mxd)
     anthropogenic_metrics_folder = find_folder(intermediates_folder, "AnthropogenicMetrics")
     if anthropogenic_metrics_folder:
         sorted_conflict_layers = []
@@ -686,14 +686,13 @@ def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remo
         else:
             layer_instance = arcpy.mapping.Layer(layer)
 
-        if new_source is not None:
-            if layer_instance.isFeatureLayer:
-                old_source = layer_instance.dataSource
-                layer_instance.replaceDataSource(old_source, 'SHAPEFILE_WORKSPACE', new_source, '')
-                layer_instance.save()
+        if new_source is not None and layer_instance.isFeatureLayer:
+            old_source = layer_instance.dataSource
+            layer_instance.replaceDataSource(old_source, 'NONE', new_source, '')
+            #layer_instance.replaceDataSource(new_source, 'SHAPEFILE_WORKSPACE', old_source, '')
+            layer_instance.save()
 
         arcpy.mapping.AddLayerToGroup(df, group_layer, layer_instance)
-
     if remove_layer:
         arcpy.mapping.RemoveLayer(df, group_layer)
 
