@@ -15,6 +15,7 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
+from SupportingFunctions import make_folder, make_layer, find_available_num
 
 
 def main(in_network):
@@ -193,8 +194,8 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    veg_folder_name = findAvailableNum(intermediates_folder) + "_VegDamCapacity"
-    veg_folder = makeFolder(intermediates_folder, veg_folder_name)
+    veg_folder_name = find_available_num(intermediates_folder) + "_VegDamCapacity"
+    veg_folder = make_folder(intermediates_folder, veg_folder_name)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -202,78 +203,8 @@ def makeLayers(inputNetwork):
     existingVegSymbology = os.path.join(symbologyFolder, "Existing_Veg_Capacity.lyr")
     historicVegSymbology = os.path.join(symbologyFolder, "Historic_Veg_Capacity.lyr")
 
-    makeLayer(veg_folder, inputNetwork, "Existing Veg Dam Building Capacity", existingVegSymbology, isRaster=False)
-    makeLayer(veg_folder, inputNetwork, "Historic Veg Dam Building Capacity", historicVegSymbology, isRaster=False)
-
-
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
-    """
-    Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the layer
-    :param layer_base: What we should base the layer off of
-    :param new_layer_name: What the layer should be called
-    :param symbology_layer: The symbology that we will import
-    :param isRaster: Tells us if it's a raster or not
-    :param description: The discription to give to the layer file
-    :return: The path to the new layer
-    """
-    new_layer = new_layer_name
-    new_layer_file_name = new_layer_name.replace(" ", "")
-    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
-
-    if isRaster:
-        try:
-            arcpy.MakeRasterLayer_management(layer_base, new_layer)
-        except arcpy.ExecuteError as err:
-            if err[0][6:12] == "000873":
-                arcpy.AddError(err)
-                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
-                raise Exception
-            else:
-                raise arcpy.ExecuteError(err)
-
-    else:
-        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
-
-    if symbology_layer:
-        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
-    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-    new_layer_instance.description = description
-    new_layer_instance.save()
-    return new_layer_save
-
-
-def makeFolder(pathToLocation, newFolderName):
-    """
-    Makes a folder and returns the path to it
-    :param pathToLocation: Where we want to put the folder
-    :param newFolderName: What the folder will be called
-    :return: String
-    """
-    newFolder = os.path.join(pathToLocation, newFolderName)
-    if not os.path.exists(newFolder):
-        os.mkdir(newFolder)
-    return newFolder
-
-
-def findAvailableNum(folderRoot):
-    """
-    Tells us the next number for a folder in the directory given
-    :param folderRoot: Where we want to look for a number
-    :return: A string, containing a number
-    """
-    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
-    POSSIBLENUMS = range(1, 100)
-    for i in POSSIBLENUMS:
-        stringVersion = str(i)
-        if i < 10:
-            stringVersion = '0' + stringVersion
-        if stringVersion not in takenNums:
-            return stringVersion
-    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
-    return "100"
+    make_layer(veg_folder, inputNetwork, "Existing Veg Dam Building Capacity", existingVegSymbology, is_raster=False)
+    make_layer(veg_folder, inputNetwork, "Historic Veg Dam Building Capacity", historicVegSymbology, is_raster=False)
 
 
 if __name__ == '__main__':

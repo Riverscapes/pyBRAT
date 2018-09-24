@@ -26,7 +26,7 @@ import arcpy
 def main(fcStreamNetwork, canal, tempDir, is_verbose):
     # Polyline prep
     if is_verbose:
-        arcpy.AddMessage("Finding multithreaded streams...")
+        arcpy.AddMessage("Checking input fields and if canals shapefile exists...")
     listFields = arcpy.ListFields(fcStreamNetwork,"IsMultiCh")
     if len(listFields) is not 1:
         arcpy.AddField_management(fcStreamNetwork, "IsMultiCh", "SHORT", "", "", "", "", "NULLABLE")
@@ -43,7 +43,7 @@ def main(fcStreamNetwork, canal, tempDir, is_verbose):
 
 def handleCanals(streamNetwork, canal, tempFolder, is_verbose):
     if is_verbose:
-        arcpy.AddMessage("Removing canals that were given from the stream network for the purposes of multithreadedness...")
+        arcpy.AddMessage("Removing canals...")
     if arcpy.GetInstallInfo()['Version'][0:4] == '10.5':
         streamNetworkNoCanals = os.path.join(tempFolder, "NoCanals.shp")
     else:
@@ -70,7 +70,7 @@ def handleCanals(streamNetwork, canal, tempFolder, is_verbose):
 
 def findBraidedReaches(fcLines, is_verbose):
     if is_verbose:
-        arcpy.AddMessage("Calculating multithreadedness...")
+        arcpy.AddMessage("Finding streams with mutltiple channels...")
     # Clear temporary data
     if arcpy.Exists("in_memory//DonutPolygons"):
         arcpy.Delete_management("in_memory//DonutPolygons")

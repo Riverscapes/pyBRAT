@@ -14,9 +14,8 @@
 # import modules
 import os
 import arcpy
-import shutil
 import sys
-import string
+from SupportingFunctions import make_folder, make_layer
 
 
 def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
@@ -27,22 +26,22 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     if not os.path.exists(projPath):
         os.mkdir(projPath)
 
-    inputsFolder = makeFolder(projPath, "Inputs")
+    inputsFolder = make_folder(projPath, "Inputs")
 
-    vegetationFolder = makeFolder(inputsFolder, "01_Vegetation")
-    networkFolder = makeFolder(inputsFolder, "02_Network")
-    topoFolder = makeFolder(inputsFolder, "03_Topography")
-    conflictFolder = makeFolder(inputsFolder, "04_Conflict")
+    vegetationFolder = make_folder(inputsFolder, "01_Vegetation")
+    networkFolder = make_folder(inputsFolder, "02_Network")
+    topoFolder = make_folder(inputsFolder, "03_Topography")
+    anthropogenicFolder = make_folder(inputsFolder, "04_Anthropogenic")
 
-    exVegFolder = makeFolder(vegetationFolder, "01_ExistingVegetation")
-    histVegFolder = makeFolder(vegetationFolder, "02_HistoricVegetation")
+    exVegFolder = make_folder(vegetationFolder, "01_ExistingVegetation")
+    histVegFolder = make_folder(vegetationFolder, "02_HistoricVegetation")
 
-    valleyBottomFolder = makeFolder(conflictFolder, "01_ValleyBottom")
-    roadFolder = makeFolder(conflictFolder, "02_Roads")
-    railroadFolder = makeFolder(conflictFolder, "03_Railroads")
-    canalsFolder = makeFolder(conflictFolder, "04_Canals")
-    landUseFolder = makeFolder(conflictFolder, "05_LandUse")
-    landOwnershipFolder = makeFolder(conflictFolder, "06_LandOwnership")
+    valleyBottomFolder = make_folder(anthropogenicFolder, "01_ValleyBottom")
+    roadFolder = make_folder(anthropogenicFolder, "02_Roads")
+    railroadFolder = make_folder(anthropogenicFolder, "03_Railroads")
+    canalsFolder = make_folder(anthropogenicFolder, "04_Canals")
+    landUseFolder = make_folder(anthropogenicFolder, "05_LandUse")
+    landOwnershipFolder = make_folder(anthropogenicFolder, "06_LandOwnership")
 
     sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
@@ -50,14 +49,14 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
     # Gets all of our symbology variables set up
     exVegSuitabilitySymbology = os.path.join(symbologyFolder, "Existing_Veg_Suitability.lyr")
     exVegRiparianSymbology = os.path.join(symbologyFolder, "Existing_Veg_Riparian.lyr")
-    exVegEVTTypeSymbology = os.path.join(symbologyFolder, "ExistingVeg_EVT_Type.lyr")
-    exVegEVTClassSymbology = os.path.join(symbologyFolder, "ExistingVeg_EVT_Class.lyr")
-    exVegClassNameSymbology = os.path.join(symbologyFolder, "ExistingVeg_ClassName.lyr")
+    exVegEVTTypeSymbology = os.path.join(symbologyFolder, "Existing_Veg_EVT_Type.lyr")
+    exVegEVTClassSymbology = os.path.join(symbologyFolder, "Existing_Veg_EVT_Class.lyr")
+    exVegClassNameSymbology = os.path.join(symbologyFolder, "Existing_Veg_ClassName.lyr")
 
-    histVegGroupVeg = os.path.join(symbologyFolder, "BPS_GroupVeg.lyr")
-    histVegBPSNameSymbology = os.path.join(symbologyFolder, "BPS_NAME_symbology.lyr")
-    histVegVegCode = os.path.join(symbologyFolder, "BPS_VEG_Code.lyr")
-    histVegRiparian = os.path.join(symbologyFolder, "BPS_Riparian.lyr")
+    histVegGroupSymbology = os.path.join(symbologyFolder, "Historic_Veg_BPS_Type.lyr")
+    histVegBPSNameSymbology = os.path.join(symbologyFolder, "Historic_Veg_BPS_Name.lyr")
+    histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
+    histVegRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
 
     networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
     landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster.lyr")
@@ -80,10 +79,10 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
 
     # add the historic veg inputs to project
     histVegDestinations = copyMultiInputToFolder(histVegFolder, hist_veg, "Hist_Veg", isRaster=True)
-    makeInputLayers(histVegDestinations, "Vegetation Suitability", symbologyLayer=histVegVegCode, isRaster=True)
-    makeInputLayers(histVegDestinations, "Veg Type - Veg Group", symbologyLayer=histVegGroupVeg, isRaster=True)
+    makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True, fileName="HistVegSuitability")
+    makeInputLayers(histVegDestinations, "Veg Type - BPS Type", symbologyLayer=histVegGroupSymbology, isRaster=True, checkField="GROUPVEG")
     makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
-    makeInputLayers(histVegDestinations, "Riparian", symbologyLayer=histVegRiparian, isRaster=True, checkField="Riparian")
+    makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histVegRiparianSymbology, isRaster=True, checkField="GROUPVEG")
 
 
     # add the network inputs to project
@@ -123,7 +122,7 @@ def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, ca
 
     # add land ownership layers to the project
     if ownership is not None:
-        ownershipDestinations = copyMultiInputToFolder(landOwnershipFolder, ownership, "Land Ownership", isRaster=False)
+        ownershipDestinations = copyMultiInputToFolder(landOwnershipFolder, ownership, "Land_Ownership", isRaster=False)
         makeInputLayers(ownershipDestinations, "Land Ownership", symbologyLayer=landOwnershipSymbology, isRaster=False)
 
 def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
@@ -139,7 +138,7 @@ def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
     i = 1
     destinations = []
     for inputPath in splitInput:
-        newSubFolder = makeFolder(folderPath, subFolderName + "_" + str(i))
+        newSubFolder = make_folder(folderPath, subFolderName + "_" + str(i))
         destinationPath = os.path.join(newSubFolder, os.path.basename(inputPath))
 
         if isRaster:
@@ -161,6 +160,7 @@ def makeTopoLayers(topoFolder):
     symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
     demSymbology = os.path.join(symbologyFolder, "DEM.lyr")
     slopeSymbology = os.path.join(symbologyFolder, "Slope.lyr")
+    hillshadeSymbology = os.path.join(symbologyFolder, "Hillshade.lyr")
 
     for folder in os.listdir(topoFolder):
         demFolderPath = os.path.join(topoFolder, folder)
@@ -168,60 +168,18 @@ def makeTopoLayers(topoFolder):
         for fileName in os.listdir(demFolderPath):
             if fileName.endswith(".tif"):
                 demFile = os.path.join(demFolderPath, fileName)
-                makeLayer(demFolderPath, demFile, "DEM", demSymbology, isRaster=True)
+                make_layer(demFolderPath, demFile, "DEM", demSymbology, is_raster=True)
 
-        hillshadeFolder = makeFolder(demFolderPath, "Hillshade")
+        hillshadeFolder = make_folder(demFolderPath, "Hillshade")
         hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
         arcpy.HillShade_3d(demFile, hillshadeFile)
-        makeLayer(hillshadeFolder, hillshadeFile, "Hillshade", isRaster=True)
+        make_layer(hillshadeFolder, hillshadeFile, "Hillshade", hillshadeSymbology, is_raster=True)
 
-        slopeFolder = makeFolder(demFolderPath, "Slope")
+        slopeFolder = make_folder(demFolderPath, "Slope")
         slopeFile = os.path.join(slopeFolder, "Slope.tif")
         outSlope = arcpy.sa.Slope(demFile)
         outSlope.save(slopeFile)
-        makeLayer(slopeFolder, slopeFile, "Slope", slopeSymbology, isRaster=True)
-
-
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description", fileName=None):
-    """
-    Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the layer
-    :param layer_base: What we should base the layer off of
-    :param new_layer_name: What the layer should be called
-    :param symbology_layer: The symbology that we will import
-    :param isRaster: Tells us if it's a raster or not
-    :param description: The discription to give to the layer file
-    :return: The path to the new layer
-    """
-    new_layer = new_layer_name
-    if fileName == None:
-        new_layer_file_name = new_layer_name.replace(" ", "")
-    else:
-        new_layer_file_name = fileName.replace(" ", "")
-    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
-
-    if isRaster:
-        try:
-            arcpy.MakeRasterLayer_management(layer_base, new_layer)
-        except arcpy.ExecuteError as err:
-            if err[0][6:12] == "000873":
-                arcpy.AddError(err)
-                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
-                raise Exception
-            else:
-                raise arcpy.ExecuteError(err)
-
-    else:
-        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
-
-    if symbology_layer:
-        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
-    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-    new_layer_instance.description = description
-    new_layer_instance.save()
-    return new_layer_save
+        make_layer(slopeFolder, slopeFile, "Slope", slopeSymbology, is_raster=True)
 
 
 def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, fileName=None, checkField=None):
@@ -235,8 +193,8 @@ def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, file
     :param checkField: The name of the field that the symbology is based on
     :return:
     """
-    if fileName == None:
-        fileName = layerName
+    # if fileName == None:
+    #     fileName = layerName
     for destination in destinations:
         destDirName = os.path.dirname(destination)
         if checkField:
@@ -244,21 +202,7 @@ def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, file
             if checkField not in fields:
                 # Stop execution if the field we're checking for is not in the layer base
                 return
-        makeLayer(destDirName, destination, layerName, symbology_layer=symbologyLayer, isRaster=isRaster, fileName=fileName)
-
-
-
-def makeFolder(pathToLocation, newFolderName):
-    """
-    Makes a folder and returns the path to it
-    :param pathToLocation: Where we want to put the folder
-    :param newFolderName: What the folder will be called
-    :return: String
-    """
-    newFolder = os.path.join(pathToLocation, newFolderName)
-    if not os.path.exists(newFolder):
-        os.mkdir(newFolder)
-    return newFolder
+        make_layer(destDirName, destination, layerName, symbology_layer=symbologyLayer, is_raster=isRaster, file_name=fileName)
 
 
 if __name__ == '__main__':

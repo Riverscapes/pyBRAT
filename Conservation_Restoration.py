@@ -2,10 +2,10 @@
 # Name:        Conservation Restoration
 # Purpose:     Adds the conservation and restoration model to the BRAT capacity output
 #
-# Author:      Jordan Gilbert
+# Author:      Sara Bangen
 #
-# Created:     09/2016
-# Copyright:   (c) Jordan 2016
+# Created:     06/2018
+# Copyright:   (c) Bangen 2018
 # Licence:     <your licence>
 # -------------------------------------------------------------------------------
 
@@ -14,6 +14,7 @@ import sys
 import os
 import projectxml
 import uuid
+from SupportingFunctions import make_layer, make_folder, find_available_num
 
 
 def main(projPath, in_network, out_name):
@@ -28,69 +29,64 @@ def main(projPath, in_network, out_name):
     if "oPBRC" in fields:
         arcpy.DeleteField_management(out_network, "oPBRC")
 
-    LowConflict = 0.25
-    IntConflict = 0.5
-    HighConflict = 0.75
+    arcpy.AddField_management(out_network, "oPBRC", "TEXT", "", "", 100)
 
-    arcpy.AddField_management(out_network, "oPBRC", "TEXT", "", "", 60)
+    fields = ['oPBRC', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU', 'iPC_VLowLU']
 
-    with arcpy.da.UpdateCursor(out_network, ["oCC_EX", "oCC_PT", "oPC_Score", "iPC_ModLU", "iPC_HighLU", "oPBRC"]) as cursor:
+    with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-
-            if row[0] <= 1.0:  # none or rare existing capacity
-                if row[1] <= 1.0:
-                    row[5] = "Unsuitable: Naturally Limited"
-                elif row[2] > 0.75:
-                    row[5] = "Unsuitable: Anthropogenically Limited"
-                elif row[1] <= 5.0:
-                    row[5] = "Quick Return Restoration Zone"
-                elif row[2] > 0.25:
-                    row[5] = "Long Term Possibility Restoration Zone"
-                elif row[3] + row[4] > 0.5:
-                    row[5] = "Long Term Possibility Restoration Zone"
+            # 'oVC_PT' Occasional, Frequent or Pervasive
+            # 'oCC_PT' None or Rare
+            if row[1] > 1 and row[3] <= 1:
+                row[0] = 'Naturally Unsuitable: Hydrologically Limited'
+            # 'OVC_PT' None or Rare
+            elif row[1] <= 1:
+                row[0] = 'Naturally Unsuitable: Vegetation Limited'
+            # 'iPC_HighLU' (i.e., Developed) > 50 or  'iPC_LowLU' + 'iPC_ModLU' (i.e., Agriculture) > 50
+            elif row[5] + row[6] > 40 or row[7] > 40:
+                # 'oCC_PT' Frequent or Pervasive
+                # 'oCC_EX' None, Rare or Occasional
+                if row[3] >= 5 and row[4] < 5:
+                    row[0] = 'Unsuitable: Anthropogenically Limited'
+                # todo: ask SS and WM if this is really what we want to assign in instances where high landuse but frequent exisitng
+                # 'oCC_PT' Pervasive
+                # 'oCC_EX' Frequent
+                elif row[3] >= 15 and row[4] >= 5 and row[4] < 15:
+                    row[0] = 'Unsuitable: Anthropogenically Limited'
+                # 'oCC_PT' Occasional
+                # 'oCC_EX' None or Rare
+                elif row[3] >= 1 and row[4] <= 1:
+                    row[0] = 'Unsuitable: Anthropogenically Limited'
                 else:
-                    row[5] = "Quick Return Restoration Zone"
-
-            elif row[0] <= 5.0:  # occasional existing capacity
-                if row[2] > 0.75:
-                    row[5] = "Unsuitable: Anthropogenically Limited"
-                elif row[1] > 5.0:
-                    row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
-                elif row[2] <= 0.25:
-                    row[5] = "Quick Return Restoration Zone"
-                elif row[3] + row[4] > 0.5:
-                    row[5] = "Long Term Possibility Restoration Zone"
+                    row[0] = 'Unsuitable: Anthropogenically Limited'
+                    # row[0] = 'Need Categorical Definition: Highly Developed'
+            # 'iPC_HighLU' (i.e., Developed) < 10 and 'iPC_VLowLU'(i.e., Natural) > 75
+            elif row[8] > 75 and row[7] < 10:
+                # 'oCC_PT' Frequent or Pervasive
+                # 'oCC_EX' Frequent or Pervasive
+                if row[3] >= 5 and row[4] >= 5:
+                    row[0] = 'Immediate Returns: High Impact/Activity'
+                # 'oCC_PT' Occasional
+                # 'oCC_EX' Occasional
+                elif row[3] > 1 and row[3] < 5 and row[4] > 1 and row[4] < 5:
+                    row[0] = 'Immediate Returns: Moderate Impact/Activity'
+                # 'oCC_PT' Frequent or Pervasive
+                # 'oCC_EX' None, Rare, or Occasional
+                elif row[3] >= 5 and row[4] < 5:
+                    row[0] = 'Long-Term: High Potential, Short-Term: Moderate Impact'
+                # 'oCC_PT' Occasional
+                # 'oCC_EX' None or Rare
+                elif row[3] > 1 and row[3] < 5 and row[4] <= 1:
+                    row[0] = 'Long-Term: Moderate Potential, Short-Term: Unsuitable'
+                # 'oCC_PT' Occasional
+                # 'oCC_EX' Frequent or Pervasive
+                elif row[3] > 1 and row[3] < 5 and row[4] >= 5:
+                    row[0] = 'Immediate Returns: High Impact/Activity'
                 else:
-                    row[5] = "Living with Beaver (Low Source)"
-
-            elif row[0] <= 15.0:  # frequent existing capacity
-                if row[2] > 0.75:
-                    row[5] = "Unsuitable: Anthropogenically Limited"
-                elif row[1] > 15.0:
-                    if row[2] <= 0.25:
-                        row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
-                    else:
-                        row[5] = "Living with Beaver (High Source)"
-                elif row[2] <= 0.25:
-                    row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
-                elif row[3] + row[4] > 0.5:
-                    row[5] = "Long Term Possibility Restoration Zone"
-                else:
-                    row[5] = "Quick Return Restoration Zone"
-
-            elif row[0] > 15.0:  # pervasive existing capacity
-                if row[2] <= 0.25:
-                    row[5] = "Low Hanging Fruit - Potential Restoration/Conservation Zone"
-                elif row[2] > 0.75:
-                    row[5] = "Unsuitable: Anthropogenically Limited"
-                elif row[3] + row[4] > 0.5:
-                    row[5] = "Living with Beaver (High Source)"
-                else:
-                    row[5] = "Quick Return Restoration Zone"
-
+                    row[0] = 'Need Categorical Definition: Low Developed'
             else:
-                row[5] = "NOT PREDICTED - Requires Manual Attention"
-
+                # todo: this is more or less a 'best option' placeholder and should re-visit and create additional category
+                row[0] = 'Long-Term: Moderate Potential, Short-Term: Unsuitable'
             cursor.updateRow(row)
 
     makeLayers(out_network)
@@ -135,53 +131,18 @@ def makeLayers(out_network):
     :return:
     """
     arcpy.AddMessage("Making layers...")
-    output_folder = os.path.dirname(out_network)
+    analyses_folder = os.path.dirname(out_network)
+    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Management")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    managementLayer = os.path.join(symbologyFolder, "Management_Zones.lyr")
+    managementLayer = os.path.join(symbologyFolder, "Beaver_Management_Zones_v2.lyr")
+    managementLayer2 = os.path.join(symbologyFolder, "Dam_Building_Not_Likely.lyr")
+    managementLayer3 = os.path.join(symbologyFolder, "Restoration_Conservation_Opportunities.lyr")
 
-    makeLayer(output_folder, out_network, "Beaver Management Zones", managementLayer, isRaster=False)
-
-
-def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
-    """
-    Creates a layer and applies a symbology to it
-    :param output_folder: Where we want to put the layer
-    :param layer_base: What we should base the layer off of
-    :param new_layer_name: What the layer should be called
-    :param symbology_layer: The symbology that we will import
-    :param isRaster: Tells us if it's a raster or not
-    :param description: The discription to give to the layer file
-    :return: The path to the new layer
-    """
-    new_layer = new_layer_name
-    new_layer_file_name = new_layer_name.replace(" ", "")
-    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
-
-    if isRaster:
-        try:
-            arcpy.MakeRasterLayer_management(layer_base, new_layer)
-        except arcpy.ExecuteError as err:
-            if err[0][6:12] == "000873":
-                arcpy.AddError(err)
-                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
-                raise Exception
-            else:
-                raise arcpy.ExecuteError(err)
-
-    else:
-        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
-
-    if symbology_layer:
-        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
-
-    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
-    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
-    new_layer_instance.description = description
-    new_layer_instance.save()
-    return new_layer_save
-
+    make_layer(output_folder, out_network, "Beaver Management Zones", managementLayer, is_raster=False)
+    make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", managementLayer2, is_raster=False)
+    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", managementLayer3, is_raster=False)
 
 
 

@@ -2,12 +2,14 @@ from bdws import BDLoG, BDSWEA
 from bdflopy import BDflopy
 import arcpy
 import os
+from SupportingFunctions import make_folder, find_available_num
+
 
 def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity, modflowexe):
     arcpy.AddMessage("Running BDLoG...")
-    projectFolder = makeFolder(projectRoot, "BDWS_Project")
-    inputsFolder = makeFolder(projectFolder, "Inputs")
-    outDir = makeFolder(projectFolder, "Output")
+    projectFolder = make_folder(projectRoot, "BDWS_Project")
+    inputsFolder = make_folder(projectFolder, "Inputs")
+    outDir = make_folder(projectFolder, "Output")
     bratCap = 1.0 #proportion (0-1) of maximum estimted dam capacity (from BRAT) for scenario
     bratPath = copyIntoFolder(bratPath, inputsFolder, "BRAT")
     demPath = copyIntoFolder(demPath, inputsFolder, "DEM")
@@ -50,38 +52,7 @@ def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, vertic
 
 
 def copyIntoFolder(thingToCopy, copyFolderRoot, copyFolderName):
-    copyFolder = makeFolder(copyFolderRoot, findAvailableNum(copyFolderRoot) + '_' + copyFolderName)
+    copyFolder = make_folder(copyFolderRoot, find_available_num(copyFolderRoot) + '_' + copyFolderName)
     copyPath = os.path.join(copyFolder, os.path.basename(thingToCopy))
     arcpy.Copy_management(thingToCopy, copyPath)
     return copyPath
-
-
-def makeFolder(pathToLocation, newFolderName):
-    """
-    Makes a folder and returns the path to it
-    :param pathToLocation: Where we want to put the folder
-    :param newFolderName: What the folder will be called
-    :return: String
-    """
-    newFolder = os.path.join(pathToLocation, newFolderName)
-    if not os.path.exists(newFolder):
-        os.mkdir(newFolder)
-    return newFolder
-
-
-def findAvailableNum(folderRoot):
-    """
-    Tells us the next number for a folder in the directory given
-    :param folderRoot: Where we want to look for a number
-    :return: A string, containing a number
-    """
-    takenNums = [fileName[0:2] for fileName in os.listdir(folderRoot)]
-    POSSIBLENUMS = range(1, 100)
-    for i in POSSIBLENUMS:
-        stringVersion = str(i)
-        if i < 10:
-            stringVersion = '0' + stringVersion
-        if stringVersion not in takenNums:
-            return stringVersion
-    arcpy.AddWarning("There were too many files at " + folderRoot + " to have another folder that fits our naming convention")
-    return "100"
