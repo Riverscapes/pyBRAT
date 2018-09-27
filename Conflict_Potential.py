@@ -45,8 +45,6 @@ def main(
     # RRHigh = 100
     out_network = find_oPC_Score(out_name, in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch)
 
-    addxmloutput(projPath, in_network, out_network)
-
     makeLayers(out_network)
 
 
@@ -231,31 +229,6 @@ def slopeInt(lowValue, highValue):
     b = y1 - (m * x1) # calculate y-intercept
     return [m, b]
 
-
-def addxmloutput(projPath, in_network, out_network):
-    """add the capacity output to the project xml file"""
-
-    # xml file
-    xmlfile = projPath + "/project.rs.xml"
-
-    # make sure xml file exists
-    if not os.path.exists(xmlfile):
-        raise Exception("xml file for project does not exist. Return to table builder tool.")
-
-    # open xml and add output
-    exxml = projectxml.ExistingXML(xmlfile)
-
-    realizations = exxml.rz.findall("BRAT")
-    for i in range(len(realizations)):
-        a = realizations[i].findall(".//Path")
-        for j in range(len(a)):
-            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find("02_Analyses"):]):
-                outrz = realizations[i]
-
-    exxml.addOutput("BRAT Analysis", "Vector", "BRAT Conflict Output", out_network[out_network.find("02_Analyses"):],
-                    outrz, guid=getUUID())
-
-    exxml.write()
 
 def makeLayers(out_network):
     """
