@@ -826,6 +826,7 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
               FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network, output_folder):
     """write the xml file for the project"""
     output_folder_name = os.path.basename(output_folder)
+    intermediates_folder_name = os.path.join(output_folder_name, "01_Intermediates")
     if not os.path.exists(projPath + "/project.rs.xml"):
 
         # xml file
@@ -885,7 +886,7 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
         newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="100m Buffer", path=buf_100m[buf_100m.find(output_folder_name):], guid=getUUID())
 
         # add output
-        newxml.addOutput("BRAT Analysis", "Vector", "BRAT Input Table", out_network[out_network.find("01_Intermediates"):], newxml.BRATRealizations[0], guid=getUUID())
+        newxml.addOutput("BRAT Analysis", "Vector", "BRAT Input Table", out_network[out_network.find(intermediates_folder_name):], newxml.BRATRealizations[0], guid=getUUID())
 
         # write xml to this point
         newxml.write()
@@ -1118,7 +1119,7 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
 
         # add output
         exxml.addOutput("BRAT Analysis", "Vector", "BRAT Input Table",
-                        out_network[out_network.find(output_folder_name):], exxml.BRATRealizations[0], guid=getUUID())
+                        out_network[out_network.find(intermediates_folder_name):], exxml.BRATRealizations[0], guid=getUUID())
 
         # write xml
         exxml.write()

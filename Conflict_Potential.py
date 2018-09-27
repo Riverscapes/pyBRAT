@@ -236,6 +236,8 @@ def addxmloutput(projPath, in_network, out_network):
 
     # xml file
     xmlfile = projPath + "/project.rs.xml"
+    output_folder = os.path.dirname(os.path.dirname(in_network))
+    output_folder_name = os.path.join(os.path.basename(output_folder), "02_Analyses")
 
     # make sure xml file exists
     if not os.path.exists(xmlfile):
@@ -248,10 +250,10 @@ def addxmloutput(projPath, in_network, out_network):
     for i in range(len(realizations)):
         a = realizations[i].findall(".//Path")
         for j in range(len(a)):
-            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find("02_Analyses"):]):
+            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find(output_folder_name):]):
                 outrz = realizations[i]
 
-    exxml.addOutput("BRAT Analysis", "Vector", "BRAT Conflict Output", out_network[out_network.find("02_Analyses"):],
+    exxml.addOutput("BRAT Analysis", "Vector", "BRAT Conflict Output", out_network[out_network.find(output_folder_name):],
                     outrz, guid=getUUID())
 
     exxml.write()
