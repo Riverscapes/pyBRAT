@@ -14,16 +14,14 @@ import sys
 import os
 import projectxml
 import uuid
-from SupportingFunctions import make_layer, make_folder, find_available_num
 
 
-def main(projPath, in_network):
+def main(projPath, in_network, out_name):
 
     arcpy.env.overwriteOutput = True
 
-    # out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
-    # arcpy.CopyFeatures_management(in_network, out_network)
-    out_network = in_network
+    out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+    arcpy.CopyFeatures_management(in_network, out_network)
 
     # check for oPBRC field and delete if exists
     fields = [f.name for f in arcpy.ListFields(out_network)]
@@ -95,6 +93,7 @@ def main(projPath, in_network):
     return out_network
 
 
+
 def makeLayers(out_network):
     """
     Writes the layers
@@ -102,23 +101,55 @@ def makeLayers(out_network):
     :return:
     """
     arcpy.AddMessage("Making layers...")
-    analyses_folder = os.path.dirname(out_network)
-    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Management")
+    output_folder = os.path.dirname(out_network)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    managementLayer = os.path.join(symbologyFolder, "Beaver_Management_Zones_v2.lyr")
-    managementLayer2 = os.path.join(symbologyFolder, "Dam_Building_Not_Likely.lyr")
-    managementLayer3 = os.path.join(symbologyFolder, "Restoration_Conservation_Opportunities.lyr")
+    managementLayer = os.path.join(symbologyFolder, "Management_Zones_v2_Beta.lyr")
 
-    make_layer(output_folder, out_network, "Beaver Management Zones", managementLayer, is_raster=False)
-    make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", managementLayer2, is_raster=False)
-    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", managementLayer3, is_raster=False)
+    makeLayer(output_folder, out_network, "Beaver Management Zones v2 Beta", managementLayer, isRaster=False)
 
 
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description", fileName=None):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder: Where we want to put the layer
+    :param layer_base: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
+    :return: The path to the new layer
+    """
+    new_layer = new_layer_name
+    if fileName is None:
+        fileName = new_layer_name.replace(" ", "")
+    new_layer_save = os.path.join(output_folder, fileName)
+    if not new_layer_save.endswith(".lyr"):
+        new_layer_save += ".lyr"
 
-def getUUID():
-    return str(uuid.uuid4()).upper()
+    if isRaster:
+        try:
+            arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        except arcpy.ExecuteError as err:
+            if err[0][6:12] == "000873":
+                arcpy.AddError(err)
+                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
+                raise Exception
+            else:
+                raise arcpy.ExecuteError(err)
+
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
+    if symbology_layer:
+        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
 
 
 if __name__ == '__main__':

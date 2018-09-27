@@ -100,7 +100,5 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
         arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
         new_layer_instance = arcpy.mapping.Layer(new_layer_save)
         new_layer_instance.description = description
-        if symbology_field:
-            new_layer_instance.symbology.valueField = symbology_field
         new_layer_instance.save()
     return new_layer_save
