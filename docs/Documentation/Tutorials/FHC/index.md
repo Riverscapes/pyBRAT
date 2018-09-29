@@ -3,7 +3,7 @@ title: FHC Internal
 ---
 ## About
 
-This documentation is specific to projects in the FHC....
+This page houses tutorials/documentation/etc specific to FHC and ET-AL BRAT projects....
 
 
 

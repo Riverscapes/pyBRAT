@@ -3,9 +3,10 @@ title: TNC BRAT
 weight: 2
 ---
 
-## About
+This page provides information that is specific to the TNC BRAT project
 
-This page provides information that is specific to the TNC BRAT project.
+## BRAT Table
+After running the BRAT table 
 
 ## iHyd
 
