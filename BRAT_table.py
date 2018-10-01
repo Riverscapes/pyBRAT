@@ -829,11 +829,8 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
     output_folder_name = os.path.basename(output_folder)
     intermediates_folder_name = os.path.join(output_folder_name, "01_Intermediates")
     inputs_folder = "Inputs"
-    if not os.path.exists(projPath + "/project.rs.xml"):
-
-        # xml file
-        xmlfile = projPath + "/project.rs.xml"
-
+    xmlfile = projPath + "/project.rs.xml"
+    if not os.path.exists(xmlfile):
         # initiate xml file creation
         newxml = projectxml.ProjectXML(xmlfile, "BRAT", projName)
 
@@ -849,7 +846,7 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
 
         # add first realization
         newxml.addBRATRealization("BRAT Realization 1", rid="RZ1", dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                  productVersion="3.0.3", guid=getUUID())
+                                  productVersion="3.0.17", guid=getUUID())
 
         # add inputs
         newxml.addProjectInput("Raster", "Existing Vegetation", coded_veg[coded_veg.find(inputs_folder):], iid="EXVEG1", guid=getUUID())
@@ -884,8 +881,8 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
             newxml.addBRATInput(newxml.BRATRealizations[0], "Canals", ref="CANAL1")
 
         # add derived inputs
-        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="30m Buffer", path=buf_30m[buf_30m.find(output_folder_name):], guid=getUUID())
-        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="100m Buffer", path=buf_100m[buf_100m.find(output_folder_name):], guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="30m Buffer", path=buf_30m[buf_30m.find(intermediates_folder_name):], guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="100m Buffer", path=buf_100m[buf_100m.find(intermediates_folder_name):], guid=getUUID())
 
         # add output
         newxml.addOutput("BRAT Analysis", "Vector", "BRAT Input Table", out_network[out_network.find(intermediates_folder_name):], newxml.BRATRealizations[0], guid=getUUID())
@@ -895,7 +892,6 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
 
     else:
         # xml file
-        xmlfile = projPath + "/project.rs.xml"
 
         #open existing xml
         exxml = projectxml.ExistingXML(xmlfile)
