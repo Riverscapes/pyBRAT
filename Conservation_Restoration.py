@@ -60,6 +60,11 @@ def main(projPath, in_network, out_name):
                 row[1] = 'NA'
             cursor.updateRow(row)
 
+    with arcpy.da.UpdateCursor(out_network, fields) as cursor:
+        for row in cursor:
+            row[0] = 'Negligible'
+            cursor.updateRow(row)
+
     makeLayers(out_network)
 
     return out_network
