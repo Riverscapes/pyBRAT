@@ -821,6 +821,7 @@ def calc_drain_area(DEM, inputDEM):
         arcpy.CopyRaster_management(DrainArea, os.path.dirname(inputDEM) + "/Flow/DrainArea_sqkm.tif")
 
 
+
 # write xml function
 def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
               FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network, output_folder):

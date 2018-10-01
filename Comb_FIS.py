@@ -310,7 +310,7 @@ def addxmloutput(projPath, in_network, out_network):
     exxml = projectxml.ExistingXML(xmlfile)
 
     realizations = exxml.rz.findall("BRAT")
-    arcpy.AddMessage(str(realizations))
+    outrz = None
     for i in range(len(realizations)):
         a = realizations[i].findall(".//Path")
         arcpy.AddMessage(str(a))
@@ -318,9 +318,9 @@ def addxmloutput(projPath, in_network, out_network):
             arcpy.AddMessage(a[j].text)
             if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find(intermediates_name):]):
                 outrz = realizations[i]
-
-    exxml.addOutput("BRAT Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find(analyses_name):],
-                    outrz, guid=getUUID())
+    if outrz is not None:
+        exxml.addOutput("BRAT Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find(analyses_name):],
+                        outrz, guid=getUUID())
 
     exxml.write()
 
