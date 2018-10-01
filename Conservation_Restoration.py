@@ -24,69 +24,40 @@ def main(projPath, in_network, out_name):
     out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
     arcpy.CopyFeatures_management(in_network, out_network)
 
-    # check for oPBRC field and delete if exists
+    # check for oPBRC fields and delete if exists
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "oPBRC" in fields:
-        arcpy.DeleteField_management(out_network, "oPBRC")
+    if "oPBRC_UI" in fields:
+        arcpy.DeleteField_management(out_network, "oPBRC_UI")
+    if "oPBRC_UD" in fields:
+        arcpy.DeleteField_management(out_network, "oPBRC_UD")
+    if "oPBRC_CR" in fields:
+        arcpy.DeleteField_management(out_network, "oPBRC_CR")
 
-    arcpy.AddField_management(out_network, "oPBRC", "TEXT", "", "", 100)
+    arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 25)
+    arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 50)
+    arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 25)
 
-    fields = ['oPBRC', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU', 'iPC_VLowLU']
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iGeo_Slope']
 
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-            # 'oVC_PT' Occasional, Frequent or Pervasive
-            # 'oCC_PT' None or Rare
-            if row[1] > 1 and row[3] <= 1:
-                row[0] = 'Naturally Unsuitable: Hydrologically Limited'
-            # 'OVC_PT' None or Rare
-            elif row[1] <= 1:
-                row[0] = 'Naturally Unsuitable: Vegetation Limited'
-            # 'iPC_HighLU' (i.e., Developed) > 50 or  'iPC_LowLU' + 'iPC_ModLU' (i.e., Agriculture) > 50
-            elif row[5] + row[6] > 40 or row[7] > 40:
-                # 'oCC_PT' Frequent or Pervasive
-                # 'oCC_EX' None, Rare or Occasional
-                if row[3] >= 5 and row[4] < 5:
-                    row[0] = 'Unsuitable: Anthropogenically Limited'
-                # todo: ask SS and WM if this is really what we want to assign in instances where high landuse but frequent exisitng
-                # 'oCC_PT' Pervasive
-                # 'oCC_EX' Frequent
-                elif row[3] >= 15 and row[4] >= 5 and row[4] < 15:
-                    row[0] = 'Unsuitable: Anthropogenically Limited'
-                # 'oCC_PT' Occasional
-                # 'oCC_EX' None or Rare
-                elif row[3] >= 1 and row[4] <= 1:
-                    row[0] = 'Unsuitable: Anthropogenically Limited'
+            # 'oCC_EX' None
+            if row[6] <= 0:
+                # 'oVC_EX' Occasional, Frequent, or Pervasive
+                if row[4] >= 1:
+                    # 'iGeo_Slope' >= 23%
+                    if row[7] >= 23:
+                        row[1] = 'Unsuitable: Slope Limited'
+                    # 'iGeo_Slope' < 23%
+                    else:
+                        row[1] = 'Unsuitable: Hydrologically Limited'
+                # oVC_PT' None
+                elif row[3] <= 0:
+                    row[1] = 'Unsuitable: Vegetation Limited'
                 else:
-                    row[0] = 'Unsuitable: Anthropogenically Limited'
-                    # row[0] = 'Need Categorical Definition: Highly Developed'
-            # 'iPC_HighLU' (i.e., Developed) < 10 and 'iPC_VLowLU'(i.e., Natural) > 75
-            elif row[8] > 75 and row[7] < 10:
-                # 'oCC_PT' Frequent or Pervasive
-                # 'oCC_EX' Frequent or Pervasive
-                if row[3] >= 5 and row[4] >= 5:
-                    row[0] = 'Immediate Returns: High Impact/Activity'
-                # 'oCC_PT' Occasional
-                # 'oCC_EX' Occasional
-                elif row[3] > 1 and row[3] < 5 and row[4] > 1 and row[4] < 5:
-                    row[0] = 'Immediate Returns: Moderate Impact/Activity'
-                # 'oCC_PT' Frequent or Pervasive
-                # 'oCC_EX' None, Rare, or Occasional
-                elif row[3] >= 5 and row[4] < 5:
-                    row[0] = 'Long-Term: High Potential, Short-Term: Moderate Impact'
-                # 'oCC_PT' Occasional
-                # 'oCC_EX' None or Rare
-                elif row[3] > 1 and row[3] < 5 and row[4] <= 1:
-                    row[0] = 'Long-Term: Moderate Potential, Short-Term: Unsuitable'
-                # 'oCC_PT' Occasional
-                # 'oCC_EX' Frequent or Pervasive
-                elif row[3] > 1 and row[3] < 5 and row[4] >= 5:
-                    row[0] = 'Immediate Returns: High Impact/Activity'
-                else:
-                    row[0] = 'Need Categorical Definition: Low Developed'
+                    row[1] = 'Unsuitable: Anthropogenically Limited'
             else:
-                # todo: this is more or less a 'best option' placeholder and should re-visit and create additional category
-                row[0] = 'Long-Term: Moderate Potential, Short-Term: Unsuitable'
+                row[1] = 'NA'
             cursor.updateRow(row)
 
     makeLayers(out_network)
