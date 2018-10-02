@@ -698,17 +698,16 @@ def calc_drain_area(DEM, input_DEM):
         arcpy.CopyRaster_management(drain_area, os.path.dirname(input_DEM) + "/Flow/DrainArea_sqkm.tif")
 
 
+
 # write xml function
 def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
               FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network, output_folder):
     """write the xml file for the project"""
     output_folder_name = os.path.basename(output_folder)
     intermediates_folder_name = os.path.join(output_folder_name, "01_Intermediates")
-    if not os.path.exists(projPath + "/project.rs.xml"):
-
-        # xml file
-        xmlfile = projPath + "/project.rs.xml"
-
+    inputs_folder = "Inputs"
+    xmlfile = projPath + "/project.rs.xml"
+    if not os.path.exists(xmlfile):
         # initiate xml file creation
         newxml = projectxml.ProjectXML(xmlfile, "BRAT", projName)
 
@@ -724,43 +723,43 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
 
         # add first realization
         newxml.addBRATRealization("BRAT Realization 1", rid="RZ1", dateCreated=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                  productVersion="3.0.3", guid=getUUID())
+                                  productVersion="3.0.17", guid=getUUID())
 
         # add inputs
-        newxml.addProjectInput("Raster", "Existing Vegetation", coded_veg[coded_veg.find("Inputs"):], iid="EXVEG1", guid=getUUID())
+        newxml.addProjectInput("Raster", "Existing Vegetation", coded_veg[coded_veg.find(inputs_folder):], iid="EXVEG1", guid=getUUID())
         newxml.addBRATInput(newxml.BRATRealizations[0], "Existing Vegetation", ref="EXVEG1")
-        newxml.addProjectInput("Raster", "Historic Vegetation", coded_hist[coded_hist.find("Inputs"):], iid="HISTVEG1", guid=getUUID())
+        newxml.addProjectInput("Raster", "Historic Vegetation", coded_hist[coded_hist.find(inputs_folder):], iid="HISTVEG1", guid=getUUID())
         newxml.addBRATInput(newxml.BRATRealizations[0], "Historic Vegetation", ref="HISTVEG1")
-        newxml.addProjectInput("Vector", "Segmented Network", seg_network[seg_network.find("Inputs"):], iid="NETWORK1", guid=getUUID())
+        newxml.addProjectInput("Vector", "Segmented Network", seg_network[seg_network.find(inputs_folder):], iid="NETWORK1", guid=getUUID())
         newxml.addBRATInput(newxml.BRATRealizations[0], "Network", ref="NETWORK1")
-        newxml.addProjectInput("DEM", "DEM", inDEM[inDEM.find("Inputs"):], iid="DEM1", guid=getUUID())
+        newxml.addProjectInput("DEM", "DEM", inDEM[inDEM.find(inputs_folder):], iid="DEM1", guid=getUUID())
         newxml.addBRATInput(newxml.BRATRealizations[0], "DEM", ref="DEM1")
 
         # add optional inputs
         if FlowAcc is None:
-            newxml.addBRATInput(newxml.BRATRealizations[0], "Flow", name="Drainage Area", path=DrAr[DrAr.find("Inputs"):], guid=getUUID())
+            newxml.addBRATInput(newxml.BRATRealizations[0], "Flow", name="Drainage Area", path=DrAr[DrAr.find(inputs_folder):], guid=getUUID())
         else:
-            newxml.addProjectInput("Raster", "Drainage Area", DrAr[DrAr.find("Inputs"):], iid="DA1", guid=getUUID())
+            newxml.addProjectInput("Raster", "Drainage Area", DrAr[DrAr.find(inputs_folder):], iid="DA1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Flow", ref="DA1")
         if landuse is not None:
-            newxml.addProjectInput("Raster", "Land Use", landuse[landuse.find("Inputs"):], iid="LU1", guid=getUUID())
+            newxml.addProjectInput("Raster", "Land Use", landuse[landuse.find(inputs_folder):], iid="LU1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Land Use", ref="LU1")
         if valley_bottom is not None:
-            newxml.addProjectInput("Vector", "Valley Bottom", valley_bottom[valley_bottom.find("Inputs"):], iid="VALLEY1", guid=getUUID())
+            newxml.addProjectInput("Vector", "Valley Bottom", valley_bottom[valley_bottom.find(inputs_folder):], iid="VALLEY1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Valley", ref="VALLEY1")
         if road is not None:
-            newxml.addProjectInput("Vector", "Roads", road[road.find("Inputs"):], iid="ROAD1", guid=getUUID())
+            newxml.addProjectInput("Vector", "Roads", road[road.find(inputs_folder):], iid="ROAD1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Roads", ref="ROAD1")
         if railroad is not None:
-            newxml.addProjectInput("Vector", "Railroads", railroad[railroad.find("Inputs"):], iid="RR1", guid=getUUID())
+            newxml.addProjectInput("Vector", "Railroads", railroad[railroad.find(inputs_folder):], iid="RR1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Railroads", ref="RR1")
         if canal is not None:
-            newxml.addProjectInput("Vector", "Canals", canal[canal.find("Inputs"):], iid="CANAL1", guid=getUUID())
+            newxml.addProjectInput("Vector", "Canals", canal[canal.find(inputs_folder):], iid="CANAL1", guid=getUUID())
             newxml.addBRATInput(newxml.BRATRealizations[0], "Canals", ref="CANAL1")
 
         # add derived inputs
-        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="30m Buffer", path=buf_30m[buf_30m.find(output_folder_name):], guid=getUUID())
-        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="100m Buffer", path=buf_100m[buf_100m.find(output_folder_name):], guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="30m Buffer", path=buf_30m[buf_30m.find(intermediates_folder_name):], guid=getUUID())
+        newxml.addBRATInput(newxml.BRATRealizations[0], "Buffer", name="100m Buffer", path=buf_100m[buf_100m.find(intermediates_folder_name):], guid=getUUID())
 
         # add output
         newxml.addOutput("BRAT Analysis", "Vector", "BRAT Input Table", out_network[out_network.find(intermediates_folder_name):], newxml.BRATRealizations[0], guid=getUUID())
@@ -770,7 +769,6 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
 
     else:
         # xml file
-        xmlfile = projPath + "/project.rs.xml"
 
         #open existing xml
         exxml = projectxml.ExistingXML(xmlfile)
