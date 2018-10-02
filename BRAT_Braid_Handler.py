@@ -154,16 +154,16 @@ def addStreamToClusters(clusters, polyline, stream_id, drainageArea):
     newStream = BraidStream(polyline, stream_id, drainageArea)
     connectedClusters = findConnectedClusters(clusters, newStream)
 
-    if len(connectedClusters) == 0:
+    if len(connectedClusters) == 0:  # If there's no connecting cluster, make a new cluster
         global cluster_id # Allows us to modify cluster_id, so it always keeps count properly
         new_cluster = Cluster(cluster_id)
         cluster_id += 1
         new_cluster.addStream(newStream)
         clusters.append(new_cluster)
-    elif len(connectedClusters) == 1:
+    elif len(connectedClusters) == 1:  # if there's only one cluster that touches our stream, add the stream to that cluster
         i = connectedClusters[0]
         clusters[i].addStream(newStream)
-    elif len(connectedClusters) == 2:
+    elif len(connectedClusters) == 2:  # If there are two clusters that we touch, we merge those two clusters, while also adding our new stream
         cluster_one = clusters[connectedClusters[0]]
         cluster_two = clusters[connectedClusters[1]]
         new_cluster = mergeClusters(cluster_one, cluster_two, newStream)
