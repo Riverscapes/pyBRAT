@@ -312,9 +312,7 @@ def addxmloutput(projPath, in_network, out_network):
     arcpy.AddMessage(str(realizations))
     for i in range(len(realizations)):
         a = realizations[i].findall(".//Path")
-        arcpy.AddMessage(str(a))
         for j in range(len(a)):
-            arcpy.AddMessage(a[j].text)
             if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find(intermediates_name):]):
                 outrz = realizations[i]
 
