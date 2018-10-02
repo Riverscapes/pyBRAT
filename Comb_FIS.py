@@ -314,7 +314,6 @@ def addxmloutput(projPath, in_network, out_network):
     exxml = projectxml.ExistingXML(xmlfile)
 
     realizations = exxml.rz.findall("BRAT")
-    arcpy.AddMessage(str(realizations))
     for i in range(len(realizations)):
         a = realizations[i].findall(".//Path")
         for j in range(len(a)):
