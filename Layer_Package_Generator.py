@@ -627,6 +627,14 @@ def find_layers_in_folder(folder_root):
     return layers
 
 
+def change_layer_source(layer_path, new_source=None):
+    """
+    Changes the layer source to a clipped version
+    :param layer_path:
+    :param new_source: The new source
+    :return:
+    """
+
 
 def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
     """

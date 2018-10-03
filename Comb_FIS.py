@@ -17,7 +17,6 @@ import os
 import sys
 import projectxml
 import uuid
-import xml.etree.ElementTree as ET
 from SupportingFunctions import make_layer, make_folder, find_available_num
 
 def main(
@@ -25,6 +24,7 @@ def main(
     in_network,
     max_DA_thresh,
     out_name):
+
 
     scratch = 'in_memory'
 
@@ -47,7 +47,6 @@ def main(
 
     addxmloutput(projPath, in_network, out_network)
 
-
 # combined fis function
 def combFIS(in_network, model_run, scratch, max_DA_thresh):
     arcpy.env.overwriteOutput = True
@@ -59,11 +58,11 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     if model_run == 'pt':
         out_field = "oCC_PT"
         veg_field = "oVC_PT"
-        mcc_field = "mCC_PT_Ct"
+        mcc_field = "mCC_PT_CT"
     else:
         out_field = "oCC_EX"
         veg_field = "oVC_EX"
-        mcc_field = "mCC_EX_Ct"
+        mcc_field = "mCC_EX_CT"
 
     # check for oCC_* field in the network attribute table and delete if exists
     if out_field in fields:
@@ -276,26 +275,36 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     for item in items:
         del item
 
-    # calculate dam count (mCC_**_Ct) for each reach as density * reach length
-    arcpy.AddField_management(in_network, mcc_field, 'DOUBLE')
+    # calculate dam count (mCC_**_CT) for each reach as number of dams * reach length (in km)
+    arcpy.AddField_management(in_network, mcc_field, 'SHORT')
     with arcpy.da.UpdateCursor(in_network, [mcc_field, out_field, 'iGeo_Len']) as cursor:
         for row in cursor:
-            len_km = row[2] * 0.001
-            row[0] = row[1] * len_km
+            len_km = row[2] / 1000
+            raw_ct = row[1] * len_km
+            if raw_ct > 0 and raw_ct < 1:
+                row[0] = 1
+            else:
+                row[0] = round(raw_ct)
             cursor.updateRow(row)
 
-    # if model_run == 'ex':
-    #     arcpy.AddField_management(in_network, 'mCC_EX_PT', 'DOUBLE')
-    #     with arcpy.da.UpdateCursor(in_network, ['mCC_EX_PT', 'mCC_EX_Ct', 'mCC_PT_Ct']) as cursor:
-    #         for row in cursor:
-    #             row[0] = row[1] / row[2]
-    #             cursor.updateRow(row)
+    # calculate dam count historic departure as difference between potential count and existing count
+    if model_run == 'ex':
+        arcpy.AddField_management(in_network, 'mCC_HisDep', 'SHORT')
+        with arcpy.da.UpdateCursor(in_network, ['mCC_HisDep', 'mCC_EX_CT', 'mCC_PT_CT']) as cursor:
+            for row in cursor:
+                row[0] = row[2] - row[1]
+                cursor.updateRow(row)
 
 def addxmloutput(projPath, in_network, out_network):
     """add the capacity output to the project xml file"""
 
     # xml file
     xmlfile = projPath + "/project.rs.xml"
+
+    out_folder = os.path.dirname(os.path.dirname(out_network))
+    out_folder_name = os.path.basename(out_folder)
+    intermediates_name = os.path.join(out_folder_name, "01_Intermediates")
+    analyses_name = os.path.join(out_folder_name, "02_Analyses")
 
     # make sure xml file exists
     if not os.path.exists(xmlfile):
@@ -305,14 +314,15 @@ def addxmloutput(projPath, in_network, out_network):
     exxml = projectxml.ExistingXML(xmlfile)
 
     realizations = exxml.rz.findall("BRAT")
+    outrz = None
     for i in range(len(realizations)):
         a = realizations[i].findall(".//Path")
         for j in range(len(a)):
-            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find("02_Analyses"):]):
+            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find(intermediates_name):]):
                 outrz = realizations[i]
-
-    exxml.addOutput("BRAT Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find("02_Analyses"):],
-                    outrz, guid=getUUID())
+    if outrz is not None:
+        exxml.addOutput("BRAT Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find(analyses_name):],
+                        outrz, guid=getUUID())
 
     exxml.write()
 

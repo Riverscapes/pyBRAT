@@ -18,191 +18,192 @@ import sys
 from SupportingFunctions import make_folder, make_layer
 
 
-def main(projPath, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
+def main(proj_path, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
-    arcpy.env.workspace = projPath
+    arcpy.env.workspace = proj_path
 
-    if not os.path.exists(projPath):
-        os.mkdir(projPath)
+    if not os.path.exists(proj_path):
+        os.mkdir(proj_path)
 
-    inputsFolder = make_folder(projPath, "Inputs")
+    inputs_folder = make_folder(proj_path, "Inputs")
 
-    vegetationFolder = make_folder(inputsFolder, "01_Vegetation")
-    networkFolder = make_folder(inputsFolder, "02_Network")
-    topoFolder = make_folder(inputsFolder, "03_Topography")
-    anthropogenicFolder = make_folder(inputsFolder, "04_Anthropogenic")
+    vegetation_folder = make_folder(inputs_folder, "01_Vegetation")
+    network_folder = make_folder(inputs_folder, "02_Network")
+    topo_folder = make_folder(inputs_folder, "03_Topography")
+    anthropogenic_folder = make_folder(inputs_folder, "04_Anthropogenic")
 
-    exVegFolder = make_folder(vegetationFolder, "01_ExistingVegetation")
-    histVegFolder = make_folder(vegetationFolder, "02_HistoricVegetation")
+    ex_veg_folder = make_folder(vegetation_folder, "01_ExistingVegetation")
+    hist_veg_folder = make_folder(vegetation_folder, "02_HistoricVegetation")
 
-    valleyBottomFolder = make_folder(anthropogenicFolder, "01_ValleyBottom")
-    roadFolder = make_folder(anthropogenicFolder, "02_Roads")
-    railroadFolder = make_folder(anthropogenicFolder, "03_Railroads")
-    canalsFolder = make_folder(anthropogenicFolder, "04_Canals")
-    landUseFolder = make_folder(anthropogenicFolder, "05_LandUse")
-    landOwnershipFolder = make_folder(anthropogenicFolder, "06_LandOwnership")
+    valley_bottom_folder = make_folder(anthropogenic_folder, "01_ValleyBottom")
+    road_folder = make_folder(anthropogenic_folder, "02_Roads")
+    railroad_folder = make_folder(anthropogenic_folder, "03_Railroads")
+    canals_folder = make_folder(anthropogenic_folder, "04_Canals")
+    land_use_folder = make_folder(anthropogenic_folder, "05_LandUse")
+    land_ownership_folder = make_folder(anthropogenic_folder, "06_LandOwnership")
 
-    sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
+    source_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(source_code_folder, 'BRATSymbology')
 
     # Gets all of our symbology variables set up
-    exVegSuitabilitySymbology = os.path.join(symbologyFolder, "Existing_Veg_Suitability.lyr")
-    exVegRiparianSymbology = os.path.join(symbologyFolder, "Existing_Veg_Riparian.lyr")
-    exVegEVTTypeSymbology = os.path.join(symbologyFolder, "Existing_Veg_EVT_Type.lyr")
-    exVegEVTClassSymbology = os.path.join(symbologyFolder, "Existing_Veg_EVT_Class.lyr")
-    exVegClassNameSymbology = os.path.join(symbologyFolder, "Existing_Veg_ClassName.lyr")
+    ex_veg_suitability_symbology = os.path.join(symbology_folder, "Existing_Veg_Suitability.lyr")
+    ex_veg_riparian_symbology = os.path.join(symbology_folder, "Existing_Veg_Riparian.lyr")
+    ex_veg_evt_type_symbology = os.path.join(symbology_folder, "Existing_Veg_EVT_Type.lyr")
+    ex_veg_evt_class_symbology = os.path.join(symbology_folder, "Existing_Veg_EVT_Class.lyr")
+    ex_veg_class_name_symbology = os.path.join(symbology_folder, "Existing_Veg_ClassName.lyr")
 
-    histVegGroupSymbology = os.path.join(symbologyFolder, "Historic_Veg_BPS_Type.lyr")
-    histVegBPSNameSymbology = os.path.join(symbologyFolder, "Historic_Veg_BPS_Name.lyr")
-    histVegSuitabilitySymbology = os.path.join(symbologyFolder, "Historic_Veg_Suitability.lyr")
-    histVegRiparianSymbology = os.path.join(symbologyFolder, "Historic_Veg_Riparian.lyr")
+    hist_veg_group_symbology = os.path.join(symbology_folder, "Historic_Veg_BPS_Type.lyr")
+    hist_veg_bps_name_symbology = os.path.join(symbology_folder, "Historic_Veg_BPS_Name.lyr")
+    hist_veg_suitability_symbology = os.path.join(symbology_folder, "Historic_Veg_Suitability.lyr")
+    hist_veg_riparian_symbology = os.path.join(symbology_folder, "Historic_Veg_Riparian.lyr")
 
-    networkSymbology = os.path.join(symbologyFolder, "Network.lyr")
-    landuseSymbology = os.path.join(symbologyFolder, "Land_Use_Raster.lyr")
-    landOwnershipSymbology = os.path.join(symbologyFolder, "SurfaceManagementAgency.lyr")
-    canalsSymbology = os.path.join(symbologyFolder, "Canals.lyr")
-    roadsSymbology = os.path.join(symbologyFolder, "Roads.lyr")
-    railroadsSymbology = os.path.join(symbologyFolder, "Railroads.lyr")
-    valleyBottomSymbology = os.path.join(symbologyFolder, "ValleyBottom.lyr")
-    valleyBottomOutlineSymbology = os.path.join(symbologyFolder, "ValleyBottom_Outline.lyr")
-    flowDirectionSymbology = os.path.join(symbologyFolder, "Network_FlowDirection.lyr")
+    network_symbology = os.path.join(symbology_folder, "Network.lyr")
+    landuse_symbology = os.path.join(symbology_folder, "Land_Use_Raster.lyr")
+    land_ownership_symbology = os.path.join(symbology_folder, "SurfaceManagementAgency.lyr")
+    canals_symbology = os.path.join(symbology_folder, "Canals.lyr")
+    roads_symbology = os.path.join(symbology_folder, "Roads.lyr")
+    railroads_symbology = os.path.join(symbology_folder, "Railroads.lyr")
+    valley_bottom_symbology = os.path.join(symbology_folder, "ValleyBottom.lyr")
+    valley_bottom_outline_symbology = os.path.join(symbology_folder, "ValleyBottom_Outline.lyr")
+    flow_direction_symbology = os.path.join(symbology_folder, "Network_FlowDirection.lyr")
 
     # add the existing veg inputs to project
-    exVegDestinations = copyMultiInputToFolder(exVegFolder, ex_veg, "Ex_Veg", isRaster=True)
-    makeInputLayers(exVegDestinations, "Existing Vegetation Suitability for Beaver Dam Building", symbologyLayer=exVegSuitabilitySymbology, isRaster=True, fileName="ExVegSuitability")
-    makeInputLayers(exVegDestinations, "Existing Riparian", symbologyLayer=exVegRiparianSymbology, isRaster=True, checkField="EVT_PHYS")
-    makeInputLayers(exVegDestinations, "Veg Type - EVT Type", symbologyLayer=exVegEVTTypeSymbology, isRaster=True, checkField="EVT_PHYS")
-    makeInputLayers(exVegDestinations, "Veg Type - EVT Class", symbologyLayer=exVegEVTClassSymbology, isRaster=True)
-    # makeInputLayers(exVegDestinations, "Veg Type - EVT Class Name", symbologyLayer=exVegClassNameSymbology, isRaster=True)
+    ex_veg_destinations = copy_multi_input_to_folder(ex_veg_folder, ex_veg, "Ex_Veg", is_raster=True)
+    make_input_layers(ex_veg_destinations, "Existing Vegetation Suitability for Beaver Dam Building", symbology_layer=ex_veg_suitability_symbology, is_raster=True, file_name="ExVegSuitability")
+    make_input_layers(ex_veg_destinations, "Existing Riparian", symbology_layer=ex_veg_riparian_symbology, is_raster=True, check_field="EVT_PHYS")
+    make_input_layers(ex_veg_destinations, "Veg Type - EVT Type", symbology_layer=ex_veg_evt_type_symbology, is_raster=True, check_field="EVT_PHYS")
+    make_input_layers(ex_veg_destinations, "Veg Type - EVT Class", symbology_layer=ex_veg_evt_class_symbology, is_raster=True)
+    make_input_layers(ex_veg_destinations, "Veg Type - EVT Class Name", symbology_layer=ex_veg_class_name_symbology, is_raster=True)
 
 
     # add the historic veg inputs to project
-    histVegDestinations = copyMultiInputToFolder(histVegFolder, hist_veg, "Hist_Veg", isRaster=True)
-    makeInputLayers(histVegDestinations, "Historic Vegetation Suitability for Beaver Dam Building", symbologyLayer=histVegSuitabilitySymbology, isRaster=True, fileName="HistVegSuitability")
-    makeInputLayers(histVegDestinations, "Veg Type - BPS Type", symbologyLayer=histVegGroupSymbology, isRaster=True, checkField="GROUPVEG")
-    makeInputLayers(histVegDestinations, "Veg Type - BPS Name", symbologyLayer=histVegBPSNameSymbology, isRaster=True)
-    makeInputLayers(histVegDestinations, "Historic Riparian", symbologyLayer=histVegRiparianSymbology, isRaster=True, checkField="GROUPVEG")
+    hist_veg_destinations = copy_multi_input_to_folder(hist_veg_folder, hist_veg, "Hist_Veg", is_raster=True)
+    make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name="HistVegSuitability")
+    make_input_layers(hist_veg_destinations, "Veg Type - BPS Type", symbology_layer=hist_veg_group_symbology, is_raster=True, check_field="GROUPVEG")
+    make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_bps_name_symbology, is_raster=True)
+    make_input_layers(hist_veg_destinations, "Historic Riparian", symbology_layer=hist_veg_riparian_symbology, is_raster=True, check_field="GROUPVEG")
 
 
     # add the network inputs to project
-    networkDestinations = copyMultiInputToFolder(networkFolder, network, "Network", isRaster=False)
-    makeInputLayers(networkDestinations, "Network", symbologyLayer=networkSymbology, isRaster=False)
-    makeInputLayers(networkDestinations, "Flow Direction", symbologyLayer=flowDirectionSymbology, isRaster=False)
+    network_destinations = copy_multi_input_to_folder(network_folder, network, "Network", is_raster=False)
+    make_input_layers(network_destinations, "Network", symbology_layer=network_symbology, is_raster=False)
+    make_input_layers(network_destinations, "Flow Direction", symbology_layer=flow_direction_symbology, is_raster=False)
 
     # add the DEM inputs to the project
-    copyMultiInputToFolder(topoFolder, DEM, "DEM", isRaster=True)
-    makeTopoLayers(topoFolder)
+    copy_multi_input_to_folder(topo_folder, DEM, "DEM", is_raster=True)
+    make_topo_layers(topo_folder)
 
     # add landuse raster to the project
     if landuse is not None:
-        landuseDestinations = copyMultiInputToFolder(landUseFolder, landuse, "Land_Use", isRaster=True)
-        makeInputLayers(landuseDestinations, "Land Use Raster", symbologyLayer=landuseSymbology, isRaster=True)
+        landuse_destinations = copy_multi_input_to_folder(land_use_folder, landuse, "Land_Use", is_raster=True)
+        make_input_layers(landuse_destinations, "Land Use Raster", symbology_layer=landuse_symbology, is_raster=True)
 
     # add the conflict inputs to the project
     if valley is not None:
-        vallyBottomDestinations = copyMultiInputToFolder(valleyBottomFolder, valley, "Valley", isRaster=False)
-        makeInputLayers(vallyBottomDestinations, "Valley Bottom Fill", symbologyLayer=valleyBottomSymbology, isRaster=False)
-        makeInputLayers(vallyBottomDestinations, "Valley Bottom Outline", symbologyLayer=valleyBottomOutlineSymbology, isRaster=False)
+        vally_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
+        make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
+        make_input_layers(vally_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
 
     # add road layers to the project
     if road is not None:
-        roadDestinations = copyMultiInputToFolder(roadFolder, road, "Roads", isRaster=False)
-        makeInputLayers(roadDestinations, "Roads", symbologyLayer=roadsSymbology, isRaster=False)
+        road_destinations = copy_multi_input_to_folder(road_folder, road, "Roads", is_raster=False)
+        make_input_layers(road_destinations, "Roads", symbology_layer=roads_symbology, is_raster=False)
 
     # add railroad layers to the project
     if rr is not None:
-        rrDestinations = copyMultiInputToFolder(railroadFolder, rr, "Railroads", isRaster=False)
-        makeInputLayers(rrDestinations, "Railroads", symbologyLayer=railroadsSymbology, isRaster=False)
+        rr_destinations = copy_multi_input_to_folder(railroad_folder, rr, "Railroads", is_raster=False)
+        make_input_layers(rr_destinations, "Railroads", symbology_layer=railroads_symbology, is_raster=False)
 
     # add canal layers to the project
     if canal is not None:
-        canalDestinations = copyMultiInputToFolder(canalsFolder, canal, "Canals", isRaster=False)
-        makeInputLayers(canalDestinations, "Canals", symbologyLayer=canalsSymbology, isRaster=False)
+        canal_destinations = copy_multi_input_to_folder(canals_folder, canal, "Canals", is_raster=False)
+        make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
 
     # add land ownership layers to the project
     if ownership is not None:
-        ownershipDestinations = copyMultiInputToFolder(landOwnershipFolder, ownership, "Land_Ownership", isRaster=False)
-        makeInputLayers(ownershipDestinations, "Land Ownership", symbologyLayer=landOwnershipSymbology, isRaster=False)
+        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land_Ownership", is_raster=False)
+        make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
 
-def copyMultiInputToFolder(folderPath, multiInput, subFolderName, isRaster):
+
+def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_raster):
     """
     Copies multi input ArcGIS inputs into the folder that we want them in
-    :param folderPath: The root folder, where we'll put a bunch of sub folders
-    :param multiInput: A string, with paths to the inputs seperated by semicolons
-    :param subFolderName: The name for each subfolder (will have a number after it)
-    :param isRaster: Tells us if the thing is a raster or not
+    :param folder_path: The root folder, where we'll put a bunch of sub folders
+    :param multi_input: A string, with paths to the inputs seperated by semicolons
+    :param sub_folder_name: The name for each subfolder (will have a number after it)
+    :param is_raster: Tells us if the thing is a raster or not
     :return:
     """
-    splitInput = multiInput.split(";")
+    split_input = multi_input.split(";")
     i = 1
     destinations = []
-    for inputPath in splitInput:
-        newSubFolder = make_folder(folderPath, subFolderName + "_" + str(i))
-        destinationPath = os.path.join(newSubFolder, os.path.basename(inputPath))
+    for input_path in split_input:
+        new_sub_folder = make_folder(folder_path, sub_folder_name + "_" + str(i))
+        destination_path = os.path.join(new_sub_folder, os.path.basename(input_path))
 
-        if isRaster:
-            arcpy.CopyRaster_management(inputPath, destinationPath)
+        if is_raster:
+            arcpy.CopyRaster_management(input_path, destination_path)
         else:
-            arcpy.Copy_management(inputPath, destinationPath)
-        destinations.append(destinationPath)
+            arcpy.Copy_management(input_path, destination_path)
+        destinations.append(destination_path)
         i += 1
     return destinations
 
 
-def makeTopoLayers(topoFolder):
+def make_topo_layers(topo_folder):
     """
     Writes the layers
-    :param topoFolder: We want to make layers for the stuff in this folder
+    :param topo_folder: We want to make layers for the stuff in this folder
     :return:
     """
-    sourceCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(sourceCodeFolder, 'BRATSymbology')
-    demSymbology = os.path.join(symbologyFolder, "DEM.lyr")
-    slopeSymbology = os.path.join(symbologyFolder, "Slope.lyr")
-    hillshadeSymbology = os.path.join(symbologyFolder, "Hillshade.lyr")
+    source_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(source_code_folder, 'BRATSymbology')
+    dem_symbology = os.path.join(symbology_folder, "DEM.lyr")
+    slope_symbology = os.path.join(symbology_folder, "Slope.lyr")
+    hillshade_symbology = os.path.join(symbology_folder, "Hillshade.lyr")
 
-    for folder in os.listdir(topoFolder):
-        demFolderPath = os.path.join(topoFolder, folder)
-        demFile = None
-        for fileName in os.listdir(demFolderPath):
-            if fileName.endswith(".tif"):
-                demFile = os.path.join(demFolderPath, fileName)
-                make_layer(demFolderPath, demFile, "DEM", demSymbology, is_raster=True)
+    for folder in os.listdir(topo_folder):
+        dem_folder_path = os.path.join(topo_folder, folder)
+        dem_file = None
+        for file_name in os.listdir(dem_folder_path):
+            if file_name.endswith(".tif"):
+                dem_file = os.path.join(dem_folder_path, file_name)
+                make_layer(dem_folder_path, dem_file, "DEM", dem_symbology, is_raster=True)
 
-        hillshadeFolder = make_folder(demFolderPath, "Hillshade")
-        hillshadeFile = os.path.join(hillshadeFolder, "Hillshade.tif")
-        arcpy.HillShade_3d(demFile, hillshadeFile)
-        make_layer(hillshadeFolder, hillshadeFile, "Hillshade", hillshadeSymbology, is_raster=True)
+        hillshade_folder = make_folder(dem_folder_path, "Hillshade")
+        hillshade_file = os.path.join(hillshade_folder, "Hillshade.tif")
+        arcpy.HillShade_3d(dem_file, hillshade_file)
+        make_layer(hillshade_folder, hillshade_file, "Hillshade", hillshade_symbology, is_raster=True)
 
-        slopeFolder = make_folder(demFolderPath, "Slope")
-        slopeFile = os.path.join(slopeFolder, "Slope.tif")
-        outSlope = arcpy.sa.Slope(demFile)
-        outSlope.save(slopeFile)
-        make_layer(slopeFolder, slopeFile, "Slope", slopeSymbology, is_raster=True)
+        slope_folder = make_folder(dem_folder_path, "Slope")
+        slope_file = os.path.join(slope_folder, "Slope.tif")
+        out_slope = arcpy.sa.Slope(dem_file)
+        out_slope.save(slope_file)
+        make_layer(slope_folder, slope_file, "Slope", slope_symbology, is_raster=True)
 
 
-def makeInputLayers(destinations, layerName, isRaster, symbologyLayer=None, fileName=None, checkField=None):
+def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None, file_name=None, check_field=None):
     """
     Makes the layers for everything in the folder
     :param destinations: A list of paths to our input
-    :param layerName: The name of the layer
-    :param isRaster: Whether or not it's a raster
-    :param symbologyLayer: The base for the symbology
-    :param fileName: The name for the file (if it's different from the layerName)
-    :param checkField: The name of the field that the symbology is based on
+    :param layer_name: The name of the layer
+    :param is_raster: Whether or not it's a raster
+    :param symbology_layer: The base for the symbology
+    :param file_name: The name for the file (if it's different from the layerName)
+    :param check_field: The name of the field that the symbology is based on
     :return:
     """
-    # if fileName == None:
-    #     fileName = layerName
+    if file_name is None:
+        file_name = layer_name
     for destination in destinations:
-        destDirName = os.path.dirname(destination)
-        if checkField:
+        dest_dir_name = os.path.dirname(destination)
+        if check_field:
             fields = [f.name for f in arcpy.ListFields(destination)]
-            if checkField not in fields:
+            if check_field not in fields:
                 # Stop execution if the field we're checking for is not in the layer base
                 return
-        make_layer(destDirName, destination, layerName, symbology_layer=symbologyLayer, is_raster=isRaster, file_name=fileName)
+        make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster, file_name=file_name)
 
 
 if __name__ == '__main__':
