@@ -6,7 +6,8 @@ weight: 2
 This page provides information that is specific to the TNC BRAT project
 
 ## BRAT Table
-After running the BRAT table 
+- After running the BRAT table tool follow the 'Steps' outlined [here](http://brat.riverscapes.xyz/Documentation/Tutorials/FHC/1-MultiChannelEditing.html) before proceeding to the iHyd tool
+- A spreadsheet with the HUC8 basins with major rivers crossing into them and the upstream DA values can be found on Box [here](https://usu.box.com/s/r820gmob2qavx9dwprebker27ff69bu2).
 
 ## iHyd
 
