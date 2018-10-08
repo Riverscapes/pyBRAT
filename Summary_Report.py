@@ -26,7 +26,7 @@ def main(bratOutput, dams, outputName):
     arcpy.Delete_management(outNetwork)
 
     damFields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
-    otherFields = ['Ex_Categor', 'Pt_Categor', 'mCC_EX_Ct', 'mCC_PT_Ct', 'mCC_EXtoPT']
+    otherFields = ['Ex_Categor', 'Pt_Categor', 'mCC_EXtoPT']
     newFields = damFields + otherFields
 
     inputFields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_PT']
@@ -120,12 +120,6 @@ def setOtherAttributes(outputPath, fields):
 
             # Handles Pt_Categor
             row[1] = handleCategory(oCC_PT)
-
-            # Handles mCC_EX_Ct
-            row[2] = (oCC_EX * segLength) / 1000
-
-            # Handles mCC_PT_Ct
-            row[3] = (oCC_PT * segLength) / 1000
 
             # Handles mCC_EXtoPT
             if oCC_PT != 0:

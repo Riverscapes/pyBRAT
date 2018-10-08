@@ -716,7 +716,7 @@ class Layer_Package_Generator_tool(object):
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param1.filter.list = ["Polyline"]
+        param2.filter.list = ["Polyline"]
 
         return [param0, param1, param2]
 
