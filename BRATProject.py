@@ -16,9 +16,12 @@ import os
 import arcpy
 import sys
 from SupportingFunctions import make_folder, make_layer
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(proj_path, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
+def main(proj_path, proj_name, huc_ID, huc_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
@@ -91,39 +94,49 @@ def main(proj_path, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, c
     make_input_layers(network_destinations, "Flow Direction", symbology_layer=flow_direction_symbology, is_raster=False)
 
     # add the DEM inputs to the project
-    copy_multi_input_to_folder(topo_folder, DEM, "DEM", is_raster=True)
+    dem_destinations = copy_multi_input_to_folder(topo_folder, DEM, "DEM", is_raster=True)
     make_topo_layers(topo_folder)
 
     # add landuse raster to the project
+    landuse_destinations = None
     if landuse is not None:
         landuse_destinations = copy_multi_input_to_folder(land_use_folder, landuse, "Land_Use", is_raster=True)
         make_input_layers(landuse_destinations, "Land Use Raster", symbology_layer=landuse_symbology, is_raster=True)
 
     # add the conflict inputs to the project
+    valley_bottom_destinations = None
     if valley is not None:
         vally_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
         make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
         make_input_layers(vally_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
 
     # add road layers to the project
+    road_destinations = None
     if road is not None:
         road_destinations = copy_multi_input_to_folder(road_folder, road, "Roads", is_raster=False)
         make_input_layers(road_destinations, "Roads", symbology_layer=roads_symbology, is_raster=False)
 
     # add railroad layers to the project
+    rr_destinations = None
     if rr is not None:
         rr_destinations = copy_multi_input_to_folder(railroad_folder, rr, "Railroads", is_raster=False)
         make_input_layers(rr_destinations, "Railroads", symbology_layer=railroads_symbology, is_raster=False)
 
     # add canal layers to the project
+    canal_destinations = None
     if canal is not None:
         canal_destinations = copy_multi_input_to_folder(canals_folder, canal, "Canals", is_raster=False)
         make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
 
     # add land ownership layers to the project
+    ownership_destinations = None
     if ownership is not None:
         ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land Ownership", is_raster=False)
         make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
+
+    write_xml(proj_path, proj_name, huc_ID, huc_name, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations, valley_bottom_destinations,
+              road_destinations, rr_destinations, canal_destinations, ownership_destinations)
+
 
 def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_raster):
     """
@@ -203,6 +216,37 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
                 # Stop execution if the field we're checking for is not in the layer base
                 return
         make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster, file_name=file_name)
+
+
+
+def write_xml(project_root, proj_name, huc_ID, huc_name,  ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
+              valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations):
+    """
+    Creates an
+    :param project_root:
+    :param ex_veg_destinations:
+    :param hist_veg_destinations:
+    :param dem_destinations:
+    :param landuse_destinations:
+    :param valley_bottom_destinations:
+    :param road_destinations:
+    :param rr_destinations:
+    :param canal_destinations:
+    :param ownership_destinations:
+    :return:
+    """
+    xml_file = project_root + "\project.rs.xml"
+    if os.path.exists(xml_file):
+        os.remove(xml_file)
+
+    new_xml_file = XMLBuilder(xml_file, "Project", [("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"),
+                                                    ("xsi:noNamespaceSchemaLocation","https://raw.githubusercontent.com/Riverscapes/Program/master/Project/XSD/V1/Project.xsd")])
+    if proj_name == None:
+        proj_name = os.path.basename(project_root)
+    new_xml_file.add_sub_element(new_xml_file.root, "Name", proj_name)
+    new_xml_file.add_sub_element(new_xml_file.root, "ProjectType", "BRAT")
+
+    new_xml_file.write()
 
 
 if __name__ == '__main__':

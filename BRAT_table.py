@@ -15,10 +15,9 @@ import os
 import sys
 import projectxml
 import datetime
-import uuid
 import FindBraidedNetwork
 import BRAT_Braid_Handler
-from SupportingFunctions import make_layer, make_folder
+from SupportingFunctions import make_layer, make_folder, getUUID
 
 reload(FindBraidedNetwork)
 reload(BRAT_Braid_Handler)
@@ -1170,10 +1169,6 @@ def run_tests(seg_network_copy, is_verbose):
         test_exceptions.append(str(e))
 
     report_exceptions(test_exceptions)
-
-
-def getUUID():
-    return str(uuid.uuid4()).upper()
 
 
 if __name__ == '__main__':

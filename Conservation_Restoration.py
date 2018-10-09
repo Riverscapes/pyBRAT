@@ -13,8 +13,7 @@ import arcpy
 import sys
 import os
 import projectxml
-import uuid
-from SupportingFunctions import make_layer, make_folder, find_available_num
+from SupportingFunctions import make_layer, make_folder, find_available_num, getUUID
 
 
 def main(projPath, in_network, out_name):
@@ -119,11 +118,6 @@ def makeLayers(out_network):
     make_layer(output_folder, out_network, "Beaver Management Zones", managementLayer, is_raster=False)
     make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", managementLayer2, is_raster=False)
     make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", managementLayer3, is_raster=False)
-
-
-
-def getUUID():
-    return str(uuid.uuid4()).upper()
 
 
 if __name__ == '__main__':

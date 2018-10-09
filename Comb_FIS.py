@@ -16,8 +16,7 @@ import numpy as np
 import os
 import sys
 import projectxml
-import uuid
-from SupportingFunctions import make_layer, make_folder, find_available_num
+from SupportingFunctions import make_layer, make_folder, find_available_num, getUUID
 
 def main(
     projPath,
@@ -351,10 +350,6 @@ def makeLayers(out_network, out_name):
     make_layer(historic_folder, out_network, "Historic Dam Building Capacity", historicCapacityLayer, is_raster=False)
     make_layer(existing_folder, out_network, "Existing Dam Complex Size", existingCapacityCountLayer, is_raster=False)
     make_layer(historic_folder, out_network, "Historic Dam Complex Size", historicCapacityCountLayer, is_raster=False)
-
-
-def getUUID():
-    return str(uuid.uuid4()).upper()
 
 
 if __name__ == '__main__':

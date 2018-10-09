@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
+import os
 
 
 class XMLBuilder:
@@ -15,11 +16,15 @@ class XMLBuilder:
         :param tags: An array of tuples. tag[0] is the name of the tag, tag[1] is the value
         """
         self.xml_file = xml_file
-        self.tree = ET.ElementTree(ET.Element(root_name))
+        if os.path.exists(xml_file):
+            self.tree = ET.parse(xml_file)
+        else:
+            self.tree = ET.ElementTree(ET.Element(root_name))
         self.root = self.tree.getroot()
 
         for tag in tags:
             self.root.set(tag[0], tag[1])
+
 
     def add_sub_element(self, base_element, name='', text='', tags=[]):
         """
@@ -38,6 +43,7 @@ class XMLBuilder:
 
         return new_element
 
+
     def write(self):
         """
         Creates a pretty-printed XML string for the Element,
@@ -46,6 +52,3 @@ class XMLBuilder:
         temp_string = minidom.parseString(ET.tostring(self.root)).toprettyxml(encoding="UTF-8")
         with open(self.xml_file, 'w') as f:
             f.write(temp_string)
-        # f = open(self.xml_file, "w")
-        # f.write(temp_string)
-        # f.close()

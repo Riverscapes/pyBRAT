@@ -9,6 +9,7 @@
 
 import os
 import arcpy
+import uuid
 
 
 def find_folder(folder_location, folder_name):
@@ -97,3 +98,7 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
         new_layer_instance.description = description
         new_layer_instance.save()
     return new_layer_save
+
+
+def getUUID():
+    return str(uuid.uuid4()).upper()
