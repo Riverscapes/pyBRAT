@@ -15,7 +15,6 @@ import os
 import sys
 import projectxml
 import uuid
-from SupportingFunctions import find_available_num, make_folder, make_layer
 
 
 def main(
@@ -43,6 +42,8 @@ def main(
     # RRLow = 30
     # RRHigh = 100
     out_network = find_oPC_Score(in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch)
+
+    addxmloutput(projPath, in_network, out_network)
 
     makeLayers(out_network)
 
@@ -230,6 +231,34 @@ def slopeInt(lowValue, highValue):
     return [m, b]
 
 
+def addxmloutput(projPath, in_network, out_network):
+    """add the capacity output to the project xml file"""
+
+    # xml file
+    xmlfile = projPath + "/project.rs.xml"
+    output_folder = os.path.dirname(os.path.dirname(in_network))
+    output_folder_name = os.path.join(os.path.basename(output_folder), "02_Analyses")
+
+    # make sure xml file exists
+    if not os.path.exists(xmlfile):
+        raise Exception("xml file for project does not exist. Return to table builder tool.")
+
+    # open xml and add output
+    exxml = projectxml.ExistingXML(xmlfile)
+
+    realizations = exxml.rz.findall("BRAT")
+    outrz = None
+    for i in range(len(realizations)):
+        a = realizations[i].findall(".//Path")
+        for j in range(len(a)):
+            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find(output_folder_name):]):
+                outrz = realizations[i]
+    if outrz is not None:
+        exxml.addOutput("BRAT Analysis", "Vector", "BRAT Conflict Output", out_network[out_network.find(output_folder_name):],
+                        outrz, guid=getUUID())
+
+    exxml.write()
+
 def makeLayers(out_network):
     """
     Writes the layers
@@ -237,15 +266,53 @@ def makeLayers(out_network):
     :return:
     """
     arcpy.AddMessage("Making layers...")
-
-    analyses_folder = os.path.dirname(out_network)
-    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Conflict")
+    output_folder = os.path.dirname(out_network)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     conflictLayer = os.path.join(symbologyFolder, "Conflict.lyr")
 
-    make_layer(output_folder, out_network, "Conflict Potential", conflictLayer, is_raster=False)
+    makeLayer(output_folder, out_network, "Conflict Potential", conflictLayer, isRaster=False)
+
+
+def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, isRaster=False, description="Made Up Description"):
+    """
+    Creates a layer and applies a symbology to it
+    :param output_folder: Where we want to put the layer
+    :param layer_base: What we should base the layer off of
+    :param new_layer_name: What the layer should be called
+    :param symbology_layer: The symbology that we will import
+    :param isRaster: Tells us if it's a raster or not
+    :param description: The discription to give to the layer file
+    :return: The path to the new layer
+    """
+    new_layer = new_layer_name
+    new_layer_file_name = new_layer_name.replace(" ", "")
+    new_layer_save = os.path.join(output_folder, new_layer_file_name + ".lyr")
+
+    if isRaster:
+        try:
+            arcpy.MakeRasterLayer_management(layer_base, new_layer)
+        except arcpy.ExecuteError as err:
+            if err[0][6:12] == "000873":
+                arcpy.AddError(err)
+                arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
+                raise Exception
+            else:
+                raise arcpy.ExecuteError(err)
+
+    else:
+        arcpy.MakeFeatureLayer_management(layer_base, new_layer)
+
+    if symbology_layer:
+        arcpy.ApplySymbologyFromLayer_management(new_layer, symbology_layer)
+
+    arcpy.SaveToLayerFile_management(new_layer, new_layer_save, "RELATIVE")
+    new_layer_instance = arcpy.mapping.Layer(new_layer_save)
+    new_layer_instance.description = description
+    new_layer_instance.save()
+    return new_layer_save
+
 
 
 def getUUID():
