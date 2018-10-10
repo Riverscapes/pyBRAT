@@ -251,15 +251,53 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
 
     add_metadata(new_xml_file, huc_ID, watershed_name)
 
-    add_inputs(new_xml_file, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
+    add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
               valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations)
 
     new_xml_file.write()
 
 
-def add_inputs(new_xml_file, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
+def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
               valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations):
-    pass
+    inputs_element = new_xml_file.add_sub_element(new_xml_file.root, "Inputs")
+    new_xml_file.add_sub_element(inputs_element, "Something", "Something else")
+    write_xml_element_path(new_xml_file, inputs_element, "Raster", "EXVEG1", "Existing Vegetation", ex_veg_destinations[0], project_root)
+
+
+def write_xml_element_path(new_xml_file, base_element, xml_element_name, xml_id, item_name, path, project_root):
+    """
+
+    :param new_xml_file:
+    :param base_element:
+    :param xml_element_name:
+    :param xml_id:
+    :param item_name:
+    :param path:
+    :param project_root:
+    :return:
+    """
+    new_element = new_xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
+    new_xml_file.add_sub_element(new_element, "Name", item_name)
+    relative_path = find_relative_path(path, project_root)
+    new_xml_file.add_sub_element(new_element, "Path", relative_path)
+
+
+def find_relative_path(path, project_root):
+    """
+    Looks for the relative path from the project root to the item in the path
+    :param path:
+    :param project_root:
+    :return:
+    """
+    relative_path = ''
+    while path != '':
+        if path == project_root:
+            return relative_path
+        path, basename = os.path.split(path)
+
+        relative_path = os.path.join(basename, relative_path)
+
+    raise Exception("Could not find relative path")
 
 
 def add_metadata(new_xml_file, huc_ID, watershed_name):
