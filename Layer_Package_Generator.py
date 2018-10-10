@@ -13,7 +13,7 @@ import os
 from SupportingFunctions import find_folder, find_available_num, make_folder, make_layer
 
 
-def main(output_folder, layer_package_name, clipping_network):
+def main(output_folder, layer_package_name, clipping_network=None):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
@@ -417,8 +417,8 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
         layer_package_name += ".lpk"
 
     new_source = None
-    if clipping_network is not None:
-        new_source = get_new_source(clipping_network, analyses_folder)
+    # if clipping_network is not None:
+    #     new_source = get_new_source(clipping_network, analyses_folder)
 
     arcpy.AddMessage("Making Layer Package...")
     empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
