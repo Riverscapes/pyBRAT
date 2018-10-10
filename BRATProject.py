@@ -15,13 +15,13 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer
+from SupportingFunctions import make_folder, make_layer, getUUID
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(proj_path, proj_name, huc_ID, huc_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
+def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
@@ -134,7 +134,7 @@ def main(proj_path, proj_name, huc_ID, huc_name, ex_veg, hist_veg, network, DEM,
         ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land Ownership", is_raster=False)
         make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
 
-    write_xml(proj_path, proj_name, huc_ID, huc_name, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations, valley_bottom_destinations,
+    write_xml(proj_path, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations, valley_bottom_destinations,
               road_destinations, rr_destinations, canal_destinations, ownership_destinations)
 
 
@@ -219,11 +219,14 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
 
 
 
-def write_xml(project_root, proj_name, huc_ID, huc_name,  ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
+def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
               valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations):
     """
-    Creates an
+
     :param project_root:
+    :param proj_name:
+    :param huc_ID:
+    :param watershed_name:
     :param ex_veg_destinations:
     :param hist_veg_destinations:
     :param dem_destinations:
@@ -246,7 +249,30 @@ def write_xml(project_root, proj_name, huc_ID, huc_name,  ex_veg_destinations, h
     new_xml_file.add_sub_element(new_xml_file.root, "Name", proj_name)
     new_xml_file.add_sub_element(new_xml_file.root, "ProjectType", "BRAT")
 
+    add_metadata(new_xml_file, huc_ID, watershed_name)
+
+    add_inputs(new_xml_file, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
+              valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations)
+
     new_xml_file.write()
+
+
+def add_inputs(new_xml_file, ex_veg_destinations, hist_veg_destinations, dem_destinations, landuse_destinations,
+              valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations):
+    pass
+
+
+def add_metadata(new_xml_file, huc_ID, watershed_name):
+    """
+    Writes the metadata elements
+    :param new_xml_file:
+    :param huc_ID:
+    :param watershed_name:
+    :return:
+    """
+    metadata_element = new_xml_file.add_sub_element(new_xml_file.root, "MetaData")
+    new_xml_file.add_sub_element(metadata_element, "Meta", huc_ID, [("name","HUCID")])
+    new_xml_file.add_sub_element(metadata_element, "Meta", watershed_name, [("name","Watershed")])
 
 
 if __name__ == '__main__':
