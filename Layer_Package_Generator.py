@@ -13,7 +13,7 @@ import os
 from SupportingFunctions import find_folder, find_available_num, make_folder, make_layer
 
 
-def main(output_folder, layer_package_name, clipping_network):
+def main(output_folder, layer_package_name, clipping_network=None):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
@@ -21,7 +21,8 @@ def main(output_folder, layer_package_name, clipping_network):
     :param clipping_network: What we want to clip our network to
     :return:
     """
-    arcpy.CheckOutExtension('defense')
+    if layer_package_name == None:
+        layer_package_name = "LayerPackage"
     projectFolder = os.path.dirname(output_folder)
     inputsFolder = find_folder(projectFolder, "Inputs")
     intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
