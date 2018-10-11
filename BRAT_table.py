@@ -39,6 +39,10 @@ def main(
     find_clusters,
     should_segment_network,
     is_verbose):
+
+    test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
+    return
+
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
     is_verbose = parse_input_bool(is_verbose)
@@ -120,15 +124,25 @@ def main(
     make_layer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flow_accumulation_sym_layer, is_raster=True)
 
     make_layers(seg_network_copy)
-    try:
-        write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, DrAr,
-                  road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
-    except IndexError:
-        pass
+    write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, DrAr,
+              road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
 
     run_tests(seg_network_copy, is_verbose)
 
     arcpy.CheckInExtension("spatial")
+
+
+def test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal):
+    new_output_folder = os.path.join(proj_path, "Output_1")
+    DrAr = find_dr_ar(flow_acc, in_DEM)
+    intermediates_folder = os.path.join(new_output_folder, "01_Intermediates")
+    buf_folder = os.path.join(intermediates_folder, "01_Buffers")
+    buf_30m = os.path.join(buf_folder, "buffer_30m.shp")
+    buf_100m = os.path.join(buf_folder, "buffer_100m.shp")
+    seg_network_copy = os.path.join(intermediates_folder, "BRAT_Table.shp")
+
+    write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, DrAr,
+              road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
 
 
 def find_dr_ar(flow_acc, in_DEM):
