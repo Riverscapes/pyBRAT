@@ -195,130 +195,109 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Project name",
-            name="projName",
-            datatype="GPString",
-            parameterType="Optional",
-            direction="Input")
-
-        param2 = arcpy.Parameter(
-            displayName="Watershed HUC ID",
-            name="hucID",
-            datatype="GPDouble",
-            parameterType="Optional",
-            direction="Input")
-
-        param3 = arcpy.Parameter(
-            displayName = "Watershed name",
-            name="hucName",
-            datatype="GPString",
-            parameterType="Optional",
-            direction="Input")
-
-        param4 = arcpy.Parameter(
             displayName="Input segmented network",
             name="seg_network",
             datatype="DEShapefile",
             parameterType="Required",
             direction="Input")
-        param4.filter.list = ["Polyline"]
+        param1.filter.list = ["Polyline"]
 
-        param5 = arcpy.Parameter(
+        param2 = arcpy.Parameter(
             displayName="Input DEM",
             name="DEM",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param6 = arcpy.Parameter(
+        param3 = arcpy.Parameter(
             displayName="Input drainage area raster",
             name="FlowAcc",
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
 
-        param7 = arcpy.Parameter(
+        param4 = arcpy.Parameter(
             displayName="Input coded existing vegetation raster",
             name="coded_veg",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param8 = arcpy.Parameter(
+        param5 = arcpy.Parameter(
             displayName="Input coded historic vegetation raster",
             name="coded_hist",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
-        param9 = arcpy.Parameter(
+        param6 = arcpy.Parameter(
             displayName="Input valley bottom polygon",
             name="valley_bottom",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param9.filter.list = ["Polygon"]
+        param6.filter.list = ["Polygon"]
 
-        param10 = arcpy.Parameter(
+        param7 = arcpy.Parameter(
             displayName="Input roads feature class",
             name="road",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param10.filter.list = ["Polyline"]
+        param7.filter.list = ["Polyline"]
 
-        param11 = arcpy.Parameter(
+        param8 = arcpy.Parameter(
             displayName="Input railroads feature class",
             name="railroad",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param11.filter.list = ["Polyline"]
+        param8.filter.list = ["Polyline"]
 
-        param12 = arcpy.Parameter(
+        param9 = arcpy.Parameter(
             displayName="Input canal feature class",
             name="canal",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
-        param12.filter.list = ["Polyline"]
+        param9.filter.list = ["Polyline"]
 
-        param13 = arcpy.Parameter(
+        param10 = arcpy.Parameter(
             displayName="Input landuse raster",
             name="landuse",
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
 
-        param14 = arcpy.Parameter(
+        param11 = arcpy.Parameter(
             displayName="Name BRAT table output feature class",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
 
-        param15 = arcpy.Parameter(
+        param12 = arcpy.Parameter(
             displayName="Find Clusters",
             name="findClusters",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param16 = arcpy.Parameter(
+        param13 = arcpy.Parameter(
             displayName="Segment Network by Roads",
             name="should_segment_network",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param17 = arcpy.Parameter(
+        param14 = arcpy.Parameter(
             displayName="Run Verbose",
             name="is_verbose",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16, param17]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -352,10 +331,7 @@ class BRAT_table_tool(object):
                         p[11].valueAsText,
                         p[12].valueAsText,
                         p[13].valueAsText,
-                        p[14].valueAsText,
-                        p[15].valueAsText,
-                        p[16].valueAsText,
-                        p[17].valueAsText)
+                        p[14].valueAsText)
         return
 
 

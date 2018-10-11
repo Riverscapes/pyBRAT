@@ -25,9 +25,6 @@ reload(BRAT_Braid_Handler)
 
 def main(
     proj_path,
-    proj_name,
-    huc_ID,
-    huc_name,
     seg_network,
     in_DEM,
     flow_acc,
