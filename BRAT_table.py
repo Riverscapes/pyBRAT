@@ -100,7 +100,7 @@ def main(
 
     # run geo attributes function
     arcpy.AddMessage('Adding "iGeo" attributes to network...')
-    igeo_attributes(seg_network_copy, in_DEM, flow_acc, midpoint_buffer, scratch, is_verbose)
+    DrArea = igeo_attributes(seg_network_copy, in_DEM, flow_acc, midpoint_buffer, scratch, is_verbose)
 
     # run vegetation attributes function
     arcpy.AddMessage('Adding "iVeg" attributes to network...')
@@ -115,10 +115,7 @@ def main(
 
     # run write xml function
     arcpy.AddMessage('Writing project xml...')
-    if flow_acc is None:
-        DrAr = os.path.dirname(in_DEM) + "/Flow/DrainArea_sqkm.tif"
-    else:
-        DrAr = os.path.dirname(in_DEM) + "/Flow/" + os.path.basename(flow_acc)
+    DrAr = find_dr_ar(flow_acc, in_DEM)
 
     trib_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
@@ -135,6 +132,14 @@ def main(
     run_tests(seg_network_copy, is_verbose)
 
     arcpy.CheckInExtension("spatial")
+
+
+def find_dr_ar(flow_acc, in_DEM):
+    if flow_acc is None:
+        DrArea = os.path.dirname(in_DEM) + "/Flow/DrainArea_sqkm.tif"
+    else:
+        DrArea = os.path.dirname(in_DEM) + "/Flow/" + os.path.basename(flow_acc)
+    return DrArea
 
 
 def build_output_folder(proj_path, out_name, seg_network, road, should_segment_network, is_verbose):
@@ -401,10 +406,7 @@ def igeo_attributes(out_network, in_DEM, flow_acc, midpoint_buffer, scratch, is_
             arcpy.AddMessage("Copying drainage area raster...")
         arcpy.CopyRaster_management(flow_acc, os.path.dirname(in_DEM) + "/Flow/" + os.path.basename(flow_acc))
 
-    if flow_acc is None:
-        DrArea = os.path.dirname(in_DEM) + "/Flow/DrainArea_sqkm.tif"
-    else:
-        DrArea = os.path.dirname(in_DEM) + "/Flow/" + os.path.basename(flow_acc)
+    DrArea = find_dr_ar(flow_acc, in_DEM)
     # Todo: check this bc it seems wrong to pull from midpoint buffer
 
     # add drainage area 'iGeo_DA' field to flowline network
@@ -420,6 +422,8 @@ def igeo_attributes(out_network, in_DEM, flow_acc, midpoint_buffer, scratch, is_
             if row[0] == 0:
                 row[0] = 0.00000001
             cursor.updateRow(row)
+
+    return DrArea
 
 
 # vegetation attributes function
