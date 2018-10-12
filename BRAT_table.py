@@ -13,11 +13,13 @@ import arcpy
 from arcpy.sa import *
 import os
 import sys
-import projectxml
 import datetime
 import FindBraidedNetwork
 import BRAT_Braid_Handler
 from SupportingFunctions import make_layer, make_folder, getUUID
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
 
 reload(FindBraidedNetwork)
 reload(BRAT_Braid_Handler)
@@ -718,8 +720,12 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
               FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
     proj_path = os.path.dirname(output_folder)
-    xmlfile = proj_path + "/project.rs.xml"
+    xml_file_path = proj_path + "/project.rs.xml"
 
+    xml_file = XMLBuilder(xml_file_path)
+
+    xml_file.add_sub_element(xml_file.root, "Realizations", "Stuff")
+    xml_file.write()
 
 
 

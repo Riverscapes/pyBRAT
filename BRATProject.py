@@ -263,7 +263,6 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
 def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations, dem_destinations, landuse_destinations,
               valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations):
     inputs_element = new_xml_file.add_sub_element(new_xml_file.root, "Inputs")
-    new_xml_file.add_sub_element(inputs_element, "Something", "Something else")
 
     write_xml_for_destination(ex_veg_destinations, new_xml_file, inputs_element, "Raster", "EXVEG", "Existing Vegetation", project_root)
     write_xml_for_destination(hist_veg_destinations, new_xml_file, inputs_element, "Raster", "HISTVEG", "Historic Vegetation", project_root)

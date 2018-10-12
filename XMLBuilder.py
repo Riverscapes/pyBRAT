@@ -1,6 +1,8 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
 import os
+import arcpy
+import re
 
 
 class XMLBuilder:
@@ -8,7 +10,7 @@ class XMLBuilder:
     Builds an XML file
     """
 
-    def __init__(self, xml_file, root_name, tags=[]):
+    def __init__(self, xml_file, root_name='', tags=[]):
         """
         Initializes the class by setting up the root based on the given name and tags
         :param xml_file: The path to where the new XML file will be made on the hard drive
@@ -49,6 +51,51 @@ class XMLBuilder:
         Creates a pretty-printed XML string for the Element,
         then write it out to the expected file
         """
-        temp_string = minidom.parseString(ET.tostring(self.root)).toprettyxml(encoding="UTF-8")
+        if os.path.exists(self.xml_file):
+            os.remove(self.xml_file)
+
+        xml = minidom.parseString(ET.tostring(self.root))
+        temp_string = xml.toprettyxml()
+        temp_string = remove_extra_newlines(temp_string)
+        arcpy.AddMessage(temp_string)
         with open(self.xml_file, 'w') as f:
             f.write(temp_string)
+
+
+def remove_extra_newlines(given_string):
+    """
+    Removes any case of multiple newlines in a row from a given string
+    :param given_string: The string we want to strip newlines from
+    :return: The string, sans extra newlines
+    """
+    ret_string = given_string[0]
+
+    for i in range(1, len(given_string)):
+        if given_string[i] != '\n' and given_string[i] != '\t':
+            i_is_bad_char = False
+        elif given_string[i] == '\n' and given_string[i-1] == '\t':
+            i_is_bad_char = True
+        elif given_string[i] == '\n' and given_string[i-1] == '\n':
+            i_is_bad_char = True
+        elif given_string[i] == '\n':
+            i_is_bad_char = False
+        else:
+            j = find_next_non_tab_index(i, given_string)
+            if given_string[j] == '\n':
+                i_is_bad_char = True
+            else:
+                i_is_bad_char = False
+
+        if not i_is_bad_char:
+            ret_string += given_string[i]
+
+    return ret_string
+
+
+def find_next_non_tab_index(i, given_string):
+    """
+    Finds the next value in the string that isn't \t
+    """
+    while given_string[i] == '\t':
+        i += 1
+    return i
