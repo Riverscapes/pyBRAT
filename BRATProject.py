@@ -15,7 +15,7 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer, getUUID
+from SupportingFunctions import make_folder, make_layer, getUUID, find_relative_path
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -300,24 +300,6 @@ def write_xml_element_with_path(new_xml_file, base_element, xml_element_name, xm
     new_xml_file.add_sub_element(new_element, "Name", item_name)
     relative_path = find_relative_path(path, project_root)
     new_xml_file.add_sub_element(new_element, "Path", relative_path)
-
-
-def find_relative_path(path, project_root):
-    """
-    Looks for the relative path from the project root to the item in the path
-    :param path:
-    :param project_root:
-    :return:
-    """
-    relative_path = ''
-    while path != '':
-        if path == project_root:
-            return relative_path
-        path, basename = os.path.split(path)
-
-        relative_path = os.path.join(basename, relative_path)
-
-    raise Exception("Could not find relative path")
 
 
 def add_metadata(new_xml_file, huc_ID, watershed_name):

@@ -102,3 +102,21 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
 
 def getUUID():
     return str(uuid.uuid4()).upper()
+
+
+def find_relative_path(path, project_root):
+    """
+    Looks for the relative path from the project root to the item in the path
+    :param path:
+    :param project_root:
+    :return:
+    """
+    relative_path = ''
+    while path != '':
+        if path == project_root:
+            return relative_path
+        path, basename = os.path.split(path)
+
+        relative_path = os.path.join(basename, relative_path)
+
+    raise Exception("Could not find relative path")

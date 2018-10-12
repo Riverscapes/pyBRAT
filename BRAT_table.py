@@ -14,9 +14,10 @@ from arcpy.sa import *
 import os
 import sys
 import datetime
+import time
 import FindBraidedNetwork
 import BRAT_Braid_Handler
-from SupportingFunctions import make_layer, make_folder, getUUID
+from SupportingFunctions import make_layer, make_folder, getUUID, find_relative_path
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -42,8 +43,8 @@ def main(
     should_segment_network,
     is_verbose):
 
-    test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
-    return
+    # test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
+    # return
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
@@ -724,7 +725,21 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
 
     xml_file = XMLBuilder(xml_file_path)
 
-    xml_file.add_sub_element(xml_file.root, "Realizations", "Stuff")
+    realizations = xml_file.find_sub_element("Realizations")
+    if len(realizations) == 0:
+        realizations_element = xml_file.add_sub_element(xml_file.root, "Realizations")
+    else:
+        realizations_element = realizations[0]
+
+    creation_time = datetime.datetime.today().isoformat()
+    brat_element = xml_file.add_sub_element(realizations_element, "BRAT", tags=[("dateCreated", creation_time),
+                                                                                ("guid", getUUID()),
+                                                                                ("id", "RZ" + output_folder[-1]),
+                                                                                ("ProductVersion", "3.0.21")])
+    xml_file.add_sub_element(brat_element, "Name", "BRAT Realization " + output_folder[-1])
+
+
+
     xml_file.write()
 
 

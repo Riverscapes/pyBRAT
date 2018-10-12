@@ -46,6 +46,10 @@ class XMLBuilder:
         return new_element
 
 
+    def find_sub_element(self, element_name):
+        return self.root.findall(element_name)
+
+
     def write(self):
         """
         Creates a pretty-printed XML string for the Element,
