@@ -24,6 +24,8 @@ class XMLBuilder:
             self.tree = ET.ElementTree(ET.Element(root_name))
         self.root = self.tree.getroot()
 
+        self.parent_map = dict((c, p) for p in self.tree.iter() for c in p)
+
         for tag in tags:
             self.root.set(tag[0], tag[1])
 
@@ -48,6 +50,16 @@ class XMLBuilder:
 
     def find_sub_element(self, element_name):
         return self.root.findall(element_name)
+
+
+    def find_by_text(self, text):
+        for element in self.tree.iter():
+            if element.text == text:
+                return element
+
+
+    def find_element_parent(self, element):
+        return self.parent_map[element]
 
 
     def write(self):

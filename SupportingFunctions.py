@@ -112,11 +112,10 @@ def find_relative_path(path, project_root):
     :return:
     """
     relative_path = ''
-    while path != '':
+    while path != os.path.dirname(path): # While there are still
         if path == project_root:
             return relative_path
         path, basename = os.path.split(path)
 
         relative_path = os.path.join(basename, relative_path)
-
     raise Exception("Could not find relative path")

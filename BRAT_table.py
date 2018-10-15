@@ -43,8 +43,8 @@ def main(
     should_segment_network,
     is_verbose):
 
-    # test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
-    # return
+    test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
+    return
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
@@ -737,10 +737,42 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
                                                                                 ("id", "RZ" + output_folder[-1]),
                                                                                 ("ProductVersion", "3.0.21")])
     xml_file.add_sub_element(brat_element, "Name", "BRAT Realization " + output_folder[-1])
+    inputs_element = xml_file.add_sub_element(brat_element, "Inputs")
 
+    add_input_ref_element(xml_file, proj_path, inputs_element, coded_veg, "ExistingVegetation")
+    add_input_ref_element(xml_file, proj_path, inputs_element, coded_hist, "HistoricVegetation")
+    add_input_ref_element(xml_file, proj_path, inputs_element, landuse, "LandUse")
+    add_input_ref_element(xml_file, proj_path, inputs_element, valley_bottom, "ValleyBottom")
+    add_input_ref_element(xml_file, proj_path, inputs_element, road, "Roads")
+    add_input_ref_element(xml_file, proj_path, inputs_element, railroad, "Railroads")
+    add_input_ref_element(xml_file, proj_path, inputs_element, canal, "Canals")
 
+    topo_element = xml_file.add_sub_element(inputs_element, "Topography")
+    add_input_ref_element(xml_file, proj_path, topo_element, inDEM, "DEM")
+
+    drain_network_element = xml_file.add_sub_element(inputs_element, "DrainageNetworks")
+    network_element = add_input_ref_element(xml_file, proj_path, drain_network_element, seg_network, "Network")
 
     xml_file.write()
+
+
+def add_input_ref_element(xml_file, proj_path, inputs_element, input_path, new_element_name):
+    ref_id = find_element_id_with_path(xml_file, input_path, proj_path)
+    return xml_file.add_sub_element(inputs_element, new_element_name, tags=[('ref', ref_id)])
+
+
+def find_element_id_with_path(xml_file, path, proj_path):
+    """
+    Returns the ID of the input element that has the relative path given to it
+    :param xml_file: The XMLBuilder object
+    :param path: The path we want to find
+    :param proj_path: Path to the root folder of the project
+    :return:
+    """
+    relative_path = find_relative_path(path, proj_path)
+    element = xml_file.find_by_text(relative_path)
+    parent = xml_file.find_element_parent(element)
+    return parent.attrib['id']
 
 
 
