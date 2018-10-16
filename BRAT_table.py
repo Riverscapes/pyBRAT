@@ -43,8 +43,8 @@ def main(
     should_segment_network,
     is_verbose):
 
-    # test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
-    # return
+    test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
+    return
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
@@ -144,15 +144,15 @@ def test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_botto
     buf_100m = os.path.join(buf_folder, "buffer_100m.shp")
     seg_network_copy = os.path.join(intermediates_folder, "BRAT_Table.shp")
 
-    write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, DrAr,
-              road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
+    write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, DrAr, road,
+              railroad, canal, buf_30m, buf_100m, seg_network_copy)
 
 
 def find_dr_ar(flow_acc, in_DEM):
     if flow_acc is None:
-        DrArea = os.path.dirname(in_DEM) + "/Flow/DrainArea_sqkm.tif"
+        DrArea = os.path.join(os.path.join(os.path.dirname(in_DEM), "Flow", "DrainArea_sqkm.tif"))
     else:
-        DrArea = os.path.dirname(in_DEM) + "/Flow/" + os.path.basename(flow_acc)
+        DrArea = os.path.join(os.path.join(os.path.dirname(in_DEM), "Flow"), os.path.basename(flow_acc))
     return DrArea
 
 
@@ -718,18 +718,18 @@ def calc_drain_area(DEM, input_DEM):
 
 # write xml function
 def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
-              FlowAcc, DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
+              DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
     proj_path = os.path.dirname(output_folder)
     xml_file_path = proj_path + "/project.rs.xml"
 
     xml_file = XMLBuilder(xml_file_path)
 
-    realizations = xml_file.find_sub_element("Realizations")
-    if len(realizations) == 0:
+    add_drain_area_to_inputs_xml(xml_file, DrAr, proj_path)
+
+    realizations_element = xml_file.find("Realizations")
+    if realizations_element is None:
         realizations_element = xml_file.add_sub_element(xml_file.root, "Realizations")
-    else:
-        realizations_element = realizations[0]
 
     creation_time = datetime.datetime.today().isoformat()
     brat_element = xml_file.add_sub_element(realizations_element, "BRAT", tags=[("dateCreated", creation_time),
@@ -749,6 +749,7 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
 
     topo_element = xml_file.add_sub_element(inputs_element, "Topography")
     add_input_ref_element(xml_file, proj_path, topo_element, inDEM, "DEM")
+    add_input_ref_element(xml_file, proj_path, topo_element, DrAr, "Flow")
 
     drain_network_element = xml_file.add_sub_element(inputs_element, "DrainageNetworks")
     network_element = add_input_ref_element(xml_file, proj_path, drain_network_element, seg_network, "Network")
@@ -756,9 +757,52 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
     xml_file.write()
 
 
+def add_drain_area_to_inputs_xml(xml_file, drainage_area, proj_path):
+    element = xml_file.find_by_text(find_relative_path(drainage_area, proj_path))
+
+    if element is not None: # if the flow acc is already in the xml file, we don't need to do anything
+        return
+
+    inputs_element = xml_file.find("Inputs")
+
+    id = find_next_available_id(xml_file, "DR")
+    write_xml_element_with_path(xml_file, inputs_element, "Raster", id, "Drainage Area", drainage_area, proj_path)
+
+
+def find_next_available_id(xml_file, id_base):
+    i = 1
+    element = xml_file.find_by_id(id_base + str(i))
+    while element is not None:
+        i += 1
+        element = xml_file.find_by_id(id_base + str(i))
+    return id_base + str(i)
+
+
+def write_xml_element_with_path(xml_file, base_element, xml_element_name, xml_id, item_name, path, project_root):
+    """
+
+    :param xml_file:
+    :param base_element:
+    :param xml_element_name:
+    :param xml_id:
+    :param item_name:
+    :param path:
+    :param project_root:
+    :return:
+    """
+    new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
+    xml_file.add_sub_element(new_element, "Name", item_name)
+    relative_path = find_relative_path(path, project_root)
+    xml_file.add_sub_element(new_element, "Path", relative_path)
+
+
 def add_input_ref_element(xml_file, proj_path, inputs_element, input_path, new_element_name):
     ref_id = find_element_id_with_path(xml_file, input_path, proj_path)
-    return xml_file.add_sub_element(inputs_element, new_element_name, tags=[('ref', ref_id)])
+    if ref_id is not None:
+        return xml_file.add_sub_element(inputs_element, new_element_name, tags=[('ref', ref_id)])
+    else:
+        arcpy.AddMessage(new_element_name + " could not be found in the Inputs XML, and so could not be added to the new Realization in the XML")
+        return None
 
 
 def find_element_id_with_path(xml_file, path, proj_path):
@@ -771,8 +815,11 @@ def find_element_id_with_path(xml_file, path, proj_path):
     """
     relative_path = find_relative_path(path, proj_path)
     element = xml_file.find_by_text(relative_path)
-    parent = xml_file.find_element_parent(element)
-    return parent.attrib['id']
+    if element is not None:
+        parent = xml_file.find_element_parent(element)
+        return parent.attrib['id']
+    else:
+        return None
 
 
 

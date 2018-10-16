@@ -45,17 +45,29 @@ class XMLBuilder:
         for tag in tags:
             new_element.set(tag[0], tag[1])
 
+        self.parent_map = dict((c, p) for p in self.tree.iter() for c in p) # Redoes the parent child mapping, to account for the new element
         return new_element
 
 
-    def find_sub_element(self, element_name):
-        return self.root.findall(element_name)
+    def find(self, element_name):
+        return self.root.find(element_name)
 
 
     def find_by_text(self, text):
         for element in self.tree.iter():
             if element.text == text:
                 return element
+        return None
+
+
+    def find_by_id(self, given_id):
+        for element in self.tree.iter():
+            try:
+                if element.attrib['id'] == given_id:
+                    return element
+            except KeyError:
+                pass
+        return None
 
 
     def find_element_parent(self, element):
@@ -73,7 +85,7 @@ class XMLBuilder:
         xml = minidom.parseString(ET.tostring(self.root))
         temp_string = xml.toprettyxml()
         temp_string = remove_extra_newlines(temp_string)
-        arcpy.AddMessage(temp_string)
+        # arcpy.AddMessage(temp_string)
         with open(self.xml_file, 'w') as f:
             f.write(temp_string)
 
