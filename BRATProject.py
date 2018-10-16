@@ -106,9 +106,11 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     # add the conflict inputs to the project
     valley_bottom_destinations = []
     if valley is not None:
+        arcpy.AddMessage("Copying over valley bottom")
         vally_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
         make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
         make_input_layers(vally_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
+    arcpy.AddMessage(str(valley_bottom_destinations))
 
     # add road layers to the project
     road_destinations = []
@@ -148,6 +150,8 @@ def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_ras
     :param is_raster: Tells us if the thing is a raster or not
     :return:
     """
+    if sub_folder_name == "Valley":
+        arcpy.AddMessage("Almost there...")
     split_input = multi_input.split(";")
     i = 1
     destinations = []
@@ -161,6 +165,9 @@ def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_ras
             arcpy.Copy_management(input_path, destination_path)
         destinations.append(destination_path)
         i += 1
+
+    if sub_folder_name == "Valley":
+        arcpy.AddMessage(destinations)
     return destinations
 
 
