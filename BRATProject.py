@@ -15,7 +15,7 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer
+from SupportingFunctions import make_folder, make_layer, get_execute_error_code
 
 
 def main(proj_path, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
@@ -172,14 +172,27 @@ def make_topo_layers(topo_folder):
 
         hillshade_folder = make_folder(dem_folder_path, "Hillshade")
         hillshade_file = os.path.join(hillshade_folder, "Hillshade.tif")
-        arcpy.HillShade_3d(dem_file, hillshade_file)
-        make_layer(hillshade_folder, hillshade_file, "Hillshade", hillshade_symbology, is_raster=True)
+        try:
+            arcpy.HillShade_3d(dem_file, hillshade_file)
+            make_layer(hillshade_folder, hillshade_file, "Hillshade", hillshade_symbology, is_raster=True)
+        except arcpy.ExecuteError as err:
+            if get_execute_error_code(err) == "000859":
+                arcpy.AddWarning("Warning: Unable to create hillshade layer. Consider modifying your DEM input if you need a hillshade.")
+            else:
+                raise arcpy.ExecuteError(err)
 
         slope_folder = make_folder(dem_folder_path, "Slope")
         slope_file = os.path.join(slope_folder, "Slope.tif")
-        out_slope = arcpy.sa.Slope(dem_file)
-        out_slope.save(slope_file)
-        make_layer(slope_folder, slope_file, "Slope", slope_symbology, is_raster=True)
+        try:
+            out_slope = arcpy.sa.Slope(dem_file)
+            out_slope.save(slope_file)
+            make_layer(slope_folder, slope_file, "Slope", slope_symbology, is_raster=True)
+        except arcpy.ExecuteError as err:
+            if get_execute_error_code(err) == "000859":
+                arcpy.AddWarning("Warning: Unable to create hillshade layer. Consider modifying your DEM input if you need a hillshade.")
+            else:
+                raise arcpy.ExecuteError(err)
+
 
 
 def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None, file_name=None, check_field=None):
