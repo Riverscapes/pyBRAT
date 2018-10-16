@@ -737,6 +737,26 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
                                                                                 ("id", "RZ" + output_folder[-1]),
                                                                                 ("ProductVersion", "3.0.21")])
     xml_file.add_sub_element(brat_element, "Name", "BRAT Realization " + output_folder[-1])
+
+    write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, landuse, valley_bottom, road, railroad,
+                    canal, inDEM, DrAr, seg_network, buf_30m, buf_100m)
+
+    write_intermediate_xml(xml_file, brat_element, proj_path, out_network)
+
+    xml_file.write()
+
+
+def write_intermediate_xml(xml_file, brat_element, proj_path, out_network):
+    intermediates_element = xml_file.add_sub_element(brat_element, "Intermediates")
+    intermediate_element = xml_file.add_sub_element(intermediates_element, "Intermediate")
+
+    xml_file.add_sub_element(intermediate_element, "Name", "BRAT Intermediate")
+    write_xml_element_with_path(xml_file, intermediate_element, "Vector", "BRAT Input Table", out_network, proj_path)
+
+
+
+def write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, landuse, valley_bottom, road, railroad,
+                    canal, inDEM, DrAr, seg_network, buf_30m, buf_100m):
     inputs_element = xml_file.add_sub_element(brat_element, "Inputs")
 
     add_input_ref_element(xml_file, proj_path, inputs_element, coded_veg, "ExistingVegetation")
@@ -753,8 +773,9 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
 
     drain_network_element = xml_file.add_sub_element(inputs_element, "DrainageNetworks")
     network_element = add_input_ref_element(xml_file, proj_path, drain_network_element, seg_network, "Network")
-
-    xml_file.write()
+    buffers_element = xml_file.add_sub_element(network_element, "Buffers")
+    write_xml_element_with_path(xml_file, buffers_element, "Buffer", "30m Buffer", buf_30m, proj_path)
+    write_xml_element_with_path(xml_file, buffers_element, "Buffer", "100m Buffer", buf_100m, proj_path)
 
 
 def add_drain_area_to_inputs_xml(xml_file, drainage_area, proj_path):
@@ -766,7 +787,7 @@ def add_drain_area_to_inputs_xml(xml_file, drainage_area, proj_path):
     inputs_element = xml_file.find("Inputs")
 
     id = find_next_available_id(xml_file, "DR")
-    write_xml_element_with_path(xml_file, inputs_element, "Raster", id, "Drainage Area", drainage_area, proj_path)
+    write_xml_element_with_path(xml_file, inputs_element, "Raster", "Drainage Area", drainage_area, proj_path, xml_id=id)
 
 
 def find_next_available_id(xml_file, id_base):
@@ -778,7 +799,7 @@ def find_next_available_id(xml_file, id_base):
     return id_base + str(i)
 
 
-def write_xml_element_with_path(xml_file, base_element, xml_element_name, xml_id, item_name, path, project_root):
+def write_xml_element_with_path(xml_file, base_element, xml_element_name, item_name, path, project_root, xml_id=None):
     """
 
     :param xml_file:
@@ -790,7 +811,11 @@ def write_xml_element_with_path(xml_file, base_element, xml_element_name, xml_id
     :param project_root:
     :return:
     """
-    new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
+    if xml_id is None:
+        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID())])
+    else:
+        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
+
     xml_file.add_sub_element(new_element, "Name", item_name)
     relative_path = find_relative_path(path, project_root)
     xml_file.add_sub_element(new_element, "Path", relative_path)
