@@ -53,7 +53,7 @@ def main(projPath, in_network, out_name):
                 # 'oVC_EX' Occasional, Frequent, or Pervasive
                 if row[4] >= 1:
                     # 'iGeo_Slope' >= 23%
-                    if row[7] >= 23:
+                    if row[7] >= 0.23:
                         row[1] = 'Slope Limited'
                     # 'iGeo_Slope' < 23%
                     else:
