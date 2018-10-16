@@ -43,8 +43,8 @@ def main(
     should_segment_network,
     is_verbose):
 
-    test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
-    return
+    # test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
+    # return
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
