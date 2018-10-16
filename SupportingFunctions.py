@@ -78,7 +78,7 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
         try:
             arcpy.MakeRasterLayer_management(layer_base, new_layer)
         except arcpy.ExecuteError as err:
-            if err[0][6:12] == "000873":
+            if get_execute_error_code(err) == "000873":
                 arcpy.AddError(err)
                 arcpy.AddMessage("The error above can often be fixed by removing layers or layer packages from the Table of Contents in ArcGIS.")
                 raise Exception
@@ -97,3 +97,12 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
         new_layer_instance.description = description
         new_layer_instance.save()
     return new_layer_save
+
+
+def get_execute_error_code(err):
+    """
+    Returns the error code of the given arcpy.ExecuteError error, by looking at the string of the error
+    :param err:
+    :return:
+    """
+    return err[0][6:12]
