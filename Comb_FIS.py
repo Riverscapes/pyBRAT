@@ -15,7 +15,7 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
-from SupportingFunctions import make_layer, make_folder, find_available_num, getUUID
+from SupportingFunctions import make_layer, make_folder, find_available_num, getUUID, find_relative_path, write_xml_element_with_path
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -34,8 +34,8 @@ def main(
         out_network = os.path.join(analyses_folder, out_name)
     else:
         out_network = os.path.join(analyses_folder, out_name + ".shp")
-    # test_xml(in_network, out_network)
-    # return
+    test_xml(in_network, out_network)
+    return
 
     if os.path.exists(out_network):
         arcpy.Delete_management(out_network)
@@ -305,35 +305,34 @@ def test_xml(in_network, out_network):
 def add_xml_output(in_network, out_network):
     """add the capacity output to the project xml file"""
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(out_network)))
-    arcpy.AddMessage(proj_path)
-    return
+
     # xml file
-    xmlfile = proj_path + "/project.rs.xml"
+    xml_file_path = proj_path + "/project.rs.xml"
 
-    out_folder = os.path.dirname(os.path.dirname(out_network))
-    out_folder_name = os.path.basename(out_folder)
-    intermediates_name = os.path.join(out_folder_name, "01_Intermediates")
-    analyses_name = os.path.join(out_folder_name, "02_Analyses")
+    xml_file = XMLBuilder(xml_file_path)
+    brat_element = get_brat_element(xml_file, in_network, proj_path)
 
-    # make sure xml file exists
-    if not os.path.exists(xmlfile):
-        raise Exception("xml file for project does not exist. Return to table builder tool.")
+    analyses_element = xml_file.add_sub_element(brat_element, "Analyses")
+    analysis_element = xml_file.add_sub_element(analyses_element, "Analysis")
+    xml_file.add_sub_element(analysis_element, "Name", "BRAT Analysis")
 
-    # open xml and add output
-    exxml = projectxml.ExistingXML(xmlfile)
+    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Output", out_network, proj_path)
 
-    realizations = exxml.rz.findall("BRAT")
-    outrz = None
-    for i in range(len(realizations)):
-        a = realizations[i].findall(".//Path")
-        for j in range(len(a)):
-            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find(intermediates_name):]):
-                outrz = realizations[i]
-    if outrz is not None:
-        exxml.addOutput("BRAT Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find(analyses_name):],
-                        outrz, guid=getUUID())
+    xml_file.write()
 
-    exxml.write()
+
+def get_brat_element(xml_file, in_network, proj_path):
+    """Gets the BRAT XML element for this particular in_network"""
+    relative_path = find_relative_path(in_network, proj_path)
+
+    path_element = xml_file.find_by_text(relative_path)
+    vec_element = xml_file.find_element_parent(path_element)
+    intermed_element = xml_file.find_element_parent(vec_element)
+    intermeds_element = xml_file.find_element_parent(intermed_element)
+    brat_element = xml_file.find_element_parent(intermeds_element)
+
+    return brat_element
+
 
 
 def makeLayers(out_network, out_name):
