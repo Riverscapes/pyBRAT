@@ -48,23 +48,27 @@ def main(projPath, in_network, out_name):
     # 'oPBRC_UD'
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-            # 'oCC_EX' None
-            if row[6] <= 0:
-                # 'oVC_EX' Occasional, Frequent, or Pervasive
-                if row[4] >= 1:
-                    # 'iGeo_Slope' >= 23%
-                    if row[7] >= 0.23:
-                        row[1] = 'Slope Limited'
-                    # 'iGeo_Slope' < 23%
+            # First deal with vegetation limitations
+            # oVC_PT' None - Find places historically veg limited first.
+            if row[3] <= 0:
+                 # 'oVC_EX' Occasional, Frequent, or Pervasive (some areas have oVC_EX > oVC_PT)
+                if row[4] > 0:
+                    row[1] = 'Potential Reservoir or Landuse Conversion'
+                else:    
+                    row[1] = 'Naturally Vegetation Limited'    
+            # 'iGeo_Slope' > 23%
+            elif row[7] > 0.23:
+               row[1] = 'Slope Limited'
+            # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
+            elif row[6] <= 0:
+                    # 'oVC_EX' Rare, Occasional, Frequent, or Pervasive (i.e. its not currently veg limited)
+                    if row[4] > 0:
+                        row[1] = 'Stream Power Limited'                    
+                    # 'oVC_EX' None 
                     else:
-                        row[1] = 'Hydrologically Limited'
-                # oVC_PT' None
-                elif row[3] <= 0:
-                    row[1] = 'Vegetation Limited'
-                else:
-                    row[1] = 'Anthropogenically Limited'
+                        row[1] = 'Anthropogenically Limited'
             else:
-                row[1] = 'NA'
+                row[1] = 'Dam Building Possible'
             cursor.updateRow(row)
 
     # 'oPBRC_CR'
