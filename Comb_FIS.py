@@ -15,15 +15,16 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
-import projectxml
 from SupportingFunctions import make_layer, make_folder, find_available_num, getUUID
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
 
 def main(
     projPath,
     in_network,
     max_DA_thresh,
     out_name):
-
 
     scratch = 'in_memory'
 
@@ -33,6 +34,8 @@ def main(
         out_network = os.path.join(analyses_folder, out_name)
     else:
         out_network = os.path.join(analyses_folder, out_name + ".shp")
+    # test_xml(in_network, out_network)
+    # return
 
     if os.path.exists(out_network):
         arcpy.Delete_management(out_network)
@@ -44,7 +47,7 @@ def main(
 
     makeLayers(out_network, out_name)
 
-    addxmloutput(projPath, in_network, out_network)
+    # addxmloutput(projPath, in_network, out_network)
 
 # combined fis function
 def combFIS(in_network, model_run, scratch, max_DA_thresh):
@@ -294,11 +297,18 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
                 row[0] = row[2] - row[1]
                 cursor.updateRow(row)
 
-def addxmloutput(projPath, in_network, out_network):
-    """add the capacity output to the project xml file"""
 
+def test_xml(in_network, out_network):
+    add_xml_output(in_network, out_network)
+
+
+def add_xml_output(in_network, out_network):
+    """add the capacity output to the project xml file"""
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(out_network)))
+    arcpy.AddMessage(proj_path)
+    return
     # xml file
-    xmlfile = projPath + "/project.rs.xml"
+    xmlfile = proj_path + "/project.rs.xml"
 
     out_folder = os.path.dirname(os.path.dirname(out_network))
     out_folder_name = os.path.basename(out_folder)

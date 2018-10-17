@@ -15,7 +15,7 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer, getUUID, find_relative_path, get_execute_error_code
+from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -106,7 +106,6 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     # add the conflict inputs to the project
     valley_bottom_destinations = []
     if valley is not None:
-        arcpy.AddMessage("Copying over valley bottom")
         valley_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
         make_input_layers(valley_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
         make_input_layers(valley_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
@@ -294,27 +293,9 @@ def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destina
 def write_xml_for_destination(destination, new_xml_file, base_element, xml_element_name, xml_id_base, item_name,
                               project_root):
     for i in range(len(destination)):
-        write_xml_element_with_path(new_xml_file, base_element, xml_element_name, xml_id_base + str(i+1), item_name,
-                                    destination[i], project_root)
+        write_xml_element_with_path(new_xml_file, base_element, xml_element_name, item_name,
+                                    destination[i], project_root, xml_id_base + str(i+1))
 
-
-
-def write_xml_element_with_path(new_xml_file, base_element, xml_element_name, xml_id, item_name, path, project_root):
-    """
-
-    :param new_xml_file:
-    :param base_element:
-    :param xml_element_name:
-    :param xml_id:
-    :param item_name:
-    :param path:
-    :param project_root:
-    :return:
-    """
-    new_element = new_xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
-    new_xml_file.add_sub_element(new_element, "Name", item_name)
-    relative_path = find_relative_path(path, project_root)
-    new_xml_file.add_sub_element(new_element, "Path", relative_path)
 
 
 def add_metadata(new_xml_file, huc_ID, watershed_name):

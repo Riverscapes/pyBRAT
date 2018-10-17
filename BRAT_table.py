@@ -17,7 +17,7 @@ import datetime
 import time
 import FindBraidedNetwork
 import BRAT_Braid_Handler
-from SupportingFunctions import make_layer, make_folder, getUUID, find_relative_path
+from SupportingFunctions import make_layer, make_folder, getUUID, find_relative_path, write_xml_element_with_path
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -42,9 +42,6 @@ def main(
     find_clusters,
     should_segment_network,
     is_verbose):
-
-    test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal)
-    return
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
@@ -127,7 +124,7 @@ def main(
     make_layer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flow_accumulation_sym_layer, is_raster=True)
 
     make_layers(seg_network_copy)
-    write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, DrAr,
+    write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, DrAr,
               road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
 
     run_tests(seg_network_copy, is_verbose)
@@ -715,8 +712,6 @@ def calc_drain_area(DEM, input_DEM):
         arcpy.CopyRaster_management(drain_area, os.path.dirname(input_DEM) + "/Flow/DrainArea_sqkm.tif")
 
 
-
-# write xml function
 def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
               DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
@@ -797,28 +792,6 @@ def find_next_available_id(xml_file, id_base):
         i += 1
         element = xml_file.find_by_id(id_base + str(i))
     return id_base + str(i)
-
-
-def write_xml_element_with_path(xml_file, base_element, xml_element_name, item_name, path, project_root, xml_id=None):
-    """
-
-    :param xml_file:
-    :param base_element:
-    :param xml_element_name:
-    :param xml_id:
-    :param item_name:
-    :param path:
-    :param project_root:
-    :return:
-    """
-    if xml_id is None:
-        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID())])
-    else:
-        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
-
-    xml_file.add_sub_element(new_element, "Name", item_name)
-    relative_path = find_relative_path(path, project_root)
-    xml_file.add_sub_element(new_element, "Path", relative_path)
 
 
 def add_input_ref_element(xml_file, proj_path, inputs_element, input_path, new_element_name):

@@ -128,3 +128,28 @@ def get_execute_error_code(err):
     :return:
     """
     return err[0][6:12]
+
+
+
+
+
+def write_xml_element_with_path(xml_file, base_element, xml_element_name, item_name, path, project_root, xml_id=None):
+    """
+
+    :param xml_file:
+    :param base_element:
+    :param xml_element_name:
+    :param xml_id:
+    :param item_name:
+    :param path:
+    :param project_root:
+    :return:
+    """
+    if xml_id is None:
+        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID())])
+    else:
+        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
+
+    xml_file.add_sub_element(new_element, "Name", item_name)
+    relative_path = find_relative_path(path, project_root)
+    xml_file.add_sub_element(new_element, "Path", relative_path)
