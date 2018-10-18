@@ -419,7 +419,7 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
 
     new_source = None
 
-    arcpy.AddMessage("Making Layer Package...")
+    arcpy.AddMessage("Assembling Layer Package...")
     empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
 
     mxd = arcpy.mapping.MapDocument("CURRENT")
@@ -432,6 +432,7 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
 
     layer_package = os.path.join(output_folder, layer_package_name)
+    arcpy.AddMessage("Saving Layer Package...")
     arcpy.PackageLayer_management(output_layer, layer_package)
 
 

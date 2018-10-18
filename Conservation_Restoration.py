@@ -39,35 +39,55 @@ def main(projPath, in_network, out_name):
 
     fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU']
 
-    # 'oPBRC_UI'
+    # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-            row[0] = 'Negligible'
-            cursor.updateRow(row)
+            # 'oCC_EX' > 0 (i.e. where beavers can build dams currently)
+            if row[6] > 0:
+               row[0] = 'THINKING' # PLACEHOLDER UNTIL WE FIGURE THIS OUT 
 
-    # 'oPBRC_UD'
-    with arcpy.da.UpdateCursor(out_network, fields) as cursor:
-        for row in cursor:
-            # 'oCC_EX' None
-            if row[6] <= 0:
-                # 'oVC_EX' Occasional, Frequent, or Pervasive
-                if row[4] >= 1:
-                    # 'iGeo_Slope' >= 23%
-                    if row[7] >= 23:
-                        row[1] = 'Slope Limited'
-                    # 'iGeo_Slope' < 23%
-                    else:
-                        row[1] = 'Hydrologically Limited'
-                # oVC_PT' None
-                elif row[3] <= 0:
-                    row[1] = 'Vegetation Limited'
-                else:
-                    row[1] = 'Anthropogenically Limited'
+            
+            # If 'oCC_EX' = 0 now, then neglible risk
             else:
-                row[1] = 'NA'
+                row[0] = 'Negligible'
+            cursor.updateRow(row)
+            # LOGIC WE WILL CLEAN UP SOON... WE SHOULD EXPOSE ALL THRESHOLDS AS PARAMETERS TO USER
+            #row[0] = 'Considerable Risk'
+            #("oPC_Dist" < 30 OR "iPC_LU" > 0.6) AND ("oCC_EX" >= 15)
+            #row[0] = 'Some Risk'
+            #("oPC_Dist" < 100 OR "iPC_LU" > 0.6) AND ("oCC_EX" >= 5 AND "oCC_EX" < 15) 
+            #row[0] = 'Minior Risk'
+            #"(oPC_Dist" < 300 OR "iPC_LU" > 0.3) AND ("oCC_EX" > 0 AND "oCC_EX" < 5) 
+            #row[0] = 'Negligible Risk'
+            
+            
+    # 'oPBRC_UD' (Areas beavers can't build dams and why)
+    with arcpy.da.UpdateCursor(out_network, fields) as cursor:
+        for row in cursor:
+            # First deal with vegetation limitations
+            # oVC_PT' None - Find places historically veg limited first.
+            if row[3] <= 0:
+                 # 'oVC_EX' Occasional, Frequent, or Pervasive (some areas have oVC_EX > oVC_PT)
+                if row[4] > 0:
+                    row[1] = 'Potential Reservoir or Landuse Conversion'
+                else:    
+                    row[1] = 'Naturally Vegetation Limited'    
+            # 'iGeo_Slope' > 23%
+            elif row[7] > 0.23:
+               row[1] = 'Slope Limited'
+            # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
+            elif row[6] <= 0:
+                    # 'oVC_EX' Rare, Occasional, Frequent, or Pervasive (i.e. its not currently veg limited)
+                    if row[4] > 0:
+                        row[1] = 'Stream Power Limited'                    
+                    # 'oVC_EX' None 
+                    else:
+                        row[1] = 'Anthropogenically Limited'
+            else:
+                row[1] = 'Dam Building Possible'
             cursor.updateRow(row)
 
-    # 'oPBRC_CR'
+    # 'oPBRC_CR' (Conservation & Restoration Opportunties)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
             # 'oPBRC_UI' Negligible or Minor
