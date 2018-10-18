@@ -9,6 +9,11 @@
 
 import os
 import arcpy
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
+from SupportingFunctions import write_xml_element_with_path, find_relative_path
+
 
 def main(bratOutput, dams, outputName):
     """
@@ -43,6 +48,8 @@ def main(bratOutput, dams, outputName):
 
     if dams:
         cleanUpFields(bratOutput, outNetwork, newFields)
+
+    write_xml(bratOutput, outNetwork)
 
 
 def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):
@@ -169,4 +176,19 @@ def cleanUpFields(bratNetwork, outNetwork, newFields):
 
     if len(removeFields) > 0:
         arcpy.DeleteField_management(outNetwork, removeFields)
+
+
+def write_xml(in_network, out_network):
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(in_network)))
+
+    xml_file_path = os.path.join(proj_path, "project.rs.xml")
+    xml_file = XMLBuilder(xml_file_path)
+    in_network_rel_path = find_relative_path(in_network, proj_path)
+
+    path_element = xml_file.find_by_text(in_network_rel_path)
+    analysis_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
+
+    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Summary Report", out_network, proj_path)
+
+    xml_file.write()
 
