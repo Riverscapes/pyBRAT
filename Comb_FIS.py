@@ -34,8 +34,6 @@ def main(
         out_network = os.path.join(analyses_folder, out_name)
     else:
         out_network = os.path.join(analyses_folder, out_name + ".shp")
-    test_xml(in_network, out_network)
-    return
 
     if os.path.exists(out_network):
         arcpy.Delete_management(out_network)
@@ -47,7 +45,7 @@ def main(
 
     makeLayers(out_network, out_name)
 
-    # addxmloutput(projPath, in_network, out_network)
+    add_xml_output(in_network, out_network)
 
 # combined fis function
 def combFIS(in_network, model_run, scratch, max_DA_thresh):
@@ -298,10 +296,6 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
                 cursor.updateRow(row)
 
 
-def test_xml(in_network, out_network):
-    add_xml_output(in_network, out_network)
-
-
 def add_xml_output(in_network, out_network):
     """add the capacity output to the project xml file"""
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(out_network)))
@@ -316,7 +310,7 @@ def add_xml_output(in_network, out_network):
     analysis_element = xml_file.add_sub_element(analyses_element, "Analysis")
     xml_file.add_sub_element(analysis_element, "Name", "BRAT Analysis")
 
-    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Output", out_network, proj_path)
+    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Capacity Output", out_network, proj_path)
 
     xml_file.write()
 
