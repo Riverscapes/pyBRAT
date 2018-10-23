@@ -46,12 +46,6 @@ def main(projPath, in_network, out_name):
             opc_dist = row[11]
             ipc_lu = row[12]
 
-            if occ_ex > 0:
-               row[0] = 'THINKING' # PLACEHOLDER UNTIL WE FIGURE THIS OUT
-            else:
-                row[0] = 'Negligible'
-            cursor.updateRow(row)
-            # LOGIC WE WILL CLEAN UP SOON... WE SHOULD EXPOSE ALL THRESHOLDS AS PARAMETERS TO USER
             if (opc_dist < 30 or ipc_lu > 0.6) and occ_ex >= 15:
                 row[0] = "Considerable Risk"
             elif (opc_dist < 100 or ipc_lu > 0.6) and (occ_ex >= 5 and occ_ex < 15):
@@ -60,6 +54,8 @@ def main(projPath, in_network, out_name):
                 row[0] = "Minor Risk"
             else:
                 row[0] = "Negligible Risk"
+
+            cursor.updateRow(row)
             
             
     # 'oPBRC_UD' (Areas beavers can't build dams and why)
