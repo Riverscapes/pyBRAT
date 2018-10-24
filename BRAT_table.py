@@ -156,11 +156,21 @@ def find_dr_ar(flow_acc, in_DEM):
 def build_output_folder(proj_path, out_name, seg_network, road, should_segment_network, is_verbose):
     if is_verbose:
         arcpy.AddMessage("Building folder structure...")
+    master_outputs_folder = os.path.join(proj_path, "Outputs")
+
+    if not os.path.exists(master_outputs_folder):
+        os.mkdir(master_outputs_folder)
+
     j = 1
-    new_output_folder = os.path.join(proj_path, "Output_" + str(j))
+    str_num = '01'
+    new_output_folder = os.path.join(master_outputs_folder, "Output_" + str_num)
     while os.path.exists(new_output_folder):
         j += 1
-        new_output_folder = os.path.join(proj_path, "Output_" + str(j))
+        if j > 9:
+            str_num = str(j)
+        else:
+            str_num = "0" + str(j)
+        new_output_folder = os.path.join(master_outputs_folder, "Output_" + str_num)
     os.mkdir(new_output_folder)
 
     intermediate_folder = make_folder(new_output_folder, "01_Intermediates")
@@ -774,6 +784,8 @@ def write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, la
 
 
 def add_drain_area_to_inputs_xml(xml_file, drainage_area, proj_path):
+    arcpy.AddMessage(drainage_area)
+    arcpy.AddMessage(proj_path)
     element = xml_file.find_by_text(find_relative_path(drainage_area, proj_path))
 
     if element is not None: # if the flow acc is already in the xml file, we don't need to do anything
