@@ -726,6 +726,8 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
               DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
     proj_path = os.path.dirname(os.path.dirname(output_folder))
+    output_folder_num = int(output_folder[-2:-1])
+    arcpy.AddMessage(str(output_folder_num))
     xml_file_path = proj_path + "/project.rs.xml"
 
     xml_file = XMLBuilder(xml_file_path)
@@ -739,9 +741,9 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
     creation_time = datetime.datetime.today().isoformat()
     brat_element = xml_file.add_sub_element(realizations_element, "BRAT", tags=[("dateCreated", creation_time),
                                                                                 ("guid", getUUID()),
-                                                                                ("id", "RZ" + output_folder[-1]),
+                                                                                ("id", "RZ" + output_folder_num),
                                                                                 ("ProductVersion", "3.0.21")])
-    xml_file.add_sub_element(brat_element, "Name", "BRAT Realization " + output_folder[-1])
+    xml_file.add_sub_element(brat_element, "Name", "BRAT Realization " + output_folder_num)
 
     write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, landuse, valley_bottom, road, railroad,
                     canal, inDEM, DrAr, seg_network, buf_30m, buf_100m)
