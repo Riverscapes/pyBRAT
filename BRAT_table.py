@@ -725,7 +725,7 @@ def calc_drain_area(DEM, input_DEM):
 def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
               DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
-    proj_path = os.path.dirname(output_folder)
+    proj_path = os.path.dirname(os.path.dirname(output_folder))
     xml_file_path = proj_path + "/project.rs.xml"
 
     xml_file = XMLBuilder(xml_file_path)
@@ -784,8 +784,6 @@ def write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, la
 
 
 def add_drain_area_to_inputs_xml(xml_file, drainage_area, proj_path):
-    arcpy.AddMessage(drainage_area)
-    arcpy.AddMessage(proj_path)
     element = xml_file.find_by_text(find_relative_path(drainage_area, proj_path))
 
     if element is not None: # if the flow acc is already in the xml file, we don't need to do anything

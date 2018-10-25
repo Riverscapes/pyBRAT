@@ -145,7 +145,7 @@ def makeLayers(out_network):
 
 
 def write_xml(in_network, out_network):
-    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(in_network)))
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
 
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
     xml_file = XMLBuilder(xml_file_path)

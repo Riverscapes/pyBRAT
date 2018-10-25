@@ -298,7 +298,7 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
 
 def add_xml_output(in_network, out_network):
     """add the capacity output to the project xml file"""
-    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(out_network)))
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(out_network))))
 
     # xml file
     xml_file_path = proj_path + "/project.rs.xml"
