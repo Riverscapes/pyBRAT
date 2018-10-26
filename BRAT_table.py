@@ -726,8 +726,7 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
               DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
     """write the xml file for the project"""
     proj_path = os.path.dirname(os.path.dirname(output_folder))
-    output_folder_num = int(output_folder[-2:-1])
-    arcpy.AddMessage(str(output_folder_num))
+    output_folder_num = str(int(output_folder[-2:]))
     xml_file_path = proj_path + "/project.rs.xml"
 
     xml_file = XMLBuilder(xml_file_path)
