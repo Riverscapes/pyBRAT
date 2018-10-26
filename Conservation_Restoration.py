@@ -38,28 +38,25 @@ def main(projPath, in_network):
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
 
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU']
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-            # 'oCC_EX' > 0 (i.e. where beavers can build dams currently)
-            if row[6] > 0:
-               row[0] = 'THINKING' # PLACEHOLDER UNTIL WE FIGURE THIS OUT 
+            occ_ex = row[6]
+            opc_dist = row[11]
+            ipc_lu = row[12]
 
-            
-            # If 'oCC_EX' = 0 now, then neglible risk
+            if (opc_dist < 30 or ipc_lu > 0.6) and occ_ex >= 15:
+                row[0] = "Considerable Risk"
+            elif (opc_dist < 100 or ipc_lu > 0.6) and (occ_ex >= 5 and occ_ex < 15):
+                row[0] = "Some Risk"
+            elif (opc_dist < 300 or ipc_lu > 0.3) and ( occ_ex > 0 and occ_ex < 5):
+                row[0] = "Minor Risk"
             else:
-                row[0] = 'Negligible'
+                row[0] = "Negligible Risk"
+
             cursor.updateRow(row)
-            # LOGIC WE WILL CLEAN UP SOON... WE SHOULD EXPOSE ALL THRESHOLDS AS PARAMETERS TO USER
-            #row[0] = 'Considerable Risk'
-            #("oPC_Dist" < 30 OR "iPC_LU" > 0.6) AND ("oCC_EX" >= 15)
-            #row[0] = 'Some Risk'
-            #("oPC_Dist" < 100 OR "iPC_LU" > 0.6) AND ("oCC_EX" >= 5 AND "oCC_EX" < 15) 
-            #row[0] = 'Minior Risk'
-            #"(oPC_Dist" < 300 OR "iPC_LU" > 0.3) AND ("oCC_EX" > 0 AND "oCC_EX" < 5) 
-            #row[0] = 'Negligible Risk'
             
             
     # 'oPBRC_UD' (Areas beavers can't build dams and why)
