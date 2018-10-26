@@ -15,7 +15,7 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path
+from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path, find_available_num
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -39,12 +39,12 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     ex_veg_folder = make_folder(vegetation_folder, "01_ExistingVegetation")
     hist_veg_folder = make_folder(vegetation_folder, "02_HistoricVegetation")
 
-    valley_bottom_folder = make_folder(anthropogenic_folder, "01_ValleyBottom")
-    road_folder = make_folder(anthropogenic_folder, "02_Roads")
-    railroad_folder = make_folder(anthropogenic_folder, "03_Railroads")
-    canals_folder = make_folder(anthropogenic_folder, "04_Canals")
-    land_use_folder = make_folder(anthropogenic_folder, "05_LandUse")
-    land_ownership_folder = make_folder(anthropogenic_folder, "06_LandOwnership")
+    valley_bottom_folder = make_optional_input_folder(valley, anthropogenic_folder, "_ValleyBottom")
+    road_folder = make_optional_input_folder(road, anthropogenic_folder, "_Roads")
+    railroad_folder = make_optional_input_folder(rr, anthropogenic_folder, "_Railroads")
+    canals_folder = make_optional_input_folder(canal, anthropogenic_folder, "_Canals")
+    land_use_folder = make_optional_input_folder(landuse, anthropogenic_folder, "_LandUse")
+    land_ownership_folder = make_optional_input_folder(ownership, anthropogenic_folder, "_LandOwnership")
 
     source_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(source_code_folder, 'BRATSymbology')
@@ -139,6 +139,15 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
               canal_destinations, ownership_destinations)
 
 
+def make_optional_input_folder(input, file_path, folder_base_name):
+    if input:
+        new_folder = make_folder(file_path, find_available_num(file_path) + folder_base_name)
+        return new_folder
+    else:
+        return None
+
+
+
 def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_raster):
     """
     Copies multi input ArcGIS inputs into the folder that we want them in
@@ -152,7 +161,10 @@ def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_ras
     i = 1
     destinations = []
     for input_path in split_input:
-        new_sub_folder = make_folder(folder_path, sub_folder_name + "_" + str(i))
+        str_i = str(i)
+        if i < 10:
+            str_i = '0' + str_i
+        new_sub_folder = make_folder(folder_path, sub_folder_name + "_" + str_i)
         destination_path = os.path.join(new_sub_folder, os.path.basename(input_path))
 
         if is_raster:
@@ -293,8 +305,12 @@ def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destina
 def write_xml_for_destination(destination, new_xml_file, base_element, xml_element_name, xml_id_base, item_name,
                               project_root):
     for i in range(len(destination)):
+        str_i = str(i + 1)
+        if i < 10:
+            str_i = '0' + str_i
+        str_i = '_' + str_i
         write_xml_element_with_path(new_xml_file, base_element, xml_element_name, item_name,
-                                    destination[i], project_root, xml_id_base + str(i+1))
+                                    destination[i], project_root, xml_id_base + str_i)
 
 
 
