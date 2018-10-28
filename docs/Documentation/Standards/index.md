@@ -1,6 +1,6 @@
 ---
 title: BRAT Standards
-weight: 1
+weight: 6
 ---
 
 Within the [ETAL](http://etal.joewheaton.org), we have implemented various standards for how we run BRAT. These subpages are sort of dumping ground for those standards as references (primarily for ourselves), but may occaionally be useful for other users as a starting point. 
