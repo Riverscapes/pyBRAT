@@ -11,11 +11,13 @@ The "iHyd" tool basically helps you prepare the hydrologic inputs to BRAT (namel
 
 ## What you need
 
-To populate the "iHyd" or hydrologic attributes to the input table you created in the [previous step]({{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATTableTool.html), regressions for predicting stream flow must first be developed or obtained for your model watershed, and then added to the model.  For example, these regional curves are what drives  [USGS's StreamStats Tool](https://streamstats.usgs.gov/ss/).  Once you have the regressions for both a typical low flow (we often use the flow exceeded 80% of the time) and a typical flood (we often use a two year recurrence interval flow), you must modify the script of the iHyd Attributes tool.  To do so, open the `iHyd.py` file (found inside the toolbox) in a python text editor.  [Pyscripter](https://sourceforge.net/projects/pyscripter/) or [Notepad++](https://notepad-plus-plus.org/) work well.
+To populate the "iHyd" or hydrologic attributes to the input table you created in the [previous step]({{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATTableTool.html), regressions for predicting stream flow must first be developed or obtained for your model watershed, and then added to the model.  For example, these regional curves are what drives  [USGS's StreamStats Tool](https://streamstats.usgs.gov/ss/).  Note, you can maually develop your own regional curves for areas they are not defined based on analyzing avialable gage data
 
 <div align="center">
 	<a class="button secondary" href="https://streamstats.usgs.gov/ss/"><img src= "{{ site.baseurl }}/assets/images/logos/USGS_logo_White_50w.png"> StreamStats </a>
 </div>
+
+Once you have the regressions for both a typical low flow (we often use the flow exceeded 80% of the time) and a typical flood (we often use a two year recurrence interval flow), you must modify the script of the iHyd Attributes tool.  To do so, open the `iHyd.py` file (found inside the toolbox) in a python text editor.  [Pyscripter](https://sourceforge.net/projects/pyscripter/) or [Notepad++](https://notepad-plus-plus.org/) work well.
 
 ### Editing the `iHyd.py` to add your Regional Curves
 
@@ -62,6 +64,7 @@ After any necessary regressions have been entered, save the changes to the scrip
 ## References
 
 - [StreamStats Version 4 Factsheet](https://pubs.usgs.gov/fs/2017/3046/fs20173046.pdf)
+- 
 
 
 <div align="center">
@@ -79,6 +82,7 @@ After any necessary regressions have been entered, save the changes to the scrip
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 3.2 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 5 </a>
 </div>	
+
 ------
 <div align="center">
 
