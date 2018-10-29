@@ -3,6 +3,10 @@ title: BRAT References
 weight: 2
 --- 
 
+<div align="center">
+	<a class="hollow button" href="https://www.researchgate.net/project/BRAT-Beaver-Restoration-Assessment-Tool" ><img src="{{ site.baseurl }}/assets/images/RG_Icon_24.png">&nbsp;&nbsp; Check out BRAT ResearchGate Project for Publications</a>
+</div>
+
 ## Publication 
 
 
