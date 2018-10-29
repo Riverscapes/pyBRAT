@@ -4,6 +4,13 @@ weight: 1
 ---
 
 
+### Photos from Wally & Joe's Fieldwork
+
+[![Album_JohnDay]({{ site.baseurl }}\assets\images\workshops\Album_JohnDay.png)](https://photos.app.goo.gl/2sNFVKHUYzcXsZyD8)
+
+_Participatnts, click on above picture to view [Google Photos Album](https://photos.app.goo.gl/2sNFVKHUYzcXsZyD8)._
+
+
 ------
 
 <div align="center">
