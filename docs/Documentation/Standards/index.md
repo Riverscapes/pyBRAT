@@ -1,5 +1,5 @@
 ---
-title: BRAT Standards
+title: BRAT ET-AL Standards
 weight: 6
 ---
 

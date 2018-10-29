@@ -9,7 +9,7 @@ Namely, we should make sure that if we are making coding changes to LANDFIRE EVT
 
 ------
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards/"><i class="fa fa-check-square-o"></i>  Back to BRAT Home </a>  
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards/"><i class="fa fa-check-square-o"></i>  Back to ETAL BRAT Standards</a>  
 	
 	<a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>  
 
