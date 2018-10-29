@@ -3,7 +3,7 @@ title: pyBRAT Concepts
 weight: 2
 ---
 
-
+Using the navigation menu, pyBRAT Concepts are listed here for reference. Each concept page describes a specific concept within [BRAT]({{ site.baseurl }}/), and tries to illustrate its utlility or application.
 
 ------
 <div align="center">
