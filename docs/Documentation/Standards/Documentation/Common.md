@@ -4,6 +4,9 @@ weight: 3
 ---
 
 ## Some Common Components of Pages
+
+These days, there are many websites that allow you to create content (e.g. videos, tweets, spreadsheet, etc.) and embed it in your website. The git hosted web pages we use are written in markdown, but can recognize blocks of html like `<iframe>`, which are the most standard way to embed something. 
+
 ### Embedding a Video
 
 The video I want to [embed](http://riverscapes.northarrowresearch.com/Technical_Reference/jekyll_toolbox.html#youtube-videos) is [https://www.youtube.com/watch?v=JFzYE_Cnjjw&feature=youtu.be](https://www.youtube.com/watch?v=JFzYE_Cnjjw&feature=youtu.be). 
@@ -39,7 +42,27 @@ In this video, I illustrate how to do steps 2-5 of this with a screen shot taken
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CucZ7tU0Amo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
+## Adding a Button
 
+The best places to look for examples of buttons is on the [styleguide template](https://riverscapes.github.io/TemplateDocs/styleguide.html) - and [corresponding markdown](https://github.com/Riverscapes/TemplateDocs/edit/master/styleguide.md) or to copy a button you like from an existing page. Buttons can be:
+- Just text: <a class="hollow button" href="{{ site.baseurl }}/">  Back to BRAT Home </a>
+- Image and Text: <a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>
+- or Icon and Text: <a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-check-square-o"></i> Back to ETAL Standards</a>
+
+See [Icon Library](https://fontawesome.com/v4.7.0/icons/) for a list of icons that our Riverscapes recognize and you can use.  
+
+The basic syntax for a button goes something like:
+``` markdown
+<a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-check-square-o"></i> Back to ETAL Standards</a>
+```
+
+In the video below, we walk you through how to make your own button to navigate to a specific page on the website <a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-check-square-o"></i> Back to ETAL Standards</a>  and an external URL (http://google.com) <a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-google"></i> Take me Away to Google</a>. 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4kAN1dA819c" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+
+
+### Embed a Slideshow
 
 ------
 <div align="center">
