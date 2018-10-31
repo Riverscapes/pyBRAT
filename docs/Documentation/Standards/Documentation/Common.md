@@ -7,6 +7,7 @@ weight: 3
 
 These days, there are many websites that allow you to create content (e.g. videos, tweets, spreadsheet, etc.) and embed it in your website. The git hosted web pages we use are written in markdown, but can recognize blocks of html like `<iframe>`, which are the most standard way to embed something. 
 
+------
 ### Embedding a Video
 
 The video I want to [embed](http://riverscapes.northarrowresearch.com/Technical_Reference/jekyll_toolbox.html#youtube-videos) is [https://www.youtube.com/watch?v=JFzYE_Cnjjw&feature=youtu.be](https://www.youtube.com/watch?v=JFzYE_Cnjjw&feature=youtu.be). 
@@ -16,7 +17,7 @@ Watch this [video](https://youtu.be/4UKe5BkzJEY) for how to embed a video.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/4UKe5BkzJEY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 
-
+------
 ### Embedding an Image
 Of all the things to do in these markdown Git-hosted webpages, embedding an image is actually the most annoying and difficult (compared with WYSWYG web platforms like Weebly or Google Sites).  The reasons are it is not a drag and drop operation and you kind of need to know what you are doing. The steps are:
 1. Get your image prepared.
@@ -42,7 +43,8 @@ In this video, I illustrate how to do steps 2-5 of this with a screen shot taken
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CucZ7tU0Amo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
-## Adding a Button
+------
+### Adding a Button
 
 The best places to look for examples of buttons is on the [styleguide template](https://riverscapes.github.io/TemplateDocs/styleguide.html) - and [corresponding markdown](https://github.com/Riverscapes/TemplateDocs/edit/master/styleguide.md) or to copy a button you like from an existing page. Buttons can be:
 - Just text: <a class="hollow button" href="{{ site.baseurl }}/">  Back to BRAT Home </a>
@@ -61,7 +63,7 @@ In the video below, we walk you through how to make your own button to navigate 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/4kAN1dA819c" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 
-
+------
 ### Embed a Slideshow
 
 Its nice to be able to embed slideshows on a page:
