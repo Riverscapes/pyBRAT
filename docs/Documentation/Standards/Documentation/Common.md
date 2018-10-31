@@ -75,6 +75,56 @@ This video walks you through how to:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/oZHBn5DrY0k" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
+------
+### Linking to a PDF
+
+#### Providing a useful citation with links
+
+There are many ways to provide a citation. This is the _least useful_:
+
+- Macfarlane WW, Gilbert JT, Gilbert JD, Saunders WC, Hough-Snee N, Hafen C, Wheaton JM and Bennett SN. 2018. What are the Conditions of Riparian Ecosystems? Identifying Impaired Floodplain Ecosystems across the Western U.S. Using the Riparian Condition Assessment (RCA) Tool. Environmental Management. DOI: 10.1007/s00267-018-1061-2.
+
+This is _better_ because it provides a link from the title to the Research Gate entry (which tracks statistics on reads and downlaods), and link from the DOI to the stable, pemenant URL:
+
+- Macfarlane WW, Gilbert JT, Gilbert JD, Saunders WC, Hough-Snee N, Hafen C, Wheaton JM and Bennett SN. 2018. [What are the Conditions of Riparian Ecosystems? Identifying Impaired Floodplain Ecosystems across the Western U.S. Using the Riparian Condition Assessment (RCA) Tool](https://www.researchgate.net/publication/325098563_What_are_the_Conditions_of_Riparian_Ecosystems_Identifying_Impaired_Floodplain_Ecosystems_across_the_Western_US_Using_the_Riparian_Condition_Assessment_RCA_Tool). Environmental Management. DOI: [10.1007/s00267-018-1061-2](http://dx.doi.org/10.1007/s00267-018-1061-2).   
+
+** This is our lab standard for citations ** -_link to ResearchGate through title, link to DOI through DOI._
+
+
+#### Hosting a PDF on AWS instead of ResearchGate
+
+There are situations where its nice to provide a direct link to the PDF (e.g. slides in workshop or handout), that we don't want to post on ResearchGate. If we want to provide a link to a PDF that we hosted on AWS, here's an example:
+
+- [PDF of my paper](https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Workshops/BRAT/2018/Burnt/Macfarlane_et_al-2018-Environmental_Management.pdf)
+
+The syntax for above is: `[PDF of my paper](https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Workshops/BRAT/2018/Burnt/Macfarlane_et_al-2018-Environmental_Management.pdf)`
+
+The video (scroll down) shows how to upload to [AWS](http://aws.amazon.com) (easy). 
+
+If I want to show a PDF icon next to above citation, to indicate there is a pdf, I can use my <i class="fa fa-file-pdf-o" aria-hidden="true"></i> pdf [icon](https://fontawesome.com/v4.7.0/icon/file-pdf-o) with `<i class="fa fa-file-pdf-o" aria-hidden="true"></i>`:
+
+- <i class="fa fa-file-pdf-o" aria-hidden="true"></i> Macfarlane WW, Gilbert JT, Gilbert JD, Saunders WC, Hough-Snee N, Hafen C, Wheaton JM and Bennett SN. 2018.  [What are the Conditions of Riparian Ecosystems? Identifying Impaired Floodplain Ecosystems across the Western U.S. Using the Riparian Condition Assessment (RCA) Tool](https://www.researchgate.net/publication/325098563_What_are_the_Conditions_of_Riparian_Ecosystems_Identifying_Impaired_Floodplain_Ecosystems_across_the_Western_US_Using_the_Riparian_Condition_Assessment_RCA_Tool). Environmental Management. DOI: [10.1007/s00267-018-1061-2](http://dx.doi.org/10.1007/s00267-018-1061-2).
+
+But, that doesn't allow me to click on PDF icon and get to it. To do this, I need to have a html `<a href="">` tag:
+
+- <a href="https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Workshops/BRAT/2018/Burnt/Macfarlane_et_al-2018-Environmental_Management.pdf" ><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a> Macfarlane WW, Gilbert JT, Gilbert JD, Saunders WC, Hough-Snee N, Hafen C, Wheaton JM and Bennett SN. 2018.  [What are the Conditions of Riparian Ecosystems? Identifying Impaired Floodplain Ecosystems across the Western U.S. Using the Riparian Condition Assessment (RCA) Tool](https://www.researchgate.net/publication/325098563_What_are_the_Conditions_of_Riparian_Ecosystems_Identifying_Impaired_Floodplain_Ecosystems_across_the_Western_US_Using_the_Riparian_Condition_Assessment_RCA_Tool). Environmental Management. DOI: [10.1007/s00267-018-1061-2](http://dx.doi.org/10.1007/s00267-018-1061-2).
+
+This was done with `<a href="https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Workshops/BRAT/2018/Burnt/Macfarlane_et_al-2018-Environmental_Management.pdf" ><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>` and collapsing the PDF icon inside the hyperlink `<a>` tag.
+
+##### Or a Button...
+
+Finally, a button can be nice for the paper.
+
+<a class="hollow button" href="https://s3-us-west-2.amazonaws.com/etalweb.joewheaton.org/Workshops/BRAT/2018/Burnt/Macfarlane_et_al-2018-Environmental_Management.pdf"><i class = "fa fa-file-pdf-o" ></i>  Download my PDF please!</a>
+
+
+A long-winded video showing how you do all the above, plus the upload to AWS.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uRFkxY2d_ow" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+
+
+
 
 ------
 <div align="center">
