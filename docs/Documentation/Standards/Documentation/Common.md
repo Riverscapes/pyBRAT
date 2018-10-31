@@ -64,6 +64,16 @@ In the video below, we walk you through how to make your own button to navigate 
 
 ### Embed a Slideshow
 
+Its nice to be able to embed slideshows on a page:
+
+
+<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRQPbDbYvEaL9GXhS4QfhEBe0fwOq0XBZmBBSXZ5EJFOknRxkG1tdO2OVhuUC4TkSqQwMUF2aOQWSBs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+This video walks you through how to:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/oZHBn5DrY0k" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+
 ------
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-check-square-o"></i> Back to ETAL Standards</a>

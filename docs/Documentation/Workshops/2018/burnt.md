@@ -83,7 +83,6 @@ In these slides, we have some background context on [Riverscapes](http://riversc
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQX4eejoK6MIt_-4irST29MeLllPq4zJkPao8XTXjUUmCw2wM9XVEGl6PW1isJgfwyKdwdlyqO9bp3R/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
-
 -----
 ## Photos from Workshop as well as Wally & Joe's Fieldwork
 
