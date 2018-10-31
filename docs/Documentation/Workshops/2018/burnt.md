@@ -20,7 +20,7 @@ weight: 1
 | Dorothy Mason | Powder Basin Watershed Council | Board President |
 | Ben Titus | Powder Basin Watershed Council | Board Secretary/Treasurer  |
 | Justin Rowell | North Fork John Day Watershed Council | Executive Director |
-| Brian R.? | Oregon Department of Fish and Wildlife | Wildlife Supervisor? |
+| Brian Ratliff | Oregon Department of Fish and Wildlife | Baker District Wildlife Biologist |
 
 -----
 ## Worshop Materials
