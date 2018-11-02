@@ -56,7 +56,7 @@ The spatially explicitoutputs from this application of BRAT provides Yakama Nati
 
 - **Atlas of BRAT outputs** [here](https://usu.box.com/s/bcd2tlqs85073ufwtm185ku63ohqa7ph)
 
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_01.png)
+  ![1]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_01.png)
 
   ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_02.png)
 
