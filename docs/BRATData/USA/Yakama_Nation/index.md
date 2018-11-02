@@ -5,11 +5,11 @@ weight: 4
 
 ---
 
-## Yakama Project ##
+## Yakama Project
 
-## Executive Summary ##
+#### Executive Summary
 
-This report presents an application of the Beaver Restoration Assessment Tool [2.0.0](https://github.com/Riverscapes/pyBRAT/releases/tag/v2.0.0) (BRAT; [http://brat.riverscapes.xyz/),](http://brat.riverscapes.xyz/),%20) a decision support and planning tool for beaver management (Macfarlane etal. 2017). In this application we analyzed all the perennial rivers and streams within the Yakama Nation Reservation, which includes portions of the Lower Yakima, and Klickitat watersheds (8-digit USGS Hydrologic Unit Code (HUC 8)). As part of Contract Modification 1, we expanded our analysis to include Rock Creek watershed (10-digit USGS Hydrologic Unit Code (HUC10)), which is presented in the body of this report. As part of Contract Modification 2 we again expanded our analysis and included the White Salmon,Little White Salmon and Wind River watersheds (HUC 10’s) which is presented in the Appendix A because this modification was awarded after this report was drafted.
+This report presents an application of the Beaver Restoration Assessment Tool [2.0.0](https://github.com/Riverscapes/pyBRAT/releases/tag/v2.0.0) (BRAT; [http://brat.riverscapes.xyz/),](http://brat.riverscapes.xyz/)%20) a decision support and planning tool for beaver management (Macfarlane etal. 2017). In this application we analyzed all the perennial rivers and streams within the Yakama Nation Reservation, which includes portions of the Lower Yakima, and Klickitat watersheds (8-digit USGS Hydrologic Unit Code (HUC 8)). As part of Contract Modification 1, we expanded our analysis to include Rock Creek watershed (10-digit USGS Hydrologic Unit Code (HUC10)), which is presented in the body of this report. As part of Contract Modification 2 we again expanded our analysis and included the White Salmon,Little White Salmon and Wind River watersheds (HUC 10’s) which is presented in the Appendix A because this modification was awarded after this report was drafted.
 
  
 
@@ -56,39 +56,39 @@ The spatially explicitoutputs from this application of BRAT provides Yakama Nati
 
 - **Atlas of BRAT outputs** [here](https://usu.box.com/s/bcd2tlqs85073ufwtm185ku63ohqa7ph)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_01.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_01.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_02.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_02.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_03.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_03.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_04.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_04.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_05.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_05.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_06.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_06.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_07.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_07.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_08.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_08.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_09.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_09.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_10.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_10.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_11.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_11.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_12.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_12.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_13.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_13.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_14.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_14.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_15.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_15.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_16.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_16.png)
 
-  ![](C:\ET_AL_Matthew\Non_Projects_Matthew_Meier\ETAL_toolsandscripts\GitHub\Assets\Images\YakamaNation_BRAT_Atlas_Page_17.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_17.png)
 
   ​
 
