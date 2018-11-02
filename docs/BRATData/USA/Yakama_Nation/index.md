@@ -5,9 +5,9 @@ weight: 4
 
 ---
 
-## Yakama Project##
+## Yakama Project ##
 
-### Executive Summary###
+## Executive Summary ##
 
 This report presents an application of the Beaver Restoration Assessment Tool [2.0.0](https://github.com/Riverscapes/pyBRAT/releases/tag/v2.0.0) (BRAT; [http://brat.riverscapes.xyz/),](http://brat.riverscapes.xyz/),%20) a decision support and planning tool for beaver management (Macfarlane etal. 2017). In this application we analyzed all the perennial rivers and streams within the Yakama Nation Reservation, which includes portions of the Lower Yakima, and Klickitat watersheds (8-digit USGS Hydrologic Unit Code (HUC 8)). As part of Contract Modification 1, we expanded our analysis to include Rock Creek watershed (10-digit USGS Hydrologic Unit Code (HUC10)), which is presented in the body of this report. As part of Contract Modification 2 we again expanded our analysis and included the White Salmon,Little White Salmon and Wind River watersheds (HUC 10’s) which is presented in the Appendix A because this modification was awarded after this report was drafted.
 
