@@ -5,7 +5,7 @@ weight: 4
 
 ---
 
-## Yakama Project
+# Yakama Nations Project
 
 #### Executive Summary
 
@@ -43,20 +43,19 @@ The spatially explicitoutputs from this application of BRAT provides Yakama Nati
 
 #### Yakama BRAT Deliverable Data Products Include:
 
-- KMZ of each of four primary BRAT outputs
 
 
-- Shapefiles and Geodatabases of each of four primary outputs and standard inputs
-- Posting of existing and historic beaver dam capacity output layers to public website 
+- KMZ of each of four primary BRAT outputs*
+- Shapefiles and Geodatabases of each of four primary outputs and standard inputs*
 
 
-- Optional –Virtual inventory of existing beaver dams as KMZ
+- Posting of existing and historic beaver dam capacity output layers to public website*
+- Optional –Virtual inventory of existing beaver dams as KMZ*
 
-*-Due to the nature of the data for this report being for and comprised of the Yakama Nations Reservation land and governance the <u>data</u> is not available to the public. For access to the deliverable data above please contact Tom Elliott via email: Tom_Elliott@yakama.com*
 
 - **Atlas of BRAT outputs** [here](https://usu.box.com/s/bcd2tlqs85073ufwtm185ku63ohqa7ph)
 
-  ![1]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_01.png)
+  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_01.png)
 
   ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_02.png)
 
@@ -89,6 +88,14 @@ The spatially explicitoutputs from this application of BRAT provides Yakama Nati
   ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_16.png)
 
   ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_17.png)
+
+  ​
+
+  **Due to the nature of the data for this report being for and comprised of the Yakama Nations Reservation land and governance the <u>data</u> is not available to the public. For access to the deliverable data please contact Tom Elliott via email: Tom_Elliott@yakama.com*
+
+  #### References:
+
+  [Macfarlane, W. W., J. M. Wheaton, N. Bouwes, M. L. Jensen, J. T. Gilbert, N. Hough-Snee, and J. A. Shivik. 2017. Modeling the capacity of riverscapes to support beaver dams. Geomorphology 277:72-99.](http://doi.org/10.1016/j.geomorph.2015.11.019)
 
   ​
 
