@@ -27,6 +27,11 @@ weight: 1
 | Valeen Madden | NFJDWC | Executive Director |
 | Amy Stiner | SFJDWC | Executive Director |
 
+## Worshop Materials
+
+As a group, we worked through the concepts underlying BRAT, and specific, provisional outputs in the Joh Day watershed. Below are interactive viewers (broken out by topic section) of the slides we covered. Note that we skipped over many of these slides, or covered them in passing in discussion. They are provided here for your reference. A complete [PDF of slides]( https://usu.box.com/s/wjpv7q09tled5m9tdxvq9qcp3uvzzp71) is also available.
+
+
 
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRQPbDbYvEaL9GXhS4QfhEBe0fwOq0XBZmBBSXZ5EJFOknRxkG1tdO2OVhuUC4TkSqQwMUF2aOQWSBs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
