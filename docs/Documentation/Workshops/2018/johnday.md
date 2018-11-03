@@ -16,7 +16,7 @@ weight: 1
 | Wally Macfarlane | Utah State University [ETAL](http://etal.joewheaton.org) | Burnt River BRAT Project Manager & Senior Researcher |
 | [Joe Wheaton](http://joewheaton.org) | Utah State University [ETAL](http://etal.joewheaton.org) | Burnt River BRAT Project Principle Investigator |
 | Justin Rowell | [North Fork John Day Watershed Council]( https://nfjdwc.org/) | Project Coordinator |
-| Dan Armichardy l | USFS | Fish Biologist |
+| Dan Armichardy  | USFS | Fish Biologist |
 | Jordan Bass | FS-PCRD | Hydrologist |
 | Debra Bunch | MJDBCWC | Coordinator |
 | Lindsy Ciepiela | ODFW | Biologist |
