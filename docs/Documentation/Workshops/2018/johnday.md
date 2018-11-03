@@ -56,7 +56,7 @@ Before diving into the weeds, we covered at a high level what BRAT produces:
 
 ####  cIS  - You do it
 
-Before trusting the BRAT capacity model, we rolled up our sleeves and all the workshop participants filled out a [BRAT cIS form](https://usu.box.com/s/6ku7lcziunvjh4s0o16alji0mbh4eacl) (too add: link to word document) and filled out with some desktop exercises as well as in the field:
+Before trusting the BRAT capacity model, we rolled up our sleeves and all the workshop participants filled out a [BRAT cIS form](https://usu.box.com/s/6ku7lcziunvjh4s0o16alji0mbh4eacl) and filled out with some desktop exercises as well as in the field:
 
 #### cFIS - The Gory Details
 
