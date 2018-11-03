@@ -5,7 +5,28 @@ weight: 1
 | **DATE:**       | October 24, 2018 |
 |-----------------|---------|
 | **VENUE:**      | Oregon Dept. of Forestry office, 415 Patterson Bridge Road, John Day, OR |
-| **SPONSOR(S):** | [NFJDWC]( https://nfjdwc.org/),[SFJDWC]( http://www.southforkjohnday.com/)&[OWEB]( https://www.oregon.gov/oweb/Pages/index.aspx)|
+| **SPONSORS:** | [NFJDWC]( https://nfjdwc.org/), [SFJDWC]( http://www.southforkjohnday.com/) & [OWEB]( https://www.oregon.gov/oweb/Pages/index.aspx)|
+
+| **HOST:**       | Justin Rowell |
+
+#### In Attendance
+
+| Name             | Organization               | Role    |
+|------------------|----------------------------|----------|
+| Wally Macfarlane | Utah State University [ETAL](http://etal.joewheaton.org) | Burnt River BRAT Project Manager & Senior Researcher |
+| [Joe Wheaton](http://joewheaton.org) | Utah State University [ETAL](http://etal.joewheaton.org) | Burnt River BRAT Project Principle Investigator |
+| Justin Rowell | [North Fork John Day Watershed Council]( https://nfjdwc.org/) | Project Coordinator |
+| Dan Armichardy l | USFS | Fish Biologist |
+| Jordan Bass | FS-PCRD | Hydrologist |
+| Debra Bunch | MJDBCWC | Coordinator |
+| Lindsy Ciepiela | ODFW | Biologist |
+| Elise Delgado | SFJDWC | Coordinator |
+| Sue Greer | OWEB | Regional Representative |
+| Bob Hassmiller | USFS | Hydrologist |
+| Jeremy Henderson | ODFW | Biologist |
+| Valeen Madden | NFJDWC | Executive Director |
+| Amy Stiner | SFJDWC | Executive Director |
+
 
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRQPbDbYvEaL9GXhS4QfhEBe0fwOq0XBZmBBSXZ5EJFOknRxkG1tdO2OVhuUC4TkSqQwMUF2aOQWSBs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
