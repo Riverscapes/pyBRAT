@@ -31,6 +31,11 @@ weight: 1
 
 As a group, we worked through the concepts underlying BRAT, and specific, provisional outputs in the Joh Day watershed. Below are interactive viewers (broken out by topic section) of the slides we covered. Note that we skipped over many of these slides, or covered them in passing in discussion. They are provided here for your reference. A complete [PDF of slides]( https://usu.box.com/s/wjpv7q09tled5m9tdxvq9qcp3uvzzp71) is also available.
 
+<div align="center">
+	<a class="hollow button" href="https:// https://usu.box.com/s/wjpv7q09tled5m9tdxvq9qcp3uvzzp71"><i class="fa fa-file-pdf-o"></i> Workshop Slides </a>
+</div>
+
+
 
 
 
