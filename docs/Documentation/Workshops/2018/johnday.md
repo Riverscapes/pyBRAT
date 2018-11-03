@@ -1,7 +1,12 @@
 ---
-title: John Day River Watershed BRAT 
+title: John Day River Watershed BRAT Workshop 
 weight: 1
 ---
+| **DATE:**       | October 24, 2018 |
+|-----------------|---------|
+| **VENUE:**      | Oregon Dept. of Forestry office, 415 Patterson Bridge Road, John Day, OR |
+| **SPONSOR(S):** | [NFJDWC]( https://nfjdwc.org/),[SFJDWC]( http://www.southforkjohnday.com/)&[OWEB]( https://www.oregon.gov/oweb/Pages/index.aspx)|
+
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRQPbDbYvEaL9GXhS4QfhEBe0fwOq0XBZmBBSXZ5EJFOknRxkG1tdO2OVhuUC4TkSqQwMUF2aOQWSBs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
