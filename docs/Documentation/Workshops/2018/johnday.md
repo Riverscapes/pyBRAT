@@ -43,11 +43,14 @@ We started with introductions, a review of project aims, a review of our scope o
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRQPbDbYvEaL9GXhS4QfhEBe0fwOq0XBZmBBSXZ5EJFOknRxkG1tdO2OVhuUC4TkSqQwMUF2aOQWSBs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
+
 ### Overview of BRAT
 
 Before diving into the weeds, we covered at a high level what BRAT produces:
 
+
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQypm3mHZ_L6A8eF8i5pQ0iHU4ihdjTIy9zG6EWTTeHTVjM0TINHwag6HKoQff518aO_kfSdG-3t8fR/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
 
 ### BRAT Capacity Modelling 
 
@@ -59,7 +62,9 @@ Before trusting the BRAT capacity model, we rolled up our sleeves and all the wo
 
 We did digress into the details underlying the BRAT capacity model, so you can better evaluate how the model is doing.
 
+
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQYEFK9G2pBZ8QT9XNyMjiZDN6eTUPs8KGynz56XNCtTKNXVqvSjX2_G9iPM5fIzcTLWBiwImXtyYvm/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
 
 ### Management
 
@@ -67,23 +72,33 @@ We did digress into the details underlying the BRAT capacity model, so you can b
 
 We take a look at where the streams are relative to infrastructure and higher intensity land use, and then take a conservative look at where that aligns with where beaver could potentially build dams.
 
+
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vT8Rwn7H7APrkWVFXGcpYOy2aaVVxrVVRU_H34drJVZdzi4wszKuxapxlb1VFjmoPfj5Cw4oyN1KDiA/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
 
 #### Making BRAT Conservation & Restoration Outputs Yours
 
 To build ownership of the models, we discussed what could be done by the group to improve the outputs.
 
+
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRJvvr_CG1fgs9_eBUY1UhrVxCLWO5WuBDD1ODTLstQX8OpoV5qploab41TYZIT0QsTuNEmT5RW-lqP/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
-### Extra Slides for Reference
-In these slides, we have some background context on [Riverscapes](http://riverscapes.xyz), valley settings, using fish capacity & life cycle modelling, 
+
+#### Recap & Next Steps
+
+We reviewed what we covered in the workshop and opened it up to questions. We also covered some background context on [Riverscapes](http://riverscapes.xyz), valley settings, using fish capacity & life cycle modelling, 
+
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTJOa2NNSjsl1jTNkMJxpVC_zzSCoyvChnk5LBunZS726MjRg6UDku7zkFkqDSE_Pz8rvnWYF5wonXm/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
+
 ### Extra Slides for Reference
+
 In these slides, we have some background context onthe [Birch Creek Restoration Anecdote from Jay Wilde](http://beaver.joewheaton.org/logan-workshop-materials.html), and some of [Konrad Hafen's](http://etal.joewheaton.org/konrad-hafen.html) work on modelling water storage associated with beaver dams. We didn't get to any of these in our workshop, but provide them here for your reference.
 
+
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vROPzNsHJ_BojrWHwqMu8mEPvmM34OMn_ZzomzSTerQeHzFNMp4adXKLFijOgzEmP2v0jknvdqWZ2k6/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
 
 ### Photos from Wally & Joe's Fieldwork
 
