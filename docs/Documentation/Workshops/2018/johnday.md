@@ -108,6 +108,12 @@ _Participatnts, click on above picture to view [Google Photos Album](https://pho
 
 ------
 
+## And it is Topical!
+
+Here's a fun little NPR piece on [why beavers may help save us from drought](http://www.wbur.org/hereandnow/2018/10/29/beavers-may-save-us-from-drought) that played the Monday after our workshop:
+
+<iframe width="100%" height="124" scrolling="no" frameborder="no" src="https://player.wbur.org/hereandnow/2018/10/29/beavers-may-save-us-from-drought"></iframe>
+
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Workshops"><i class="fa fa-users"></i> Back to Workshops </a>
 
