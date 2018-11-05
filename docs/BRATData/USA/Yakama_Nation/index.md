@@ -48,12 +48,15 @@ The spatially explicit outputs from this application of BRAT provides Yakama Nat
 
 
 
-- KMZ of each of four primary BRAT outputs*
-- Shapefiles and Geodatabases of each of four primary outputs and standard inputs*
+- KMZ files of the four primary BRAT outputs (existing dam capacity, historic dam
+  capacity, human-beaver potential conflict and beaver conservation and
+  restoration zones)*
+- Shapefiles and Geodatabases for the four primary outputs and standard inputs*
 
 
-- Posting of existing and historic beaver dam capacity output layers to public website*
-- Optional –Virtual inventory of existing beaver dams as KMZ*
+- Posting of existing and historic beaver dam capacity output layers to public
+  website*
+- Inventory of existing beaver dams as KMZ*
 
 
 - **Atlas of BRAT outputs** [here](https://usu.box.com/s/bcd2tlqs85073ufwtm185ku63ohqa7ph)
