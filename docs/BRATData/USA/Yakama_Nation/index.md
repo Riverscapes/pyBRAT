@@ -94,7 +94,7 @@ The spatially explicit outputs from this application of BRAT provides Yakama Nat
 
   ​
 
-  **Due to the sensitive nature of the data for this report, directed for the Yakama Nation Reservation land and governance, the <u>data</u> is not available to the public. For access to these deliverables please contact Tom Elliott via email: Tom_Elliott@yakama.com*
+  *The Yakama Nation Reservation has requested that the Yakama Nation BRAT data be private. For special request access to these data please contact Tom Elliott via email: [Tom_Elliott@yakama.com](Tom_Elliott@yakama.com)
 
   #### References:
 
