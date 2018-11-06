@@ -49,7 +49,7 @@ If you have access to ArcGIS and are [comfortable getting around](http://gis.joe
 
 Looking further into working with BRAT layer packages for interrogation and visualization.
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=nTEgbR65EOo" frameborder="0" allowfullscreen></iframe>
+<<iframe width="560" height="315" src="https://www.youtube.com/embed/nTEgbR65EOo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>>
 
 ## Queries in ArcGIS
 
