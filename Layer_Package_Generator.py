@@ -89,28 +89,28 @@ def check_intermediates(intermediates_folder, symbologyFolder):
 def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
                              layer_name, field_for_layer, layer_file_name=None):
     """
-
-    :param intermediates_folder: The
-    :param symbology_folder:
-    :param symbology_layer_name:
-    :param brat_table_file:
-    :param folder_name:
-    :param layer_name:
-    :param field_for_layer:
-    :param layer_file_name:
+    Checks that the layer exists. If it has the proper field, and it missing, the layer will be created again
+    :param intermediates_folder: The path to the intermediates folder
+    :param symbology_folder: The path to the symbology folder
+    :param symbology_layer_name: The name of the symbology layer, that we'll pull our symbology from
+    :param brat_table_file: The BRAT table output, which we'll use for our layers
+    :param folder_name: The name of the folder that we'll look in for the layer
+    :param layer_name: The name we need to give to the layer (in the Table of Contents)
+    :param field_for_layer: The name of the field we'll need for the layer
+    :param layer_file_name: The name we'll give to the layer file (defaults to the name in the ToC, without spaces)
     :return:
     """
     fields = [f.name for f in arcpy.ListFields(brat_table_file)]
     if field_for_layer not in fields: # we don't want to create the layer if the field isn't in the BRAT table file
         return
 
-    if layer_file_name == None:
+    if layer_file_name is None:
         layer_file_name = layer_name.replace(" ", "")
     layer_symbology = os.path.join(symbology_folder, symbology_layer_name)
 
     layer_folder = find_folder(intermediates_folder, folder_name)
 
-    if layer_folder == None:
+    if layer_folder is None:
         layer_folder = make_folder(intermediates_folder, find_available_num(intermediates_folder) + "_" + folder_name)
 
     layer_path = os.path.join(layer_folder, layer_file_name)
