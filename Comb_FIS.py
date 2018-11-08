@@ -43,7 +43,7 @@ def main(
     combFIS(out_network, 'pt', scratch, max_DA_thresh)
     combFIS(out_network, 'ex', scratch, max_DA_thresh)
 
-    makeLayers(out_network, out_name)
+    make_layers(out_network)
 
     addxmloutput(projPath, in_network, out_network)
 
@@ -327,11 +327,10 @@ def addxmloutput(projPath, in_network, out_network):
     exxml.write()
 
 
-def makeLayers(out_network, out_name):
+def make_layers(out_network):
     """
     Writes the layers
     :param out_network: The output network, which we want to make into a layer
-    :param out_name: The name of the layers
     :return:
     """
     arcpy.AddMessage("Making layers...")
