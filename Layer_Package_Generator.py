@@ -154,8 +154,8 @@ def find_BRAT_table_output(intermediates_folder):
 def check_buffer_layers(intermediates_folder, symbology_folder):
     """
     Finds the buffer folder, and checks that it has the
-    :param intermediates_folder:
-    :param symbology_folder:
+    :param intermediates_folder: The path to the intermediates folder
+    :param symbology_folder: The path to the symbology folder
     :return:
     """
     buffer_folder = find_folder(intermediates_folder, "Buffers")
@@ -223,6 +223,12 @@ def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbolo
 
 
 def find_shape_file_with_field(folder, field_name):
+    """
+    Looks for a file in the given folder that has the field name we're looking for
+    :param folder: The folder to look in
+    :param field_name: The field name we're looking for
+    :return: The file path that has the field we want
+    """
     for file in os.listdir(folder):
         if file.endswith(".shp"):
             file_path = os.path.join(folder, file)
@@ -359,7 +365,7 @@ def make_topo_layers(topo_folder):
 def find_destinations(root_folder):
     """
     Finds all the .shp and .tif files in a directory, and returns an array with the paths to them
-    :param root_folder:
+    :param root_folder: The root folder where we want to find shape files
     :return:
     """
     destinations = []
@@ -554,18 +560,6 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
     find_and_group_layers(intermediate_layers, intermediates_folder, "Hydrology", "Hydrology", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "AnabranchHandler", "Anabranch Handler", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "TopographicMetrics", "Topographic Index", empty_group_layer, df, mxd)
-
-    # veg_folder_name = "VegDamCapacity"
-    # veg_group_layer_name = "Overall Vegetation Dam Capacity"
-    # veg_folder_path = findFolder(intermediatesFolder, veg_folder_name)
-    # if veg_folder_path:
-    #     veg_layers = findLayersInFolder(veg_folder_path)
-    #     if len(veg_layers) == 2:
-    #         desc = arcpy.Describe(veg_layers[0])
-    #         if "Existing" in desc.nameString:
-    #             veg_layers = [veg_layers[1], veg_layers[0]]
-    #
-    #     intermediate_layers.append(groupLayers(emptyGroupLayer, veg_group_layer_name, veg_layers, df, mxd))
 
     return group_layers(empty_group_layer, "Intermediates", intermediate_layers, df, mxd)
 
