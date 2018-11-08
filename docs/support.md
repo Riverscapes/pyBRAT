@@ -1,5 +1,5 @@
 ---
-title:  Funding 
+title:  Acknowledgements
 weight: 2
 ---
 
@@ -42,7 +42,6 @@ Updated: June 2018
 <div align="center">
 	<div><a href="http://www.waltonfamilyfoundation.org"><img src="/assets/images/logos/WFF.jpg" alt="WFF"></a></div>
 </div>
-
 ------
 
 ## Interested in Supporting Continued BRAT Development?
