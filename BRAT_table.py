@@ -977,8 +977,9 @@ def write_xml(projPath, projName, hucID, hucName, coded_veg, coded_hist, seg_net
             if "yes" in nlist:
                 pass
             else:
-                exxml.addProjectInput("Vector", "Railroads", iid="RR" + str(k), guid=getUUID())
-                exxml.addBRATInput(exxml.BRATRealizations[0], "Railroads", ref="RR" + str(k))
+                pass
+                # exxml.addProjectInput("Vector", "Railroads", iid="RR" + str(k), guid=getUUID())
+                # exxml.addBRATInput(exxml.BRATRealizations[0], "Railroads", ref="RR" + str(k))
 
         if canal is not None:
             nlist = []
