@@ -526,91 +526,33 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 
     # calculate mean distance from road-stream crossings ('iPC_RoadX'), roads ('iPC_Road') and roads clipped to the valley bottom ('iPC_RoadVB')
     if road is not None:
-        roadx = temp_dir + "\\roadx.shp"
+        road_crossings = temp_dir + "\\roadx.shp"
         # create points at road-stream intersections
-        arcpy.Intersect_analysis([out_network, road], roadx, "", "", "POINT")
-        find_distance_from_feature(out_network, roadx, valley_bottom, temp_dir, buf_30m, "roadx", "iPC_RoadX", scratch, is_verbose, clip_feature = False)
+        arcpy.Intersect_analysis([out_network, road], road_crossings, "", "", "POINT")
+        find_distance_from_feature(out_network, road_crossings, valley_bottom, temp_dir, buf_30m, "roadx", "iPC_RoadX", scratch, is_verbose, clip_feature = False)
 
-    # calculate mean distance from road-stream crossings ('iPC_RoadX'), roads ('iPC_Road') and roads clipped to the valley bottom ('iPC_RoadVB')
     if road is not None:
         find_distance_from_feature(out_network, road, valley_bottom, temp_dir, buf_30m, "roadvb", "iPC_RoadVB", scratch, is_verbose, clip_feature = True)
         find_distance_from_feature(out_network, road, valley_bottom, temp_dir, buf_30m, "road", "iPC_Road", scratch, is_verbose, clip_feature = False)
 
-    # calculate mean distance from railroads ('iPC_Rail') and railroads clipped to valley bottom ('iPC_RailVB')
     if railroad is not None:
         find_distance_from_feature(out_network, railroad, valley_bottom, temp_dir, buf_30m, "railroadvb", "iPC_RailVB", scratch, is_verbose, clip_feature = True)
         find_distance_from_feature(out_network, railroad, valley_bottom, temp_dir, buf_30m, "railroad", "iPC_Rail", scratch, is_verbose, clip_feature = False)
 
-    # calculate minimum distance from canals ('iPC_Canal')
     if canal is not None:
         find_distance_from_feature(out_network, canal, valley_bottom, temp_dir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
 
     # calculate mean landuse value ('iPC_LU')
     if landuse is not None:
-        if is_verbose:
-            arcpy.AddMessage("Calculating iPC_LU values...")
-        arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
-        # create raster with just landuse code values
-        lu_ras = Lookup(landuse, "LU_CODE")
-        # calculate mean landuse value within 100 m buffer of each network segment
-        zonalStatsWithinBuffer(buf_100m, lu_ras, 'MEAN', 'MEAN', out_network, "iPC_LU", scratch)
-        # get percentage of each land use class in 100 m buffer of stream segment
-        fields = [f.name.upper() for f in arcpy.ListFields(landuse)]
+        add_landuse_to_table(out_network, landuse, buf_100m, scratch, is_verbose)
 
-        if "LUI_CLASS" in fields:
-            buf_fields = [f.name for f in arcpy.ListFields(buf_100m)]
-            if 'oArea' not in buf_fields:
-                arcpy.AddField_management(buf_100m, 'oArea', 'DOUBLE')
-                with arcpy.da.UpdateCursor(buf_100m, ['SHAPE@AREA', 'oArea']) as cursor:
-                    for row in cursor:
-                        row[1] = row[0]
-                        cursor.updateRow(row)
-            landuse_poly = arcpy.RasterToPolygon_conversion(landuse, os.path.join(scratch, 'landuse_poly'), 'NO_SIMPLIFY', "LUI_Class")
-            landuse_int = arcpy.Intersect_analysis([landuse_poly, buf_100m], os.path.join(scratch, 'landuse_int'))
-            arcpy.AddField_management(landuse_int, 'propArea', 'DOUBLE')
-            with arcpy.da.UpdateCursor(landuse_int, ['SHAPE@AREA', 'oArea', 'propArea']) as cursor:
-                for row in cursor:
-                    row[2] = row[0]/row[1]
-                    cursor.updateRow(row)
-            area_tbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['ReachID', 'LUI_CLASS'])
-            area_piv_tbl = arcpy.PivotTable_management(area_tbl, ['ReachID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
+    add_min_distance(out_network)
 
-            sanitize_area_piv_tbl(area_piv_tbl)
-            # create empty dictionary to hold input table field values
-            tbl_dict = {}
-            # add values to dictionary
-            with arcpy.da.SearchCursor(area_piv_tbl, ['ReachID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
-                for row in cursor:
-                    tbl_dict[row[0]] = [row[1], row[2], row[3], row[4]]
+    # clear the environment extent setting
+    arcpy.ClearEnvironment("extent")
 
-            # populate flowline network out fields
-            arcpy.AddField_management(out_network, "iPC_VLowLU", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iPC_LowLU", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iPC_ModLU", 'DOUBLE')
-            arcpy.AddField_management(out_network, "iPC_HighLU", 'DOUBLE')
 
-            with arcpy.da.UpdateCursor(out_network, ['ReachID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
-                for row in cursor:
-                    try:
-                        aKey = row[0]
-                        row[1] = round(100*tbl_dict[aKey][0], 2)
-                        row[2] = round(100*tbl_dict[aKey][1], 2)
-                        row[3] = round(100*tbl_dict[aKey][2], 2)
-                        row[4] = round(100*tbl_dict[aKey][3], 2)
-                        cursor.updateRow(row)
-                    except:
-                        pass
-            tbl_dict.clear()
-        else:
-            arcpy.AddWarning("No field named \"LU_CLASS\" in the land use raster. Make sure that this field exists" +
-                             " with no typos if you wish to use the data from the land use raster")
-
-        # delete temp fcs, tbls, etc.
-        items = [lu_ras]
-        for item in items:
-            arcpy.Delete_management(item)
-
-    # calculate min distance of all 'iPC' distance fields
+def add_min_distance(out_network):
     arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
     fields = [f.name for f in arcpy.ListFields(out_network)]
     all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal"]
@@ -623,8 +565,68 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
             row[0] = min(row[1:])
             cursor.updateRow(row)
 
-    # clear the environment extent setting
-    arcpy.ClearEnvironment("extent")
+
+def add_landuse_to_table(out_network, landuse, buf_100m, scratch, is_verbose):
+    if is_verbose:
+        arcpy.AddMessage("Calculating iPC_LU values...")
+    arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
+    # create raster with just landuse code values
+    lu_ras = Lookup(landuse, "LU_CODE")
+    # calculate mean landuse value within 100 m buffer of each network segment
+    zonalStatsWithinBuffer(buf_100m, lu_ras, 'MEAN', 'MEAN', out_network, "iPC_LU", scratch)
+    # get percentage of each land use class in 100 m buffer of stream segment
+    fields = [f.name.upper() for f in arcpy.ListFields(landuse)]
+
+    if "LUI_CLASS" not in fields:
+        arcpy.AddWarning("No field named \"LU_CLASS\" in the land use raster. Make sure that this field exists" +
+                         " with no typos if you wish to use the data from the land use raster")
+        return
+
+    buf_fields = [f.name for f in arcpy.ListFields(buf_100m)]
+    if 'oArea' not in buf_fields:
+        arcpy.AddField_management(buf_100m, 'oArea', 'DOUBLE')
+        with arcpy.da.UpdateCursor(buf_100m, ['SHAPE@AREA', 'oArea']) as cursor:
+            for row in cursor:
+                row[1] = row[0]
+                cursor.updateRow(row)
+    landuse_poly = arcpy.RasterToPolygon_conversion(landuse, os.path.join(scratch, 'landuse_poly'), 'NO_SIMPLIFY', "LUI_Class")
+    landuse_int = arcpy.Intersect_analysis([landuse_poly, buf_100m], os.path.join(scratch, 'landuse_int'))
+    arcpy.AddField_management(landuse_int, 'propArea', 'DOUBLE')
+    with arcpy.da.UpdateCursor(landuse_int, ['SHAPE@AREA', 'oArea', 'propArea']) as cursor:
+        for row in cursor:
+            row[2] = row[0]/row[1]
+            cursor.updateRow(row)
+    area_tbl = arcpy.Statistics_analysis(landuse_int, os.path.join(scratch, 'areaTbl'), [['propArea', 'SUM']], ['ReachID', 'LUI_CLASS'])
+    area_piv_tbl = arcpy.PivotTable_management(area_tbl, ['ReachID'], 'LUI_CLASS', 'SUM_propArea', os.path.join(scratch, 'areaPivTbl'))
+
+    sanitize_area_piv_tbl(area_piv_tbl)
+    # create empty dictionary to hold input table field values
+    tbl_dict = {}
+    # add values to dictionary
+    with arcpy.da.SearchCursor(area_piv_tbl, ['ReachID', 'VeryLow', 'Low', 'Moderate', 'High']) as cursor:
+        for row in cursor:
+            tbl_dict[row[0]] = [row[1], row[2], row[3], row[4]]
+
+    # populate flowline network out fields
+    arcpy.AddField_management(out_network, "iPC_VLowLU", 'DOUBLE')
+    arcpy.AddField_management(out_network, "iPC_LowLU", 'DOUBLE')
+    arcpy.AddField_management(out_network, "iPC_ModLU", 'DOUBLE')
+    arcpy.AddField_management(out_network, "iPC_HighLU", 'DOUBLE')
+
+    with arcpy.da.UpdateCursor(out_network, ['ReachID', 'iPC_VLowLU', 'iPC_LowLU', 'iPC_ModLU', 'iPC_HighLU']) as cursor:
+        for row in cursor:
+            try:
+                aKey = row[0]
+                row[1] = round(100*tbl_dict[aKey][0], 2)
+                row[2] = round(100*tbl_dict[aKey][1], 2)
+                row[3] = round(100*tbl_dict[aKey][2], 2)
+                row[4] = round(100*tbl_dict[aKey][3], 2)
+                cursor.updateRow(row)
+            except:
+                pass
+    tbl_dict.clear()
+
+    arcpy.Delete_management(lu_ras)
 
 
 def sanitize_area_piv_tbl(area_piv_tbl):
