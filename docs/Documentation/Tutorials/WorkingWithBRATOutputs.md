@@ -47,6 +47,10 @@ If you have access to ArcGIS and are [comfortable getting around](http://gis.joe
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/6sZ6Y5tGPso" frameborder="0" allowfullscreen></iframe>
 
+Looking further into working with BRAT layer packages for interrogation and visualization.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nTEgbR65EOo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Queries in ArcGIS
 
 If you want to interrogate the BRAT results and run queries to summarize them in more useful ways for your areas of interest, this video shows you how (warning > 20 minutes). 
