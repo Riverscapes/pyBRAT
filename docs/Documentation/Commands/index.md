@@ -3,7 +3,7 @@ title: pyBRAT Commands
 weight: 1
 ---
 
-
+Using the navigation menu, pyBRAT commands (by version) are listed here for reference. Each command page describes the commands purpose, its use, its inputs, parameters (if applicable) and outputs. [Tutorials](http://brat.riverscapes.xyz/Documentation/Tutorials/) are provided seperately to illustrate the utilization of these commands in specific examples. 
 
 ------
 <div align="center">

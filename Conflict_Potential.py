@@ -14,7 +14,7 @@ import numpy as np
 import os
 import sys
 import projectxml
-import uuid
+from SupportingFunctions import getUUID
 
 
 def main(
@@ -312,11 +312,6 @@ def makeLayer(output_folder, layer_base, new_layer_name, symbology_layer=None, i
     new_layer_instance.description = description
     new_layer_instance.save()
     return new_layer_save
-
-
-
-def getUUID():
-    return str(uuid.uuid4()).upper()
 
 
 if __name__ == '__main__':
