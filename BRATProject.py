@@ -15,10 +15,13 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer, get_execute_error_code
+from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path, find_available_num
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(proj_path, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
+def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
@@ -36,12 +39,12 @@ def main(proj_path, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, c
     ex_veg_folder = make_folder(vegetation_folder, "01_ExistingVegetation")
     hist_veg_folder = make_folder(vegetation_folder, "02_HistoricVegetation")
 
-    valley_bottom_folder = make_folder(anthropogenic_folder, "01_ValleyBottom")
-    road_folder = make_folder(anthropogenic_folder, "02_Roads")
-    railroad_folder = make_folder(anthropogenic_folder, "03_Railroads")
-    canals_folder = make_folder(anthropogenic_folder, "04_Canals")
-    land_use_folder = make_folder(anthropogenic_folder, "05_LandUse")
-    land_ownership_folder = make_folder(anthropogenic_folder, "06_LandOwnership")
+    valley_bottom_folder = make_optional_input_folder(valley, anthropogenic_folder, "_ValleyBottom")
+    road_folder = make_optional_input_folder(road, anthropogenic_folder, "_Roads")
+    railroad_folder = make_optional_input_folder(rr, anthropogenic_folder, "_Railroads")
+    canals_folder = make_optional_input_folder(canal, anthropogenic_folder, "_Canals")
+    land_use_folder = make_optional_input_folder(landuse, anthropogenic_folder, "_LandUse")
+    land_ownership_folder = make_optional_input_folder(ownership, anthropogenic_folder, "_LandOwnership")
 
     source_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(source_code_folder, 'BRATSymbology')
@@ -91,40 +94,57 @@ def main(proj_path, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, c
     make_input_layers(network_destinations, "Flow Direction", symbology_layer=flow_direction_symbology, is_raster=False)
 
     # add the DEM inputs to the project
-    copy_multi_input_to_folder(topo_folder, DEM, "DEM", is_raster=True)
+    dem_destinations = copy_multi_input_to_folder(topo_folder, DEM, "DEM", is_raster=True)
     make_topo_layers(topo_folder)
 
     # add landuse raster to the project
+    landuse_destinations = []
     if landuse is not None:
         landuse_destinations = copy_multi_input_to_folder(land_use_folder, landuse, "Land_Use", is_raster=True)
         make_input_layers(landuse_destinations, "Land Use Raster", symbology_layer=landuse_symbology, is_raster=True)
 
     # add the conflict inputs to the project
+    valley_bottom_destinations = []
     if valley is not None:
-        vally_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
-        make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
-        make_input_layers(vally_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
+        valley_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
+        make_input_layers(valley_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
+        make_input_layers(valley_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
 
     # add road layers to the project
+    road_destinations = []
     if road is not None:
         road_destinations = copy_multi_input_to_folder(road_folder, road, "Roads", is_raster=False)
         make_input_layers(road_destinations, "Roads", symbology_layer=roads_symbology, is_raster=False)
 
     # add railroad layers to the project
+    rr_destinations = []
     if rr is not None:
         rr_destinations = copy_multi_input_to_folder(railroad_folder, rr, "Railroads", is_raster=False)
         make_input_layers(rr_destinations, "Railroads", symbology_layer=railroads_symbology, is_raster=False)
 
     # add canal layers to the project
+    canal_destinations = []
     if canal is not None:
         canal_destinations = copy_multi_input_to_folder(canals_folder, canal, "Canals", is_raster=False)
         make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
 
     # add land ownership layers to the project
+    ownership_destinations = []
     if ownership is not None:
         ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land_Ownership", is_raster=False)
         make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
 
+    write_xml(proj_path, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
+              dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
+              canal_destinations, ownership_destinations)
+
+
+def make_optional_input_folder(input, file_path, folder_base_name):
+    if input:
+        new_folder = make_folder(file_path, find_available_num(file_path) + folder_base_name)
+        return new_folder
+    else:
+        return None
 
 def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_raster):
     """
@@ -139,7 +159,10 @@ def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_ras
     i = 1
     destinations = []
     for input_path in split_input:
-        new_sub_folder = make_folder(folder_path, sub_folder_name + "_" + str(i))
+        str_i = str(i)
+        if i < 10:
+            str_i = '0' + str_i
+        new_sub_folder = make_folder(folder_path, sub_folder_name + "_" + str_i)
         destination_path = os.path.join(new_sub_folder, os.path.basename(input_path))
 
         if is_raster:
@@ -148,6 +171,7 @@ def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_ras
             arcpy.Copy_management(input_path, destination_path)
         destinations.append(destination_path)
         i += 1
+
     return destinations
 
 
@@ -219,6 +243,88 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
         make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster, file_name=file_name)
 
 
+
+def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
+              dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
+              canal_destinations, ownership_destinations):
+    """
+
+    :param project_root:
+    :param proj_name:
+    :param huc_ID:
+    :param watershed_name:
+    :param ex_veg_destinations:
+    :param hist_veg_destinations:
+    :param dem_destinations:
+    :param landuse_destinations:
+    :param valley_bottom_destinations:
+    :param road_destinations:
+    :param rr_destinations:
+    :param canal_destinations:
+    :param ownership_destinations:
+    :return:
+    """
+    xml_file = project_root + "\project.rs.xml"
+    if os.path.exists(xml_file):
+        os.remove(xml_file)
+
+    new_xml_file = XMLBuilder(xml_file, "Project", [("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"),
+                                                    ("xsi:noNamespaceSchemaLocation","https://raw.githubusercontent.com/Riverscapes/Program/master/Project/XSD/V1/Project.xsd")])
+    if proj_name is None:
+        proj_name = os.path.basename(project_root)
+    new_xml_file.add_sub_element(new_xml_file.root, "Name", proj_name)
+    new_xml_file.add_sub_element(new_xml_file.root, "ProjectType", "BRAT")
+
+    add_metadata(new_xml_file, huc_ID, watershed_name)
+
+    add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations,
+               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
+               canal_destinations, ownership_destinations)
+
+    new_xml_file.write()
+
+
+def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations, dem_destinations, landuse_destinations,
+              valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations):
+    inputs_element = new_xml_file.add_sub_element(new_xml_file.root, "Inputs")
+
+    write_xml_for_destination(ex_veg_destinations, new_xml_file, inputs_element, "Raster", "EXVEG", "Existing Vegetation", project_root)
+    write_xml_for_destination(hist_veg_destinations, new_xml_file, inputs_element, "Raster", "HISTVEG", "Historic Vegetation", project_root)
+    write_xml_for_destination(network_destinations, new_xml_file, inputs_element, "Vector", "NETWORK", "Segmented Network", project_root)
+    write_xml_for_destination(dem_destinations, new_xml_file, inputs_element, "Raster", "DEM", "DEM", project_root)
+    write_xml_for_destination(landuse_destinations, new_xml_file, inputs_element, "Raster", "LU", "Land Use", project_root)
+    write_xml_for_destination(valley_bottom_destinations, new_xml_file, inputs_element, "Vector", "VALLEY", "Valley Bottom", project_root)
+    write_xml_for_destination(road_destinations, new_xml_file, inputs_element, "Vector", "ROAD", "Roads", project_root)
+    write_xml_for_destination(rr_destinations, new_xml_file, inputs_element, "Vector", "RR", "Railroads", project_root)
+    write_xml_for_destination(canal_destinations, new_xml_file, inputs_element, "Vector", "CANAL", "Canals", project_root)
+    write_xml_for_destination(ownership_destinations, new_xml_file, inputs_element, "Vector", "OWNERSHIP", "Ownership", project_root)
+
+
+def write_xml_for_destination(destination, new_xml_file, base_element, xml_element_name, xml_id_base, item_name,
+                              project_root):
+    for i in range(len(destination)):
+        str_i = str(i + 1)
+        if i < 10:
+            str_i = '0' + str_i
+        str_i = '_' + str_i
+        write_xml_element_with_path(new_xml_file, base_element, xml_element_name, item_name,
+                                    destination[i], project_root, xml_id_base + str_i)
+
+
+
+def add_metadata(new_xml_file, huc_ID, watershed_name):
+    """
+    Writes the metadata elements
+    :param new_xml_file:
+    :param huc_ID:
+    :param watershed_name:
+    :return:
+    """
+    metadata_element = new_xml_file.add_sub_element(new_xml_file.root, "MetaData")
+    new_xml_file.add_sub_element(metadata_element, "Meta", huc_ID, [("name","HUCID")])
+    new_xml_file.add_sub_element(metadata_element, "Meta", watershed_name, [("name","Watershed")])
+
+
 if __name__ == '__main__':
     main(
         sys.argv[1],
@@ -231,4 +337,7 @@ if __name__ == '__main__':
         sys.argv[8],
         sys.argv[9],
         sys.argv[10],
-        sys.argv[11])
+        sys.argv[11],
+        sys.argv[12],
+        sys.argv[13],
+        sys.argv[14])

@@ -13,12 +13,13 @@ import arcpy
 import sys
 import os
 import projectxml
-import uuid
-from SupportingFunctions import make_layer, make_folder, find_available_num
+from SupportingFunctions import make_layer, make_folder, find_available_num, find_relative_path, write_xml_element_with_path
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
 
 
 def main(projPath, in_network, out_name):
-
     arcpy.env.overwriteOutput = True
 
     out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
@@ -114,6 +115,8 @@ def main(projPath, in_network, out_name):
 
     makeLayers(out_network)
 
+    write_xml(in_network, out_network)
+
     return out_network
 
 
@@ -138,9 +141,19 @@ def makeLayers(out_network):
     make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", managementLayer3, is_raster=False)
 
 
+def write_xml(in_network, out_network):
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
 
-def getUUID():
-    return str(uuid.uuid4()).upper()
+    xml_file_path = os.path.join(proj_path, "project.rs.xml")
+    xml_file = XMLBuilder(xml_file_path)
+    in_network_rel_path = find_relative_path(in_network, proj_path)
+
+    path_element = xml_file.find_by_text(in_network_rel_path)
+    analysis_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
+
+    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Conservation and Restoration Output", out_network, proj_path)
+
+    xml_file.write()
 
 
 if __name__ == '__main__':
