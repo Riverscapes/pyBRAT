@@ -9,7 +9,7 @@ The majority of users of BRAT will not actually run BRAT themselves, but instead
 ### Capacity Layer
 The **capacity model** outputs use the following color scheme to bin the output data (note each ≤300 m reach has a specific continuous dam density output). Existing capacity output is found in the `OCC_EX` field and potential (historic) capacity is found in the `oCC_PT` field. 
 
-![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Capacity_BRATv3X.png){: style="center" width="300" height="300"}
+![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Capacity_BRATv3X.png){: width="300" height="300"}
 
 In addition the capacity outputs and reach lengths were used to report estimated dam complex size `mCC_EX_CT` (for existing) and `mCC_PT_CT` (for potential) fields: 
 
@@ -24,11 +24,11 @@ The **preliminary management** output layers include outputs that describe the l
 
 - Areas Beavers Can Build Dams, but Could Be Undesireable (`oPBRC_UI`) uses the following color scheme:
 
-  ![Legend BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png)
+  ![Legend BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
 
 - Restoration or Conservation Opportunities(`oPCRC_CR`) uses the following color scheme:
 
-  ![Legend BRAT Management Restoration or Conservation Opportunities]({{ site.baseurl }}/assets/images/Restoration_or_Conservation_Opportunities.png)
+  ![Legend BRAT Management Restoration or Conservation Opportunities]({{ site.baseurl }}/assets/images/Restoration_or_Conservation_Opportunities.png){: width="300" height="300"}
 
 ## Attribute Field Descriptions
 
