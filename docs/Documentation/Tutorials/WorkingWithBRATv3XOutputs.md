@@ -9,7 +9,7 @@ The majority of users of BRAT will not actually run BRAT themselves, but instead
 ### Capacity Layer
 The **capacity model** outputs use the following color scheme to bin the output data (note each ≤300 m reach has a specific continuous dam density output). Existing capacity output is found in the `OCC_EX` field and potential (historic) capacity is found in the `oCC_PT` field. 
 
-![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Capacity_BRATv3X.png#center =50x50)
+![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Capacity_BRATv3X.png =50x50 #center)
 
 In addition the capacity outputs and reach lengths were used to report estimated dam complex size `mCC_EX_CT` (for existing) and `mCC_PT_CT` (for potential) fields: 
 
