@@ -42,7 +42,7 @@ Currently the Summary Report tool is limited by the distance and relation that d
 
 ![Original validation issue]({{ site.baseurl }}/assets/images/Summary_Report_Caveat1.png)
 
-To remedy this in some BRAT has integrated multichannel line segments from the original nhd file that warrent the classification of a perennial network. This has not fixed all these cases but many of them because these slower flows in multichannel clusters can result in refuge from high streampower which can results in blown out or breached dams.
+To remedy this BRAT has integrated multichannel line segments from the original nhd file that warrent the classification of a perennial network. BRAT was previously not able to handle multichannel features. This has not fixed all these cases but many of them, because these slower flows in multichannel clusters can result in refuge from high streampower which can results in blown out or breached dams.
 
 ![Multichannel/Anabranch incorporated into the model]({{ site.baseurl }}/assets/images/Summary_Report_Caveat2.png)
 
