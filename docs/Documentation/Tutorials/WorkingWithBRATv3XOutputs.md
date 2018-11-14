@@ -20,7 +20,7 @@ The **preliminary management** output layers include outputs that describe the l
 
 - Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`) uses the following color scheme:
 
-  <img src="{{ site.baseurl }}/assets/images/Unsuitable_or_Limited_Opportunities.png" width="200px" height="300px" style="float: center" />
+  <img src="{{ site.baseurl }}/assets/images/Unsuitable_or_Limited_Opportunities.png" width="300px" height="300px" style="float:center" />
 
 - Areas Beavers Can Build Dams, but Could Be Undesireable (`oPBRC_UI`) uses the following color scheme:
 
