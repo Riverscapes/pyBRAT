@@ -9,11 +9,11 @@ The majority of users of BRAT will not actually run BRAT themselves, but instead
 ### Capacity Layer
 The **capacity model** outputs use the following color scheme to bin the output data (note each ≤300 m reach has a specific continuous dam density output). Existing capacity output is found in the `OCC_EX` field and potential (historic) capacity is found in the `oCC_PT` field. 
 
-![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Capacity_BRATv3X.png =50x50 #center)
+![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Capacity_BRATv3X.png){: style="float:center" width="50" height="50"}
 
 In addition the capacity outputs and reach lengths were used to report estimated dam complex size `mCC_EX_CT` (for existing) and `mCC_PT_CT` (for potential) fields: 
 
-![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Dam_Complex_Size_BRATv3X.png#right =50x50)
+![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Dam_Complex_Size_BRATv3X.png){: style="float:center"}
 
 ### Preliminary Management Layers
 The **preliminary management** output layers include outputs that describe the limiting factors which contribute to unsuitable or limited beaver dam opportunities(`oPBC_UD`), risk categories which are based on land use and anthropogenic proximity(`oPBC_UI`), and finally a measure of the effort exhibited to perform restoration or conservation in the segment(`oPCRC_CR`).  For the (`oPCRC_CR`) output a sub-set of the segments classified as 'Negligible Risk' and 'Minor Risk' (`oPBC_UI`) is used to focus restoration or conservation efforts. Segments that are 'Considerable Risk' or 'Some Risk' (`oPCRC_UI`) are defined as 'Other' for (`oPCRC_CR`) field. Further documentation and discussion/development of these layers can be found [here](https://github.com/Riverscapes/pyBRAT/issues/207). The following color schemes were used to define the management fields:
