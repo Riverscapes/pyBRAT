@@ -36,11 +36,20 @@ The tool produces eight new fields. Three of these fields are reliant on the dam
 * `mCC_PT_Ct`: The potential capacity density. Calculated by dividing `oCC_PT` by the segment length.
 * `mCC_EXtoPT`: The ration between existing and potential capacity. Calculated by dividing `oCC_EX` by `oCC_PT`.
 
+### Caveats 
+
+Currently the Summary Report tool is limited by the distance and relation that dam capture events to the NHD line. This can result in short reaches being assigned multiple dams and having overestimated dam densities due to the small reach length. While larger reaches adjacent to the short reach which might have been assigned some of the dams are not and have low dam densities. 
+
+![Original validation issue]({{ site.baseurl }}/assets/images/Summary_Report_Caveat1.png)
+
+To remedy this in some BRAT has integrated multichannel line segments from the original nhd file that warrent the classification of a perennial network. This has not fixed all these cases but many of them because these slower flows in multichannel clusters can result in refuge from high streampower which can results in blown out or breached dams.
+
+![Multichannel/Anabranch incorporated into the model]({{ site.baseurl }}/assets/images/Summary_Report_Caveat2.png)
+
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-LayerPackageGenerator"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
 </div>	
-
 ------
 <div align="center">
 
