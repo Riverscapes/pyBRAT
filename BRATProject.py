@@ -15,7 +15,7 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path, find_available_num
+from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path, find_available_num_prefix
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -147,7 +147,7 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
 
 def make_optional_input_folder(input, file_path, folder_base_name):
     if input:
-        new_folder = make_folder(file_path, find_available_num(file_path) + folder_base_name)
+        new_folder = make_folder(file_path, find_available_num_prefix(file_path) + folder_base_name)
         return new_folder
     else:
         return None

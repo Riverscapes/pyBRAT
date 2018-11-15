@@ -12,7 +12,7 @@ import arcpy
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
-from SupportingFunctions import write_xml_element_with_path, find_relative_path
+from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, make_folder, find_available_num_suffix
 
 
 def main(in_network, dams, output_name):
@@ -25,7 +25,8 @@ def main(in_network, dams, output_name):
     """
     arcpy.env.overwriteOutput = True
 
-    copy_dams_to_inputs(dams)
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
+    copy_dams_to_inputs(proj_path, dams)
 
     if output_name.endswith('.shp'):
         output_network = os.path.join(os.path.dirname(in_network), output_name)
@@ -52,15 +53,27 @@ def main(in_network, dams, output_name):
     if dams:
         clean_up_fields(in_network, output_network, new_fields)
 
-    write_xml(in_network, output_network)
+    write_xml(proj_path, in_network, output_network)
 
 
-def copy_dams_to_inputs(dams):
+def copy_dams_to_inputs(proj_path, dams):
     """
-    
-    :param dams:
+    If the given dams are not in the inputs,
+    :param proj_path: The path to the project root
+    :param dams: The path to the given dams
     :return:
     """
+    if proj_path in dams:
+        # The dams input is already in our project folder, so we don't need to copy it over
+        return
+
+    inputs_folder = find_folder(proj_path, "Inputs")
+    beaver_dams_folder = find_folder(inputs_folder, "BeaverDams")
+
+    new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
+    new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))
+
+    arcpy.Copy_management(dams, new_dam_path)
 
 
 def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
@@ -189,9 +202,7 @@ def clean_up_fields(brat_network, out_network, new_fields):
         arcpy.DeleteField_management(out_network, remove_fields)
 
 
-def write_xml(in_network, out_network):
-    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
-
+def write_xml(proj_path, in_network, out_network):
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
     xml_file = XMLBuilder(xml_file_path)
     in_network_rel_path = find_relative_path(in_network, proj_path)
