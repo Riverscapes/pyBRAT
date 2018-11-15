@@ -15,11 +15,11 @@ An example of this was presented in the following illustrations:
 
 - Improper Calibration
 
-  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Vegetation_Improper_Calibration.png){: width="500" height="500"}
+  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Vegetation_Improper_Calibration.png){: width="600" height="600"}
 
 - Proper Calibration
 
-  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Vegetation_Proper_Calibration.png){: width="500" height="500"}
+  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Vegetation_Proper_Calibration.png){: width="600" height="600"}
 
 ------
 <div align="center">
