@@ -24,6 +24,9 @@ def main(in_network, dams, output_name):
     :return:
     """
     arcpy.env.overwriteOutput = True
+
+    copy_dams_to_inputs(dams)
+
     if output_name.endswith('.shp'):
         output_network = os.path.join(os.path.dirname(in_network), output_name)
     else:
@@ -50,6 +53,14 @@ def main(in_network, dams, output_name):
         clean_up_fields(in_network, output_network, new_fields)
 
     write_xml(in_network, output_network)
+
+
+def copy_dams_to_inputs(dams):
+    """
+    
+    :param dams:
+    :return:
+    """
 
 
 def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
