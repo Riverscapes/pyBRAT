@@ -13,11 +13,11 @@ Regardless of the changes that you make to the vegetation suitability scores it 
 
 An example of this was presented in the following illustrations:
 
-####- Improper Calibration
+- ####Improper Calibration
 
   ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Vegetation_Improper_Calibration.png){: width="700" height="700"}
 
-####- Proper Calibration
+- ####Proper Calibration
 
   ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Vegetation_Proper_Calibration.png){: width="700" height="700"}
 
