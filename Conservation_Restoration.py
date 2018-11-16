@@ -132,13 +132,13 @@ def makeLayers(out_network):
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    managementLayer = os.path.join(symbologyFolder, "Beaver_Management_Zones_v2.lyr")
-    managementLayer2 = os.path.join(symbologyFolder, "Dam_Building_Not_Likely.lyr")
-    managementLayer3 = os.path.join(symbologyFolder, "Restoration_Conservation_Opportunities.lyr")
+    management_zones_symbology = os.path.join(symbologyFolder, "Beaver_Management_Zones_v2.lyr")
+    unlikely_dams_symbology = os.path.join(symbologyFolder, "Dam_Building_Not_Likely.lyr")
+    undesirable_dams_symbology = os.path.join(symbologyFolder, "UndesirableDamRisk.lyr")
 
-    make_layer(output_folder, out_network, "Beaver Management Zones", managementLayer, is_raster=False)
-    make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", managementLayer2, is_raster=False)
-    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", managementLayer3, is_raster=False)
+    # make_layer(output_folder, out_network, "Beaver Management Zones", management_zones_symbology, is_raster=False)
+    make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", unlikely_dams_symbology, is_raster=False)
+    make_layer(output_folder, out_network, "Risk of Undesirable Dams", undesirable_dams_symbology, is_raster=False, file_name='Rest_Cons_Opportunity')
 
 
 def write_xml(in_network, out_network):

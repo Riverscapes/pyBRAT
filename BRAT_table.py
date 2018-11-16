@@ -772,6 +772,8 @@ def find_next_available_id(xml_file, id_base):
 
 
 def add_input_ref_element(xml_file, proj_path, inputs_element, input_path, new_element_name):
+    if input_path is None:
+        return
     ref_id = find_element_id_with_path(xml_file, input_path, proj_path)
     if ref_id is not None:
         return xml_file.add_sub_element(inputs_element, new_element_name, tags=[('ref', ref_id)])

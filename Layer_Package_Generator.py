@@ -23,7 +23,7 @@ def main(output_folder, layer_package_name, clipping_network=None):
     """
     if layer_package_name == None:
         layer_package_name = "LayerPackage"
-    projectFolder = os.path.dirname(output_folder)
+    projectFolder = os.path.dirname(os.path.dirname(output_folder))
     inputsFolder = find_folder(projectFolder, "Inputs")
     intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
     analysesFolder = os.path.join(output_folder, "02_Analyses")
@@ -31,7 +31,12 @@ def main(output_folder, layer_package_name, clipping_network=None):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
-    check_for_layers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
+    try:
+        check_for_layers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
+    except Exception as err:
+        arcpy.AddMessage("Something went wrong while checking for layers. The process will package the layers that exist.")
+        arcpy.AddMessage("The error message thrown was the following:")
+        arcpy.AddWarning(err)
 
     make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
 
