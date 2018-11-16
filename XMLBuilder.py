@@ -39,6 +39,9 @@ class XMLBuilder:
         :param tags: A list of tuples. The first element contains the name of the tag, the second contains the value
         :return: The subelement created. Useful if the user wants to append additional subelements to it
         """
+        if base_element is None:
+            arcpy.AddWarning("Warning: NoneType was passed to add_sub_element as base element. Possible bug, further investigation may be required")
+            return None
         new_element = ET.SubElement(base_element, name)
         new_element.text = text
 
