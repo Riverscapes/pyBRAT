@@ -1,5 +1,5 @@
 ---
-title: Working with BRAT Outputs
+title: BRAT v2.0 Outputs
 ---
 
 The majority of users of BRAT will not actually run BRAT themselves, but instead download BRAT outputs and interact with them. In the videos tutorials below, we walk you through various ways to interact with the outputs of BRAT. We cover options in order from simplest to most complex. 
@@ -25,7 +25,7 @@ The **preliminary management** output layer (`oPBRC`) uses the following color s
 
 What do all those attribute fields correspond to?  Below is a table describing of all the outputs that appear in the BRAT KMZs and feature class attribute tables.
 
-![Attribute_Table_Statewide]({{ site.baseurl }}/assets/images/Attribute_Table_Statewide.png)
+![Attribute_Table_Statewide]({{ site.baseurl }}/assets/images/Attribute_Table_BRATv2.0.png)
 
 ## Visualizing BRAT Outputs
 
