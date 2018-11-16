@@ -595,6 +595,9 @@ def find_instance_layers(root_folder):
     :param root_folder: The path to the folder root
     :return: A list of layers
     """
+    if root_folder is None:
+        return []
+
     layers = []
     for instance_folder in os.listdir(root_folder):
         instance_folder_path = os.path.join(root_folder, instance_folder)
@@ -649,6 +652,11 @@ def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
     :param remove_layer: Tells us if we should remove the layer from the map display
     :return: The layer that we put our layers in
     """
+    if layers == [] or layers is None:
+        return None
+
+    layers = [x for x in layers if x is not None] # remove none type from the layers
+
     group_layer = arcpy.mapping.Layer(group_layer)
     group_layer.name = group_name
     group_layer.description = "Made Up Description"
