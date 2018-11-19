@@ -39,13 +39,31 @@ def make_folder(path_to_location, new_folder_name):
     return newFolder
 
 
-def find_available_num(folder_root):
+def find_available_num_prefix(folder_root):
     """
     Tells us the next number for a folder in the directory given
     :param folder_root: Where we want to look for a number
     :return: A string, containing a number
     """
     taken_nums = [fileName[0:2] for fileName in os.listdir(folder_root)]
+    POSSIBLENUMS = range(1, 100)
+    for i in POSSIBLENUMS:
+        string_version = str(i)
+        if i < 10:
+            string_version = '0' + string_version
+        if string_version not in taken_nums:
+            return string_version
+    arcpy.AddWarning("There were too many files at " + folder_root + " to have another folder that fits our naming convention")
+    return "100"
+
+
+def find_available_num_suffix(folder_root):
+    """
+    Tells us the next number for a folder in the directory given
+    :param folder_root: Where we want to look for a number
+    :return: A string, containing a number
+    """
+    taken_nums = [fileName[-2:] for fileName in os.listdir(folder_root)]
     POSSIBLENUMS = range(1, 100)
     for i in POSSIBLENUMS:
         string_version = str(i)
@@ -128,9 +146,6 @@ def get_execute_error_code(err):
     :return:
     """
     return err[0][6:12]
-
-
-
 
 
 def write_xml_element_with_path(xml_file, base_element, xml_element_name, item_name, path, project_root, xml_id=None):

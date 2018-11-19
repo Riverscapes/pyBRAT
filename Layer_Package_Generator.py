@@ -10,7 +10,7 @@
 
 import arcpy
 import os
-from SupportingFunctions import find_folder, find_available_num, make_folder, make_layer
+from SupportingFunctions import find_folder, find_available_num_prefix, make_folder, make_layer
 
 
 def main(output_folder, layer_package_name, clipping_network=None):
@@ -116,7 +116,7 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
     layer_folder = find_folder(intermediates_folder, folder_name)
 
     if layer_folder is None:
-        layer_folder = make_folder(intermediates_folder, find_available_num(intermediates_folder) + "_" + folder_name)
+        layer_folder = make_folder(intermediates_folder, find_available_num_prefix(intermediates_folder) + "_" + folder_name)
 
     layer_path = os.path.join(layer_folder, layer_file_name)
     if not layer_path.endswith(".lyr"):
