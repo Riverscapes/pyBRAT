@@ -15,13 +15,13 @@
 import os
 import arcpy
 import sys
-from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path, find_available_num
+from SupportingFunctions import make_folder, make_layer, get_execute_error_code, write_xml_element_with_path, find_available_num_prefix
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership):
+def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership, beaver_dams):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
@@ -35,6 +35,7 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     network_folder = make_folder(inputs_folder, "02_Network")
     topo_folder = make_folder(inputs_folder, "03_Topography")
     anthropogenic_folder = make_folder(inputs_folder, "04_Anthropogenic")
+    beaver_dam_folder = make_optional_input_folder(beaver_dams, inputs_folder, "_BeaverDams")
 
     ex_veg_folder = make_folder(vegetation_folder, "01_ExistingVegetation")
     hist_veg_folder = make_folder(vegetation_folder, "02_HistoricVegetation")
@@ -45,6 +46,7 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     canals_folder = make_optional_input_folder(canal, anthropogenic_folder, "_Canals")
     land_use_folder = make_optional_input_folder(landuse, anthropogenic_folder, "_LandUse")
     land_ownership_folder = make_optional_input_folder(ownership, anthropogenic_folder, "_LandOwnership")
+
 
     source_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(source_code_folder, 'BRATSymbology')
@@ -134,14 +136,18 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
         ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land_Ownership", is_raster=False)
         make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
 
+    beaver_dams_destinations = []
+    if beaver_dams is not None:
+        beaver_dams_destinations = copy_multi_input_to_folder(beaver_dam_folder, beaver_dams, "Beaver_Dam", is_raster=False)
+
     write_xml(proj_path, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-              canal_destinations, ownership_destinations)
+              canal_destinations, ownership_destinations, beaver_dams_destinations)
 
 
 def make_optional_input_folder(input, file_path, folder_base_name):
     if input:
-        new_folder = make_folder(file_path, find_available_num(file_path) + folder_base_name)
+        new_folder = make_folder(file_path, find_available_num_prefix(file_path) + folder_base_name)
         return new_folder
     else:
         return None
@@ -246,7 +252,7 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
 
 def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-              canal_destinations, ownership_destinations):
+              canal_destinations, ownership_destinations, beaver_dams_destinations):
     """
 
     :param project_root:
@@ -279,13 +285,14 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
 
     add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations,
                dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-               canal_destinations, ownership_destinations)
+               canal_destinations, ownership_destinations, beaver_dams_destinations)
 
     new_xml_file.write()
 
 
-def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations, dem_destinations, landuse_destinations,
-              valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations, ownership_destinations):
+def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations, dem_destinations,
+               landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations,
+               ownership_destinations, beaver_dams_destinations):
     inputs_element = new_xml_file.add_sub_element(new_xml_file.root, "Inputs")
 
     write_xml_for_destination(ex_veg_destinations, new_xml_file, inputs_element, "Raster", "EXVEG", "Existing Vegetation", project_root)
@@ -298,6 +305,7 @@ def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destina
     write_xml_for_destination(rr_destinations, new_xml_file, inputs_element, "Vector", "RR", "Railroads", project_root)
     write_xml_for_destination(canal_destinations, new_xml_file, inputs_element, "Vector", "CANAL", "Canals", project_root)
     write_xml_for_destination(ownership_destinations, new_xml_file, inputs_element, "Vector", "OWNERSHIP", "Ownership", project_root)
+    write_xml_for_destination(beaver_dams_destinations, new_xml_file, inputs_element, "Vector", "BEAVER_DAM", "Beaver Dam", project_root)
 
 
 def write_xml_for_destination(destination, new_xml_file, base_element, xml_element_name, xml_id_base, item_name,
