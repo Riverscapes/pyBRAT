@@ -10,7 +10,7 @@
 
 import arcpy
 import os
-from SupportingFunctions import find_folder, find_available_num, make_folder, make_layer
+from SupportingFunctions import find_folder, find_available_num_prefix, make_folder, make_layer
 
 
 def main(output_folder, layer_package_name, clipping_network=None):
@@ -116,7 +116,7 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
     layer_folder = find_folder(intermediates_folder, folder_name)
 
     if layer_folder is None:
-        layer_folder = make_folder(intermediates_folder, find_available_num(intermediates_folder) + "_" + folder_name)
+        layer_folder = make_folder(intermediates_folder, find_available_num_prefix(intermediates_folder) + "_" + folder_name)
 
     layer_path = os.path.join(layer_folder, layer_file_name)
     if not layer_path.endswith(".lyr"):
@@ -630,6 +630,9 @@ def find_instance_layers(root_folder):
     :param root_folder: The path to the folder root
     :return: A list of layers
     """
+    if root_folder is None:
+        return []
+
     layers = []
     for instance_folder in os.listdir(root_folder):
         instance_folder_path = os.path.join(root_folder, instance_folder)
@@ -675,6 +678,11 @@ def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remo
     :param remove_layer: Tells us if we should remove the layer from the map display
     :return: The layer that we put our layers in
     """
+    if layers == [] or layers is None:
+        return None
+
+    layers = [x for x in layers if x is not None] # remove none type from the layers
+
     group_layer = arcpy.mapping.Layer(group_layer)
     group_layer.name = group_name
     group_layer.description = "Made Up Description"

@@ -15,7 +15,7 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
-from SupportingFunctions import make_layer, make_folder, find_available_num, getUUID, find_relative_path, write_xml_element_with_path
+from SupportingFunctions import make_layer, make_folder, find_available_num_prefix, getUUID, find_relative_path, write_xml_element_with_path
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
@@ -338,9 +338,9 @@ def make_layers(out_network):
     """
     arcpy.AddMessage("Making layers...")
     analyses_folder = os.path.dirname(out_network)
-    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Capacity")
-    historic_folder = make_folder(output_folder, find_available_num(output_folder) + "_HistoricCapacity")
-    existing_folder = make_folder(output_folder, find_available_num(output_folder) + "_ExistingCapacity")
+    output_folder = make_folder(analyses_folder, find_available_num_prefix(analyses_folder) + "_Capacity")
+    historic_folder = make_folder(output_folder, find_available_num_prefix(output_folder) + "_HistoricCapacity")
+    existing_folder = make_folder(output_folder, find_available_num_prefix(output_folder) + "_ExistingCapacity")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')

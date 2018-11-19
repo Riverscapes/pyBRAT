@@ -24,10 +24,13 @@ class XMLBuilder:
             self.tree = ET.ElementTree(ET.Element(root_name))
         self.root = self.tree.getroot()
 
-        self.parent_map = dict((c, p) for p in self.tree.iter() for c in p)
+        self.set_parent_map()
 
         for tag in tags:
             self.root.set(tag[0], tag[1])
+
+    def set_parent_map(self):
+        self.parent_map = dict((c, p) for p in self.tree.iter() for c in p)
 
 
     def add_sub_element(self, base_element, name='', text='', tags=[]):
@@ -48,7 +51,7 @@ class XMLBuilder:
         for tag in tags:
             new_element.set(tag[0], tag[1])
 
-        self.parent_map = dict((c, p) for p in self.tree.iter() for c in p) # Redoes the parent child mapping, to account for the new element
+        self.set_parent_map() # Redoes the parent child mapping, to account for the new element
         return new_element
 
 
@@ -74,6 +77,14 @@ class XMLBuilder:
 
 
     def find_element_parent(self, element):
+        if element is None:
+            arcpy.AddWarning("None type passed to find_element_parent. Possible bug, please report to the pyBRAT GitHub page")
+            return None
+        if element not in self.parent_map:
+            self.set_parent_map()
+            if element not in self.parent_map:
+                arcpy.AddWarning("Could not find parent of an XML element. Possible bug, please report to the pyBRAT GitHub page")
+                return None
         return self.parent_map[element]
 
 
