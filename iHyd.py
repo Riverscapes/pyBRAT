@@ -13,7 +13,7 @@ import arcpy
 import numpy as np
 import os
 import sys
-from SupportingFunctions import make_layer, make_folder, find_available_num
+from SupportingFunctions import make_layer, make_folder, find_available_num_prefix
 
 
 def main(
@@ -130,7 +130,7 @@ def makeLayers(inputNetwork):
     """
     arcpy.AddMessage("Making layers...")
     intermediates_folder = os.path.dirname(inputNetwork)
-    hydrology_folder_name = find_available_num(intermediates_folder) + "_Hydrology"
+    hydrology_folder_name = find_available_num_prefix(intermediates_folder) + "_Hydrology"
     hydrology_folder = make_folder(intermediates_folder, hydrology_folder_name)
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))

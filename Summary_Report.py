@@ -9,117 +9,148 @@
 
 import os
 import arcpy
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
+from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, make_folder, find_available_num_suffix
 
-def main(bratOutput, dams, outputName):
+
+def main(in_network, dams, output_name):
     """
     The main function
-    :param bratOutput: The output of BRAT (a polyline shapefile)
+    :param in_network: The output of BRAT (a polyline shapefile)
     :param dams: A shapefile containing a point for each dam
-    :param outputName: The name of the output shape file
+    :param output_name: The name of the output shape file
     :return:
     """
     arcpy.env.overwriteOutput = True
-    if outputName.endswith('.shp'):
-        outNetwork = os.path.join(os.path.dirname(bratOutput), outputName)
+
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
+    copy_dams_to_inputs(proj_path, dams)
+
+    if output_name.endswith('.shp'):
+        output_network = os.path.join(os.path.dirname(in_network), output_name)
     else:
-        outNetwork = os.path.join(os.path.dirname(bratOutput), outputName + ".shp")
-    arcpy.Delete_management(outNetwork)
+        output_network = os.path.join(os.path.dirname(in_network), output_name + ".shp")
+    arcpy.Delete_management(output_network)
 
-    damFields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
-    otherFields = ['Ex_Categor', 'Pt_Categor', 'mCC_EXtoPT']
-    newFields = damFields + otherFields
+    dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
+    other_fields = ['Ex_Categor', 'Pt_Categor', 'mCC_EXtoPT']
+    new_fields = dam_fields + other_fields
 
-    inputFields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_PT']
+    input_fields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_PT']
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
-        setDamAttributes(bratOutput, outNetwork, dams, damFields + ['Join_Count'] + inputFields, newFields)
+        set_dam_attributes(in_network, output_network, dams, dam_fields + ['Join_Count'] + input_fields, new_fields)
     else:
-        arcpy.CopyFeatures_management(bratOutput, outNetwork)
-        addFields(outNetwork, otherFields)
+        arcpy.CopyFeatures_management(in_network, output_network)
+        add_fields(output_network, other_fields)
 
     arcpy.AddMessage("Adding fields that don't need dam input...")
-    setOtherAttributes(outNetwork, otherFields + inputFields)
+    set_other_attributes(output_network, other_fields + input_fields)
 
     if dams:
-        cleanUpFields(bratOutput, outNetwork, newFields)
+        clean_up_fields(in_network, output_network, new_fields)
+
+    write_xml(proj_path, in_network, output_network)
 
 
-def setDamAttributes(bratOutput, outputPath, dams, reqFields, newFields):
+def copy_dams_to_inputs(proj_path, dams):
+    """
+    If the given dams are not in the inputs,
+    :param proj_path: The path to the project root
+    :param dams: The path to the given dams
+    :return:
+    """
+    if proj_path in dams:
+        # The dams input is already in our project folder, so we don't need to copy it over
+        return
+
+    inputs_folder = find_folder(proj_path, "Inputs")
+    beaver_dams_folder = find_folder(inputs_folder, "BeaverDams")
+
+    new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
+    new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))
+
+    arcpy.Copy_management(dams, new_dam_path)
+
+
+def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
     """
     Sets all the dam info and updates the output file with that data
-    :param bratOutput: The polyline we're basing our stuff off of
-    :param outputPath: The polyline shapefile with BRAT output
+    :param brat_output: The polyline we're basing our stuff off of
+    :param output_path: The polyline shapefile with BRAT output
     :param dams: The points shapefile of observed dams
     :param damFields: The fields we want to update for dam attributes
     :return:
     """
-    arcpy.Snap_edit(dams, [[bratOutput, 'EDGE', '30 Meters']])
-    arcpy.SpatialJoin_analysis(bratOutput,
+    arcpy.Snap_edit(dams, [[brat_output, 'EDGE', '30 Meters']])
+    arcpy.SpatialJoin_analysis(brat_output,
                                dams,
-                               outputPath,
+                               output_path,
                                join_operation='JOIN_ONE_TO_ONE',
                                join_type='KEEP_ALL',
                                match_option='INTERSECT')
-    addFields(outputPath, newFields)
+    add_fields(output_path, new_fields)
 
-    with arcpy.da.UpdateCursor(outputPath, reqFields) as cursor:
+    with arcpy.da.UpdateCursor(output_path, req_fields) as cursor:
         for row in cursor:
-            damNum = row[-4]        # fourth to last attribute
-            segLength = row[-3]   # third to last attribute
-            if segLength is None:
-                segLength = 0
+            dam_num = row[-4]        # fourth to last attribute
+            seg_length = row[-3]   # third to last attribute
+            if seg_length is None:
+                seg_length = 0
             oCC_EX = row[-2]        # second to last attribute
             oCC_PT = row[-1]        # last attribute
 
-            row[0] = damNum
-            row[1] = damNum / segLength * 1000
-            try:
-                row[2] = damNum / oCC_PT
-            except ZeroDivisionError:
+            row[0] = dam_num
+            row[1] = dam_num / seg_length * 1000
+            if oCC_PT == 0:
                 row[2] = 0
+            else:
+                row[2] = dam_num / oCC_PT
 
             cursor.updateRow(row)
 
-    arcpy.DeleteField_management(outputPath, ["Join_Count", "TARGET_FID"])
+    arcpy.DeleteField_management(output_path, ["Join_Count", "TARGET_FID"])
 
 
 
-def addFields(outputPath, newFields):
+def add_fields(output_path, new_fields):
     """
     Adds the fields we want to our output shape file
-    :param outputPath: Our output shape file
-    :param newFields: All the fields we want to add
+    :param output_path: Our output shape file
+    :param new_fields: All the fields we want to add
     :return:
     """
-    textFields = ['Ex_Categor', 'Pt_Categor']
-    for field in newFields:
-        if field in textFields:
-            arcpy.AddField_management(outputPath, field, field_type="TEXT", field_length=50)
+    text_fields = ['Ex_Categor', 'Pt_Categor']
+    for field in new_fields:
+        if field in text_fields:
+            arcpy.AddField_management(output_path, field, field_type="TEXT", field_length=50)
         else: # we assume that the default is doubles
-            arcpy.AddField_management(outputPath, field, field_type="DOUBLE", field_precision=0, field_scale=0)
+            arcpy.AddField_management(output_path, field, field_type="DOUBLE", field_precision=0, field_scale=0)
 
 
-def setOtherAttributes(outputPath, fields):
+def set_other_attributes(output_path, fields):
     """
     Sets the attributes of all other things we want to do
-    :param outputPath: The polyline shapefile with BRAT output
+    :param output_path: The polyline shapefile with BRAT output
     :param fields: The fields we want to update
     :return:
     """
-    with arcpy.da.UpdateCursor(outputPath, fields) as cursor:
+    with arcpy.da.UpdateCursor(output_path, fields) as cursor:
         for row in cursor:
-            segLength = row[-3] # third to last attribute
-            if segLength is None:
-                segLength = 0
+            seg_length = row[-3] # third to last attribute
+            if seg_length is None:
+                seg_length = 0
             oCC_EX = row[-2] # second to last attribute
             oCC_PT = row[-1] # last attribute
 
             # Handles Ex_Categor
-            row[0] = handleCategory(oCC_EX)
+            row[0] = handle_category(oCC_EX)
 
             # Handles Pt_Categor
-            row[1] = handleCategory(oCC_PT)
+            row[1] = handle_category(oCC_PT)
 
             # Handles mCC_EXtoPT
             if oCC_PT != 0:
@@ -130,43 +161,56 @@ def setOtherAttributes(outputPath, fields):
             cursor.updateRow(row)
 
 
-def handleCategory(oCCVariable):
+def handle_category(oCC_variable):
     """
     Returns a string based on the oCC value given to it
-    :param oCCVariable: A number
+    :param oCC_variable: A number
     :return: String
     """
-    if oCCVariable == 0:
+    if oCC_variable == 0:
         return "None"
-    elif 0 < oCCVariable <= 1:
+    elif 0 < oCC_variable <= 1:
         return "Rare"
-    elif 1 < oCCVariable <= 5:
+    elif 1 < oCC_variable <= 5:
         return "Occasional"
-    elif 5 < oCCVariable <= 15:
+    elif 5 < oCC_variable <= 15:
         return "Frequent"
-    elif 15 < oCCVariable <= 40:
+    elif 15 < oCC_variable <= 40:
         return "Pervasive"
     else:
         return "UNDEFINED"
 
 
-def cleanUpFields(bratNetwork, outNetwork, newFields):
+def clean_up_fields(brat_network, out_network, new_fields):
     """
     Removes unnecessary fields
-    :param bratNetwork: The original, unmodified stream network
-    :param outNetwork: The output network
-    :param newFields: All the fields we added
+    :param brat_network: The original, unmodified stream network
+    :param out_network: The output network
+    :param new_fields: All the fields we added
     :return:
     """
-    originalFields = [field.baseName for field in arcpy.ListFields(bratNetwork)]
-    desiredFields = originalFields + newFields
-    outputFields = [field.baseName for field in arcpy.ListFields(outNetwork)]
+    original_fields = [field.baseName for field in arcpy.ListFields(brat_network)]
+    desired_fields = original_fields + new_fields
+    output_fields = [field.baseName for field in arcpy.ListFields(out_network)]
 
-    removeFields = []
-    for field in outputFields:
-        if field not in desiredFields:
-            removeFields.append(field)
+    remove_fields = []
+    for field in output_fields:
+        if field not in desired_fields:
+            remove_fields.append(field)
 
-    if len(removeFields) > 0:
-        arcpy.DeleteField_management(outNetwork, removeFields)
+    if len(remove_fields) > 0:
+        arcpy.DeleteField_management(out_network, remove_fields)
+
+
+def write_xml(proj_path, in_network, out_network):
+    xml_file_path = os.path.join(proj_path, "project.rs.xml")
+    xml_file = XMLBuilder(xml_file_path)
+    in_network_rel_path = find_relative_path(in_network, proj_path)
+
+    path_element = xml_file.find_by_text(in_network_rel_path)
+    analysis_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
+
+    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Summary Report", out_network, proj_path)
+
+    xml_file.write()
 

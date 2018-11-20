@@ -15,16 +15,16 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
-import projectxml
-import uuid
-from SupportingFunctions import make_layer, make_folder, find_available_num
+from SupportingFunctions import make_layer, make_folder, find_available_num_prefix, getUUID, find_relative_path, write_xml_element_with_path
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
 
 def main(
     projPath,
     in_network,
     max_DA_thresh,
     out_name):
-
 
     scratch = 'in_memory'
 
@@ -43,9 +43,9 @@ def main(
     combFIS(out_network, 'pt', scratch, max_DA_thresh)
     combFIS(out_network, 'ex', scratch, max_DA_thresh)
 
-    makeLayers(out_network, out_name)
+    make_layers(out_network)
 
-    addxmloutput(projPath, in_network, out_network)
+    add_xml_output(in_network, out_network)
 
 # combined fis function
 def combFIS(in_network, model_run, scratch, max_DA_thresh):
@@ -295,50 +295,51 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
                 row[0] = row[2] - row[1]
                 cursor.updateRow(row)
 
-def addxmloutput(projPath, in_network, out_network):
+
+def add_xml_output(in_network, out_network):
     """add the capacity output to the project xml file"""
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(out_network))))
 
     # xml file
-    xmlfile = projPath + "/project.rs.xml"
+    xml_file_path = proj_path + "/project.rs.xml"
 
-    out_folder = os.path.dirname(os.path.dirname(out_network))
-    out_folder_name = os.path.basename(out_folder)
-    intermediates_name = os.path.join(out_folder_name, "01_Intermediates")
-    analyses_name = os.path.join(out_folder_name, "02_Analyses")
+    xml_file = XMLBuilder(xml_file_path)
+    brat_element = get_brat_element(xml_file, in_network, proj_path)
 
-    # make sure xml file exists
-    if not os.path.exists(xmlfile):
-        raise Exception("xml file for project does not exist. Return to table builder tool.")
+    analyses_element = xml_file.add_sub_element(brat_element, "Analyses")
+    analysis_element = xml_file.add_sub_element(analyses_element, "Analysis")
+    xml_file.add_sub_element(analysis_element, "Name", "BRAT Analysis")
 
-    # open xml and add output
-    exxml = projectxml.ExistingXML(xmlfile)
+    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Capacity Output", out_network, proj_path)
 
-    realizations = exxml.rz.findall("BRAT")
-    outrz = None
-    for i in range(len(realizations)):
-        a = realizations[i].findall(".//Path")
-        for j in range(len(a)):
-            if os.path.abspath(a[j].text) == os.path.abspath(in_network[in_network.find(intermediates_name):]):
-                outrz = realizations[i]
-    if outrz is not None:
-        exxml.addOutput("BRAT Analysis", "Vector", "BRAT Capacity Output", out_network[out_network.find(analyses_name):],
-                        outrz, guid=getUUID())
-
-    exxml.write()
+    xml_file.write()
 
 
-def makeLayers(out_network, out_name):
+def get_brat_element(xml_file, in_network, proj_path):
+    """Gets the BRAT XML element for this particular in_network"""
+    relative_path = find_relative_path(in_network, proj_path)
+
+    path_element = xml_file.find_by_text(relative_path)
+    vec_element = xml_file.find_element_parent(path_element)
+    intermed_element = xml_file.find_element_parent(vec_element)
+    intermeds_element = xml_file.find_element_parent(intermed_element)
+    brat_element = xml_file.find_element_parent(intermeds_element)
+
+    return brat_element
+
+
+
+def make_layers(out_network):
     """
     Writes the layers
     :param out_network: The output network, which we want to make into a layer
-    :param out_name: The name of the layers
     :return:
     """
     arcpy.AddMessage("Making layers...")
     analyses_folder = os.path.dirname(out_network)
-    output_folder = make_folder(analyses_folder, find_available_num(analyses_folder) + "_Capacity")
-    historic_folder = make_folder(output_folder, find_available_num(output_folder) + "_HistoricCapacity")
-    existing_folder = make_folder(output_folder, find_available_num(output_folder) + "_ExistingCapacity")
+    output_folder = make_folder(analyses_folder, find_available_num_prefix(analyses_folder) + "_Capacity")
+    historic_folder = make_folder(output_folder, find_available_num_prefix(output_folder) + "_HistoricCapacity")
+    existing_folder = make_folder(output_folder, find_available_num_prefix(output_folder) + "_ExistingCapacity")
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
@@ -351,10 +352,6 @@ def makeLayers(out_network, out_name):
     make_layer(historic_folder, out_network, "Historic Dam Building Capacity", historicCapacityLayer, is_raster=False)
     make_layer(existing_folder, out_network, "Existing Dam Complex Size", existingCapacityCountLayer, is_raster=False)
     make_layer(historic_folder, out_network, "Historic Dam Complex Size", historicCapacityCountLayer, is_raster=False)
-
-
-def getUUID():
-    return str(uuid.uuid4()).upper()
 
 
 if __name__ == '__main__':
