@@ -2,7 +2,7 @@ from bdws import BDLoG, BDSWEA
 from bdflopy import BDflopy
 import arcpy
 import os
-from SupportingFunctions import make_folder, find_available_num
+from SupportingFunctions import make_folder, find_available_num_prefix
 
 
 def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, verticalKFN, fieldCapacity, modflowexe):
@@ -52,7 +52,7 @@ def main(projectRoot, bratPath, demPath, flowAcc, flowDir, horizontalKFN, vertic
 
 
 def copyIntoFolder(thingToCopy, copyFolderRoot, copyFolderName):
-    copyFolder = make_folder(copyFolderRoot, find_available_num(copyFolderRoot) + '_' + copyFolderName)
+    copyFolder = make_folder(copyFolderRoot, find_available_num_prefix(copyFolderRoot) + '_' + copyFolderName)
     copyPath = os.path.join(copyFolder, os.path.basename(thingToCopy))
     arcpy.Copy_management(thingToCopy, copyPath)
     return copyPath

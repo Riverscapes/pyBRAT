@@ -9,6 +9,7 @@
 
 import os
 import arcpy
+import uuid
 
 
 def find_folder(folder_location, folder_name):
@@ -38,13 +39,31 @@ def make_folder(path_to_location, new_folder_name):
     return newFolder
 
 
-def find_available_num(folder_root):
+def find_available_num_prefix(folder_root):
     """
     Tells us the next number for a folder in the directory given
     :param folder_root: Where we want to look for a number
     :return: A string, containing a number
     """
     taken_nums = [fileName[0:2] for fileName in os.listdir(folder_root)]
+    POSSIBLENUMS = range(1, 100)
+    for i in POSSIBLENUMS:
+        string_version = str(i)
+        if i < 10:
+            string_version = '0' + string_version
+        if string_version not in taken_nums:
+            return string_version
+    arcpy.AddWarning("There were too many files at " + folder_root + " to have another folder that fits our naming convention")
+    return "100"
+
+
+def find_available_num_suffix(folder_root):
+    """
+    Tells us the next number for a folder in the directory given
+    :param folder_root: Where we want to look for a number
+    :return: A string, containing a number
+    """
+    taken_nums = [fileName[-2:] for fileName in os.listdir(folder_root)]
     POSSIBLENUMS = range(1, 100)
     for i in POSSIBLENUMS:
         string_version = str(i)
@@ -99,6 +118,27 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
     return new_layer_save
 
 
+def getUUID():
+    return str(uuid.uuid4()).upper()
+
+
+def find_relative_path(path, project_root):
+    """
+    Looks for the relative path from the project root to the item in the path
+    :param path:
+    :param project_root:
+    :return:
+    """
+    relative_path = ''
+    while path != os.path.dirname(path): # While there are still
+        if path == project_root:
+            return relative_path
+        path, basename = os.path.split(path)
+
+        relative_path = os.path.join(basename, relative_path)
+    raise Exception("Could not find relative path")
+
+
 def get_execute_error_code(err):
     """
     Returns the error code of the given arcpy.ExecuteError error, by looking at the string of the error
@@ -106,3 +146,25 @@ def get_execute_error_code(err):
     :return:
     """
     return err[0][6:12]
+
+
+def write_xml_element_with_path(xml_file, base_element, xml_element_name, item_name, path, project_root, xml_id=None):
+    """
+
+    :param xml_file:
+    :param base_element:
+    :param xml_element_name:
+    :param xml_id:
+    :param item_name:
+    :param path:
+    :param project_root:
+    :return:
+    """
+    if xml_id is None:
+        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID())])
+    else:
+        new_element = xml_file.add_sub_element(base_element, xml_element_name, tags=[("guid", getUUID()), ("id", xml_id)])
+
+    xml_file.add_sub_element(new_element, "Name", item_name)
+    relative_path = find_relative_path(path, project_root)
+    xml_file.add_sub_element(new_element, "Path", relative_path)
