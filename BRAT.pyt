@@ -198,7 +198,7 @@ class BRAT_table_tool(object):
         """Define parameter definitions"""
         param0 = arcpy.Parameter(
             displayName="Select project folder",
-            name="projPath",
+            name="proj_path",
             datatype="DEFolder",
             parameterType="Required",
             direction="Input")
@@ -213,14 +213,14 @@ class BRAT_table_tool(object):
 
         param2 = arcpy.Parameter(
             displayName="Input DEM",
-            name="DEM",
+            name="in_DEM",
             datatype="DERasterDataset",
             parameterType="Required",
             direction="Input")
 
         param3 = arcpy.Parameter(
             displayName="Input drainage area raster",
-            name="FlowAcc",
+            name="flow_acc",
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
@@ -286,27 +286,34 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param12 = arcpy.Parameter(
+            displayName="Short description for run - less than 100 characters",
+            name="description",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input")
+ 
+        param13 = arcpy.Parameter(
             displayName="Find Clusters",
-            name="findClusters",
+            name="find_clusters",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param13 = arcpy.Parameter(
+        param14 = arcpy.Parameter(
             displayName="Segment Network by Roads",
             name="should_segment_network",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param14 = arcpy.Parameter(
+        param15 = arcpy.Parameter(
             displayName="Run Verbose",
             name="is_verbose",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
-
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14]
+       
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -340,7 +347,8 @@ class BRAT_table_tool(object):
                         p[11].valueAsText,
                         p[12].valueAsText,
                         p[13].valueAsText,
-                        p[14].valueAsText)
+                        p[14].valueAsText,
+                        p[15].valueAsText)
         return
 
 

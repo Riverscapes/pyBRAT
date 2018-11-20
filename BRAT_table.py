@@ -39,10 +39,10 @@ def main(
     canal,
     landuse,
     out_name,
+    description,
     find_clusters,
     should_segment_network,
-    is_verbose,
-    description):
+    is_verbose):
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
@@ -1034,4 +1034,4 @@ if __name__ == '__main__':
         sys.argv[13],
         sys.argv[14],
         sys.argv[15],
-        sys.argc[16])
+        sys.argv[16])
