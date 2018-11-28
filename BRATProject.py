@@ -252,9 +252,9 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
 
 
 
-# def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
-#               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-#               canal_destinations, ownership_destinations, beaver_dams_destinations):
+def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
+              dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
+              canal_destinations, ownership_destinations, beaver_dams_destinations):
     """
 
     :param project_root:
