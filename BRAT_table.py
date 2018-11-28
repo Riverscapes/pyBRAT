@@ -39,6 +39,7 @@ def main(
     canal,
     landuse,
     out_name,
+    description,
     find_clusters,
     should_segment_network,
     is_verbose):
@@ -125,7 +126,7 @@ def main(
 
     make_layers(seg_network_copy)
     write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, DrAr,
-              road, railroad, canal, buf_30m, buf_100m, seg_network_copy)
+              road, railroad, canal, buf_30m, buf_100m, seg_network_copy, description)
 
     run_tests(seg_network_copy, is_verbose)
 
@@ -142,7 +143,7 @@ def test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_botto
     seg_network_copy = os.path.join(intermediates_folder, "BRAT_Table.shp")
 
     write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, DrAr, road,
-              railroad, canal, buf_30m, buf_100m, seg_network_copy)
+              railroad, canal, buf_30m, buf_100m, seg_network_copy, description)
 
 
 def find_dr_ar(flow_acc, in_DEM):
@@ -725,7 +726,7 @@ def calc_drain_area(DEM, input_DEM):
 
 
 def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
-              DrAr, road, railroad, canal, buf_30m, buf_100m, out_network):
+              DrAr, road, railroad, canal, buf_30m, buf_100m, out_network, description):
     """write the xml file for the project"""
     proj_path = os.path.dirname(os.path.dirname(output_folder))
     output_folder_num = str(int(output_folder[-2:]))
@@ -745,6 +746,15 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
                                                                                 ("id", "RZ" + output_folder_num),
                                                                                 ("ProductVersion", "3.0.21")])
     xml_file.add_sub_element(brat_element, "Name", "BRAT Realization " + output_folder_num)
+
+    meta_element = xml_file.add_sub_element(brat_element, "MetaData")
+    
+    if len(description) <= 100:
+        xml_file.add_sub_element(meta_element, "Meta", description, tags = [("name", "description")])
+    if description is None:
+        xml_file.add_sub_element(meta_element, "Description")
+    if len(description) > 100:
+        raise Exception("Description must be less than 100 characters")
 
     write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, landuse, valley_bottom, road, railroad,
                     canal, inDEM, DrAr, seg_network, buf_30m, buf_100m)
@@ -1023,4 +1033,5 @@ if __name__ == '__main__':
         sys.argv[12],
         sys.argv[13],
         sys.argv[14],
-        sys.argv[15])
+        sys.argv[15],
+        sys.argv[16])
