@@ -88,8 +88,8 @@ def main(projPath, in_network, out_name):
     # 'oPBRC_CR' (Conservation & Restoration Opportunties)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-            # 'oPBRC_UI' Negligible or Minor
-            if row[0] == 'Negligible' or row[0] == 'Minor':
+            # 'oPBRC_UI' Negligible Risk or Minor Risk
+            if row[0] == 'Negligible Risk' or row[0] == 'Minor Risk':
                 # 'oCC_EX' Frequent or Pervasive
                 # 'mCC_HisDep' <= 3
                 if row[6] >= 5 and row[8] <= 3:
