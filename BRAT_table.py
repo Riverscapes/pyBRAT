@@ -748,13 +748,6 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
     xml_file.add_sub_element(brat_element, "Name", "BRAT Realization " + output_folder_num)
 
     meta_element = xml_file.add_sub_element(brat_element, "MetaData")
-    
-    if len(description) <= 100:
-        xml_file.add_sub_element(meta_element, "Meta", description, tags = [("name", "description")])
-    if description is None:
-        xml_file.add_sub_element(meta_element, "Description")
-    if len(description) > 100:
-        raise Exception("Description must be less than 100 characters")
 
     write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, landuse, valley_bottom, road, railroad,
                     canal, inDEM, DrAr, seg_network, buf_30m, buf_100m)
@@ -762,6 +755,16 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
     write_intermediate_xml(xml_file, brat_element, proj_path, out_network)
 
     xml_file.write()
+
+
+def write_description(xml_file, meta_element, description):
+    if description is None:
+        xml_file.add_sub_element(meta_element, "Description")
+    elif len(description) <= 100:
+        xml_file.add_sub_element(meta_element, "Meta", description, tags=[("name", "description")])
+    elif len(description) > 100:
+        raise Exception("Description must be less than 100 characters")
+
 
 
 def write_intermediate_xml(xml_file, brat_element, proj_path, out_network):
