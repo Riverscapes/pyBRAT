@@ -749,6 +749,8 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
 
     meta_element = xml_file.add_sub_element(brat_element, "MetaData")
 
+    write_description(xml_file, meta_element, description)
+
     write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, landuse, valley_bottom, road, railroad,
                     canal, inDEM, DrAr, seg_network, buf_30m, buf_100m)
 
