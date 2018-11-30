@@ -7,7 +7,7 @@ import Veg_FIS
 import Comb_FIS
 import Conservation_Restoration
 import BRAT_Braid_Handler
-import Data_Capture_Validation
+import Summary_Report
 import Drainage_Area_Check
 import StreamObjects
 import Layer_Package_Generator
@@ -21,7 +21,7 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-        Conservation_Restoration_tool, Data_Capture_Validation_tool, Drainage_Area_Check_tool, Layer_Package_Generator_tool]
+        Conservation_Restoration_tool, Summary_Report_tool, Drainage_Area_Check_tool, Layer_Package_Generator_tool]
 
 class BRAT_project_tool(object):
     def __init__(self):
@@ -416,7 +416,21 @@ class iHyd_tool(object):
             parameterType="Optional",
             direction="Input")
 
-        return [param0, param1]
+        param2 = arcpy.Parameter(
+			displayName="Baseflow equation",
+			name="Qlow_eqtn",
+			datatype="GPString",
+			parameterType="Optional",
+			direction="Input")
+
+        param3 = arcpy.Parameter(
+			displayName="Baseflow equation",
+			name="Q2_eqtn",
+			datatype="GPString",
+			parameterType="Optional",
+			direction="Input")
+		
+        return [param0, param1, param2, param3]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -437,7 +451,9 @@ class iHyd_tool(object):
         """The source code of the tool."""
         reload(iHyd)
         iHyd.main(p[0].valueAsText,
-                  p[1].valueAsText)
+                  p[1].valueAsText,
+				  p[2].valueAsText,
+				  p[3].valueAsText)
         return
 
 class Veg_FIS_tool(object):
@@ -603,10 +619,10 @@ class Conservation_Restoration_tool(object):
                                       p[2].valueAsText)
         return
 
-class Data_Capture_Validation_tool(object):
+class Summary_Report_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 7. Data Capture Validation (Optional)"
+        self.label = "Step 7. Summary Report"
         self.description = "Tests the results of BRAT against data on beaver dam sites"
         self.canRunInBackground = False
 
@@ -625,11 +641,11 @@ class Data_Capture_Validation_tool(object):
             displayName="Select beaver dam shape file",
             name="dams",
             datatype="DEFeatureClass",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
 
         param2 = arcpy.Parameter(
-            displayName="Name the data validation output",
+            displayName="Name the validation shape file output",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
@@ -654,10 +670,10 @@ class Data_Capture_Validation_tool(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        reload(Data_Capture_Validation)
-        Data_Capture_Validation.main(p[0].valueAsText,
-                                     p[1].valueAsText,
-                                     p[2].valueAsText)
+        reload(Summary_Report)
+        Summary_Report.main(p[0].valueAsText,
+                            p[1].valueAsText,
+                            p[2].valueAsText)
         return
 
 
