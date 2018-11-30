@@ -13,12 +13,16 @@ import arcpy
 import numpy as np
 import os
 import sys
-from SupportingFunctions import make_layer, make_folder, find_available_num_prefix
-
+from SupportingFunctions import make_layer, make_folder, find_available_num_prefix, find_relative_path
+import XMLBuilder
+reload(XMLBuilder)
+XMLBuilder = XMLBuilder.XMLBuilder
 
 def main(
     in_network,
-    region):
+    region,
+    Qlow_eqtn,
+    Q2_eqtn):
 
     scratch = 'in_memory'
 
@@ -121,6 +125,11 @@ def main(
 
     makeLayers(in_network)
 
+    # add equations to XML
+    if Qlow_eqtn is not None and Q2_eqtn is not None:
+        xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn)
+
+
 
 def makeLayers(inputNetwork):
     """
@@ -143,7 +152,38 @@ def makeLayers(inputNetwork):
     make_layer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, is_raster=False)
 
 
+def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
+    proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
+
+    xml_file_path = os.path.join(proj_path, "project.rs.xml")
+
+    xml_file = XMLBuilder(xml_file_path)
+    in_network_rel_path = find_relative_path(in_network, proj_path)
+                                                          
+    path_element = xml_file.find_by_text(in_network_rel_path)
+    intermediates_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
+
+    ihyd_element = xml_file.add_sub_element(intermediates_element, "Streamflow Regional Curves", text= "Regional curve equations for estimating hydrological flow")   
+
+    if region is not None:
+        return xml_file.add_sub_element(ihyd_element, "Hydrological region", region)
+
+    if Qlow_eqtn is None:
+        xml_file.add_sub_element(ihyd_element, "(DAsqm ** 0.2098) + 1")
+    else:
+        xml_file.add_sub_element(ihyd_element, "Baseflow equation : ", str(Qlow_eqtn))
+
+    if Q2_eqtn is None:
+        xml_file.add_sub_element(ihyd_element, "14.7 * (DAsqm ** 0.815)")
+    else:
+        xml_file.add_sub_element(ihyd_element, "Highflow equation : ", str(Q2_eqtn))
+    
+    xml_file.write()
+
+    
 if __name__ == '__main__':
     main(
         sys.argv[1],
-        sys.argv[2])
+        sys.argv[2],
+        sys.argv[3],
+        sys.argv[4])
