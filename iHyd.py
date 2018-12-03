@@ -126,7 +126,7 @@ def main(
     makeLayers(in_network)
 
     # add equations to XML
-    if Qlow_eqtn is not None and Q2_eqtn is not None:
+    if Qlow_eqtn is not None and Q2_eqtn is not None and region is not None:
         xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn)
 
 
@@ -153,30 +153,46 @@ def makeLayers(inputNetwork):
 
 
 def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
+    # get project folder path from input network
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
 
+    # open xml
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
-
+    if not os.path.exists(xml_file_path):
+        raise Exception("XML file for project does not exist. Return to Step 2: BRAT table to create XML.")
     xml_file = XMLBuilder(xml_file_path)
-    in_network_rel_path = find_relative_path(in_network, proj_path)
-                                                          
+
+    # find input network XML element
+    in_network_rel_path = find_relative_path(in_network, proj_path)                                    
     path_element = xml_file.find_by_text(in_network_rel_path)
+
+    # find intermediates element for input network
     intermediates_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
+    if intermediates_element is None:
+        raise Exception("Equations could not be added because parent element 'Intermediates' not found in XML.")
 
-    ihyd_element = xml_file.add_sub_element(intermediates_element, "Streamflow Regional Curves", text= "Regional curve equations for estimating hydrological flow")   
+    # add regional curves element within intermediates
+    ihyd_element = xml_file.add_sub_element(intermediates_element, name = "Regional Curves", text= "Equations for estimating streamflow")   
 
-    if region is not None:
-        return xml_file.add_sub_element(ihyd_element, "Hydrological region", region)
+    # add region element to XML if specified
+    if region is not 0:
+        xml_file.add_sub_element(ihyd_element, "Hydrological region", str(region))
 
-    if Qlow_eqtn is None:
-        xml_file.add_sub_element(ihyd_element, "(DAsqm ** 0.2098) + 1")
+    # add base flow equation to XML if specified or using generic
+    if Qlow_eqtn is None and region is 0:
+        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = "(DAsqm ** 0.2098) + 1")
+    elif Q2_eqtn is None and region is not 0:
+        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = "Not specified - see iHyd code.")
     else:
-        xml_file.add_sub_element(ihyd_element, "Baseflow equation : ", str(Qlow_eqtn))
+        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = str(Qlow_eqtn))
 
-    if Q2_eqtn is None:
-        xml_file.add_sub_element(ihyd_element, "14.7 * (DAsqm ** 0.815)")
+    # add high flow equation to XML if specified or using generic
+    if Q2_eqtn is None and region is 0:
+        xml_file.add_sub_element(ihyd_element, name = "Highflow equation", text = "14.7 * (DAsqm ** 0.815)")
+    elif Q2_eqtn is None and region is not 0:
+        xml_file.add_sub_element(ihyd_element, name = "Highflow equation", text = "Not specified - see iHyd code.")
     else:
-        xml_file.add_sub_element(ihyd_element, "Highflow equation : ", str(Q2_eqtn))
+        xml_file.add_sub_element(ihyd_element,name = "Highflow equation", text = str(Q2_eqtn))
     
     xml_file.write()
 
