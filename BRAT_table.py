@@ -696,6 +696,10 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
     output_folder_num = str(int(output_folder[-2:]))
     xml_file_path = proj_path + "/project.rs.xml"
 
+    if not os.path.exists(xml_file_path):
+        arcpy.AddWarning("XML file not found. Could not update XML file")
+        return
+
     xml_file = XMLBuilder(xml_file_path)
 
     add_drain_area_to_inputs_xml(xml_file, DrAr, proj_path)
