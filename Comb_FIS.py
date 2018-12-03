@@ -304,6 +304,10 @@ def add_xml_output(in_network, out_network):
     # xml file
     xml_file_path = proj_path + "/project.rs.xml"
 
+    if not os.path.exists(xml_file_path):
+        arcpy.AddWarning("XML file not found. Could not update XML file")
+        return
+
     xml_file = XMLBuilder(xml_file_path)
     brat_element = get_brat_element(xml_file, in_network, proj_path)
 
