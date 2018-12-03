@@ -424,7 +424,7 @@ class iHyd_tool(object):
 			direction="Input")
 
         param3 = arcpy.Parameter(
-			displayName="Baseflow equation",
+			displayName="Highflow equation",
 			name="Q2_eqtn",
 			datatype="GPString",
 			parameterType="Optional",
