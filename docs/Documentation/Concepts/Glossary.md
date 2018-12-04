@@ -8,7 +8,10 @@ Because field names in ArcGIS are limited to ten characters, there is a limit to
 ## Current pyBRAT Values
 These are values that are presently generated and used by the latest version of pyBRAT (3.0.18 at the time of writing). They are sorted by what stage they are created in, not alphabetically.
 
+*For values for other versions of pyBRAT by version please refer to the lookup tables in the [pyBRAT Outputs](http://brat.riverscapes.xyz/Documentation/Outputs/) under the particular version #*
+
 **FID -** This attribute is automatically assigned to every segment in a stream network. Each segment should have a unique FID value.
+
 - Field Type: "FID"
 - Generation Method: Automatic
 
