@@ -18,6 +18,7 @@ You can download the latest version of BRAT [here](https://github.com/Riverscape
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/MVEXXMOPTBI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
+
 ### Tips and Tricks
 If you have done everything in the instructions above and are still encountering issues here are some common issues that our users...
 * You are unable to uninstall numpy because it will only uninstall part of the module that exists on your pc. This is a common occurrance if you have multiple versions of Python installed on your pc. The best way to resolve this is to uninstall any versions of Python that you are not using and just use one.
