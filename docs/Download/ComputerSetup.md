@@ -21,8 +21,8 @@ You can download the latest version of BRAT [here](https://github.com/Riverscape
 
 ### Tips and Tricks
 If you have done everything in the instructions above and are still encountering issues here are some common issues that our users...
-* You are unable to uninstall numpy because it will only uninstall part of the module that exists on your pc. This is a common occurrance if you have multiple versions of Python installed on your pc. The best way to resolve this is to uninstall any versions of Python that you are not using and just use one.
-* You still have the red x over the Toolset. Common issues if you have gone through the installation process above without encountering any errors is to check if your ArcGIS extentions are enabled. If they are then you can check to see if the features that you have checked under the "Borrow/Return" folder in ArcGIS Administrator are checked. If either of these are unchecked then you will encounter issues either now or later with BRAT.
+- You are unable to uninstall numpy because it will only uninstall part of the module that exists on your pc. This is a common occurrance if you have multiple versions of Python installed on your pc. The best way to resolve this is to uninstall any versions of Python that you are not using and just use one.
+- You still have the red x over the Toolset. Common issues if you have gone through the installation process above without encountering any errors is to check if your ArcGIS extentions are enabled. If they are then you can check to see if the features that you have checked under the "Borrow/Return" folder in ArcGIS Administrator are checked. If either of these are unchecked then you will encounter issues either now or later with BRAT.
 ------
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation"><i class="fa fa-info-circle"></i> Back to Help </a>
