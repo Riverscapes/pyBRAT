@@ -6,7 +6,7 @@ title: Glossary
 Because field names in ArcGIS are limited to ten characters, there is a limit to how descriptive those names can be. This page is meant to be a reference for what each field in the stream network produced by BRAT is meant to represent.
 
 ## Current pyBRAT Values
-These are values that are presently generated and used by the latest version of pyBRAT (3.0.18 at the time of writing). They are sorted by what stage they are created in, not alphabetically.
+These are values that are presently generated and used by the latest version of pyBRAT (3.0.20 at the time of writing). They are sorted by what stage they are created in, not alphabetically.
 
 *For values for other versions of pyBRAT by version please refer to the lookup tables in the [pyBRAT Outputs](http://brat.riverscapes.xyz/Documentation/Outputs/) under the particular version #*
 
@@ -135,15 +135,75 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "LONG"
 - Generation Method: BRAT Table Tool or the Braid Handler tool
 
-**iHyd_QLow -** The value for low stream flow in the reach.
+**iHyd_QLow -** The value for low stream flow (CFS) in the reach.
+
 - Field Type: "DOUBLE"
 - Generation Method: iHyd tool
 
-**iHyd_Q2 -** The value for high stream flow in the reach.
+**iHyd_Q2 -** The value for high stream flow (CFS) in the reach.
+
 - Field Type: "DOUBLE"
 - Generation Method: iHyd tool
 
-**oVC_PT**
+**iHyd_SPLow-** The stream power in watts of the reach for the low stream flow.
+
+- Field Type: "DOUBLE"
+- Generation Method: iHyd tool
+
+**iHyd_SP2-** The stream power in watts of the reach for the high stream flow.
+
+- Field Type: "DOUBLE"
+- Generation Method: iHyd tool
+
+**oVC_PT-** Output of beaver dam density based on potential vegetation based on the FIS classifications that the user input for the "VEG_CODE" field in the historic vegetation raster.
+
+- Field Type: "DOUBLE"
+- Generation Method:  tool
+
+**oVC_EX-** Output of beaver dam density based on existing vegetation based on the FIS classifications that the user input for the "VEG_CODE" field in the existing vegetation raster.
+
+- Field Type: "DOUBLE"
+- Generation Method:  tool
+
+**oCC_PT-**  Final capacity output of historic beaver dam dam density based on the combined inputs of the reach.
+
+- Field Type: "DOUBLE"
+- Generation Method:  tool
+
+**mCC_PT_CT-** Final capacity output of historic beaver dam dam count based on the combined inputs of the reach.
+
+- Field Type: "Long"
+- Generation Method:  tool
+
+**oCC_EX-** Final capacity output of existing beaver dam dam density based on the combined inputs of the 
+
+- Field Type: "DOUBLE"
+- Generation Method:  tool
+
+**mCC_EX_CT-** Final capacity output of existing beaver dam dam count based on the combined inputs of the reach.
+
+- Field Type: "Long"
+- Generation Method:  tool
+
+**mCC_HisDep-**  The departure between the Historic dam count ("mCC_PT_CT") and the Existing dam count  ("mCC_EX_CT")
+
+- Field Type: "Long"
+- Generation Method:  tool
+
+**oPBRC_UI-**  Management output that outlines the unsuitable or limited beaver dam opportunities. Identifies the limiting factor that is limiting the reach from optimal beaver dam construction.
+
+- Field Type: "String"
+- Generation Method:  tool
+
+**oPBRC_UD-**  Management output that outlines the areas beavers can build dams, but due to anthropogenic proximity could pose potential risk to the beavers. 
+
+- Field Type: "String"
+- Generation Method:  tool
+
+**oPBRC_CR-** Possible beaver dam conservation/restoration opportunities that can be used for concentration of efforts made by management. This is subset into those reaches that are defined as a "oPBC_UI" score of "Negligible Risk" and "Minor Risk" in order to further aid in possible reaches for management to focus their efforts on in order to get the most bang for their buck.
+
+- Field Type: "String"
+- Generation Method:  tool
 
 ## Depreciated pyBRAT Values
 These are values that were once used by pyBRAT, but were discontinued for one reason or another.
