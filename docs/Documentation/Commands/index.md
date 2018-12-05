@@ -7,12 +7,13 @@ Using the navigation menu, pyBRAT commands (by version) are listed here for refe
 
 ### Contents
 
-1. [Step 3 - BRAT Table Tool](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/01_BRAT%20TableTool.html)
-2. [Step 4 - iHyd Attributes](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/02_iHydAttributes.html)
-3. [Step 5 - BRAT Vegetation Dam Capacity Model](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/03_BRATVegetationFIS.html)
-4. [Step 6 - BRAT Combined Dam Capacity Model](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/04_BRATCombinedFIS.html)
-5. [Step 7 - Summary Report (Optional)](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/05_SummaryReport.html)
-6. [Step 8 - Layer Package Generator (Optional)](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/06_LayerPackageGenerator.html)
+1. [BRAT 3.X]()
+   * [Step 3 - BRAT Table Tool](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/01_BRAT%20TableTool.html)
+   * [Step 4 - iHyd Attributes](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/02_iHydAttributes.html)
+   * [Step 5 - BRAT Vegetation Dam Capacity Model](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/03_BRATVegetationFIS.html)
+   * [Step 6 - BRAT Combined Dam Capacity Model](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/04_BRATCombinedFIS.html)
+   * [Step 7 - Summary Report (Optional)](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/05_SummaryReport.html)
+   * [Step 8 - Layer Package Generator (Optional)](http://brat.riverscapes.xyz/Documentation/Commands/BRAT%203.X/06_LayerPackageGenerator.html)
 
 ------
 <div align="center">
