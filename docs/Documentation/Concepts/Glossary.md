@@ -158,52 +158,52 @@ These are values that are presently generated and used by the latest version of 
 **oVC_PT-** Output of beaver dam density based on potential vegetation based on the FIS classifications that the user input for the "VEG_CODE" field in the historic vegetation raster.
 
 - Field Type: "DOUBLE"
-- Generation Method:  tool
+- Generation Method: Vegetation Dam Capacity Model tool
 
 **oVC_EX-** Output of beaver dam density based on existing vegetation based on the FIS classifications that the user input for the "VEG_CODE" field in the existing vegetation raster.
 
 - Field Type: "DOUBLE"
-- Generation Method:  tool
+- Generation Method: Vegetation Dam Capacity Model tool
 
 **oCC_PT-**  Final capacity output of historic beaver dam dam density based on the combined inputs of the reach.
 
 - Field Type: "DOUBLE"
-- Generation Method:  tool
+- Generation Method: Combined Dam Capacity tool
 
 **mCC_PT_CT-** Final capacity output of historic beaver dam dam count based on the combined inputs of the reach.
 
 - Field Type: "Long"
-- Generation Method:  tool
+- Generation Method: Combined Dam Capacity tool
 
 **oCC_EX-** Final capacity output of existing beaver dam dam density based on the combined inputs of the 
 
 - Field Type: "DOUBLE"
-- Generation Method:  tool
+- Generation Method: Combined Dam Capacity tool
 
 **mCC_EX_CT-** Final capacity output of existing beaver dam dam count based on the combined inputs of the reach.
 
 - Field Type: "Long"
-- Generation Method:  tool
+- Generation Method: Combined Dam Capacity tool
 
 **mCC_HisDep-**  The departure between the Historic dam count ("mCC_PT_CT") and the Existing dam count  ("mCC_EX_CT")
 
 - Field Type: "Long"
-- Generation Method:  tool
+- Generation Method: Combined Dam Capacity tool
 
 **oPBRC_UI-**  Management output that outlines the unsuitable or limited beaver dam opportunities. Identifies the limiting factor that is limiting the reach from optimal beaver dam construction.
 
 - Field Type: "String"
-- Generation Method:  tool
+- Generation Method: Conservation and Restoration tool
 
 **oPBRC_UD-**  Management output that outlines the areas beavers can build dams, but due to anthropogenic proximity could pose potential risk to the beavers. 
 
 - Field Type: "String"
-- Generation Method:  tool
+- Generation Method: Conservation and Restoration tool
 
 **oPBRC_CR-** Possible beaver dam conservation/restoration opportunities that can be used for concentration of efforts made by management. This is subset into those reaches that are defined as a "oPBC_UI" score of "Negligible Risk" and "Minor Risk" in order to further aid in possible reaches for management to focus their efforts on in order to get the most bang for their buck.
 
 - Field Type: "String"
-- Generation Method:  tool
+- Generation Method: Conservation and Restoration tool
 
 ## Depreciated pyBRAT Values
 These are values that were once used by pyBRAT, but were discontinued for one reason or another.
