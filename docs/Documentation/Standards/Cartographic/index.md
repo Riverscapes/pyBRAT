@@ -5,6 +5,12 @@ weight: 4
 
 Check sub-menu for cartography standards to implement in preparing maps for BRAT.
 
+## Example Map
+
+![John Day Existing Capacity](C:\Users\Ma697\Desktop\CartographicStandards\Github\Documentation\Assests\Images\John_Day_Existing_Capacity.png)
+"Summary product of John Day Existing Capacity created by cartographer Chalese Hafen"
+
+
 ------
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-check-square-o"></i> Back to ETAL Standards</a>
