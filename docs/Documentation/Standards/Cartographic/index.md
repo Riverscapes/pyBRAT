@@ -3,7 +3,7 @@ title: Cartography
 weight: 4
 ---
 
-Check sub-menu for carography standards to implement in preparing maps for BRAT.
+Check sub-menu for cartography standards to implement in preparing maps for BRAT.
 
 ------
 <div align="center">
