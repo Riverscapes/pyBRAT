@@ -82,6 +82,8 @@ def main(
     with arcpy.da.SearchCursor(ihyd_table, ['ReachID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
         for row in cursor:
             tblDict[row[0]] = [row[1], row[2]]
+    # check for and delete if output fields already included in flowline network
+    remove_existing_output(in_network)
     # populate flowline network out field
     arcpy.AddField_management(in_network, "iHyd_QLow", 'DOUBLE')
     arcpy.AddField_management(in_network, "iHyd_Q2", 'DOUBLE')
@@ -128,6 +130,18 @@ def main(
     # add equations to XML
     if Qlow_eqtn is not None and Q2_eqtn is not None and region is not None:
         xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn)
+
+
+
+def remove_existing_output(in_network):
+    if "iHyd_QLow" in [field.name for field in arcpy.ListFields(in_network)]:    
+        arcpy.DeleteField_management(in_network, "iHyd_Qlow")
+    if "iHyd_Q2" in [field.name for field in arcpy.ListFields(in_network)]:
+        arcpy.DeleteField_management(in_network, "iHyd_Q2")
+    if "iHyd_SPLow" in [field.name for field in arcpy.ListFields(in_network)]:
+        arcpy.DeleteField_management(in_network, "iHyd_SPLow")
+    if "iHyd_SP2" in [field.name for fields in arcpy.ListFields(in_network)]:
+        arcpy.DeleteField_management(in_network, "iHyd_SP2")
 
 
 
