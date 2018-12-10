@@ -204,6 +204,11 @@ def clean_up_fields(brat_network, out_network, new_fields):
 
 def write_xml(proj_path, in_network, out_network):
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
+
+    if not os.path.exists(xml_file_path):
+        arcpy.AddWarning("XML file not found. Could not update XML file")
+        return
+
     xml_file = XMLBuilder(xml_file_path)
     in_network_rel_path = find_relative_path(in_network, proj_path)
 
