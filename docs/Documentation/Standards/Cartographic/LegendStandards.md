@@ -18,6 +18,11 @@ This page is where we will document our most up to date standards for BRAT legen
   ![Historic Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Capacity.png)
   
 ### Conservation and Restoration
+ ![Areas beaver can build dams, but could be undesirable]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_AreasBeaver.png)
+ 
+ ![Possible beaverd dam conservation restoration opportunities]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_ConservationRestoration.png)
+  
+ ![Unsuitable limited beaver dam opportunites]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Unsuitable.png)
   
 
 
