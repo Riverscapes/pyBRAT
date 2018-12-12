@@ -9,7 +9,7 @@ This page is where we will document our most up to date standards for BRAT legen
 
 # Procedure
 
-([Here]https://usu.box.com/s/5kxzkcs6fg8pwgju7mhv44f9hlhrwdy0) is a link to an Adobe Illustrator file that contains the BRAT output Legends Below
+[Here](https://usu.box.com/s/5kxzkcs6fg8pwgju7mhv44f9hlhrwdy0)is a link to an Adobe Illustrator file that contains the BRAT output Legends Below
 
 ## Outputs
 ### Combined Capacity
