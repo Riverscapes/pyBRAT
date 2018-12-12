@@ -14,22 +14,25 @@ This page is where we will document our most up to date standards for BRAT legen
 If you need to create legends from scratch, here is a video that walks through the basic process. 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_kniECs0270" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+#### Example Legend:
+![ExampleLegend]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_ExampleLegend.png)
+
 ## Outputs
 ### Combined Capacity
-  ![Existing Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Complex.png)
+![Existing Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Complex.png)
   
-  ![Historic Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Complex.png)
+![Historic Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Complex.png)
   
-  ![Existing Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Capacity.png)
+![Existing Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Capacity.png)
   
-  ![Historic Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Capacity.png)
+![Historic Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Capacity.png)
   
 ### Conservation and Restoration
- ![Areas beaver can build dams, but could be undesirable]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_AreasBeaver.png)
+![Areas beaver can build dams, but could be undesirable]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_AreasBeaver.png)
  
- ![Possible beaverd dam conservation restoration opportunities]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_ConservationRestoration.png)
+![Possible beaverd dam conservation restoration opportunities]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_ConservationRestoration.png)
   
- ![Unsuitable limited beaver dam opportunites]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Unsuitable.png)
+![Unsuitable limited beaver dam opportunites]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Unsuitable.png)
   
 
 
