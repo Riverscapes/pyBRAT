@@ -3,7 +3,7 @@ title: pyBRAT Commands
 weight: 1
 ---
 
-Using the navigation menu, pyBRAT commands (by version) are listed here for reference. Each command page describes the commands purpose, its use, its inputs, parameters (if applicable) and outputs. **[Tutorials](http://brat.riverscapes.xyz/Documentation/Tutorials/) are provided seperately to illustrate the utilization of these commands and should be used for BRAT users for up to date and detailed operation of BRAT.**
+Using the navigation menu, pyBRAT commands (by version) are listed here for reference. Each command page describes the commands purpose, its use, its inputs, parameters (if applicable) and outputs. **[Tutorials](http://brat.riverscapes.xyz/Documentation/Tutorials/) are provided seperately to illustrate the utilization of these commands and should be used for BRAT users for up to date and detailed operation of BRAT.** This folder is for documentation purposes only!
 
 ### Contents
 
