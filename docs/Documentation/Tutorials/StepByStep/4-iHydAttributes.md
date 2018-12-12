@@ -53,18 +53,19 @@ After any necessary regressions have been entered, save the changes to the scrip
 
 #### Inputs and Parameters:
 
-![iHyd]({{ site.url }}/assets/images/iHyd.PNG)
+![iHyd]({{ site.url }}/assets/images/iHyd_new.PNG)
 
 
 - **Input BRAT Network**  - select the network that was created using the BRAT Table tool
-- **Select Hydrologic Region** -  enter the integer that was used to identify the regression you want to use.  In the example here we used the number 24.
-
+- **Select Hydrologic Region** -  enter the integer that was used to identify the regression you want to use.  In the example here we used the number 24. If specified, the region number is included in the project XML for future reference.
+- **Baseflow Equation** - write the baseflow equation used, the Qlow specified in the code, so that the equation can be included in the project XML.
+- **Highflow Equation** - write the highflow equation used, the Q2 specified in the code, so that it can be included in the project XML.
 
 -----
 ## References
 
 - [StreamStats Version 4 Factsheet](https://pubs.usgs.gov/fs/2017/3046/fs20173046.pdf)
-- 
+
 
 
 <div align="center">
@@ -82,7 +83,6 @@ After any necessary regressions have been entered, save the changes to the scrip
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 3.2 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 5 </a>
 </div>	
-
 ------
 <div align="center">
 
