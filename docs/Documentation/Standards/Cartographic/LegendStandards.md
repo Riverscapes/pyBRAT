@@ -7,6 +7,10 @@ weight: 4
 
 This page is where we will document our most up to date standards for BRAT legends.
 
+# Procedure
+
+[Here] (https://usu.box.com/s/5kxzkcs6fg8pwgju7mhv44f9hlhrwdy0) is a link to an Adobe Illustrator file that contains the BRAT output Legends Below
+
 ## Outputs
 ### Combined Capacity
   ![Existing Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Complex.png)
