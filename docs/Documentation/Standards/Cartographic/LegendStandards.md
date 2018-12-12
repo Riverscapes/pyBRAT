@@ -11,6 +11,9 @@ This page is where we will document our most up to date standards for BRAT legen
 
 [Here](https://usu.box.com/s/5kxzkcs6fg8pwgju7mhv44f9hlhrwdy0) is a link to an Adobe Illustrator file that contains the BRAT output Legends Below
 
+If you need to create legends from scratch, here is a video that walks through the basic process. 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_kniECs0270" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Outputs
 ### Combined Capacity
   ![Existing Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Complex.png)
