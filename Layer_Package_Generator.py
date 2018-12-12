@@ -193,9 +193,9 @@ def check_analyses(analyses_folder, symbology_folder):
     check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
     check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_PT_Ct")
 
-    check_analyses_layer(analyses_folder, management_folder, "Beaver Management Zones", symbology_folder, "BeaverManagementZones.lyr", "oPBRC")
-    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Dam_Building_Not_Likely.lyr", "oPBRC")
-    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "Restoration_Conservation_Opportunities.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Unsuitable_Limited_Dam_Building_Opportunities.lyr", "pPBRC_UD")
+    check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams", symbology_folder, "Areas_Beavers_Can_Build_Dams_but_could_be_Undesirable.lyr", "pPBRC_UI")
+    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "Possible_Beaver_Dam_Conservation_Restoration_Opportunities.lyr", "pPBRC_CR")
 
 
 def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
