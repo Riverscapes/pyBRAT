@@ -8,7 +8,7 @@ weight: 4
 This page is where we will document our most up to date standards for BRAT legends.
 
 ## Outputs
-  ### Combined Capacity
+### Combined Capacity
   ![Existing Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Complex.png)
   
   ![Historic Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Complex.png)
@@ -17,7 +17,7 @@ This page is where we will document our most up to date standards for BRAT legen
   
   ![Historic Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Capacity.png)
   
-  ### Conservation and Restoration
+### Conservation and Restoration
   
 
 
