@@ -69,6 +69,8 @@ def copy_dams_to_inputs(proj_path, dams):
 
     inputs_folder = find_folder(proj_path, "Inputs")
     beaver_dams_folder = find_folder(inputs_folder, "BeaverDams")
+    if beaver_dams_folder is None:
+        beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")
 
     new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
     new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))

@@ -134,13 +134,14 @@ def makeLayers(out_network):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     management_zones_symbology = os.path.join(symbologyFolder, "Beaver_Management_Zones_v2.lyr")
-    unlikely_dams_symbology = os.path.join(symbologyFolder, "Dam_Building_Not_Likely.lyr")
-    undesirable_dams_symbology = os.path.join(symbologyFolder, "UndesirableDamRisk.lyr")
+    limitations_dams_symbology = os.path.join(symbologyFolder, "Unsuitable_Limited_Dam_Building_Opportunities.lyr")
+    undesirable_dams_symbology = os.path.join(symbologyFolder, "Areas_Beavers_Can_Build_Dams_but_could_be_Undesirable.lyr")
+    conservation_restoration_symbology = os.path.join(symbologyFolder, "Possible_Beaver_Dam_Conservation_Restoration_Opportunities.lyr")
 
     # make_layer(output_folder, out_network, "Beaver Management Zones", management_zones_symbology, is_raster=False)
-    make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", unlikely_dams_symbology, is_raster=False)
-    make_layer(output_folder, out_network, "Risk of Undesirable Dams", undesirable_dams_symbology, is_raster=False, file_name='Rest_Cons_Opportunity')
-
+    make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", limitations_dams_symbology, is_raster=False, symbology_field ='pPBRC_UD')
+    make_layer(output_folder, out_network, "Risk of Undesirable Dams", undesirable_dams_symbology, is_raster=False, symbology_field ='pPBRC_UI')
+    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", conservation_restoration_symbology, is_raster=False, symbology_field ='pPBRC_CR')
 
 def write_xml(in_network, out_network):
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
