@@ -1,5 +1,5 @@
 ---
-title: Legend Standards
+title: Data Summary: Chart Standards
 weight: 4
 ---
 
