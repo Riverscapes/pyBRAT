@@ -1,5 +1,5 @@
 ---
-title: Data Summary: Chart Standards
+title: Data Summary - Chart Standards
 weight: 4
 ---
 
