@@ -173,7 +173,7 @@ def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
     # open xml
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
     if not os.path.exists(xml_file_path):
-        raise Exception("XML file for project does not exist. Return to Step 2: BRAT table to create XML.")
+        raise Exception("XML file for project does not exist. Return to Step 1: BRAT table to create XML.")
     xml_file = XMLBuilder(xml_file_path)
 
     # find input network XML element

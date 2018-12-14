@@ -82,7 +82,7 @@ def check_intermediates(intermediates_folder, symbologyFolder):
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road", "iPC_Road")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road in Valley Bottom", "iPC_RoadVB")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "AnabranchHandler", "Anabranch Type", "IsMainCh")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "AnabranchHandler", "Anabranch Types", "IsMainCh")
 
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Highflow_StreamPower.lyr", brat_table_file, "Hydrology", "Highflow Stream Power", "iHyd_SP2")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_StreamPower.lyr", brat_table_file, "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
@@ -521,7 +521,7 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd):
     canal_layer = group_layers(empty_group_layer, "Canals", canal_layers, df, mxd)
     land_use_layers = find_instance_layers(land_use_folder)
     land_use_layer = group_layers(empty_group_layer, "Land Use", land_use_layers, df, mxd)
-    conflict_layer = group_layers(empty_group_layer, "Conflict Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
+    conflict_layer = group_layers(empty_group_layer, "Anthropogenic Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
 
     return group_layers(empty_group_layer, "Inputs", [topo_layer, veg_layer, network_layer, conflict_layer], df, mxd)
 
