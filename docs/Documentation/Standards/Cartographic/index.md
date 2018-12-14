@@ -7,7 +7,8 @@ Check sub-menu for cartography standards to implement in preparing maps for BRAT
 
 ## Example Map
 
-![Summary Product: John Day Existing Capacity]({{ site.baseurl }}/assets/images/John_day_Existing_capacity.png "Summary Product created by cartographer Chalese Hafen")
+![Summary Product: Tomles Drake Bay Existing Capacity]({{ site.baseurl }}/assets/images/TomalesDrakeBays_ExistingCapacity.png
+       "Summary Product created by cartographer Chalese Hafen")
 
 ------
 <div align="center">
