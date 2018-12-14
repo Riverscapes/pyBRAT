@@ -7,17 +7,32 @@ weight: 4
 
 This page is where we will document our most up to date standards for BRAT legends.
 
+# Procedure
+
+[Here](https://usu.box.com/s/5kxzkcs6fg8pwgju7mhv44f9hlhrwdy0) is a link to an Adobe Illustrator file that contains the BRAT output Legends Below
+
+If you need to create legends from scratch, here is a video that walks through the basic process. 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_kniECs0270" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+#### Example Legend:
+![ExampleLegend]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_ExampleLegend.png)
+
 ## Outputs
-  ### Combined Capacity
-  ![Existing Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Complex.png)
+### Combined Capacity
+![Existing Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Complex.png)
   
-  ![Historic Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Complex.png)
+![Historic Dam Complex]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Complex.png)
   
-  ![Existing Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Capacity.png)
+![Existing Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Existing_Dam_Capacity.png)
   
-  ![Historic Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Capacity.png)
+![Historic Dam Capacity]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Historic_Dam_Capacity.png)
   
-  ### Conservation and Restoration
+### Conservation and Restoration
+![Areas beaver can build dams, but could be undesirable]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_AreasBeaver.png)
+ 
+![Possible beaverd dam conservation restoration opportunities]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_ConservationRestoration.png)
+  
+![Unsuitable limited beaver dam opportunites]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Unsuitable.png)
   
 
 

@@ -82,6 +82,8 @@ def main(
     with arcpy.da.SearchCursor(ihyd_table, ['ReachID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
         for row in cursor:
             tblDict[row[0]] = [row[1], row[2]]
+    # check for and delete if output fields already included in flowline network
+    remove_existing_output(in_network)
     # populate flowline network out field
     arcpy.AddField_management(in_network, "iHyd_QLow", 'DOUBLE')
     arcpy.AddField_management(in_network, "iHyd_Q2", 'DOUBLE')
@@ -131,6 +133,18 @@ def main(
 
 
 
+def remove_existing_output(in_network):
+    if "iHyd_QLow" in [field.name for field in arcpy.ListFields(in_network)]:    
+        arcpy.DeleteField_management(in_network, "iHyd_Qlow")
+    if "iHyd_Q2" in [field.name for field in arcpy.ListFields(in_network)]:
+        arcpy.DeleteField_management(in_network, "iHyd_Q2")
+    if "iHyd_SPLow" in [field.name for field in arcpy.ListFields(in_network)]:
+        arcpy.DeleteField_management(in_network, "iHyd_SPLow")
+    if "iHyd_SP2" in [field.name for fields in arcpy.ListFields(in_network)]:
+        arcpy.DeleteField_management(in_network, "iHyd_SP2")
+
+
+
 def makeLayers(inputNetwork):
     """
     Makes the layers for the modified output
@@ -159,7 +173,7 @@ def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
     # open xml
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
     if not os.path.exists(xml_file_path):
-        raise Exception("XML file for project does not exist. Return to Step 2: BRAT table to create XML.")
+        raise Exception("XML file for project does not exist. Return to Step 1: BRAT table to create XML.")
     xml_file = XMLBuilder(xml_file_path)
 
     # find input network XML element
