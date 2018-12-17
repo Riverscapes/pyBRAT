@@ -8,7 +8,7 @@ This page will walk you through the basics of creating a new map from the beginn
 
 We also cover in the videos basic tools and tricks that are used to produce these maps in ArcGIS and Adobe Illustrator.
 
-#Procedure
+# Procedure
 
 1. ArcGIS
    * Background Imagery
