@@ -34,7 +34,9 @@ The **preliminary management** output layers include outputs that describe the l
 
 What do all those attribute fields correspond to?  Below is a table describing all of the outputs that appear in the BRAT KMZs and feature class attribute tables (i.e. shapefiles and LayerPackages).
 
-![Attribute_Table_BRATv3X]({{ site.baseurl }}/assets/images/Attribute_Table_BRATv3.X.png)
+![Attribute_Table_BRATv3X]({{ site.baseurl }}/assets/images/BRAT_3X_Alias.png)
+
+Source table can be found [here](https://usu.box.com/s/ekjw3e2iuxafpj0ttl0uzdyh9ifydmtl) for closer inspection.
 
 ## Visualizing BRAT Outputs
 
