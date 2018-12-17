@@ -12,9 +12,11 @@ We also cover in the videos basic tools and tricks that are used to produce thes
 
 1. ArcGIS
    * Background Imagery
-   * Output data
+   * Output Data
 2. Adobe Illustrator
    * Compiling Layers
+   * Attaching and Creating Labels
+   * Atlas Map Inputs
 
 ## ArcGIS
 
@@ -33,6 +35,8 @@ Exporting layers from ArcGIS can be a bit tricky and there are some tips that ar
 Here is a video that describes and walks through a basic map and legend from ArcGIS to Adobe Illustrator using common tool functions.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/o9XoSjRGb-Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 
 ## Adobe Illustrator
 
