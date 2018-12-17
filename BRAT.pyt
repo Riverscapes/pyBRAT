@@ -11,6 +11,7 @@ import Data_Capture_Validation
 import Drainage_Area_Check
 import StreamObjects
 import Layer_Package_Generator
+import Collect_Summary_Products
 
 class Toolbox(object):
     def __init__(self):
@@ -21,7 +22,8 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-        Conservation_Restoration_tool, Data_Capture_Validation_tool, Drainage_Area_Check_tool, Layer_Package_Generator_tool]
+                        Conservation_Restoration_tool, Data_Capture_Validation_tool, Drainage_Area_Check_tool,
+                        Layer_Package_Generator_tool, Collect_Summary_Products_tool]
 
 class BRAT_project_tool(object):
     def __init__(self):
@@ -763,4 +765,45 @@ class Layer_Package_Generator_tool(object):
         """The source code of the tool."""
         reload(Layer_Package_Generator)
         Layer_Package_Generator.main(p[0].valueAsText, p[1].valueAsText,)#, p[2].valueAsText)
+        return
+
+
+class Collect_Summary_Products_tool(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "Collect Summary Products"
+        self.description = "Creates a folder structure for the summary products, divided into AI, PDF, and PNG files"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+
+        param0 = arcpy.Parameter(
+            displayName="Select project folder",
+            name="in_network",
+            datatype="DEFolder",
+            parameterType="Required",
+            direction="Input")
+
+        return [param0]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(Collect_Summary_Products)
+        Collect_Summary_Products.main(p[0].valueAsText)
         return
