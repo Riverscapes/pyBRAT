@@ -61,10 +61,3 @@ Labels are very effective in providing context to maps and play a critical role 
 The atlas map is a simple group of maps that can be given to the client for review of the BRAT outputs. The goal is to tell an effective story to the user in a short amount of time. For further descriptions and interrogation of the BRAT model inputs, intermediates and outputs please refer to the BRAT Outputs pg.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/GSfV0Il6-js" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-### Charts and Summary Products
-
-Part of creating stand alone figures for the BRAT outputs is creating charts and tables that are added to the maps for further descriptions and comprehension for the client. A description of working with Microsoft Excel to produce the charts and creating common effect that are used in the Summary Products. Summing up the products which are necessary for the summary products for the BRAT projects produced by the Ecogeomorphology and Topographical Analysis Lab at Utah State University. 
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/OuZDhLEuxI8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
