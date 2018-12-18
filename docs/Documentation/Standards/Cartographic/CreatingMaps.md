@@ -65,3 +65,11 @@ Labels are very effective in providing context to maps and play a critical role 
 The atlas map is a simple group of maps that can be given to the client for review of the BRAT outputs. The goal is to tell an effective story to the user in a short amount of time. For further descriptions and interrogation of the BRAT model inputs, intermediates and outputs please refer to the BRAT Outputs pg.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/GSfV0Il6-js" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+### Exporting Map as a PNG
+
+After all the editing and final touch ups on your map, you will export your work as a PNG. For further detail on this process, refer to this [page.](http://brat.riverscapes.xyz/Documentation/Standards/Cartographic/Additionaldetailsandtechniques.html) Otherwise, below is a video that walks through the basic process. 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Y2ZyBAgiq-8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
