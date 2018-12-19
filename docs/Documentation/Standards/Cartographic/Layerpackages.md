@@ -19,3 +19,6 @@ In the event that you need to create a layer package for BRAT manually, here is 
 
 ### Links to example Layer Packages
 
+[BRAT North Fork Burnt](https://usu.box.com/s/pt85lfz58z9gdglvh9v7ckrqpyufap12)
+
+[BRAT Lower John Day](https://usu.box.com/s/n7eql3a3vv9kr2w2jb8dqrx3ubkfm61m)
