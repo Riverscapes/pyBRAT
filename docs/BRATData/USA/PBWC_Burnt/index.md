@@ -47,23 +47,21 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
 - Atlas of BRAT outputs [here](https://usu.box.com/s/hu8anaavlmwocvqq54trpshw6kyfp4k9)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_1.png)
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_1.png)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_2.png)
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_2.png)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_3.png)
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_3.png)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_4.png)
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_4.png)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_5.png)
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_5.png)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_6.png)
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_6.png)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_7.png)
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_7.png)
 
-  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_8.png)
-
-  ![]()
+  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_8.png)
 
 ### References:
 
