@@ -47,7 +47,7 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
 - Atlas of BRAT outputs [here](https://usu.box.com/s/hu8anaavlmwocvqq54trpshw6kyfp4k9)
 
-- ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_1.png)
+  ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_1.png)
 
   ![](C:/ET_AL_Matthew/Non_Projects_Matthew_Meier/ETAL_toolsandscripts/BRAT/pyBRAT-master/docs/BRATData/USA/Yakama_Nation/%7B%7B%20site.baseurl%20%7D%7D/assets/images/Powder_Basin_BRAT_Atlas_Page_2.png)
 
