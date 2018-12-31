@@ -6,7 +6,7 @@ weight: 5
 
 ### Executive Summary 
 
-This report presents an application of the Beaver Restoration Assessment Tool [3.0.20](https://github.com/Riverscapes/pyBRAT/releases/tag/3.0.20) (BRAT; [http://brat.riverscapes.xyz/),](http://brat.riverscapes.xyz/),%20) a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams within the Burnt River watershed (8-digit USGS Hydrologic Unit Code (HUC 8)). The primary focus of this analysis as on the North Fork Burnt River watershed (HUC 10) which is the spatial extent of this project and contract.
+This report presents an application of the Beaver Restoration Assessment Tool [3.0.20](https://github.com/Riverscapes/pyBRAT/releases/tag/3.0.20) (BRAT; [http://brat.riverscapes.xyz/),](http://brat.riverscapes.xyz/) a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams within the Burnt River watershed (8-digit USGS Hydrologic Unit Code (HUC 8)). The primary focus of this analysis as on the North Fork Burnt River watershed (HUC 10) which is the spatial extent of this project and contract.
 
  
 
@@ -34,7 +34,7 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
 ### Scope and Extent of the Project
 
-
+<iframe src="https://www.google.com/maps/d/embed?mid=1bWK0YGTGXAQmjLbL2qcERbdHskS913_T" width="640" height="480"></iframe>
 
 ### BRAT Deliverable Data Products include:
 
