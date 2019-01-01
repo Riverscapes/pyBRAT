@@ -63,8 +63,6 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
   ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_7.png)
 
-  ![]({{ site.baseurl }}/assets/images/Powder_Basin_BRAT_Atlas_Page_8.png)
-
 ### References:
 
 Macfarlane, W. W., J. M. Wheaton, N. Bouwes, M. L. Jensen, J. T. Gilbert, N. Hough-Snee, and J. A. Shivik. 2017. Modeling the capacity of riverscapes to support beaver dams. Geomorphology 277:72-99.
