@@ -11,6 +11,7 @@
 import arcpy
 import os
 from SupportingFunctions import find_folder, find_available_num_prefix, make_folder, make_layer
+import re
 
 
 def main(output_folder, layer_package_name, clipping_network=None):
@@ -23,6 +24,9 @@ def main(output_folder, layer_package_name, clipping_network=None):
     """
     if layer_package_name == None:
         layer_package_name = "LayerPackage"
+
+    validate_inputs(output_folder)
+
     projectFolder = os.path.dirname(os.path.dirname(output_folder))
     inputsFolder = find_folder(projectFolder, "Inputs")
     intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
@@ -39,6 +43,17 @@ def main(output_folder, layer_package_name, clipping_network=None):
         arcpy.AddWarning(err)
 
     make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
+
+
+def validate_inputs(output_folder):
+    """
+    Checks that the inputs are in the form that we want them to be
+    :param output_folder: What output folder we want to base our layer package off of
+    :return:
+    """
+    if not re.match(r'Output_\d\d', os.path.basename(output_folder)):
+        raise Exception("Given output folder is invalid.\n\n" +
+                        'Look for a folder formatted like "Output_##", where # represents any number')
 
 
 def check_for_layers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder):
