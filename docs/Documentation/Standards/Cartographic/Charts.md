@@ -13,3 +13,13 @@ Part of creating stand alone figures for the BRAT outputs is creating charts and
 <iframe width="560" height="315" src="https://www.youtube.com/embed/OuZDhLEuxI8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 # Examples
+
+## Capacity Charts
+![Summary Product: Tomles Drake Bay Existing Capacity]({{ site.baseurl }}/assets/images/Barcharts_HistoricCapacity.png)
+
+## Management Charts
+![Summary Product: Tomles Drake Bay Existing Capacity]({{ site.baseurl }}/assets/images/Barcharts_ConservationRestoration.png)
+
+![Summary Product: Tomles Drake Bay Existing Capacity]({{ site.baseurl }}/assets/images/Barcharts_RiskManagemnt.png)
+       
+![Summary Product: Tomles Drake Bay Existing Capacity]({{ site.baseurl }}/assets/images/Barcharts_Unauitable.png)      
