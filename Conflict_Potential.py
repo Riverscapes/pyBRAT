@@ -44,7 +44,7 @@ def main(
     # RRHigh = 100
     out_network = find_oPC_Score(out_name, in_network, CrossingLow, CrossingHigh, AdjLow, AdjHigh, CanalLow, CanalHigh, RRLow, RRHigh, scratch)
 
-    addxmloutput(projPath, in_network, out_network)
+    add_xml_output(projPath, in_network, out_network)
 
     makeLayers(out_network)
 
@@ -231,7 +231,7 @@ def slopeInt(lowValue, highValue):
     return [m, b]
 
 
-def addxmloutput(projPath, in_network, out_network):
+def add_xml_output(projPath, in_network, out_network):
     """add the capacity output to the project xml file"""
 
     # xml file

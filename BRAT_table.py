@@ -732,6 +732,10 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
     output_folder_num = str(int(output_folder[-2:]))
     xml_file_path = proj_path + "/project.rs.xml"
 
+    if not os.path.exists(xml_file_path):
+        arcpy.AddWarning("XML file not found. Could not update XML file")
+        return
+
     xml_file = XMLBuilder(xml_file_path)
 
     add_drain_area_to_inputs_xml(xml_file, DrAr, proj_path)
@@ -917,7 +921,13 @@ def make_layers(out_network):
     trib_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
-    dist_symbology = os.path.join(symbology_folder, "Distance_To_Infrastructure.lyr")
+    dist_to_infrastructure_symbology = os.path.join(symbology_folder, "Distance_To_Infrastructure.lyr")
+    dist_to_road_in_valley_bottom_symbology = os.path.join(symbology_folder, "Distance_to_Road_in_Valley_Bottom.lyr")
+    dist_to_road_crossing_symbology = os.path.join(symbology_folder, "Distance_to_Road_Crossing.lyr")
+    dist_to_road_symbology = os.path.join(symbology_folder, "Distance_to_Road.lyr")
+    dist_to_railroad_in_valley_bottom_symbology = os.path.join(symbology_folder, "Distance_to_Railroad_in_Valley_Bottom.lyr")
+    dist_to_railroad_symbology = os.path.join(symbology_folder, "Distance_to_Railroad.lyr")
+    dist_to_canal_symbology = os.path.join(symbology_folder, "Distance_to_Canal.lyr")
     land_use_symbology = os.path.join(symbology_folder, "Land_Use_Intensity.lyr")
     slope_symbology = os.path.join(symbology_folder, "Slope_Feature_Class.lyr")
     drain_area_symbology = os.path.join(symbology_folder, "Drainage_Area_Feature_Class.lyr")
@@ -932,19 +942,19 @@ def make_layers(out_network):
     if 'iPC_LU' in fields:
         make_layer(anthropogenic_metrics_folder, out_network, "Land Use Intensity", land_use_symbology, is_raster=False)
     if 'iPC_RoadX' in fields:
-        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road Crossing", dist_symbology, is_raster=False, symbology_field ='iPC_RoadX')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road Crossing", dist_to_road_crossing_symbology, is_raster=False, symbology_field ='iPC_RoadX')
     if 'iPC_Road' in fields:
-        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road", dist_symbology, is_raster=False, symbology_field ='iPC_Road')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road", dist_to_road_symbology, is_raster=False, symbology_field ='iPC_Road')
     if 'iPC_RoadVB' in fields:
-        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road in Valley Bottom", dist_symbology, is_raster=False, symbology_field ='iPC_RoadVB')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Road in Valley Bottom", dist_to_road_in_valley_bottom_symbology, is_raster=False, symbology_field ='iPC_RoadVB')
     if 'iPC_Rail' in fields:
-        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad", dist_symbology, is_raster=False, symbology_field ='iPC_Rail')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad", dist_to_railroad_symbology, is_raster=False, symbology_field ='iPC_Rail')
     if 'iPC_RailVB' in fields:
-        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad in Valley Bottom", dist_symbology, is_raster=False, symbology_field ='iPC_RailVB')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad in Valley Bottom", dist_to_railroad_in_valley_bottom_symbology, is_raster=False, symbology_field ='iPC_RailVB')
     if 'iPC_Canal' in fields:
-        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Canal", dist_symbology, is_raster=False, symbology_field ='iPC_Canal')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Canal", dist_to_canal_symbology, is_raster=False, symbology_field ='iPC_Canal')
     if 'oPC_Dist' in fields:
-        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", dist_symbology, is_raster=False, symbology_field ='oPC_Dist')
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", dist_to_infrastructure_symbology, is_raster=False, symbology_field ='oPC_Dist')
 
 
 def handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose):

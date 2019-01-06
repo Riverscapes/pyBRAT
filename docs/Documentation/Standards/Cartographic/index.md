@@ -3,7 +3,12 @@ title: Cartography
 weight: 4
 ---
 
-Check sub-menu for carography standards to implement in preparing maps for BRAT.
+Check sub-menu for cartography standards to implement in preparing maps for BRAT.
+
+## Example Map
+
+![Summary Product: Tomles Drake Bay Existing Capacity]({{ site.baseurl }}/assets/images/TomalesDrakeBays_ExistingCapacity.png
+       "Summary Product created by cartographer Chalese Hafen")
 
 ------
 <div align="center">

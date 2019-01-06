@@ -11,6 +11,7 @@
 import arcpy
 import os
 from SupportingFunctions import find_folder, find_available_num_prefix, make_folder, make_layer
+import re
 
 
 def main(output_folder, layer_package_name, clipping_network=None):
@@ -23,6 +24,9 @@ def main(output_folder, layer_package_name, clipping_network=None):
     """
     if layer_package_name == None:
         layer_package_name = "LayerPackage"
+
+    validate_inputs(output_folder)
+
     projectFolder = os.path.dirname(os.path.dirname(output_folder))
     inputsFolder = find_folder(projectFolder, "Inputs")
     intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
@@ -39,6 +43,17 @@ def main(output_folder, layer_package_name, clipping_network=None):
         arcpy.AddWarning(err)
 
     make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
+
+
+def validate_inputs(output_folder):
+    """
+    Checks that the inputs are in the form that we want them to be
+    :param output_folder: What output folder we want to base our layer package off of
+    :return:
+    """
+    if not re.match(r'Output_\d\d', os.path.basename(output_folder)):
+        raise Exception("Given output folder is invalid.\n\n" +
+                        'Look for a folder formatted like "Output_##", where # represents any number')
 
 
 def check_for_layers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder):
@@ -82,7 +97,7 @@ def check_intermediates(intermediates_folder, symbologyFolder):
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road", "iPC_Road")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road in Valley Bottom", "iPC_RoadVB")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "AnabranchHandler", "Anabranch Type", "IsMainCh")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "AnabranchHandler", "Anabranch Types", "IsMainCh")
 
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Highflow_StreamPower.lyr", brat_table_file, "Hydrology", "Highflow Stream Power", "iHyd_SP2")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_StreamPower.lyr", brat_table_file, "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
@@ -193,9 +208,9 @@ def check_analyses(analyses_folder, symbology_folder):
     check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
     check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_PT_Ct")
 
-    check_analyses_layer(analyses_folder, management_folder, "Beaver Management Zones", symbology_folder, "BeaverManagementZones.lyr", "oPBRC")
-    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Dam_Building_Not_Likely.lyr", "oPBRC")
-    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "Restoration_Conservation_Opportunities.lyr", "oPBRC")
+    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Unsuitable_Limited_Dam_Building_Opportunities.lyr", "pPBRC_UD")
+    check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams", symbology_folder, "Areas_Beavers_Can_Build_Dams_but_could_be_Undesirable.lyr", "pPBRC_UI")
+    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "Possible_Beaver_Dam_Conservation_Restoration_Opportunities.lyr", "pPBRC_CR")
 
 
 def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
@@ -521,7 +536,7 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd):
     canal_layer = group_layers(empty_group_layer, "Canals", canal_layers, df, mxd)
     land_use_layers = find_instance_layers(land_use_folder)
     land_use_layer = group_layers(empty_group_layer, "Land Use", land_use_layers, df, mxd)
-    conflict_layer = group_layers(empty_group_layer, "Conflict Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
+    conflict_layer = group_layers(empty_group_layer, "Anthropogenic Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
 
     return group_layers(empty_group_layer, "Inputs", [topo_layer, veg_layer, network_layer, conflict_layer], df, mxd)
 
