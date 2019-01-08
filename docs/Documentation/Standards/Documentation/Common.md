@@ -14,8 +14,22 @@ The video I want to [embed](http://riverscapes.northarrowresearch.com/Technical_
 
 Watch this [video](https://youtu.be/4UKe5BkzJEY) for how to embed a video.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/4UKe5BkzJEY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="responsive-embed">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/4UKe5BkzJEY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 
+Note using the `<div class="responsive-embed"> </div>` tags around your `<iframe>` will help center the iframe and adaptively scale it for differen screen sizes and devices:
+
+Use:
+``` html
+<div class="responsive-embed">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/4UKe5BkzJEY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+```
+Instead of:
+``` html
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/4UKe5BkzJEY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+```
 
 ------
 ### Embedding an Image
@@ -41,7 +55,9 @@ To make that image hyperlinkable (clickable), you enclose it in square brackets 
 ```
 In this video, I illustrate how to do steps 2-5 of this with a screen shot taken in Faststone Capture:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/CucZ7tU0Amo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="responsive-embed">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/CucZ7tU0Amo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 
 ------
 ### Adding a Button
@@ -60,20 +76,23 @@ The basic syntax for a button goes something like:
 
 In the video below, we walk you through how to make your own button to navigate to a specific page on the website <a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-check-square-o"></i> Back to ETAL Standards</a>  and an external URL (http://google.com) <a class="hollow button" href="{{ site.baseurl }}/Documentation/Standards"><i class = "fa fa-google"></i> Take me Away to Google</a>. 
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/4kAN1dA819c" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-
+<div class="responsive-embed">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/4kAN1dA819c" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 ------
 ### Embed a Slideshow
 
 Its nice to be able to embed slideshows on a page:
 
-
-<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRQPbDbYvEaL9GXhS4QfhEBe0fwOq0XBZmBBSXZ5EJFOknRxkG1tdO2OVhuUC4TkSqQwMUF2aOQWSBs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+<div class="responsive-embed">
+	<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRQPbDbYvEaL9GXhS4QfhEBe0fwOq0XBZmBBSXZ5EJFOknRxkG1tdO2OVhuUC4TkSqQwMUF2aOQWSBs/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+</div>
 
 This video walks you through how to:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/oZHBn5DrY0k" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="responsive-embed">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/oZHBn5DrY0k" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 
 ------
 ### Linking to a PDF
@@ -89,6 +108,14 @@ This is _better_ because it provides a link from the title to the Research Gate 
 - Macfarlane WW, Gilbert JT, Gilbert JD, Saunders WC, Hough-Snee N, Hafen C, Wheaton JM and Bennett SN. 2018. [What are the Conditions of Riparian Ecosystems? Identifying Impaired Floodplain Ecosystems across the Western U.S. Using the Riparian Condition Assessment (RCA) Tool](https://www.researchgate.net/publication/325098563_What_are_the_Conditions_of_Riparian_Ecosystems_Identifying_Impaired_Floodplain_Ecosystems_across_the_Western_US_Using_the_Riparian_Condition_Assessment_RCA_Tool). Environmental Management. DOI: [10.1007/s00267-018-1061-2](http://dx.doi.org/10.1007/s00267-018-1061-2).   
 
 ** This is our lab standard for citations ** -_link to ResearchGate through title, link to DOI through DOI._
+
+If you need some help on how to upload your content to ResearchGate, see here:
+
+<div class="responsive-embed">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/PsTJfCI09SY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+
+
 
 
 #### Hosting a PDF on AWS instead of ResearchGate
@@ -120,7 +147,9 @@ Finally, a button can be nice for the paper.
 
 A long-winded video showing how you do all the above, plus the upload to AWS.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/uRFkxY2d_ow" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="responsive-embed">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/uRFkxY2d_ow" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 
 
 
