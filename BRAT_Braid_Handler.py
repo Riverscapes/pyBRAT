@@ -73,10 +73,10 @@ def check_input(input_network):
 def rename_field(input_network, fields, old_name, new_name):
     """
     Checks that the network has the field, and renames an old version if necessary
-    :param input_network:
-    :param fields:
-    :param old_name:
-    :param new_name:
+    :param input_network: The network that hold the field we want to rename
+    :param fields: A list of field names
+    :param old_name: The name we want to replace
+    :param new_name: The name we want to replace the old name with
     :return:
     """
     if new_name not in fields:
@@ -123,11 +123,16 @@ def add_stream_to_clusters_with_id(new_stream, cluster_id, clusters):
 
 
 def has_cluster_ids(input_network):
-    fields = arcpy.ListFields(input_network)
-    for field in fields:
-        if field.name == CLUSTER_FIELD_NAME:
-            return True
-    return False
+    """
+    Tests whether or not a network has the Cluster_ID field, and returns true if it does, false if it doesn't
+    :param input_network: The network we want to test
+    :return: Bool
+    """
+    field_names = [field.name for field in arcpy.ListFields(input_network)]
+    if CLUSTER_FIELD_NAME in field_names:
+        return True
+    else:
+        return False
 
 
 def find_clusters(input_network):

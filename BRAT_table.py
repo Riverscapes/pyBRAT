@@ -133,19 +133,6 @@ def main(
     arcpy.CheckInExtension("spatial")
 
 
-def test_xml(proj_path, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, flow_acc, road, railroad, canal):
-    new_output_folder = os.path.join(proj_path, "Output_1")
-    DrAr = find_dr_ar(flow_acc, in_DEM)
-    intermediates_folder = os.path.join(new_output_folder, "01_Intermediates")
-    buf_folder = os.path.join(intermediates_folder, "01_Buffers")
-    buf_30m = os.path.join(buf_folder, "buffer_30m.shp")
-    buf_100m = os.path.join(buf_folder, "buffer_100m.shp")
-    seg_network_copy = os.path.join(intermediates_folder, "BRAT_Table.shp")
-
-    write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, DrAr, road,
-              railroad, canal, buf_30m, buf_100m, seg_network_copy, description)
-
-
 def find_dr_ar(flow_acc, in_DEM):
     if flow_acc is None:
         DrArea = os.path.join(os.path.join(os.path.dirname(in_DEM), "Flow", "DrainArea_sqkm.tif"))
