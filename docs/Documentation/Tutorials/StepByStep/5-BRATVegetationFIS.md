@@ -13,7 +13,7 @@ Inputs and Parameters:
 
 Click OK to run.
 
-After the tool has been run, the network should now include the attributes `oVC_PT` (potential vegetation dam capacity based on historic vegetation) and `oVC_EX`  (existing vegetation dam capacity based on existing vegetation)
+After the tool has been run, the network should now include the attributes `oVC_HPE` (historic vegetation dam capacity based on historic vegetation) and `oVC_EX`  (existing vegetation dam capacity based on existing vegetation)
 
 [Continue to Step 8]({{ site.baseurl }}/Documentation/8-BRATCombinedFIS) ->
 
