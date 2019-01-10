@@ -11,14 +11,36 @@
 import shutil
 from SupportingFunctions import make_folder
 import os
+import xlsxwriter
+import arcpy
 
-def main(project_folder):
+def main(project_folder, stream_network, excel_file_name=None):
     """
     Our main function
     :param project_folder: The BRAT Project that we want to collect the summary products for
     :return:
     """
+    if excel_file_name is None:
+        excel_file_name = "Stats_Summary"
+    if not excel_file_name.endswith(".xlsx"):
+        excel_file_name += ".xlsx"
+
     summary_prods_folder = make_folder(project_folder, "Summary_Products")
+
+    create_folder_structure(project_folder, summary_prods_folder)
+
+    create_excel_file(excel_file_name, stream_network, summary_prods_folder)
+
+
+def create_excel_file(excel_file_name, stream_network, summary_prods_folder):
+    workbook = xlsxwriter.Workbook(os.path.join(summary_prods_folder, excel_file_name))
+    worksheet = workbook.add_worksheet("My Worksheet")
+    worksheet.write(0, 0, "sup")
+    workbook.close()
+    arcpy.AddMessage(excel_file_name)
+
+
+def create_folder_structure(project_folder, summary_prods_folder):
     ai_folder = make_folder(summary_prods_folder, "AI")
     png_folder = make_folder(summary_prods_folder, "PNG")
     pdf_folder = make_folder(summary_prods_folder, "PDF")
@@ -32,7 +54,7 @@ def main(project_folder):
         for file in files:
             file_path = os.path.join(root, file)
             if "\\Summary_Products\\" in root:
-                #We don't want to add anything that's already in our summary product area
+                # We don't want to add anything that's already in our summary product area
                 pass
             elif file.endswith(".ai"):
                 ai_files.append(file_path)

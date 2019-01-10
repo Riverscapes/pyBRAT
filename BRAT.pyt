@@ -785,7 +785,21 @@ class Collect_Summary_Products_tool(object):
             parameterType="Required",
             direction="Input")
 
-        return [param0]
+        param1 = arcpy.Parameter(
+            displayName="Stream Network (for creating the Excel file)",
+            name="clipping_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+
+        param2 = arcpy.Parameter(
+            displayName="Name the output Excel file",
+            name="layer_package_name",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input")
+
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -805,5 +819,7 @@ class Collect_Summary_Products_tool(object):
     def execute(self, p, messages):
         """The source code of the tool."""
         reload(Collect_Summary_Products)
-        Collect_Summary_Products.main(p[0].valueAsText)
+        Collect_Summary_Products.main(p[0].valueAsText,
+                                       p[1].valueAsText,
+                                       p[2].valueAsText)
         return
