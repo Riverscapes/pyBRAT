@@ -7,12 +7,12 @@ The majority of users of BRAT will not actually run BRAT themselves, but instead
 ## The BRAT Default Legends
 
 ### Capacity Layer
-The **capacity model** outputs use the following color scheme to bin the output data (note each ≤250 m reach has a specific continuous dam density output). Existing capacity output is found in the `OCC_EX` field and potential (historic) capacity is found in the `oCC_PT` field. In areas that we have actual dam counts the translated capacity dam count are found in `mCC_EX_CT` (for exisiting) and `mCC_PT_CT` (for potential) fields: 
+The **capacity model** outputs use the following color scheme to bin the output data (note each ≤250 m reach has a specific continuous dam density output). Existing capacity output is found in the `OCC_EX` field and historic capacity is found in the `oCC_HPE` field. In areas that we have actual dam counts the translated capacity dam count are found in `mCC_EX_CT` (for exisiting) and `mCC_HPE_CT` (for historic) fields:
 
 ![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images//Legend_BRAT_DamDensity_WIDE.png)
 
-### Conflict Potential Layer
-The **conflict potential** model output (`oPC_Prob`) uses the following color scheme to describe the potential for human-beaver conflict:
+### Conflict Historic Layer
+The **conflict historic** model output (`oPC_Prob`) uses the following color scheme to describe the historic for human-beaver conflict:
 
 ![Legend_BRAT_ConflictProb]({{ site.baseurl }}/assets/images/Legend_BRAT_ConflictProb.png)
 
