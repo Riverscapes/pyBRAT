@@ -115,8 +115,6 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
   ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_35.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_01.png)
-
 ### References:
 
 Macfarlane, W. W., J. M. Wheaton, N. Bouwes, M. L. Jensen, J. T. Gilbert, N. Hough-Snee, and J. A. Shivik. 2017. Modeling the capacity of riverscapes to support beaver dams. Geomorphology 277:72-99.
