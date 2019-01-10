@@ -23,15 +23,15 @@ We use the National Hydrograph Dataset [(NHD)](https://viewer.nationalmap.gov/ba
 
 You will need 2 separate vegetation rasters:
 - Existing vegetation raster
-- Historic (i.e., potential) vegetation raster
+- Historic vegetation raster
 
 We typically use  [Landfire](http://www.landfire.gov/) for the vegetation raster inputs.  If using Landfire, download:
 - 'us_140evt' (existing vegetation type) 
-- 'us_140bps' (potential/historic vegetation type)  
+- 'us_140bps' (historic vegetation type)
 
 Note: If 'us_140' is not yet available for your study area you can use 'us_130'.
 
-Note: The potential vegetation layer (biophysical settings, bps) represents the vegetation that may have been dominant on the landscape prior to Euro-American settlement and is based on both the current biophysical environment and an approximation of the historical disturbance regime. 
+Note: The historic vegetation layer (biophysical settings, bps) represents the vegetation that may have been dominant on the landscape prior to Euro-American settlement and is based on both the current biophysical environment and an approximation of the historical disturbance regime.
 
 ![landfire]({{ site.baseurl }}/assets/images/landfire.PNG)
 
