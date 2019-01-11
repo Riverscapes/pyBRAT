@@ -397,7 +397,7 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, is_ve
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    drop = ["iVeg_100EX", "iVeg_30EX", "iVeg_100PT", "iVeg_30PT"]
+    drop = ["iVeg_100EX", "iVeg_30EX", "iVeg100Hpe", "iVeg_30Hpe"]
     for field in fields:
         if field in drop:
             arcpy.DeleteField_management(out_network, field)
@@ -409,11 +409,11 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, is_ve
     tmp_veg_lookup = Lookup(coded_veg, "VEG_CODE")
     arcpy.CopyRaster_management(tmp_veg_lookup, veg_lookup)
     # add mean veg value 'iVeg_100EX' field to flowline network
-    arcpy.AddField_management(out_network, "iVeg_100EX", "DOUBLE")
+    arcpy.AddField_management(out_network, "iVeg100EX", "DOUBLE")
     # get mean existing veg value within 100 m buffer
     if is_verbose:
-        arcpy.AddMessage("Calculating iVeg_100EX...")
-    zonalStatsWithinBuffer(buf_100m, veg_lookup, "mean", out_network, "iVeg_100EX")
+        arcpy.AddMessage("Calculating iVeg100EX...")
+    zonalStatsWithinBuffer(buf_100m, veg_lookup, "mean", out_network, "iVeg100EX")
 
     # add mean veg value 'iVeg_VT30EX' field to flowline network
     arcpy.AddField_management(out_network, "iVeg_30EX", "DOUBLE")
@@ -433,18 +433,18 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, is_ve
     hist_veg_lookup = os.path.join(projPath, 'hist_veg_lookup.tif')
     arcpy.CopyRaster_management(Lookup(coded_hist, "VEG_CODE"), hist_veg_lookup)
 
-    # add mean veg value 'iVeg_100PT' field to flowline network
-    arcpy.AddField_management(out_network, "iVeg_100PT", "DOUBLE")
+    # add mean veg value 'iVeg100Hpe' field to flowline network
+    arcpy.AddField_management(out_network, "iVeg100Hpe", "DOUBLE")
     # get mean potential veg value within 100 m buffer
     if is_verbose:
-        arcpy.AddMessage("Calculating iVeg_100PT...")
+        arcpy.AddMessage("Calculating iVeg100PT...")
     zonalStatsWithinBuffer(buf_100m, hist_veg_lookup, "mean", out_network, "iVeg_100PT")
 
-    # add mean veg value 'iVeg_30PT' field to flowline network
-    arcpy.AddField_management(out_network, "iVeg_30PT", "DOUBLE")
+    # add mean veg value 'iVeg_30Hpe' field to flowline network
+    arcpy.AddField_management(out_network, "iVeg_30Hpe", "DOUBLE")
     # get mean potential veg value within 30 m buffer
     if is_verbose:
-        arcpy.AddMessage("Calculating iVeg_30PT...")
+        arcpy.AddMessage("Calculating iVeg_30Hpe...")
     zonalStatsWithinBuffer(buf_30m, hist_veg_lookup, "mean", out_network, "iVeg_30PT")
 
     # delete temp fcs, tbls, etc.
