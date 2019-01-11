@@ -3,7 +3,7 @@ title: Step 6 - BRAT Combined Dam Capacity Model
 weight: 8
 ---
 
-After running the Vegetation Dam Capacity Model, you can run the Combined Dam Capacity Model tool.  This fuzzy inference system model predicts the maximum number of dams each reach could support based on 4 inputs: 1) the output of the vegetation dam capacity model 2) the low (base) flow stream power, 3) the high flow (Q2) stream power, and 4) the slope of the reach.  The model predicts dam capacity separately for potential vegetation dam capacity and existing vegetation dam capacity.
+After running the Vegetation Dam Capacity Model, you can run the Combined Dam Capacity Model tool.  This fuzzy inference system model predicts the maximum number of dams each reach could support based on 4 inputs: 1) the output of the vegetation dam capacity model 2) the low (base) flow stream power, 3) the high flow (Q2) stream power, and 4) the slope of the reach.  The model predicts dam capacity separately for historic vegetation dam capacity and existing vegetation dam capacity.
 
 ![comb_fis]({{ site.baseurl }}/assets/images/comb_fis.PNG)
 
@@ -14,7 +14,7 @@ Inputs and Parameters:
 - **Maximum DA Threshold** - this is a drainage area value above which it is assumed that the stream is too large for beaver to build dams on.  This varies from region to region and should be adjusted according to the hydrologic characteristics of the study area.
 - **Save Output Network** - choose a location and name to save the output
 
-The output network will have the new fields `oCC_PT` (potential combined dam capacity) and `oCC_EX` (existing combined dam capacity).  When the tool finishes running the second time it should automatically add the output to the map and symbolize the `oCC_EX` field, which represents the existing capacity to support dam building activity.
+The output network will have the new fields `oCC_HPE` (historic combined dam capacity) and `oCC_EX` (existing combined dam capacity).  When the tool finishes running the second time it should automatically add the output to the map and symbolize the `oCC_EX` field, which represents the existing capacity to support dam building activity.
 
 [![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
 

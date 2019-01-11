@@ -71,11 +71,11 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "DOUBLE"
 - Generation Method: BRAT Table Tool
 
-**iVeg_100PT -** The average VEG_CODE value on the historic vegetation raster within a 100m buffer of the reach.
+**iVeg_100HPE -** The average VEG_CODE value on the historic vegetation raster within a 100m buffer of the reach.
 - Field Type: "DOUBLE"
 - Generation Method: BRAT Table Tool
 
-**iVeg_30PT -** The average VEG_CODE value on the historic vegetation raster within a 30m buffer of the reach.
+**iVeg_30HPE -** The average VEG_CODE value on the historic vegetation raster within a 30m buffer of the reach.
 - Field Type: "DOUBLE"
 - Generation Method: BRAT Table Tool
 
@@ -155,7 +155,7 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "DOUBLE"
 - Generation Method: iHyd tool
 
-**oVC_PT-** Output of beaver dam density based on potential vegetation based on the FIS classifications that the user input for the "VEG_CODE" field in the historic vegetation raster.
+**oVC_HPE-** Output of beaver dam density based on historic vegetation based on the FIS classifications that the user input for the "VEG_CODE" field in the historic vegetation raster.
 
 - Field Type: "DOUBLE"
 - Generation Method: Vegetation Dam Capacity Model tool
@@ -165,12 +165,12 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "DOUBLE"
 - Generation Method: Vegetation Dam Capacity Model tool
 
-**oCC_PT-**  Final capacity output of historic beaver dam dam density based on the combined inputs of the reach.
+**oCC_HPE-**  Final capacity output of historic beaver dam dam density based on the combined inputs of the reach.
 
 - Field Type: "DOUBLE"
 - Generation Method: Combined Dam Capacity tool
 
-**mCC_PT_CT-** Final capacity output of historic beaver dam dam count based on the combined inputs of the reach.
+**mCC_HPE_CT-** Final capacity output of historic beaver dam dam count based on the combined inputs of the reach.
 
 - Field Type: "Long"
 - Generation Method: Combined Dam Capacity tool
@@ -185,7 +185,7 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "Long"
 - Generation Method: Combined Dam Capacity tool
 
-**mCC_HisDep-**  The departure between the Historic dam count ("mCC_PT_CT") and the Existing dam count  ("mCC_EX_CT")
+**mCC_HisDep-**  The departure between the Historic dam count ("mCC_HPE_CT") and the Existing dam count  ("mCC_EX_CT")
 
 - Field Type: "Long"
 - Generation Method: Combined Dam Capacity tool
@@ -195,7 +195,7 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "String"
 - Generation Method: Conservation and Restoration tool
 
-**oPBRC_UD-**  Management output that outlines the areas beavers can build dams, but due to anthropogenic proximity could pose potential risk to the beavers. 
+**oPBRC_UD-**  Management output that outlines the areas beavers can build dams, but due to anthropogenic proximity could pose historic risk to the beavers.
 
 - Field Type: "String"
 - Generation Method: Conservation and Restoration tool

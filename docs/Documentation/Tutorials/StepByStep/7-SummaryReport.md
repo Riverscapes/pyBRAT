@@ -26,15 +26,15 @@ The tool produces eight new fields. Three of these fields are reliant on the dam
   * If 1 < `oCC_EX` <= 5, `Ex_Categor` = "Occasional"
   * If 5 < `oCC_EX` <= 15, `Ex_Categor` = "Frequent"
   * If 15 < `oCC_EX`, `Ex_Categor` = "Pervasive"
-* `Pt_Catego`r: The category of the calculated potential capacity. It is determined based on the `oCC_PT` (the calculated potential capacity), as follows:
-  * If oCC_PT = 0, Pt_Categor = "None"
-  * If 0 < oCC_PT <= 1, Pt_Categor = "Rare"
-  * If 1 < oCC_PT <= 5, Pt_Categor = "Occasional"
-  * If 5 < oCC_PT <= 15, Pt_Categor = "Frequent"
-  * If 15 < oCC_PT, Pt_Categor = "Pervasive"
+* `Hpe_Catego`r: The category of the calculated historic capacity. It is determined based on the `oCC_HPE` (the calculated historic capacity), as follows:
+  * If oCC_HPE = 0, Hpe_Categor = "None"
+  * If 0 < oCC_HPE <= 1, Hpe_Categor = "Rare"
+  * If 1 < oCC_HPE <= 5, Hpe_Categor = "Occasional"
+  * If 5 < oCC_HPE <= 15, Hpe_Categor = "Frequent"
+  * If 15 < oCC_HPE, Hpe_Categor = "Pervasive"
 * `mCC_EX_Ct`: The existing capacity density. Calculated by dividing `oCC_EX` by the segment length.
-* `mCC_PT_Ct`: The potential capacity density. Calculated by dividing `oCC_PT` by the segment length.
-* `mCC_EXtoPT`: The ration between existing and potential capacity. Calculated by dividing `oCC_EX` by `oCC_PT`.
+* `mCC_HPE_Ct`: The historic capacity density. Calculated by dividing `oCC_HPE` by the segment length.
+* `mCC_EXtoHPE`: The ration between existing and historic capacity. Calculated by dividing `oCC_EX` by `oCC_HPE`.
 
 ### Caveats 
 
