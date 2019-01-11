@@ -38,7 +38,7 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
 
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU']
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_HPE', 'oVC_EX', 'oCC_HPE', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -63,9 +63,9 @@ def main(projPath, in_network, out_name):
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
             # First deal with vegetation limitations
-            # oVC_PT' None - Find places historically veg limited first.
+            # oVC_HPE' None - Find places historically veg limited first.
             if row[3] <= 0:
-                 # 'oVC_EX' Occasional, Frequent, or Pervasive (some areas have oVC_EX > oVC_PT)
+                 # 'oVC_EX' Occasional, Frequent, or Pervasive (some areas have oVC_EX > oVC_HPE)
                 if row[4] > 0:
                     row[1] = 'Potential Reservoir or Landuse Conversion'
                 else:    
@@ -95,14 +95,14 @@ def main(projPath, in_network, out_name):
                 if row[6] >= 5 and row[8] <= 3:
                     row[2] = 'Easiest - Low-Hanging Fruit'
                 # 'oCC_EX' Occasional, Frequent, or Pervasive
-                # 'oCC_PT' Frequent or Pervasive
+                # 'oCC_HPE' Frequent or Pervasive
                 # 'mCC_HisDep' <= 3
                 # 'iPC_VLowLU'(i.e., Natural) > 75
                 # 'iPC_HighLU' (i.e., Developed) < 10
                 elif row[6] > 1 and row[8] <= 3 and row[5] >= 5 and row[9] > 75 and row[10] < 10:
                     row[2] = 'Straight Forward - Quick Return'
                 # 'oCC_EX' Rare or Occasional
-                # 'oCC_PT' Frequent or Pervasive
+                # 'oCC_HPE' Frequent or Pervasive
                 # 'iPC_VLowLU'(i.e., Natural) > 75
                 # 'iPC_HighLU' (i.e., Developed) < 10
                 elif row[6] > 0 and row[6] < 5 and row[5] >= 5 and row[9] > 75 and row[10] < 10:

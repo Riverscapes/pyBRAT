@@ -40,7 +40,7 @@ def main(
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # run the combined fis function for both potential and existing
-    combFIS(out_network, 'pt', scratch, max_DA_thresh)
+    combFIS(out_network, 'hpe', scratch, max_DA_thresh)
     combFIS(out_network, 'ex', scratch, max_DA_thresh)
 
     make_layers(out_network)
@@ -55,10 +55,10 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     fields = [f.name for f in arcpy.ListFields(in_network)]
 
     # set the carrying capacity and vegetation field depending on whether potential or existing run
-    if model_run == 'pt':
-        out_field = "oCC_PT"
-        veg_field = "oVC_PT"
-        mcc_field = "mCC_PT_CT"
+    if model_run == 'hpe':
+        out_field = "oCC_HPE"
+        veg_field = "oVC_HPE"
+        mcc_field = "mCC_HPE_CT"
     else:
         out_field = "oCC_EX"
         veg_field = "oVC_EX"
@@ -290,7 +290,7 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     # calculate dam count historic departure as difference between potential count and existing count
     if model_run == 'ex':
         arcpy.AddField_management(in_network, 'mCC_HisDep', 'SHORT')
-        with arcpy.da.UpdateCursor(in_network, ['mCC_HisDep', 'mCC_EX_CT', 'mCC_PT_CT']) as cursor:
+        with arcpy.da.UpdateCursor(in_network, ['mCC_HisDep', 'mCC_EX_CT', 'mCC_HPE_CT']) as cursor:
             for row in cursor:
                 row[0] = row[2] - row[1]
                 cursor.updateRow(row)

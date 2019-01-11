@@ -31,13 +31,13 @@ def main(in_network):
         fields = [f.name for f in arcpy.ListFields(in_network)]
 
         # set the carrying capacity and vegetation field depending on whether potential or existing run
-        if model_run == 'pt':
-            out_field = "oVC_PT"
-            riparian_field = "iVeg_100PT"
-            streamside_field = "iVeg_30PT"
+        if model_run == 'Hpe':
+            out_field = "oVC_Hpe"
+            riparian_field = "iVeg100Hpe"
+            streamside_field = "iVeg_30Hpe"
         else:
             out_field = "oVC_EX"
-            riparian_field = "iVeg_100EX"
+            riparian_field = "iVeg100EX"
             streamside_field = "iVeg_30EX"
 
         # check for oVC_* field in the network attribute table and delete if exists
@@ -180,7 +180,7 @@ def main(in_network):
             del item
 
     # run the combined fis function for both potential and existing
-    vegFIS('pt')
+    vegFIS('Hpe')
     vegFIS('ex')
 
     makeLayers(in_network)
