@@ -14,7 +14,7 @@ import os
 import xlsxwriter
 import arcpy
 
-def main(project_folder, stream_network, excel_file_name=None):
+def main(project_folder, stream_network, watershed_name, excel_file_name=None):
     """
     Our main function
     :param project_folder: The BRAT Project that we want to collect the summary products for
@@ -25,6 +25,7 @@ def main(project_folder, stream_network, excel_file_name=None):
     if not excel_file_name.endswith(".xlsx"):
         excel_file_name += ".xlsx"
 
+    arcpy.AddMessage(watershed_name)
     summary_prods_folder = make_folder(project_folder, "Summary_Products")
 
     create_folder_structure(project_folder, summary_prods_folder)
@@ -34,10 +35,21 @@ def main(project_folder, stream_network, excel_file_name=None):
 
 def create_excel_file(excel_file_name, stream_network, summary_prods_folder):
     workbook = xlsxwriter.Workbook(os.path.join(summary_prods_folder, excel_file_name))
-    worksheet = workbook.add_worksheet("My Worksheet")
-    worksheet.write(0, 0, "sup")
+    write_capacity_sheets(workbook, stream_network)
     workbook.close()
-    arcpy.AddMessage(excel_file_name)
+
+
+def write_capacity_sheets(workbook, stream_network):
+    exist_complex_worksheet = workbook.add_worksheet("Existing Dam Complex Size")
+    exist_build_cap_worksheet = workbook.add_worksheet("Existing Dam Building Capacity")
+    hist_complex_worksheet = workbook.add_worksheet("Historic Dam Complex Size")
+    hist_build_cap_worksheet = workbook.add_worksheet("Historic Dam Building Capacity")
+    hist_vs_exist_worksheet = workbook.add_worksheet("Existing and Historic Capacity")
+
+
+
+
+
 
 
 def create_folder_structure(project_folder, summary_prods_folder):

@@ -793,13 +793,20 @@ class Collect_Summary_Products_tool(object):
             direction="Input")
 
         param2 = arcpy.Parameter(
+            displayName="Watershed Name",
+            name="watershed_name",
+            datatype="GPString",
+            parameterType="Required",
+            direction="Input")
+
+        param3 = arcpy.Parameter(
             displayName="Name the output Excel file",
-            name="layer_package_name",
+            name="excel_file_name",
             datatype="GPString",
             parameterType="Optional",
             direction="Input")
 
-        return [param0, param1, param2]
+        return [param0, param1, param2, param3]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -821,5 +828,6 @@ class Collect_Summary_Products_tool(object):
         reload(Collect_Summary_Products)
         Collect_Summary_Products.main(p[0].valueAsText,
                                        p[1].valueAsText,
-                                       p[2].valueAsText)
+                                       p[2].valueAsText,
+                                       p[3].valueAsText)
         return
