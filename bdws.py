@@ -320,8 +320,8 @@ class BDLoG:
         while i < nDams:
             #print str(i) + " of " + str(nDams)
             damFt = self.outLyr.GetFeature(i)
-            damPt = damFt.GetGeometryRef()
-            damAddress = self.getCellAddressOfPoint(damPt.GetX(), damPt.GetY())
+            damHpe = damFt.GetGeometryRef()
+            damAddress = self.getCellAddressOfPoint(damHpe.GetX(), damHpe.GetY())
             dist = np.sum((streamcells - damAddress)**2, axis = 1) #distance from stream cells to dam point
             #Maybe put in a check so if distance is too far it deletes the dam
             index = np.where(dist == min(dist)) #index of closest stream cell
@@ -330,8 +330,8 @@ class BDLoG:
             self.idOut[damAddress[0]][damAddress[1]] = float(i*1.0)
             damCoords = self.getCoordinatesOfCellAddress(damAddress[0], damAddress[1])
             ptwkt = "POINT(%f %f)" %  (damCoords[0], damCoords[1])
-            damPt = ogr.CreateGeometryFromWkt(ptwkt)
-            damFt.SetGeometryDirectly(damPt)
+            damHpe = ogr.CreateGeometryFromWkt(ptwkt)
+            damFt.SetGeometryDirectly(damHpe)
             self.outLyr.SetFeature(damFt)
             i += 1
 

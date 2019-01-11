@@ -39,10 +39,10 @@ def main(in_network, dams, output_name):
     arcpy.Delete_management(output_network)
 
     dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
-    other_fields = ['Ex_Categor', 'Pt_Categor', 'mCC_EXtoPT']
+    other_fields = ['Ex_Categor', 'Hpe_Categor', 'mCC_EXtoHPE']
     new_fields = dam_fields + other_fields
 
-    input_fields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_PT']
+    input_fields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_HPE']
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
@@ -110,14 +110,14 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
             if seg_length is None:
                 seg_length = 0
             oCC_EX = row[-2]        # second to last attribute
-            oCC_PT = row[-1]        # last attribute
+            oCC_HPE = row[-1]        # last attribute
 
             row[0] = dam_num
             row[1] = dam_num / seg_length * 1000
-            if oCC_PT == 0:
+            if oCC_HPE == 0:
                 row[2] = 0
             else:
-                row[2] = dam_num / oCC_PT
+                row[2] = dam_num / oCC_HPE
 
             cursor.updateRow(row)
 
@@ -132,7 +132,7 @@ def add_fields(output_path, new_fields):
     :param new_fields: All the fields we want to add
     :return:
     """
-    text_fields = ['Ex_Categor', 'Pt_Categor']
+    text_fields = ['Ex_Categor', 'Hpe_Categor']
     for field in new_fields:
         if field in text_fields:
             arcpy.AddField_management(output_path, field, field_type="TEXT", field_length=50)
@@ -153,17 +153,17 @@ def set_other_attributes(output_path, fields):
             if seg_length is None:
                 seg_length = 0
             oCC_EX = row[-2] # second to last attribute
-            oCC_PT = row[-1] # last attribute
+            oCC_HPE = row[-1] # last attribute
 
             # Handles Ex_Categor
             row[0] = handle_category(oCC_EX)
 
-            # Handles Pt_Categor
-            row[1] = handle_category(oCC_PT)
+            # Handles Hpe_Categor
+            row[1] = handle_category(oCC_HPE)
 
-            # Handles mCC_EXtoPT
-            if oCC_PT != 0:
-                row[4] = oCC_EX / oCC_PT
+            # Handles mCC_EXtoHPE
+            if oCC_HPE != 0:
+                row[4] = oCC_EX / oCC_HPE
             else:
                 row[4] = 0
 

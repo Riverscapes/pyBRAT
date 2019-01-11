@@ -462,7 +462,7 @@ class Veg_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Step 4. BRAT Vegetation Dam Capacity Model"
-        self.description = "Calculates dam capacity, for each stream network segment, based solely on vegetation.  Capacity is calculated separately for existing and potential (i.e., historic) vegetation type."
+        self.description = "Calculates dam capacity, for each stream network segment, based solely on vegetation.  Capacity is calculated separately for existing and historic vegetation type."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
@@ -502,7 +502,7 @@ class Comb_FIS_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Step 5. BRAT Combined Dam Capacity Model"
-        self.description = "Calculates dam capacity, for each stream network segment, based on vegetation dam capacity estimates, baseflow stream power, annual peak stream power, and slope.  Capacity is calculated separetly for existing and potential (i.e., history) vegetation."
+        self.description = "Calculates dam capacity, for each stream network segment, based on vegetation dam capacity estimates, baseflow stream power, annual peak stream power, and slope.  Capacity is calculated separetly for existing and history vegetation."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
@@ -568,7 +568,7 @@ class Conservation_Restoration_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Step 6. BRAT Conservation and Restoration Model"
-        self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, potential (i.e., historic) dam capacity, and human-beaver conflict potential score"
+        self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, historic dam capacity, and human-beaver conflict potential score"
         self.canRunInBackground = False
 
     def getParameterInfo(self):
