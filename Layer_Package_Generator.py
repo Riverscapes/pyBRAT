@@ -206,7 +206,7 @@ def check_analyses(analyses_folder, symbology_folder):
     check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Building Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
     check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_PT")
     check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
-    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_PT_Ct")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_HPE_Ct")
 
     check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Unsuitable_Limited_Dam_Building_Opportunities.lyr", "pPBRC_UD")
     check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams", symbology_folder, "Areas_Beavers_Can_Build_Dams_but_could_be_Undesirable.lyr", "pPBRC_UI")
