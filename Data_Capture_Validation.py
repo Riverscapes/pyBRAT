@@ -39,7 +39,7 @@ def main(in_network, dams, output_name):
     arcpy.Delete_management(output_network)
 
     dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
-    other_fields = ['Ex_Categor', 'Hpe_Categor', 'mCC_EXtoHPE']
+    other_fields = ['ExCategor', 'HpeCategor', 'mCC_EXvHPE']
     new_fields = dam_fields + other_fields
 
     input_fields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_HPE']
@@ -114,10 +114,10 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
 
             row[0] = dam_num
             row[1] = dam_num / seg_length * 1000
-            if oCC_HPE == 0:
+            if oCC_EX == 0:
                 row[2] = 0
             else:
-                row[2] = dam_num / oCC_HPE
+                row[2] = dam_num / oCC_EX
 
             cursor.updateRow(row)
 
@@ -132,7 +132,7 @@ def add_fields(output_path, new_fields):
     :param new_fields: All the fields we want to add
     :return:
     """
-    text_fields = ['Ex_Categor', 'Hpe_Categor']
+    text_fields = ['ExCategor', 'HpeCategor']
     for field in new_fields:
         if field in text_fields:
             arcpy.AddField_management(output_path, field, field_type="TEXT", field_length=50)
