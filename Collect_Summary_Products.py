@@ -25,31 +25,88 @@ def main(project_folder, stream_network, watershed_name, excel_file_name=None):
     if not excel_file_name.endswith(".xlsx"):
         excel_file_name += ".xlsx"
 
-    arcpy.AddMessage(watershed_name)
     summary_prods_folder = make_folder(project_folder, "Summary_Products")
 
     create_folder_structure(project_folder, summary_prods_folder)
 
-    create_excel_file(excel_file_name, stream_network, summary_prods_folder)
+    create_excel_file(excel_file_name, stream_network, summary_prods_folder, watershed_name)
 
 
-def create_excel_file(excel_file_name, stream_network, summary_prods_folder):
+def create_excel_file(excel_file_name, stream_network, summary_prods_folder, watershed_name):
     workbook = xlsxwriter.Workbook(os.path.join(summary_prods_folder, excel_file_name))
-    write_capacity_sheets(workbook, stream_network)
+    write_capacity_sheets(workbook, stream_network, watershed_name)
     workbook.close()
 
 
-def write_capacity_sheets(workbook, stream_network):
+def write_capacity_sheets(workbook, stream_network, watershed_name):
     exist_complex_worksheet = workbook.add_worksheet("Existing Dam Complex Size")
     exist_build_cap_worksheet = workbook.add_worksheet("Existing Dam Building Capacity")
     hist_complex_worksheet = workbook.add_worksheet("Historic Dam Complex Size")
     hist_build_cap_worksheet = workbook.add_worksheet("Historic Dam Building Capacity")
     hist_vs_exist_worksheet = workbook.add_worksheet("Existing and Historic Capacity")
 
+    write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name)
 
 
+def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name):
+    write_header(exist_complex_worksheet, watershed_name)
+    KM_TO_MILES_RATIO = 0.6214
+    row = 2
+    col = 0
+    exist_complex_worksheet.write(row, col, "No Dams")
+    row += 1
+    exist_complex_worksheet.write(row, col, "Single Dam")
+    row += 1
+    exist_complex_worksheet.write(row, col, "Small Complex (1-3 Dams")
+    row += 1
+    exist_complex_worksheet.write(row, col, "Medium Complex (3-5 dams)")
+    row += 1
+    exist_complex_worksheet.write(row, col, "Large Complex (>5 dams)")
+    row += 1
+    exist_complex_worksheet.write(row, col, "Total")
 
+    fields = ['SHAPE@Length', "mCC_EX_CT"]
+    no_dams_length = 0.0
+    one_dam_length = 0.0
+    some_dams_length = 0.0
+    more_dams_length = 0.0
+    many_dams_length = 0.0
+    total_length = 0.0
 
+    with arcpy.da.SearchCursor(stream_network, fields) as cursor:
+        for length, ex_dam_complex_size in cursor:
+            total_length += length
+            if ex_dam_complex_size == 0:
+                no_dams_length += length
+            elif ex_dam_complex_size <= 1:
+                one_dam_length += length
+            elif ex_dam_complex_size <= 3:
+                some_dams_length += length
+            elif ex_dam_complex_size <= 5:
+                more_dams_length += length
+            else:
+                many_dams_length += length
+
+    col = 1
+    row = 3
+    exist_complex_worksheet.write(row, col, str(no_dams_length))
+    col += 1
+    exist_complex_worksheet.write(row, col, str(no_dams_length * KM_TO_MILES_RATIO))
+    col += 1
+    exist_complex_worksheet.write(row, col, str(no_dams_length / total_length))
+
+def write_header(worksheet, watershed_name):
+    row = 0
+    col = 0
+    worksheet.write(row, col, watershed_name)
+
+    row += 1
+    col += 1
+    worksheet.write(row, col, "Stream Length (Km)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (mi)")
+    col += 1
+    worksheet.write(row, col, "Percent")
 
 
 def create_folder_structure(project_folder, summary_prods_folder):
