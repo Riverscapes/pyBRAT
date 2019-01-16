@@ -45,75 +45,75 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
 - Atlas of BRAT outputs [here](https://usu.box.com/s/hu8anaavlmwocvqq54trpshw6kyfp4k9)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_01.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_1.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_02.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_02.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_03.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_03.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_04.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_04.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_05.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_05.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_06.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_06.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_07.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_07.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_08.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_08.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_09.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_09.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_10.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_10.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_11.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_11.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_12.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_12.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_13.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_13.png)
 
   ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_14.png)
 
   ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_15.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_16.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_16.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_17.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_17.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_18.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_18.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_19.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_19.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_20.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_20.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_21.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_21.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_22.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_22.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_23.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_23.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_24.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_24.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_25.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_25.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_26.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_26.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_27.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_27.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_28.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_28.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_29.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_29.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_30.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_30.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_31.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_31.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_32.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_32.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_33.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_33.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_34.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_34.png)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/North_Fork_Burnt_River_BRAT_Atlas_Page_35.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_35.png)
 
 ### References:
 
