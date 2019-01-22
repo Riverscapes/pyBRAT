@@ -35,7 +35,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 ## Attribute Field Descriptions
 
-What do all those attribute fields correspond to?  Below is a table describing all of the outputs that appear in the BRAT KMZs and feature class attribute tables (i.e. shapefiles and Layer Packages). Source table can be found [here](https://usu.box.com/s/ekjw3e2iuxafpj0ttl0uzdyh9ifydmtl) for closer inspection.
+Because shapefile field names are limited to ten characters, there is a limit to how descriptive those names can be. Below is a screen capture of the lookup table that describes what the attribute field names within the shapefiles, Layer Packages and KMZs corresponds to. The actual lookup table can be found [here](https://usu.box.com/s/ekjw3e2iuxafpj0ttl0uzdyh9ifydmtl) for closer inspection and a glossary of all current pyBRAT values can be found [here](https://http://brat.riverscapes.xyz/Documentation/Documentation%20by%20Version/Concepts/Glossary.html).
 
 ![Attribute_Table_BRATv3X]({{ site.baseurl }}/assets/images/BRAT_3X_Alias.png)
 
