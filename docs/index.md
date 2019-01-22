@@ -18,7 +18,7 @@ title: Beaver Restoration Assessment Tool Home
 
 ### A Riverscapes Network Model
 
-BRAT was [developed by]({{ site.baseurl }}/who) the [Wheaton ET-AL lab](http://etal.joewheaton.org) at Utah State University. 
+BRAT was developed by the [Wheaton ET-AL lab](http://etal.joewheaton.org) at Utah State University. 
 
 [![ETAL]({{ site.baseurl }}/assets/images/logos/Ecogeomorphology-&-Topographic-Analysis-Laboratory2-05_WEB.png)](http://etal.joewheaton.org)
 
