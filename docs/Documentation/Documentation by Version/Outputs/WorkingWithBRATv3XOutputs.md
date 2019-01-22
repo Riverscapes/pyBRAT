@@ -28,14 +28,14 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Restoration or Conservation Opportunities (`oPCRC_CR`)** identifies opportunities where low-risk restoration and conservation opportunities exist for using beaver in stream conservation
   and restoration. This management output consists of the following categories: i) ‘easiest - low
-  hanging fruit’ has capacity, just needs beaver, ii) ‘straight forward - quick return’ is currently occasional capacity but historically was higher capacity, iii) ‘strategic’ is currently degraded but historically was higher capacity. These areas typically need long-term riparian recovery first (e.g. grazing
-  management), and 4) ‘other’. The ‘other’ category is based on higher ‘risk’ of human-beaver conflict and lower existing dam building capacity (i.e., reaches that are likely not worth beaver dam related conservation and restoration actions). The following color scheme is used to illustrate these distinctions:
+  hanging fruit’ has capacity, just needs beaver if beaver ar not there yet, ii) ‘straight forward - quick return’ is currently occasional capacity but historically was higher capacity, iii) ‘strategic’ is a currently degraded condition with historically higher capacity. These areas typically need long-term riparian recovery before beaver can be introduced (e.g. grazing
+  management), and 4) ‘other’. The ‘other’ category is based on higher ‘risk’ of human-beaver conflict and lower existing dam building capacity (i.e., reaches that are likely not worth investing in beaver dam related conservation and restoration actions). The following color scheme is used to illustrate these distinctions:
 
   ![Legend BRAT Management Restoration or Conservation Opportunities]({{ site.baseurl }}/assets/images/Restoration_or_Conservation_Opportunities.png){: width="300" height="300"}
 
 ## Attribute Field Descriptions
 
-What do all those attribute fields correspond to?  Below is a table describing all of the outputs that appear in the BRAT KMZs and feature class attribute tables (i.e. shapefiles and LayerPackages). Source table can be found [here](https://usu.box.com/s/ekjw3e2iuxafpj0ttl0uzdyh9ifydmtl) for closer inspection.
+What do all those attribute fields correspond to?  Below is a table describing all of the outputs that appear in the BRAT KMZs and feature class attribute tables (i.e. shapefiles and Layer Packages). Source table can be found [here](https://usu.box.com/s/ekjw3e2iuxafpj0ttl0uzdyh9ifydmtl) for closer inspection.
 
 ![Attribute_Table_BRATv3X]({{ site.baseurl }}/assets/images/BRAT_3X_Alias.png)
 
