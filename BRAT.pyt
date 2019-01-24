@@ -588,7 +588,14 @@ class Conservation_Restoration_tool(object):
             direction="Input")
         param1.filter.list = ["Polyline"]
 
-        return [param0, param1]
+        param2 = arcpy.Parameter(
+            displayName="Name the conservation restoration output",
+            name="out_name",
+            datatype="GPString",
+            parameterType="Required",
+            direction="Input")
+
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -609,7 +616,8 @@ class Conservation_Restoration_tool(object):
         """The source code of the tool."""
         reload(Conservation_Restoration)
         Conservation_Restoration.main(p[0].valueAsText,
-                                      p[1].valueAsText)
+                                      p[1].valueAsText,
+                                      p[2].valueAsText)
         return
 
 class Data_Capture_Validation_tool(object):
