@@ -5,7 +5,7 @@ weight: 1
 
 ## BRAT
 
-<a href="http://brat.riverscapes.xyz"><img class="float-right" src="{{ site.baseurl }}/assets/images/BRAT_Logo-wGrayTxt.png"></a> The current version of pyBRAT is a series of Python scripts with [ArcPy](https://desktop.arcgis.com/en/arcmap/10.4/analyze/arcpy/what-is-arcpy-.h) dependencies deployed currently as an ArcGIS 10.4 or later toolbox. There are a few dependencies ([described here]({{ site.baseurl }}/Download/ComputerSetup.html) such as [NumPy_mkl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy). Additionally, the fuzzy inference system ([FIS](http://gcd.riverscapes.xyz/Help/Concepts/fuzzy-inference-systems-for-modeling-dem-error.html)) in pyBRAT uses the [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy) python library.  
+<a href="http://brat.riverscapes.xyz"><img class="float-right" src="{{ site.baseurl }}/assets/images/BRAT_Logo-wGrayTxt.png"></a> The current version of pyBRAT is a series of Python scripts with [ArcPy](https://desktop.arcgis.com/en/arcmap/10.4/analyze/arcpy/what-is-arcpy-.h) dependencies deployed currently as an ArcGIS 10.4 or later toolbox. There are a few dependencies ([described here]({{ site.baseurl }}/Download/ComputerSetup.html) such as [NumPy_mkl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy). Additionally, the fuzzy inference system ([FIS](http://gcd.riverscapes.xyz/Help/Concepts/fuzzy-inference-systems-for-modeling-dem-error.html)) in pyBRAT uses the [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy) python library. The latest verstion of pyBRAT can be found here:
 
 <div align="center">
 	<a class="button large" href="https://github.com/Riverscapes/pyBRAT/releases/latest">
