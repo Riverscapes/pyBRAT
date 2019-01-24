@@ -35,6 +35,12 @@ Note: The historic vegetation layer (biophysical settings, bps) represents the v
 
 ![landfire]({{ site.baseurl }}/assets/images/landfire.PNG)
 
+
+If you are interested in creating your own vegetation raster you will need to make sure all your data points are polygons, and converted into a raster. If possible check to see if any of the LANDFIRE data already has what you are looking for. If you are not mapping all of the vegetation, you will need to merge your vegetation data with the LANDFIRE data. The model will not properly if there are vegetation gaps within your study area. In order for the program to work properly, you will need to add a 'VEG_CODE' field to your vegetation input raster. If you are running the entire BRAT model you will also need a land use raster with specific additional fields coded. We tend to use the LANDFIRE EVT raster as out land use raster.
+
+Note: While LANDFIRE data is a good source for existing and historic vegetation in the USA other datasets can be used where LANDFIRE is not available.
+
+
 ### DEM
 
 We typically use [USGS National Elevation Dataset (NED)](https://viewer.nationalmap.gov/basic/) 1/3 arc second (~ 10 m) DEM data.
