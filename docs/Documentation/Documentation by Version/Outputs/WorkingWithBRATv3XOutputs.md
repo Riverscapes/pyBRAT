@@ -50,7 +50,10 @@ The **management output** layers include outputs that describe the limiting fact
 
   The field `oPCRC_CR` is calculated based on the following criteria:
 
-  - 
+  - Easiest - Low-Hanging Fruit is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, and where the model estimates dams are already at least Occasional (`oCC_EX` >= 5) and where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3).
+  - Straight Forward - Quick Return is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates more than None existing dams and more than Frequent historic dams (`oCC_EX` > 1 and `oCC_HPE` > 5), where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3), and where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
+  - Strategic - Long-term Investment is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates almost no existing beaver dams (0 < `oCC_EX` < 1) but at least Occasional historic dams (`oCC_HPE` >= 5), where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
+  - Other/NA is for streams that don't fall into the above categories. Such areas are primarily streams classified as "Considerable Risk" or "Some Risk" in `oPBRC_UI`, though there are exceptions to that.
 
 ## Attribute Field Descriptions
 
