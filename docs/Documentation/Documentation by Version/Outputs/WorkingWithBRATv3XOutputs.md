@@ -20,7 +20,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`)** identifies areas where beaver cannot build dams now, and also differentiates into anthropogenically and naturally limiting areas. The following color scheme is used to illustrate these distinctions:
 
-  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Unsuitable_or_Limited_Opportunities.png){: width="300" height="300"}
+  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Unsuitable.png){: width="300" height="300"}
 
   The field oPBRC_UD is calculated based on the following criteria:
 
