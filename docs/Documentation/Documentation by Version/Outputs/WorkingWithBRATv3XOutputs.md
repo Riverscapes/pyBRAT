@@ -25,7 +25,7 @@ The **management output** layers include outputs that describe the limiting fact
   The field oPBRC_UD is calculated based on the following criteria:
 
   - Dam Building Possible is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), and where the model currently says dams can exist (`oCC_EX` > 0).
-  - Anthropogenically Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), but where current vegetation is limiting how many beavers the land can host (`oVC_EX` = `oCC_EX` = 0)
+  - Anthropogenically Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), but where current vegetation is limiting how many beavers the land can host (`oVC_EX` = `oCC_EX` = 0).
   - Stream Power Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), and where current vegetation is not a limiting factor (`oVC_EX` > 0), and yet our model says that the stream cannot currently support beaver dams (`oCC_EX` = 0).
   - Slope Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), but where slope is a limiting factor (`iGeo_Slope` >= 0.23).
   - Naturally Vegetation Limited is for streams where both historic and existing vegetation are limiting factors (`oVC_HPE` = `oVC_EX` = 0).
@@ -34,6 +34,10 @@ The **management output** layers include outputs that describe the limiting fact
 - **Potential Risk Areas (`oPBRC_UI`)** identifies areas -- streams that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is broken out into: "Considerable Risk", "Some Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
 
   ![Legend BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
+
+  The field `oPBRC_UI` is calculated based on the following criteria:
+
+  - Considerable Risk is for streams where the model detects that beaver dams are Frequent (`oCC_EX` > 15), and yet the land is highly used (`iPC_LU` > 0.6), or the stream is within  30 meters of some form of infrastructure, whether that's roads, canals, or railroads (`oPC_Dist` < 30).
 
 - **Restoration or Conservation Opportunities (`oPCRC_CR`)** identifies opportunities where low-risk restoration and conservation opportunities exist for using beaver in stream conservation
   and restoration. This management output consists of the following categories: i) ‘easiest - low

@@ -49,9 +49,9 @@ def main(projPath, in_network, out_name):
 
             if (opc_dist < 30 or ipc_lu > 0.6) and occ_ex >= 15:
                 row[0] = "Considerable Risk"
-            elif (opc_dist < 100 or ipc_lu > 0.6) and (occ_ex >= 5 and occ_ex < 15):
+            elif (opc_dist < 100 or ipc_lu > 0.6) and (5 <= occ_ex < 15):
                 row[0] = "Some Risk"
-            elif (opc_dist < 300 or ipc_lu > 0.3) and ( occ_ex > 0 and occ_ex < 5):
+            elif (opc_dist < 300 or ipc_lu > 0.3) and (0 < occ_ex < 5):
                 row[0] = "Minor Risk"
             else:
                 row[0] = "Negligible Risk"
