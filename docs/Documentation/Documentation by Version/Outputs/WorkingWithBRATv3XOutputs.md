@@ -22,6 +22,15 @@ The **management output** layers include outputs that describe the limiting fact
 
   ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Unsuitable_or_Limited_Opportunities.png){: width="300" height="300"}
 
+  The field oPBRC_UD is calculated based on the following criteria:
+
+  - Dam Building Possible is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), and where the model currently says dams can exist (`oCC_EX` > 0).
+  - Anthropogenically Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), but where current vegetation is limiting how many beavers the land can host (`oVC_EX` = `oCC_EX` = 0)
+  - Stream Power Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), and where current vegetation is not a limiting factor (`oVC_EX` > 0), and yet our model says that the stream cannot currently support beaver dams (`oCC_EX` = 0).
+  - Slope Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), but where slope is a limiting factor (`iGeo_Slope` >= 0.23).
+  - Naturally Vegetation Limited is for streams where both historic and existing vegetation are limiting factors (`oVC_HPE` = `oVC_EX` = 0).
+  - Potential Reservoir or Landuse Conversion is for the rare streams where historic vegetation is a limiting factor (`oVC_HPE` = 0), but existing vegetation is not (`oVC_EX`> 0).
+
 - **Potential Risk Areas (`oPBRC_UI`)** identifies areas -- streams that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is broken out into: "Considerable Risk", "Some Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
 
   ![Legend BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
