@@ -38,7 +38,7 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
 
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_HPE', 'oVC_EX', 'oCC_HPE', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU']
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_PT', 'oVC_EX', 'oCC_PT', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SP2']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -79,12 +79,12 @@ def main(projPath, in_network, out_name):
                row[1] = 'Slope Limited'
             # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
             elif occ_ex <= 0:
-                    # 'oVC_EX' Rare, Occasional, Frequent, or Pervasive (i.e. its not currently veg limited)
-                    if ovc_ex > 0:
-                        row[1] = 'Stream Power Limited'                    
-                    # 'oVC_EX' None 
-                    else:
-                        row[1] = 'Anthropogenically Limited'
+				landuse = row[12]
+				sp = row[13]
+				if landuse > 0.3 and sp < 2200:
+					row[1] = "Anthropogenically Limited"
+				else:
+					row[1] = "Stream Power Limited"
             else:
                 row[1] = 'Dam Building Possible'
             cursor.updateRow(row)
