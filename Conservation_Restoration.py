@@ -43,44 +43,29 @@ def main(projPath, in_network, out_name):
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
+			
             occ_ex = row[6]
             opc_dist = row[11]
             ipc_lu = row[12]
-
-
-            if opc_dist <= 30 and (ipc_lu > 0.6 or occ_ex >= 15):
-                row[0] = "Considerable Risk"
-            #elif opc_dist <= 30 and occ_ex >= 15:
-            #    row[0] = "Considerable Risk"
-           # elif opc_dist <= 30 and ipc_lu > 0.3 and :
-           #     row[0] = "Some Risk"
-            elif opc_dist <= 30 and (5 <= occ_ex < 15):
-                row[0] = "Some Risk"
-            elif opc_dist <= 30 and (0 < occ_ex < 5):
-                row[0] = "Minor Risk"
-            elif opc_dist <= 100 and ipc_lu > 0.6 and occ_ex >= 15:
-                row[0] = "Considerable Risk"
-            elif opc_dist <= 100 and ipc_lu > 0.6:
-                row[0] = "Some Risk"
-            elif opc_dist <= 100 and ipc_lu > 0.3 and occ_ex >= 15:
-                row[0] = "Considerable Risk"
-            elif opc_dist <= 100 and ipc_lu > 0.3 and (5 <= occ_ex < 15):
-                row[0] = "Some Risk"
-            elif opc_dist <= 100 and ipc_lu > 0.3 and (0 < occ_ex <5):
-                row[0] = "Minor Risk"
-            elif opc_dist <= 100 and ipc_lu < 0.3 and occ_ex >= 15:
-                row[0] = "Some Risk"
-            elif opc_dist <= 100 and ipc_lu < 0.3 and occ_ex < 15:
-                row[0] = "Minor Risk"
-            elif opc_dist <= 300 and ipc_lu > 0.3 and occ_ex >= 15:
-                row[0] = "Some Risk"
-            elif opc_dist <= 300 and ipc_lu > 0.6 and (5 <= occ_ex < 15):
-                row[0] = "Some Risk"
-            elif opc_dist <= 300:
-                row[0] = "Minor Risk"
-            else:
-                row[0] = "Negligible Risk"
-
+			
+	    	if occ_ex <= 0:
+				row[0] = "Negligible Risk"
+			else:
+            	if opc_dist =< 30 or ipc_lu >= 0.66:
+					if occ_ex >= 5.0:
+						row[0] = "Considerable Risk"
+					else:
+						row[0] = "Some Risk"
+				elif opc_dist <= 100:
+					if occ_ex >= 5.0:
+						row[0] = "Some Risk"
+					else:
+						row[0] = "Minor Risk"
+				elif opc_dist <= 300 or ipc_lu >= 0.33:
+					row[0] = "Minor Risk"
+				else:
+                	row[0] = "Negligible Risk"
+					
             cursor.updateRow(row)
             
             
