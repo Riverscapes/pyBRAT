@@ -45,7 +45,7 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
 - Atlas of BRAT outputs [here](https://usu.box.com/s/hu8anaavlmwocvqq54trpshw6kyfp4k9)
 
-  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_1.png)
+  ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_01.png)
 
   ![]({{ site.baseurl }}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_02.png)
 
