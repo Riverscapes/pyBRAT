@@ -1,9 +1,7 @@
 ---
-title: North Fork Burnt River Watershed BRAT
+title: North Fork Burnt River BRAT Inputs
 weight: 5
 ---
-
-# North Fork Burnt River BRAT Inputs
 
 ![]({{ site.baseur l}}/assets/images/NorthForkBurntAtlas/Powder_Basin_BRAT_Atlas_Page_01.png)
 
