@@ -60,22 +60,21 @@ def main(projPath, in_network, out_name):
             ipc_lu = row[12]
 			
             if occ_ex <= 0:
-		row[0] = "Negligible Risk"
-	    else:
-
+                row[0] = "Negligible Risk"
+            else:
                 if opc_dist <= 30 or ipc_lu >= 0.66:
                     if occ_ex >= 5.0:
                         row[0] = "Considerable Risk"
                     else:
                         row[0] = "Some Risk"
-		elif opc_dist <= 100:
-		    if occ_ex >= 5.0:
-			row[0] = "Some Risk"
-		    else:
-			row[0] = "Minor Risk"
-		elif opc_dist <= 300 or ipc_lu >= 0.33:
-		    row[0] = "Minor Risk"
-		else:
+                elif opc_dist <= 100:
+                    if occ_ex >= 5.0:
+                        row[0] = "Some Risk"
+                    else:
+                        row[0] = "Minor Risk"
+                elif opc_dist <= 300 or ipc_lu >= 0.33:
+                    row[0] = "Minor Risk"
+                else:
                     row[0] = "Negligible Risk"
 					
             cursor.updateRow(row)
