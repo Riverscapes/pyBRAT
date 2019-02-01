@@ -106,7 +106,7 @@ def main(projPath, in_network, out_name):
 		sp2 = row[14]
 		if landuse > 0.3:
 		    row[1] = "Anthropogenically Limited"	
-		elif splow <= 190 or sp2 >= 2400:
+		elif splow >= 190 or sp2 >= 2400:
 		    row[1] = "Stream Power Limited"
 		else:
 		    row[1] = "...TBD..."
