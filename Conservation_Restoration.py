@@ -38,24 +38,45 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
 
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', 'oVC_HPE', 'oVC_EX', 'oCC_HPE', 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU']
+    # use old historic capacity field names if new ones not in combined capacity output
+    if 'oVC_PT' in fields:
+        ovc_hpe = 'oVC_PT'
+    else:
+        ovc_hpe = 'oVC_HPE'
+
+    if 'oCC_PT' in fields:
+        occ_hpe = 'oCC_PT'
+    else:
+        occ_hpe = 'oCC_HPE'
+    
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
+			
             occ_ex = row[6]
             opc_dist = row[11]
             ipc_lu = row[12]
-
-            if (opc_dist < 30 or ipc_lu > 0.6) and occ_ex >= 15:
-                row[0] = "Considerable Risk"
-            elif (opc_dist < 100 or ipc_lu > 0.6) and (5 <= occ_ex < 15):
-                row[0] = "Some Risk"
-            elif (opc_dist < 300 or ipc_lu > 0.3) and (0 < occ_ex < 5):
-                row[0] = "Minor Risk"
-            else:
+			
+            if occ_ex <= 0:
                 row[0] = "Negligible Risk"
-
+            else:
+                if opc_dist <= 30 or ipc_lu >= 0.66:
+                    if occ_ex >= 5.0:
+                        row[0] = "Considerable Risk"
+                    else:
+                        row[0] = "Some Risk"
+                elif opc_dist <= 100:
+                    if occ_ex >= 5.0:
+                        row[0] = "Some Risk"
+                    else:
+                        row[0] = "Minor Risk"
+                elif opc_dist <= 300 or ipc_lu >= 0.33:
+                    row[0] = "Minor Risk"
+                else:
+                    row[0] = "Negligible Risk"
+					
             cursor.updateRow(row)
             
             
@@ -79,12 +100,15 @@ def main(projPath, in_network, out_name):
                row[1] = 'Slope Limited'
             # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
             elif occ_ex <= 0:
-                    # 'oVC_EX' Rare, Occasional, Frequent, or Pervasive (i.e. its not currently veg limited)
-                    if ovc_ex > 0:
-                        row[1] = 'Stream Power Limited'                    
-                    # 'oVC_EX' None 
-                    else:
-                        row[1] = 'Anthropogenically Limited'
+		landuse = row[12]
+		splow = row[13]
+		sp2 = row[14]
+		if landuse > 0.3:
+		    row[1] = "Anthropogenically Limited"	
+		elif splow >= 190 or sp2 >= 2400:
+		    row[1] = "Stream Power Limited"
+		else:
+		    row[1] = "...TBD..."
             else:
                 row[1] = 'Dam Building Possible'
             cursor.updateRow(row)
