@@ -16,6 +16,16 @@ Inputs and Parameters:
 
 The output network will have the new fields `oCC_HPE` (historic combined dam capacity) and `oCC_EX` (existing combined dam capacity).  When the tool finishes running the second time it should automatically add the output to the map and symbolize the `oCC_EX` field, which represents the existing capacity to support dam building activity.
 
+The fields `oCC_HPE` and `oCC_EX` are split into the following categories for our symbology:
+
+- None: 0 dams
+- Rare: 0-1 dams/km
+- Occasional: 1-5 dams/km
+- Frequent 5-15 dams/km
+- Pervasive: 15-40 dams/km
+
+
+
 [![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
 
 
@@ -23,7 +33,6 @@ The output network will have the new fields `oCC_HPE` (historic combined dam cap
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-BRATVegetationFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 5 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-SummaryReport"><i class="fa fa-arrow-circle-right"></i> Continue to Step 7 </a>
 </div>	
-
 ------
 <div align="center">
 
