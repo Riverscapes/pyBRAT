@@ -2,36 +2,58 @@
 title: BRAT v3X Outputs
 ---
 
-The majority of users of BRAT will not actually run BRAT themselves, but instead will download BRAT outputs and summary products for investigating beaver and watershed management. In the text and videos tutorials below, we walk you through various ways to interact with the outputs of BRAT. We cover the outputs BRAT produces, provide a lookup table for investigative purposes, and provide illustrative videos into helpful ways to access and interrogate the outputs. 
+The majority of users of BRAT will not actually run BRAT themselves, but instead will download BRAT outputs and summary products for use in beaver-related stream conservation and restoration efforts. In the text and videos tutorials below, we walk through various ways to interact with the BRAT outputs. We cover each of the outputs that BRAT produces, provide lookup tables for investigative purposes, and provide illustrative videos to help access and interrogate the outputs. 
 
 ## The BRAT Default Legends
 
 ### Capacity Layer
-The **capacity model** outputs use the following color scheme to bin the output data (note each ≤300 m reach has a specific continuous dam density output). Existing capacity output is found in the `OCC_EX` field and historic capacity is found in the `oCC_HPE` field. This is a modeled number of dams per kilometer or mile  of the particular segment within the stream network. The following color scheme is used to illustrate these outputs:
+The **capacity model** outputs use the following color scheme to bin the output data (note each ≤300 m reach has a specific continuous dam density output). Existing capacity output is found in the `OCC_EX` field and historic capacity is found in the `oCC_HPE` field. These values represent modeled beaver dam capacity as dams per kilometer or mile of a particular segment within the stream network. The following color scheme is used to illustrate these outputs:
 
    ![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Capacity_BRATv3X.png){: width="300" height="300"}
 
-In addition, the capacity outputs and reach lengths were used to report estimated dam complex size `mCC_EX_CT` (for existing) and `mCC_HPE_CT` (for historic) fields. This is a modeled number of the dams on that particular segment of the stream network. The following color scheme is used to illustrate these outputs:
+In addition, the capacity outputs and reach lengths were used to report estimated dam complex size `mCC_EX_CT` (for existing) and `mCC_HPE_CT` (for historic) fields. This is a modeled maximum number of the dams on that particular segment of the stream network. The following color scheme is used to illustrate these outputs:
 
    ![Legend_BRAT_DamDensity_WIDE]({{ site.baseurl }}/assets/images/Dam_Complex_Size_BRATv3X.png){: width="300" height="300"}
 
 ### Management Layers
-The **management output** layers include outputs that describe the limiting factors which contribute to unsuitable or limited beaver dam opportunities (`oPBC_UD`), risk categories which are based on land use and anthropogenic proximity (`oPBC_UI`), and finally a measure of the effort exhibited to perform restoration or conservation in the segment (`oPCRC_CR`).  For the (`oPCRC_CR`) output a sub-set of the segments classified as 'Negligible Risk' and 'Minor Risk' (`oPBC_UI`) is used to focus restoration or conservation efforts. Segments that are 'Considerable Risk' or 'Some Risk' (`oPCRC_UI`) are defined as 'Other' for (`oPCRC_CR`) field. Further documentation and discussion/development of these layers can be found [here](https://github.com/Riverscapes/pyBRAT/issues/207). The following color schemes were used to define the management fields:
+The **management output** layers include outputs that describe the limiting factors which contribute to unsuitable or limited beaver dam opportunities (`oPBC_UD`), risk categories which are based on land use and anthropogenic proximity (`oPBC_UI`), and finally a measure of the effort exhibited to perform restoration or conservation in the segment (`oPCRC_CR`).  For the (`oPCRC_CR`) output a sub-set of the segments classified as 'Negligible Risk' and 'Minor Risk' (`oPBC_UI`) is used to focus restoration or conservation efforts. Segments that are 'Considerable Risk' or 'Some Risk' (`oPCRC_UI`) are defined as 'Other' for (`oPCRC_CR`) field. Further documentation and discussion/development of these layers can be found [here](https://github.com/Riverscapes/pyBRAT/issues/207). 
 
-- **Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`)** identifies areas where beaver cannot build dams now, and also differentiates into anthropogenically and naturally limiting areas. The following color scheme is used to illustrate these distinctions:
+- **Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`)** identifies areas where beaver cannot build dams now, and also differentiates stream segments into anthropogenically and naturally limited areas. The following color scheme is used to illustrate these distinctions:
 
-  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/Unsuitable_or_Limited_Opportunities.png){: width="300" height="300"}
+  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/BRAT_legends_10_2018_Unsuitable.png){: width="300" height="300"}
 
-- **Potential Risk Areas (`oPBRC_UI`)** identifies areas -- streams that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is broken out into: "Considerable Risk", "Some Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
+  The field oPBRC_UD is calculated based on the following criteria:
+
+  - Dam Building Possible is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), and where the model currently predicts dams can exist (`oCC_EX` > 0).
+  - Anthropogenically Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), but where current vegetation is limiting beaver dam capacity (`oVC_EX` = `oCC_EX` = 0), presumably due to high levels of anthropogenic land use (`iPC_LU` > 0.3).
+  - Stream Power Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), where current vegetation is not a limiting factor (`oVC_EX` > 0), and where the model predicts that the stream cannot currently support beaver dams (`oCC_EX` = 0) because stream power is too low (`iHyd_SPLow` <= 190) to support beaver dams or too high (`iHyd_SP2` >= 2400) for dams to survive flooding.
+  - Slope Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), but where slope is a limiting factor (`iGeo_Slope` >= 0.23).
+  - Naturally Vegetation Limited is for streams where both historic and existing vegetation are limiting factors (`oVC_HPE` = `oVC_EX` = 0).
+  - Potential Reservoir or Landuse Conversion is for the rare streams where historic vegetation is a limiting factor (`oVC_HPE` = 0), but existing vegetation is not (`oVC_EX`> 0).
+
+- **Potential Risk Areas (`oPBRC_UI`)** identifies riverscapes that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is divided into: "Considerable Risk", "Some Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
 
   ![Legend BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
 
+  The field `oPBRC_UI` is calculated based on the following criteria:
+
+  - Considerable Risk is for streams where the model estimates that beaver dams are Pervasive or Frequent  (`oCC_EX` >= 5), and yet the land is highly used (`iPC_LU` >= 0.66) or the stream is within  30 meters of some form of infrastructure, whether that is roads, canals, or railroads (`oPC_Dist` <= 30).
+  - Some Risk is for streams where the model estimates that beaver dams are Occasional or Rare (1 <= `oCC_EX` <= 5) but the land is highly used (`iPC_LU` >= 0.66) or the stream is within 30 meters of some form of infrastructure, whether that's roads, canals, or railroads (`oPC_Dist` <= 30); OR where the model estimates that beaver dams are Frequent or Pervasive (`'oCC_EX` >= 5) and the stream is within 100 meters of some form of infrastructure (30 < `oPC_Dist` <= 100).
+  - Minor Risk is for streams where the model estimates that beaver dam capacity is Occasional or Rare (1 <= `oCC_EX` <= 5) and the stream is within 100 meters of some form of infrastructure (roads, canals, or railroads, 30 < `oPC_Dist` <= 100); OR where the model predicts that the stream can support dams (`oCC_EX` > 0) and the land is moderately used (0.33 <= `iPC_LU` <= 0.66) or the stream is within 300 meters of some form of infrastructure (100 < `oPC_Dist` <= 300).
+  - Negligible Risk is for a stream where the model predicts that the stream cannot currently support beaver dams (`oCC_EX` = 0), or a stream where the model predicts that dams can currently exist (`oCC_EX` > 0) but does not fall into the above categories.
+
 - **Restoration or Conservation Opportunities (`oPCRC_CR`)** identifies opportunities where low-risk restoration and conservation opportunities exist for using beaver in stream conservation
   and restoration. This management output consists of the following categories: i) ‘easiest - low
-  hanging fruit’ has capacity, just needs beaver if beaver ar not there yet, ii) ‘straight forward - quick return’ is currently occasional capacity but historically was higher capacity, iii) ‘strategic’ is a currently degraded condition with historically higher capacity. These areas typically need long-term riparian recovery before beaver can be introduced (e.g. grazing
-  management), and 4) ‘other’. The ‘other’ category is based on higher ‘risk’ of human-beaver conflict and lower existing dam building capacity (i.e., reaches that are likely not worth investing in beaver dam related conservation and restoration actions). The following color scheme is used to illustrate these distinctions:
+  hanging fruit’ has capacity, just needs beaver if beaver are not there yet, ii) ‘straight forward - quick return’ is currently occasional capacity but historically was higher capacity, iii) ‘strategic’ is currently degraded condition with historically higher capacity. These areas typically need long-term riparian recovery before beaver can be introduced (e.g. grazing management), and 4) ‘other’ is for streams that do not fall into the above categories. Such areas are primarily streams classified as “Considerable Risk” or “Some Risk” in `oPBRC_UI` though there are exceptions to that. The following color scheme is used to illustrate these distinctions:
 
   ![Legend BRAT Management Restoration or Conservation Opportunities]({{ site.baseurl }}/assets/images/Restoration_or_Conservation_Opportunities.png){: width="300" height="300"}
+
+  The field `oPCRC_CR` is calculated based on the following criteria:
+
+  - Easiest - Low-Hanging Fruit is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, and where the model estimates dams are already at least Occasional (`oCC_EX` >= 5) and where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3).
+  - Straight Forward - Quick Return is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates more than None existing dams and more than Frequent historic dams (`oCC_EX` > 1 and `oCC_HPE` > 5), where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3), and where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
+  - Strategic - Long-term Investment is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates almost no existing beaver dams (0 < `oCC_EX` < 1) but at least Occasional historic dams (`oCC_HPE` >= 5), where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
+  - Other/NA is for streams that don't fall into the above categories. Such areas are primarily streams classified as "Considerable Risk" or "Some Risk" in `oPBRC_UI`, though there are exceptions to that.
 
 ## Attribute Field Descriptions
 
