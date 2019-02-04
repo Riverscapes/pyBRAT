@@ -279,34 +279,41 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param11 = arcpy.Parameter(
+            displayName="Perennial stream network",
+            name="perennial_network",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input")
+
+        param12 = arcpy.Parameter(
             displayName="Name BRAT table output feature class",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
 
-        param12 = arcpy.Parameter(
+        param13 = arcpy.Parameter(
             displayName="Short description for run - less than 100 characters",
             name="description",
             datatype="GPString",
             parameterType="Optional",
             direction="Input")
  
-        param13 = arcpy.Parameter(
+        param14 = arcpy.Parameter(
             displayName="Find Clusters",
             name="find_clusters",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param14 = arcpy.Parameter(
+        param15 = arcpy.Parameter(
             displayName="Segment Network by Roads",
             name="should_segment_network",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param15 = arcpy.Parameter(
+        param16 = arcpy.Parameter(
             displayName="Run Verbose",
             name="is_verbose",
             datatype="GPBoolean",
@@ -348,7 +355,8 @@ class BRAT_table_tool(object):
                         p[12].valueAsText,
                         p[13].valueAsText,
                         p[14].valueAsText,
-                        p[15].valueAsText)
+                        p[15].valueAsText,
+                        p[16].valueAsText)
         return
 
 

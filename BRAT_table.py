@@ -38,6 +38,7 @@ def main(
     railroad,
     canal,
     landuse,
+    perennial_network,
     out_name,
     description,
     find_clusters,
