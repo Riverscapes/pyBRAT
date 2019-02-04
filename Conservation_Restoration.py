@@ -54,43 +54,55 @@ def main(projPath, in_network, out_name):
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-			
+
             occ_ex = row[6]
             opc_dist = row[11]
             ipc_lu = row[12]
-			
+
             if occ_ex <= 0:
+                # if capacity is none risk is negligible
                 row[0] = "Negligible Risk"
             else:
+                # if infrastructure within 30 m or land use is high
+                # if capacity is frequent or pervasive risk is considerable
+                # if capaicty is rare or ocassional risk is some
                 if opc_dist <= 30 or ipc_lu >= 0.66:
                     if occ_ex >= 5.0:
                         row[0] = "Considerable Risk"
                     else:
                         row[0] = "Some Risk"
+                # if infrastructure within 30 to 100 m
+                # if capacity is frequent or pervasive risk is some
+                # if capaicty is rare or ocassional risk is minor
                 elif opc_dist <= 100:
                     if occ_ex >= 5.0:
                         row[0] = "Some Risk"
                     else:
                         row[0] = "Minor Risk"
+                # if infrastructure within 100 to 300 m or land use is 0.33 to 0.66 risk is minor
                 elif opc_dist <= 300 or ipc_lu >= 0.33:
                     row[0] = "Minor Risk"
                 else:
                     row[0] = "Negligible Risk"
-					
+
             cursor.updateRow(row)
-            
-            
+
     # 'oPBRC_UD' (Areas beavers can't build dams and why)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
-            # First deal with vegetation limitations
-            # oVC_HPE' None - Find places historically veg limited first.
+
             ovc_hpe = row[3]
             ovc_ex = row[4]
             occ_ex = row[6]
             slope = row[7]
+            landuse = row[12]
+            splow = row[13]
+            sp2 = row[14]
+
+            # First deal with vegetation limitations
+            # Find places historically veg limited first ('oVC_HPE' None)
             if ovc_hpe <= 0:
-                 # 'oVC_EX' Occasional, Frequent, or Pervasive (some areas have oVC_EX > oVC_HPE)
+                # 'oVC_EX' Occasional, Frequent, or Pervasive (some areas have oVC_EX > oVC_HPE)
                 if ovc_ex > 0:
                     row[1] = 'Potential Reservoir or Landuse Conversion'
                 else:    
@@ -100,17 +112,15 @@ def main(projPath, in_network, out_name):
                row[1] = 'Slope Limited'
             # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
             elif occ_ex <= 0:
-		landuse = row[12]
-		splow = row[13]
-		sp2 = row[14]
-		if landuse > 0.3:
-		    row[1] = "Anthropogenically Limited"	
-		elif splow >= 190 or sp2 >= 2400:
-		    row[1] = "Stream Power Limited"
-		else:
-		    row[1] = "...TBD..."
+                if landuse > 0.3:
+                    row[1] = "Anthropogenically Limited"
+                elif splow >= 190 or sp2 >= 2400:
+                    row[1] = "Stream Power Limited"
+                else:
+                    row[1] = "...TBD..."
             else:
                 row[1] = 'Dam Building Possible'
+
             cursor.updateRow(row)
 
     # 'oPBRC_CR' (Conservation & Restoration Opportunties)
