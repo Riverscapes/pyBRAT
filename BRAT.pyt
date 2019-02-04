@@ -320,7 +320,7 @@ class BRAT_table_tool(object):
             parameterType="Optional",
             direction="Input")
        
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""

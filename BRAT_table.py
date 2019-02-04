@@ -114,6 +114,9 @@ def main(
         arcpy.AddMessage('Adding "iPC" attributes to network...')
         ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose)
 
+    if perennial_network is not None:
+        find_is_perennial(seg_network_copy, perennial_network)
+
     handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose)
 
     # run write xml function
@@ -132,6 +135,25 @@ def main(
     run_tests(seg_network_copy, is_verbose)
 
     arcpy.CheckInExtension("spatial")
+
+
+def find_is_perennial(seg_network_copy, perennial_network):
+    """
+    Adds the IsPerennial attribute
+    :param seg_network_copy: The BRAT Table output
+    :param perennial_network: The input stream network that only contains perennial networks
+    :return:
+    """
+    arcpy.AddField_management(seg_network_copy, "IsPeren", "SHORT")
+    arcpy.CalculateField_management(seg_network_copy, "IsPeren", 0, "PYTHON")
+    seg_network_layer = "seg_network_lyr"
+    perennial_network_layer = "perennial_network_layer"
+    arcpy.MakeFeatureLayer_management(seg_network_copy, seg_network_layer)
+    arcpy.MakeFeatureLayer_management(perennial_network, perennial_network_layer)
+
+    arcpy.SelectLayerByLocation_management(seg_network_layer, "SHARE_A_LINE_SEGMENT_WITH", perennial_network_layer, '', "NEW_SELECTION")
+
+    arcpy.CalculateField_management(seg_network_layer,"IsPeren",1,"PYTHON")
 
 
 def find_dr_ar(flow_acc, in_DEM):
