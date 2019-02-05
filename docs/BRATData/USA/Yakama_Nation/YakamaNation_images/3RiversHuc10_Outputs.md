@@ -1,5 +1,5 @@
 ---
-title: White Salmon River\ Little White River\ Wind River
+title: White Salmon River, Little White River, Wind River
 weight: 4
 ---
 
