@@ -580,6 +580,7 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
     find_and_group_layers(intermediate_layers, intermediates_folder, "Hydrology", "Hydrology", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "AnabranchHandler", "Anabranch Handler", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "TopographicMetrics", "Topographic Index", empty_group_layer, df, mxd)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "Perennial", "Perennial", empty_group_layer, df, mxd)
 
     return group_layers(empty_group_layer, "Intermediates", intermediate_layers, df, mxd)
 

@@ -142,11 +142,22 @@ def find_clusters(input_network):
     :return: An array of clusters
     """
     clusters = []
-    fields = ['SHAPE@', 'ReachID', 'iGeo_DA', 'IsMultiCh']
-    with arcpy.da.SearchCursor(input_network, fields) as cursor:
-        for polyline, stream_id, drainage_area, is_braided in cursor:
-            if is_braided:
-                add_stream_to_clusters(clusters, polyline, stream_id, drainage_area)
+    arcpy.AddMessage("New message")
+    fields = [f.name for f in arcpy.ListFields(input_network)]
+    arcpy.AddMessage(fields)
+    if "IsPeren" in fields:
+        arcpy.AddMessage("Found 'IsPeren' in fields")
+        fields = ['SHAPE@', 'ReachID', 'iGeo_DA', 'IsMultiCh', 'IsPeren']
+        with arcpy.da.SearchCursor(input_network, fields) as cursor:
+            for polyline, stream_id, drainage_area, is_braided, is_peren in cursor:
+                if is_braided and is_peren:
+                    add_stream_to_clusters(clusters, polyline, stream_id, drainage_area)
+    else:
+        fields = ['SHAPE@', 'ReachID', 'iGeo_DA', 'IsMultiCh']
+        with arcpy.da.SearchCursor(input_network, fields) as cursor:
+            for polyline, stream_id, drainage_area, is_braided in cursor:
+                if is_braided:
+                    add_stream_to_clusters(clusters, polyline, stream_id, drainage_area)
 
     return clusters
 
