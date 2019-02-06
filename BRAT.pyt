@@ -148,8 +148,16 @@ class BRAT_project_tool(object):
             direction="Input",
             multiValue=True)
 
+        param15 = arcpy.Parameter(
+            displayName="Perennial Stream",
+            name="perennial_stream",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input",
+            multiValue=True)
+
         return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11,
-                param12, param13, param14]
+                param12, param13, param14, param15]
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
@@ -183,7 +191,8 @@ class BRAT_project_tool(object):
                         p[11].valueAsText,
                         p[12].valueAsText,
                         p[13].valueAsText,
-                        p[14].valueAsText)
+                        p[14].valueAsText,
+                        p[15].valueAsText)
         return
 
 
