@@ -16,11 +16,11 @@
 
 # pf_path - path to parent folder for projectwide data
 # counties - path to shapefile of all counties in project area
-# out_name = name of output shapefile (include extension)
+# out_name - name of output shapefile (include extension)
 # coord_sys - coordinate system name that data will be projected to(e.g., 'NAD 1983 California (Teale) Albers (Meters)')
 
-pf_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\BatchCode\00_Projectwide"
-counties = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\BatchCode\00_Projectwide\Counties\tl_2017_us_county_ProjectArea.shp"
+pf_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide"
+counties = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\Counties\tl_2017_us_county_ProjectArea.shp"
 out_name = 'tl_2018_roads.shp'
 coord_sys = 'NAD 1983 California (Teale) Albers (Meters)'
 
