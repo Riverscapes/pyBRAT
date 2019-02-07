@@ -27,7 +27,7 @@ BRAT currently consists of an ArcGIS Toolbox. However, we think BRAT could be mo
   - Explore and visualize  BRAT runs for the Western US in a Google Maps interface
   - Run and produce simple BRAT scenarios 
   - Export BRAT outputs as KML or shapefiles
-2. An ArcGIS AddIn with Project Explorer (like [GCD](http://gcd.riverscapes.xyz/Help/Commands/gcd-project-explorer/)) to make it easier for modelers to run BRAT
+2. An ArcGIS AddIn with Project Explorer (like [GCD](http://gcd.riverscapes.xyz/Help/GCD_Project_Explorer.html)) to make it easier for modelers to run BRAT
 3. A stand-alone GUI application  (without mapping functionality)
 
 See [here]({{ site.baseurl  }}/Download/#brat-as-a-tool) for more information on BRAT as a tool.  <i class="fa fa-cogs"></i>
