@@ -309,7 +309,7 @@ def check_inputs(inputs_folder, symbology_folder):
     make_input_layers(ex_veg_destinations, "Veg Type - ClassName", symbology_layer=ex_veg_class_name_symbology, is_raster=True)
 
     hist_veg_destinations = find_destinations(hist_veg_folder)
-    make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True)
+    make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name = "HistVegSuitability")
     make_input_layers(hist_veg_destinations, "Veg Type - BPS Type", symbology_layer=hist_veg_group_symbology, is_raster=True, check_field="GROUPVEG")
     make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_BPS_name_symbology, is_raster=True)
     make_input_layers(hist_veg_destinations, "Historic Riparian", symbology_layer=hist_veg_riparian_symbology, is_raster=True, check_field="GROUPVEG")
