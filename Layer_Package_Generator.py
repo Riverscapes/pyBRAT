@@ -88,14 +88,14 @@ def check_intermediates(intermediates_folder, symbologyFolder):
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Drainage_Area_Feature_Class.lyr", brat_table_file, "TopographicMetrics", "Drainage Area", "iGeo_DA")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Slope_Feature_Class.lyr", brat_table_file, "TopographicMetrics", "Reach Slope", "iGeo_Slope")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "AnthropogenicIntermediates", "Land Use Intensity", "iPC_LU")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicIntermediates", "Distance to Canal", "iPC_Canal")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicIntermediates", "Distance to Closest Infrastructure", "oPC_Dist")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicIntermediates", "Distance to Railroad", "iPC_Rail")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicIntermediates", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicIntermediates", "Distance to Road Crossing", "iPC_RoadX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicIntermediates", "Distance to Road", "iPC_Road")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicIntermediates", "Distance to Road in Valley Bottom", "iPC_RoadVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "AnthropogenicMetrics", "Land Use Intensity", "iPC_LU")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Canal", "iPC_Canal")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Closest Infrastructure", "oPC_Dist")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad", "iPC_Rail")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road Crossing", "iPC_RoadX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road", "iPC_Road")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road in Valley Bottom", "iPC_RoadVB")
 
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "AnabranchHandler", "Anabranch Types", "IsMainCh")
 
