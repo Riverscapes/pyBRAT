@@ -134,8 +134,8 @@ def main(
     makeLayers(in_network)
 
     # add equations to XML
-    if Qlow_eqtn is not None and Q2_eqtn is not None and region is not None:
-        xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn)
+    #if Qlow_eqtn is not None and Q2_eqtn is not None and region is not None:
+    #    xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn)
 
 
 
