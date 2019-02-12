@@ -61,41 +61,7 @@ The spatially explicit outputs from this application of BRAT provides Yakama Nat
 
 - **Atlas of BRAT outputs** [here](https://usu.box.com/s/bcd2tlqs85073ufwtm185ku63ohqa7ph)
 
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_01.png)
 
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_02.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_03.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_04.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_05.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_06.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_07.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_08.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_09.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_10.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_11.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_12.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_13.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_14.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_15.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_16.png)
-
-  ![]({{ site.baseurl }}/assets/images/YakamaNation_BRAT_Atlas_Page_17.png)
-
-  ​
 
   *The Yakama Nation Reservation has requested that the Yakama Nation BRAT data be private. For special request access to these data please contact Tom Elliott via email: [Tom_Elliott@yakama.com](Tom_Elliott@yakama.com)
 
