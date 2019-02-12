@@ -5,7 +5,7 @@ weight: 2
 
 ## Financial Support
 
-[We]({{ site.baseurl }}/who) have been fortunate to secure financial support for BRAT from a variety of state and federal agencies, tribes, and non-profits that have enabled BRAT development. Most of these grants were primarily to get BRAT 'run' for their specific areas of interest. However, in each case there have been refinements and improvements to the model to meet the sponsor's specific needs. We have insisted on making data from BRAT runs [we]({{ site.baseurl }}/who) have done and vetted [publicly available]({{ site.baseurl }}/BRATData), and to transparently make the [models freely avialable]({{ site.baseurl }}/Downloads) as well as the [source code open source](https://github.com/Riverscapes/pyBRAT)  (especially when funds are from public sources). 
+We have been fortunate to secure financial support for BRAT from a variety of state and federal agencies, tribes, and non-profit organization that have enabled BRAT development. Most of these grants were primarily to get BRAT ‘run’ for their specific areas of interest. However, in each case there have been refinements and improvements to the model to meet the sponsor’s specific needs. We have insisted on making data from BRAT runs vetted [publicly available]({{ site.baseurl }}/BRATData), and to transparently make the models freely available as well as the [source code open source](https://github.com/Riverscapes/pyBRAT)  (especially when funds are from public sources). 
 
 ------
 
@@ -19,20 +19,20 @@ weight: 2
 | **[Idaho Department of Fish & Game](https://idfg.idaho.gov/)** | [![Logo_IdahoFG]({{ site.baseurl }}\assets\images\logos\Logo_IdahoFG.png)](https://idfg.idaho.gov/)| State of Idaho                           | 2018-2019 | In Progress |
 | **[The Nature Conservancy](https://www.nature.org/ourinitiatives/regions/northamerica/unitedstates/california/index.htm)** | [![nature_conservacy_logo]({{ site.baseurl }}\assets\images\logos\nature_conservacy_logo.png)](https://www.nature.org/ourinitiatives/regions/northamerica/unitedstates/california/index.htm)  | Sierra Nevada, Northern Coast Range, Desert Terminal Lakes Watersheds (California & Nevada) | 2018-2019 | In Progress |
 | **[North Fork Johnd Day Watershed Council](http://nfjdwc.org/)** | [![NFJDWC-LOGO-2011]({{ site.baseurl }}\assets\images\logos\NFJDWC-LOGO-2011.gif)](http://nfjdwc.org/) | John Day Watershed (Oregon)              | 2018-2019 | In Progress   |
-| **[Powder River Watershed Council](http://www.powderbasinwatershedcouncil.org/)** | [![PowderBasinWatershedCouncil]({{ site.baseurl }}\assets\images\logos\PowderBasinWatershedCouncil.png)](http://www.powderbasinwatershedcouncil.org/)| Burnt Creek Watershed (Oregon)           | 2018-2019 | In Progress     |
-| **[Yakama Nations Fisheries](http://yakamafish-nsn.gov/)** | [![YakamaNationFisheries]({{ site.baseurl }}\assets\images\logos\YakamaNationFisheries.png)](http://yakamafish-nsn.gov/)| Yakima and Klikitat Watersheds (Washington) | 2017-2018   | In Progress     |
+| **[Powder River Watershed Council](http://www.powderbasinwatershedcouncil.org/)** | [![PowderBasinWatershedCouncil]({{ site.baseurl }}\assets\images\logos\PowderBasinWatershedCouncil.png)](http://www.powderbasinwatershedcouncil.org/)| Burnt River Watershed (Oregon)           | 2018-2019 | [Complete]({{ site.baseurl }}/BRATData/USA/PBWC_Burnt/) |
+| **[Yakama Nations Fisheries](http://yakamafish-nsn.gov/)** | [![YakamaNationFisheries]({{ site.baseurl }}\assets\images\logos\YakamaNationFisheries.png)](http://yakamafish-nsn.gov/)| Yakima and Klikitat Watersheds (Washington) | 2017-2018   | [Complete]({{ site.baseurl}}/BRATData/USA/Yakama_Nation/) |
 | **[Wyoming Game and Fish Department](https://wgfd.wyo.gov/)** | [![wyominggfd]({{ site.baseurl }}\assets\images\logos\wyominggfd.png)](https://wgfd.wyo.gov/) | Upper Green River Watershed              | 2016-2017   | Complete     |
 | **[Utah Division of Wildlife Resources](https://wildlife.utah.gov)** |[![UDWR]({{ site.baseurl }}\assets\images\logos\Utah_DWR.jpg)](https://wildlife.utah.gov) | State of Utah                            |  2014-2015   | [Complete]({{ site.baseurl }}\BRATData\USA\UDWR_Utah\)     |
-| **[Grand Canyon Trust](http://www.grandcanyontrust.org/)** | [![GCT]({{ site.baseurl }}\assets\images\logos\GCT.jpg)](http://www.grandcanyontrust.org/)| Escalante River Watershed                | 2011-2012   | Complete     |
+| **[Grand Canyon Trust](http://www.grandcanyontrust.org/)** | [![GCT]({{ site.baseurl }}\assets\images\logos\GCT.jpg)](http://www.grandcanyontrust.org/)| Escalante River Watershed                | 2011-2012   | [Complete]({{ site.baseurl }}http://etal.joewheaton.org/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat.html) |
 
 
-Updated: June 2018
+Updated: February 2019
 
 ------
 
 ### Original Development
 #### Utah BRAT
-<div class="float-right"><a href="https://wildlife.utah.gov"><img src="{{ site.baseurl }}/assets/images/logos/Utah_DWR.jpg"></a></div> BRAT development and implementation for the entire State of Utah was funded by the [Utah Division of Wildlife Resources](https://wildlife.utah.gov/)  (USU Award No. 130940). We are grateful to John Shivik (former UDWR Fur Bearer Coordinator) and Kent Sorenson for investing in this effort.
+<div class="float-right"><a href="https://wildlife.utah.gov"><img src="{{ site.baseurl }}/assets/images/logos/Utah_DWR.jpg"></a></div> BRAT development and implementation for the entire state of Utah was funded by the [Utah Division of Wildlife Resources](https://wildlife.utah.gov/)  (USU Award No. 130940). We are grateful to John Shivik (former UDWR Fur Bearer Coordinator) and Kent Sorenson for investing in this effort.
 
 
 #### BRAT Pilot

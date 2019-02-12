@@ -21,7 +21,7 @@ reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership, beaver_dams):
+def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership, beaver_dams, perennial_stream):
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
@@ -31,11 +31,18 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
 
     inputs_folder = make_folder(proj_path, "Inputs")
 
+    # build summary products folder structure
+    summary_folder = make_folder(proj_path, "SummaryProducts")
+    add_to_summary_folder(summary_folder, 'PNG')
+    add_to_summary_folder(summary_folder, 'PDF')
+    add_to_summary_folder(summary_folder, 'AI')
+
     vegetation_folder = make_folder(inputs_folder, "01_Vegetation")
     network_folder = make_folder(inputs_folder, "02_Network")
     topo_folder = make_folder(inputs_folder, "03_Topography")
     anthropogenic_folder = make_folder(inputs_folder, "04_Anthropogenic")
     beaver_dam_folder = make_optional_input_folder(beaver_dams, inputs_folder, "_BeaverDams")
+    perennial_stream_folder = make_optional_input_folder(perennial_stream, inputs_folder, "_PerennialStream")
 
     ex_veg_folder = make_folder(vegetation_folder, "01_ExistingVegetation")
     hist_veg_folder = make_folder(vegetation_folder, "02_HistoricVegetation")
@@ -72,6 +79,7 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     valley_bottom_symbology = os.path.join(symbology_folder, "ValleyBottom.lyr")
     valley_bottom_outline_symbology = os.path.join(symbology_folder, "ValleyBottom_Outline.lyr")
     flow_direction_symbology = os.path.join(symbology_folder, "Network_FlowDirection.lyr")
+    perennial_stream_symbology = os.path.join(symbology_folder, "Perennial.lyr")
 
     # add the existing veg inputs to project
     ex_veg_destinations = copy_multi_input_to_folder(ex_veg_folder, ex_veg, "Ex_Veg", is_raster=True)
@@ -140,9 +148,14 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     if beaver_dams is not None:
         beaver_dams_destinations = copy_multi_input_to_folder(beaver_dam_folder, beaver_dams, "Beaver_Dam", is_raster=False)
 
+    perennial_stream_destinations = []
+    if perennial_stream is not None:
+        perennial_stream_destinations = copy_multi_input_to_folder(perennial_stream_folder, perennial_stream, "PerennialStream", is_raster=False)
+        make_input_layers(perennial_stream_destinations, "Perennial_Stream", symbology_layer=perennial_stream_symbology, is_raster=False)
+
     write_xml(proj_path, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-              canal_destinations, ownership_destinations, beaver_dams_destinations)
+              canal_destinations, ownership_destinations, beaver_dams_destinations, perennial_stream_destinations)
 
 
 def make_optional_input_folder(input, file_path, folder_base_name):
@@ -254,7 +267,7 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
 
 def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-              canal_destinations, ownership_destinations, beaver_dams_destinations):
+              canal_destinations, ownership_destinations, beaver_dams_destinations, perennial_stream_destinations):
     """
 
     :param project_root:
@@ -263,6 +276,7 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
     :param watershed_name:
     :param ex_veg_destinations:
     :param hist_veg_destinations:
+    :param network_destinations:
     :param dem_destinations:
     :param landuse_destinations:
     :param valley_bottom_destinations:
@@ -270,6 +284,8 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
     :param rr_destinations:
     :param canal_destinations:
     :param ownership_destinations:
+    :param beaver_dams_destinations:
+    :param perennial_stream_destinations:
     :return:
     """
     xml_file = project_root + "\project.rs.xml"
@@ -287,14 +303,14 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
 
     add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations,
                dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-               canal_destinations, ownership_destinations, beaver_dams_destinations)
+               canal_destinations, ownership_destinations, beaver_dams_destinations, perennial_stream_destinations)
 
     new_xml_file.write()
 
 
 def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations, dem_destinations,
                landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations,
-               ownership_destinations, beaver_dams_destinations):
+               ownership_destinations, beaver_dams_destinations, perennial_stream_destinations):
     inputs_element = new_xml_file.add_sub_element(new_xml_file.root, "Inputs")
 
     write_xml_for_destination(ex_veg_destinations, new_xml_file, inputs_element, "Raster", "EXVEG", "Existing Vegetation", project_root)
@@ -308,6 +324,7 @@ def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destina
     write_xml_for_destination(canal_destinations, new_xml_file, inputs_element, "Vector", "CANAL", "Canals", project_root)
     write_xml_for_destination(ownership_destinations, new_xml_file, inputs_element, "Vector", "OWNERSHIP", "Ownership", project_root)
     write_xml_for_destination(beaver_dams_destinations, new_xml_file, inputs_element, "Vector", "BEAVER_DAM", "Beaver Dam", project_root)
+    write_xml_for_destination(perennial_stream_destinations, new_xml_file, inputs_element, "Vector", "PERENNIAL_STREAM", "Perennial Stream", project_root)
 
 
 def write_xml_for_destination(destination, new_xml_file, base_element, xml_element_name, xml_id_base, item_name,
@@ -334,6 +351,18 @@ def add_metadata(new_xml_file, huc_ID, watershed_name):
     new_xml_file.add_sub_element(metadata_element, "Meta", huc_ID, [("name","HUCID")])
     new_xml_file.add_sub_element(metadata_element, "Meta", watershed_name, [("name","Watershed")])
 
+
+def add_to_summary_folder(summary_folder, sub_folder_name):
+    """
+    Builds folder structure for each output type within SummaryProducts directory
+    :param summary_folder: path to summary products folder for project
+    :param sub_folder_name: name of folder to be created in SummaryProducts directory
+    """
+    sub_folder = make_folder(summary_folder, sub_folder_name)
+    make_folder(sub_folder, "Inputs")
+    make_folder(sub_folder, "Intermediates")
+    make_folder(sub_folder, "Outputs")
+    
 
 if __name__ == '__main__':
     main(

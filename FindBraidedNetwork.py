@@ -38,34 +38,48 @@ def main(fcStreamNetwork, canal, tempDir, is_verbose):
     else:
         handleCanals(fcStreamNetwork, canal, tempDir, is_verbose)
 
+    use_stream_names(fcStreamNetwork)
     return
 
+def use_stream_names(stream_network):
+    with arcpy.da.UpdateCursor(stream_network, "IsMultiCh") as cursor:
+        for row in cursor:
+            pass
 
-def handleCanals(streamNetwork, canal, tempFolder, is_verbose):
+
+def handleCanals(stream_network, canal, temp_folder, is_verbose):
+    """
+    Finds braided sections of the stream network, not counting canals, if canals are available
+    :param stream_network:
+    :param canal:
+    :param temp_folder:
+    :param is_verbose:
+    :return:
+    """
     if is_verbose:
         arcpy.AddMessage("Removing canals...")
     if arcpy.GetInstallInfo()['Version'][0:4] == '10.5':
-        streamNetworkNoCanals = os.path.join(tempFolder, "NoCanals.shp")
+        stream_network_no_canals = os.path.join(temp_folder, "NoCanals.shp")
     else:
-        streamNetworkNoCanals = os.path.join('in_memory', 'NoCanals')
+        stream_network_no_canals = os.path.join('in_memory', 'NoCanals')
 
-    arcpy.Erase_analysis(streamNetwork, canal, streamNetworkNoCanals)
-    findBraidedReaches(streamNetworkNoCanals, is_verbose)
+    arcpy.Erase_analysis(stream_network, canal, stream_network_no_canals)
+    findBraidedReaches(stream_network_no_canals, is_verbose)
 
-    with arcpy.da.UpdateCursor(streamNetworkNoCanals, "IsMultiCh") as cursor: # delete non-braided reaches
+    with arcpy.da.UpdateCursor(stream_network_no_canals, "IsMultiCh") as cursor: # delete non-braided reaches
         for row in cursor:
             if row[0] == 0:
                 cursor.deleteRow()
 
-    arcpy.MakeFeatureLayer_management(streamNetwork,"lyrBraidedReaches")
-    arcpy.MakeFeatureLayer_management(streamNetworkNoCanals,"lyrNoCanals")
+    arcpy.MakeFeatureLayer_management(stream_network, "lyrBraidedReaches")
+    arcpy.MakeFeatureLayer_management(stream_network_no_canals,"lyrNoCanals")
 
     arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrNoCanals",'',"NEW_SELECTION")
 
     arcpy.CalculateField_management("lyrBraidedReaches","IsMultiCh",1,"PYTHON")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMainCh",0,"PYTHON")
 
-    arcpy.Delete_management(streamNetworkNoCanals)
+    arcpy.Delete_management(stream_network_no_canals)
 
 
 def findBraidedReaches(fcLines, is_verbose):

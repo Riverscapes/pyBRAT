@@ -19,6 +19,8 @@ import FindBraidedNetwork
 import BRAT_Braid_Handler
 from SupportingFunctions import make_layer, make_folder, getUUID, find_relative_path, write_xml_element_with_path
 import XMLBuilder
+import SupportingFunctions
+
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
@@ -38,6 +40,7 @@ def main(
     railroad,
     canal,
     landuse,
+    perennial_network,
     out_name,
     description,
     find_clusters,
@@ -113,6 +116,9 @@ def main(
         arcpy.AddMessage('Adding "iPC" attributes to network...')
         ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose)
 
+    if perennial_network is not None:
+        find_is_perennial(seg_network_copy, perennial_network)
+
     handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose)
 
     # run write xml function
@@ -131,6 +137,26 @@ def main(
     run_tests(seg_network_copy, is_verbose)
 
     arcpy.CheckInExtension("spatial")
+
+
+def find_is_perennial(seg_network_copy, perennial_network):
+    """
+    Adds the IsPerennial attribute
+    :param seg_network_copy: The BRAT Table output
+    :param perennial_network: The input stream network that only contains perennial networks
+    :return:
+    """
+    arcpy.AddField_management(seg_network_copy, "IsPeren", "SHORT")
+    arcpy.CalculateField_management(seg_network_copy, "IsPeren", 0, "PYTHON")
+
+    seg_network_layer = "seg_network_lyr"
+    perennial_network_layer = "perennial_network_layer"
+    arcpy.MakeFeatureLayer_management(seg_network_copy, seg_network_layer)
+    arcpy.MakeFeatureLayer_management(perennial_network, perennial_network_layer)
+
+    arcpy.SelectLayerByLocation_management(seg_network_layer, "SHARE_A_LINE_SEGMENT_WITH", perennial_network_layer, '', "NEW_SELECTION")
+
+    arcpy.CalculateField_management(seg_network_layer,"IsPeren",1,"PYTHON")
 
 
 def find_dr_ar(flow_acc, in_DEM):
@@ -903,7 +929,7 @@ def make_layers(out_network):
     buffers_folder = os.path.join(intermediates_folder, "01_Buffers")
     topo_folder = make_folder(intermediates_folder, "02_TopographicMetrics")
     anthropogenic_metrics_folder = make_folder(intermediates_folder, "03_AnthropogenicMetrics")
-
+    perennial_folder = make_folder(intermediates_folder, "04_Perennial")
 
     trib_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
@@ -920,6 +946,7 @@ def make_layers(out_network):
     drain_area_symbology = os.path.join(symbology_folder, "Drainage_Area_Feature_Class.lyr")
     buffer_30m_symbology = os.path.join(symbology_folder, "buffer_30m.lyr")
     buffer_100m_symbology = os.path.join(symbology_folder, "buffer_100m.lyr")
+    perennial_symbology = os.path.join(symbology_folder, "Perennial.lyr")
 
     make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
     make_layer(topo_folder, out_network, "Reach Slope", slope_symbology, is_raster=False)
@@ -942,6 +969,8 @@ def make_layers(out_network):
         make_layer(anthropogenic_metrics_folder, out_network, "Distance to Canal", dist_to_canal_symbology, is_raster=False, symbology_field ='iPC_Canal')
     if 'oPC_Dist' in fields:
         make_layer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", dist_to_infrastructure_symbology, is_raster=False, symbology_field ='oPC_Dist')
+    if 'IsPeren' in fields:
+        make_layer(perennial_folder, out_network, "Perennial", perennial_symbology, is_raster=False, symbology_field="IsPeren")
 
 
 def handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose):

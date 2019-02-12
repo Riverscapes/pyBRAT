@@ -88,14 +88,14 @@ def check_intermediates(intermediates_folder, symbologyFolder):
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Drainage_Area_Feature_Class.lyr", brat_table_file, "TopographicMetrics", "Drainage Area", "iGeo_DA")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Slope_Feature_Class.lyr", brat_table_file, "TopographicMetrics", "Reach Slope", "iGeo_Slope")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "HumanBeaverConflict", "Land Use Intensity", "iPC_LU")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Canal", "iPC_Canal")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Closest Infrastructure", "oPC_Dist")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Railroad", "iPC_Rail")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road Crossing", "iPC_RoadX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road", "iPC_Road")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "HumanBeaverConflict", "Distance to Road in Valley Bottom", "iPC_RoadVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "AnthropogenicMetrics", "Land Use Intensity", "iPC_LU")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Canal", "iPC_Canal")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Closest Infrastructure", "oPC_Dist")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad", "iPC_Rail")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road Crossing", "iPC_RoadX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road", "iPC_Road")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road in Valley Bottom", "iPC_RoadVB")
 
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "AnabranchHandler", "Anabranch Types", "IsMainCh")
 
@@ -103,7 +103,7 @@ def check_intermediates(intermediates_folder, symbologyFolder):
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_StreamPower.lyr", brat_table_file, "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
 
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Existing_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Building Capacity", "oVC_EX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Historic_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Building Capacity", "oVC_PT")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Historic_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Building Capacity", "oVC_HPE")
 
 
 def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
@@ -204,7 +204,7 @@ def check_analyses(analyses_folder, symbology_folder):
     management_folder = find_folder(analyses_folder, "Management")
 
     check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Building Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
-    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_PT")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_HPE")
     check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
     check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_HPE_Ct")
 
@@ -309,7 +309,7 @@ def check_inputs(inputs_folder, symbology_folder):
     make_input_layers(ex_veg_destinations, "Veg Type - ClassName", symbology_layer=ex_veg_class_name_symbology, is_raster=True)
 
     hist_veg_destinations = find_destinations(hist_veg_folder)
-    make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True)
+    make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name = "HistVegSuitability")
     make_input_layers(hist_veg_destinations, "Veg Type - BPS Type", symbology_layer=hist_veg_group_symbology, is_raster=True, check_field="GROUPVEG")
     make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_BPS_name_symbology, is_raster=True)
     make_input_layers(hist_veg_destinations, "Historic Riparian", symbology_layer=hist_veg_riparian_symbology, is_raster=True, check_field="GROUPVEG")
@@ -325,7 +325,7 @@ def check_inputs(inputs_folder, symbology_folder):
         landuse_destinations = find_destinations(land_use_folder)
         make_input_layers(landuse_destinations, "Land Use Raster", symbology_layer=landuse_symbology, is_raster=True)
 
-    # add the conflict inputs to the project
+    # add the anthropogenic inputs to the project
     if valley_bottom_folder is not None:
         vally_bottom_destinations = find_destinations(valley_bottom_folder)
         make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
@@ -540,12 +540,12 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd):
 
     topo_folder = find_folder(inputs_folder, "_Topography")
 
-    conflict_folder = find_folder(inputs_folder, "Anthropogenic")
-    valley_folder = find_folder(conflict_folder, "ValleyBottom")
-    roads_folder = find_folder(conflict_folder, "Roads")
-    railroads_folder = find_folder(conflict_folder, "Railroads")
-    canals_folder = find_folder(conflict_folder, "Canals")
-    land_use_folder = find_folder(conflict_folder, "LandUse")
+    anthropogenic_folder = find_folder(inputs_folder, "Anthropogenic")
+    valley_folder = find_folder(anthropogenic_folder, "ValleyBottom")
+    roads_folder = find_folder(anthropogenic_folder, "Roads")
+    railroads_folder = find_folder(anthropogenic_folder, "Railroads")
+    canals_folder = find_folder(anthropogenic_folder, "Canals")
+    land_use_folder = find_folder(anthropogenic_folder, "LandUse")
 
     ex_veg_layers = find_instance_layers(ex_veg_folder)
     ex_veg_layer = group_layers(empty_group_layer, "Existing Vegetation Dam Capacity", ex_veg_layers, df, mxd)
@@ -572,9 +572,9 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd):
     canal_layer = group_layers(empty_group_layer, "Canals", canal_layers, df, mxd)
     land_use_layers = find_instance_layers(land_use_folder)
     land_use_layer = group_layers(empty_group_layer, "Land Use", land_use_layers, df, mxd)
-    conflict_layer = group_layers(empty_group_layer, "Anthropogenic Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
+    anthropogenic_layer = group_layers(empty_group_layer, "Anthropogenic Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
 
-    return group_layers(empty_group_layer, "Inputs", [topo_layer, veg_layer, network_layer, conflict_layer], df, mxd)
+    return group_layers(empty_group_layer, "Inputs", [topo_layer, veg_layer, network_layer, anthropogenic_layer], df, mxd)
 
 
 def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
@@ -590,31 +590,32 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
 
     anthropogenic_metrics_folder = find_folder(intermediates_folder, "AnthropogenicMetrics")
     if anthropogenic_metrics_folder:
-        sorted_conflict_layers = []
-        wanted_conflict_layers = []
-        existing_conflict_layers = find_layers_in_folder(anthropogenic_metrics_folder)
+        sorted_anthropogenic_layers = []
+        wanted_anthropogenic_layers = []
+        existing_anthropogenic_layers = find_layers_in_folder(anthropogenic_metrics_folder)
 
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoCanal.lyr"))
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroad.lyr"))
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroadinValleyBottom.lyr"))
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoad.lyr"))
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadCrossing.lyr"))
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadinValleyBottom.lyr"))
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoClosestInfrastructure.lyr"))
-        wanted_conflict_layers.append(os.path.join(anthropogenic_metrics_folder, "LandUseIntensity.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoCanal.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroad.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroadinValleyBottom.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoad.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadCrossing.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadinValleyBottom.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoClosestInfrastructure.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "LandUseIntensity.lyr"))
 
 
-        for layer in wanted_conflict_layers:
-            if layer in existing_conflict_layers:
-                sorted_conflict_layers.append(layer)
+        for layer in wanted_anthropogenic_layers:
+            if layer in existing_anthropogenic_layers:
+                sorted_anthropogenic_layers.append(layer)
 
-        intermediate_layers.append(group_layers(empty_group_layer, "Human Beaver Conflict", sorted_conflict_layers, df, mxd))
+        intermediate_layers.append(group_layers(empty_group_layer, "Anthropogenic Intermediates", sorted_anthropogenic_layers, df, mxd))
 
     find_and_group_layers(intermediate_layers, intermediates_folder, "VegDamCapacity", "Overall Vegetation Dam Capacity", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "Buffers", "Buffers", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "Hydrology", "Hydrology", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "AnabranchHandler", "Anabranch Handler", empty_group_layer, df, mxd)
     find_and_group_layers(intermediate_layers, intermediates_folder, "TopographicMetrics", "Topographic Index", empty_group_layer, df, mxd)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "Perennial", "Perennial", empty_group_layer, df, mxd)
 
     return group_layers(empty_group_layer, "Intermediates", intermediate_layers, df, mxd)
 
