@@ -41,10 +41,13 @@ def main(fcStreamNetwork, canal, tempDir, is_verbose):
     use_stream_names(fcStreamNetwork)
     return
 
+
 def use_stream_names(stream_network):
-    with arcpy.da.UpdateCursor(stream_network, "IsMultiCh") as cursor:
+    with arcpy.da.UpdateCursor(stream_network, ["IsMainCh", "StreamName"]) as cursor:
         for row in cursor:
-            pass
+            if row[0] == 0 and len(row[1]) > 3: # if the stream name isn't empty, make it a main channel
+                row[0] = 1
+                cursor.updateRow(row)
 
 
 def handleCanals(stream_network, canal, temp_folder, is_verbose):
