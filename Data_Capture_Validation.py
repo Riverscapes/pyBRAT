@@ -38,11 +38,18 @@ def main(in_network, dams, output_name):
         output_network = os.path.join(os.path.dirname(in_network), output_name + ".shp")
     arcpy.Delete_management(output_network)
 
+    # add catch for old terminology
+    fields = [f.name for f in arcpy.ListFields(in_network)]
+    if 'oCC_PT' in fields:
+        occ_hpe = 'oCC_PT'
+    else:
+        occ_hpe = 'oCC_HPE'
+
     dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
     other_fields = ['ExCategor', 'HpeCategor', 'mCC_EXvHPE']
     new_fields = dam_fields + other_fields
 
-    input_fields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_HPE']
+    input_fields = ['SHAPE@LENGTH', 'oCC_EX', occ_hpe]
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
