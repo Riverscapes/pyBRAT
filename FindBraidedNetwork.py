@@ -21,6 +21,7 @@
 import os
 import sys
 import arcpy
+from SupportingFunctions import field_is_in_network
 
 
 def main(fcStreamNetwork, canal, tempDir, is_verbose):
@@ -43,6 +44,9 @@ def main(fcStreamNetwork, canal, tempDir, is_verbose):
 
 
 def use_stream_names(stream_network):
+    if not field_is_in_network(stream_network, "StreamName"):
+        return
+
     with arcpy.da.UpdateCursor(stream_network, ["IsMainCh", "StreamName"]) as cursor:
         for row in cursor:
             if row[0] == 0 and len(row[1]) > 3: # if the stream name isn't empty, make it a main channel
