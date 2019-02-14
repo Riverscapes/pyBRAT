@@ -47,6 +47,7 @@ def write_capacity_sheets(workbook, stream_network, watershed_name):
 
     write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name, workbook)
     write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook)
+    write_hist_complex_worksheet()
 
 
 # Writing the side headers for complex size
@@ -175,10 +176,11 @@ def search_cursor(fields, data1, data2, data3, data4, data5, total, stream_netwo
                     data5 += length
     write_data(data1, data2, data3, data4, data5, total, worksheet, workbook)
 
+
 def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name, workbook):
     is_complex = True
-    write_header(exist_complex_worksheet, watershed_name)
 
+    write_header(exist_complex_worksheet, watershed_name)
     write_categories_complex(exist_complex_worksheet)
 
     fields = ['SHAPE@Length', "mCC_EX_CT"]
@@ -192,7 +194,6 @@ def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, water
     search_cursor(fields, no_dams_length, one_dam_length, some_dams_length, more_dams_length, many_dams_length, total_length, stream_network, is_complex, exist_complex_worksheet, workbook)
 
     # Writing the chart
-
     # chart = workbook.add_chart({'type': 'bar'})
     # chart.add_series({
     #    'name': '=Sheet1!$A$1',
@@ -227,6 +228,20 @@ def write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, w
     search_cursor(fields, none, rare, occasional, frequent, pervasive, total_length, stream_network, is_complex, exist_build_cap_worksheet, workbook)
 
 
+def write_hist_complex_worksheet(hist_complex_worksheet, stream_network, watershed_name, workbook):
+    is_complex = True
+    write_header(hist_complex_worksheet, watershed_name)
+    write_categories_complex(hist_complex_worksheet)
+
+    fields = ['SHAPE@Length', "mCC_HPE_CT"]
+    no_dams_length = 0.0
+    one_dam_length = 0.0
+    some_dams_length = 0.0
+    more_dams_length = 0.0
+    many_dams_length = 0.0
+    total_length = 0.0
+
+    #TODO: FINISH HISTORIC COMPLEX
 
 def write_header(worksheet, watershed_name):
     row = 0
