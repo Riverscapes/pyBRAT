@@ -37,6 +37,7 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
+    arcpy.AddField_management(out_network, "newField", "TEXT", "", "", 40)
 
     # use old historic capacity field names if new ones not in combined capacity output
     if 'oVC_PT' in fields:
@@ -49,7 +50,8 @@ def main(projPath, in_network, out_name):
     else:
         occ_hpe = 'oCC_HPE'
     
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2']
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
+              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', "newField"]
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -133,28 +135,58 @@ def main(projPath, in_network, out_name):
             mCC_HisDep = row[8]
             iPC_VLowLU = row[9]
             iPC_HighLU = row[10]
+            ipc_lu = row[12]
+
+            # default category is 'Other'
+            row[2] = 'NA'
+
+            # if it fits one of these, it'll be changed to that
             if opbrc_ui == 'Negligible Risk' or opbrc_ui == 'Minor Risk':
-                # 'oCC_EX' Frequent or Pervasive
-                # 'mCC_HisDep' <= 3
-                if occ_ex >= 5 and mCC_HisDep <= 3:
-                    row[2] = 'Easiest - Low-Hanging Fruit'
-                # 'oCC_EX' Occasional, Frequent, or Pervasive
-                # 'oCC_HPE' Frequent or Pervasive
-                # 'mCC_HisDep' <= 3
-                # 'iPC_VLowLU'(i.e., Natural) > 75
-                # 'iPC_HighLU' (i.e., Developed) < 10
-                elif occ_ex > 1 and mCC_HisDep <= 3 and occ_hpe >= 5 and iPC_VLowLU > 75 and iPC_HighLU < 10:
-                    row[2] = 'Straight Forward - Quick Return'
-                # 'oCC_EX' Rare or Occasional
-                # 'oCC_HPE' Frequent or Pervasive
-                # 'iPC_VLowLU'(i.e., Natural) > 75
-                # 'iPC_HighLU' (i.e., Developed) < 10
-                elif occ_ex > 0 and occ_ex < 5 and occ_hpe >= 5 and iPC_VLowLU > 75 and iPC_HighLU < 10:
-                    row[2] = 'Strategic - Long-Term Investment'
-                else:
-                    row[2] = 'NA'
-            else:
-                row[2] = 'NA'
+                if mCC_HisDep >= 3:
+                    if occ_ex >= 5:
+                        row[2] = "Easiest - Low-Hanging Fruit"
+                    elif occ_hpe > 5 and occ_ex > 1 and (ipc_lu < 10 or ipc_lu > 75):
+                        row[2] = "Straight Forward - Quick Return"
+                elif occ_hpe >= 5 and occ_ex < 1 and (ipc_lu < 10 or ipc_lu > 75):
+                    row[2] = "Strategic - Long-Term Investment"
+
+            cursor.updateRow(row)
+
+    # 'newField'  The test field for TNC
+    with arcpy.da.UpdateCursor(out_network, fields) as cursor:
+        for row in cursor:
+            # 'oPBRC_UI' Negligible Risk or Minor Risk
+            opbrc_ui = row[0]
+            ovc_hpe = row[3]
+            ovc_ex = row[4]
+            occ_hpe = row[5]
+            occ_ex = row[6]
+            slope = row[7]
+            iPC_VLowLU = row[9]
+            iPC_HighLU = row[10]
+            opc_dist = row[11]
+            ipc_lu = row[12]
+
+            stream_power = row[14]
+
+            # default category is 'Other'
+            row[15] = 'NA'
+
+            if occ_hpe >= 5:
+                if occ_ex >= 5 and ovc_hpe > 0 and ovc_ex > 0:
+                    if ipc_lu > 0.66 and opc_dist > 30 and slope < 0.23:
+                        row[15] = "Promote 'living with beaver' solutions"
+                    elif ipc_lu <= 0.66 and opc_dist > 100 and slope < 0.23:
+                        row[15] = "Best relocation sites"
+                elif 1 <= occ_ex < 5 and ovc_hpe > 0 and ipc_lu < 0.33 and opc_dist > 30:
+                    if ovc_hpe == 0:
+                        row[15] = "Restore vegetation first"
+                    elif stream_power >= 2400 or stream_power <= 190:
+                        row[15] = "Restore stream connectivity"
+            elif (occ_ex <= 1 and ovc_hpe > 0 and opc_dist < 30) or slope > 0.23:
+                row[15] = "Not suitable"
+
+
             cursor.updateRow(row)
 
     makeLayers(out_network)

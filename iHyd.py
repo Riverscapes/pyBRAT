@@ -36,6 +36,11 @@ def main(
     DA_array = arcpy.da.FeatureClassToNumPyArray(in_network, "iGeo_DA")
     DA = np.asarray(DA_array, np.float32)
 
+
+    # create array for input network elevation
+    EL_array = arcpy.da.FeatureClassToNumPyArray(in_network, "iGeo_ElMin")
+    EL = np.asarray(EL_array, np.float32)
+
     # convert drainage area (in square kilometers) to square miles
     # note: this assumes that streamflow equations are in US customary units (e.g., inches, feet)
     DAsqm = np.zeros_like(DA)
@@ -60,6 +65,9 @@ def main(
         Qlow = 4.2758 * (DAsqm ** 0.299)
     elif float(region) == 24:  # oregon region 5
         Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
+    elif float(region) == 1:
+        PRECIP = 600.6
+        Qlow = (10 ** -3.5574) * (DAsqm ** 0.9838) * (EL ** -0.646) * (PRECIP ** 1.779)
     else:
         Qlow = (DAsqm ** 0.2098) + 1
 
@@ -71,6 +79,9 @@ def main(
         Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
     elif float(region) == 24:  # oregon region 5
         Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
+    elif float(region) == 1:
+        PRECIP = 600.6
+        Q2 = 2.43 * (DAsqm ** 0.924) * (EL ** -0.646) * (PRECIP ** 2.06)
     else:
         Q2 = 14.7 * (DAsqm ** 0.815)
 
