@@ -71,6 +71,8 @@ def main(in_network, dams, output_name):
     if dams:
         plot_name = observed_v_predicted_plot(output_network)
 
+    make_electivity_table(output_network)
+
     write_xml(proj_path, in_network, output_network, plot_name)
 
 
