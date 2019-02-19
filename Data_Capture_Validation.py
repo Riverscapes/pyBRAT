@@ -222,6 +222,45 @@ def clean_up_fields(brat_network, out_network, new_fields):
         arcpy.DeleteField_management(out_network, remove_fields)
 
 
+def make_electivity_table(output_network):
+    """
+    Makes table with totals and electivity indices for modeled capacity categories (i.e., none, rare, occasional, frequent, pervasive)
+    :param output_network: The stream network output by the BRAT model with fields added from capacity tools
+    """
+    brat_table = arcpy.da.TableToNumPyArray(output_network, ['ReachLen', 'e_DamCt', 'mCC_EX_CT', 'e_DamDens', 'oCC_EX', 'ExCategor'], skip_nulls=True)
+    tot_length = brat_table['ReachLen'].sum()
+    tot_surv_dams = brat_table['e_DamCt'].sum()
+    tot_brat_cc = brat_table['mCC_EX_CT'].sum()
+    avg_surv_dens = tot_surv_dams/(tot_length/1000)
+    avg_brat_dens = tot_brat_cc/(tot_length/1000)
+    electivity_table = []
+    electivity_table.append(['', 'm', 'km', '%', '# of dams', '# of dams', 'dams/km', 'dams/km', '%', ''])
+    add_electivity_category(brat_table, 'None', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Rare', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Occasional', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Frequent', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Pervasive', electivity_table, tot_length, tot_surv_dams)
+    electivity_table.append(['Total', tot_length, tot_length/1000, 'NA', tot_surv_dams, tot_brat_cc, avg_surv_dens, avg_brat_dens, tot_surv_dams/tot_brat_cc, 'NA'])
+    out_csv = os.path.join(os.path.dirname(output_network), 'electivity.csv')
+    np.savetxt(out_csv, electivity_table, fmt = '%s', delimiter=',', header = "Segment Type, Stream Length, Stream Length, % of Drainage Network, Surveyed Dams, BRAT Estimated Capacity, Average Surveyed Dam Density, Average BRAT Predicted Density, % of Modeled Capacity, Electivity Index")
+
+
+def add_electivity_category(brat_table, category, output_table, tot_length, tot_surv_dams):
+    """
+    Calculates values for each modeled capacity category and adds to output table
+    """
+    cat_tbl = brat_table[brat_table['ExCategor'] == category]
+    length = cat_tbl['ReachLen'].sum()
+    length_km = length/1000
+    network_prop = 100*cat_tbl['ReachLen'].sum()/tot_length
+    surv_dams = cat_tbl['e_DamCt'].sum()
+    brat_cc = cat_tbl['mCC_EX_CT'].sum()
+    surv_dens = surv_dams/length_km
+    brat_dens = brat_cc/length_km
+    prop_mod_cap = 100*surv_dams/(brat_cc+0.000001)
+    electivity = (surv_dams/tot_surv_dams)/(network_prop/100)
+    output_table.append([category, length, length_km, network_prop, surv_dams, brat_cc, surv_dens, brat_dens, prop_mod_cap, electivity])
+
 
 def observed_v_predicted_plot(output_network):
     x, y = clean_values(output_network)
