@@ -172,14 +172,17 @@ def main(projPath, in_network, out_name):
             # default category is 'Other'
             row[15] = 'NA'
 
+            if ovc_hpe <= 0:
+                #do nothing; all categories require historic veg > 0
+                pass
             if occ_hpe >= 5:
-                if occ_ex >= 5 and ovc_hpe > 0 and ovc_ex > 0:
+                if occ_ex >= 5 and ovc_ex > 0:
                     if ipc_lu > 0.66 and opc_dist > 30 and slope < 0.23:
                         row[15] = "Promote 'living with beaver' solutions"
                     elif ipc_lu <= 0.66 and opc_dist > 100 and slope < 0.23:
                         row[15] = "Best relocation sites"
                 elif 1 <= occ_ex < 5 and ovc_hpe > 0 and ipc_lu < 0.33 and opc_dist > 30:
-                    if ovc_hpe == 0:
+                    if 0 <= ovc_ex < 1:
                         row[15] = "Restore vegetation first"
                     elif stream_power >= 2400 or stream_power <= 190:
                         row[15] = "Restore stream connectivity"
