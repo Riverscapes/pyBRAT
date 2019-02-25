@@ -246,7 +246,7 @@ def main():
 
     arcpy.SelectLayerByLocation_management('nhd_flowline_lyr', 'SHARE_A_LINE_SEGMENT_WITH', flowline_per_join, '', 'NEW_SELECTION')
     arcpy.CopyFeatures_management('nhd_flowline_lyr', outpath)
-    arcpy.DeleteIdentical_management(outpath)
+    arcpy.DeleteIdentical_management(outpath, ['Shape'])
 
 
 if __name__ == '__main__':
