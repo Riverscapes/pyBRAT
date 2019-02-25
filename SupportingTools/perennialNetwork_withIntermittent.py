@@ -266,8 +266,6 @@ def main():
             for row in sCursor:
                 iCursor.insertRow([row[0]])
 
-    ### start of example of not limiting to named intermittent
-
     # --add intermittent flowlines that fall on gaps in the perennial network--
 
     # select intermittent flowlines that aren't part of perennial network up to this point
@@ -278,16 +276,22 @@ def main():
     int_lines_all = arcpy.CopyFeatures_management('nhd_flowline_lyr', 'in_memory/int_lines_all')
     int_lines_all_dissolve = arcpy.Dissolve_management(int_lines_all, 'in_memory/int_lines_all_dissolve', 'GNIS_NAME', '', 'SINGLE_PART', 'UNSPLIT_LINES')
 
-    # arcpy.CopyFeatures_management(int_lines_all, os.path.join(os.path.dirname(flowline_path), 'tmp_int_lines_all.shp')) # todo: delete after testing
-    # arcpy.CopyFeatures_management(int_lines_all_dissolve, os.path.join(os.path.dirname(flowline_path), 'tmp_int_lines_all_dissolve.shp')) # todo: delete after testing
-
     int_gap_lines_all = findGaps(int_lines_all, flowline_per)
     int_gap_lines_all_dissolve = findGaps(int_lines_all_dissolve, flowline_per)
 
     arcpy.SelectLayerByLocation_management('nhd_flowline_lyr', 'SHARE_A_LINE_SEGMENT_WITH', int_gap_lines_all_dissolve, '', 'NEW_SELECTION')
     arcpy.SelectLayerByLocation_management('nhd_flowline_lyr', 'SHARE_A_LINE_SEGMENT_WITH', int_gap_lines_all, '', 'REMOVE_FROM_SELECTION')
 
-    ### end of example code
+    # add itermittent gap to the perennial stream shp
+    with arcpy.da.InsertCursor(flowline_per, ["SHAPE@"]) as iCursor:
+        with arcpy.da.SearchCursor(int_gap_lines_all, ["SHAPE@"]) as sCursor:
+            for row in sCursor:
+                iCursor.insertRow([row[0]])
+
+    with arcpy.da.InsertCursor(flowline_per, ["SHAPE@"]) as iCursor:
+        with arcpy.da.SearchCursor('nhd_flowline_lyr', ["SHAPE@"]) as sCursor:
+            for row in sCursor:
+                iCursor.insertRow([row[0]])
 
     # --add artifical flowlines that fall on gaps in the perennial network--
     # --these are potential network gap lines--
