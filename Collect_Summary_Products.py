@@ -47,8 +47,9 @@ def write_capacity_sheets(workbook, stream_network, watershed_name):
 
     write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name, workbook)
     write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook)
-    write_hist_complex_worksheet()
-
+    write_hist_complex_worksheet(hist_complex_worksheet, stream_network, watershed_name, workbook)
+    write_hist_build_cap_worksheet(hist_build_cap_worksheet, stream_network, watershed_name, workbook)
+    write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, watershed_name, workbook)
 
 # Writing the side headers for complex size
 def write_categories_complex(worksheet):
@@ -241,7 +242,67 @@ def write_hist_complex_worksheet(hist_complex_worksheet, stream_network, watersh
     many_dams_length = 0.0
     total_length = 0.0
 
-    #TODO: FINISH HISTORIC COMPLEX
+    search_cursor(fields, no_dams_length, one_dam_length, some_dams_length, more_dams_length, many_dams_length, total_length, stream_network, is_complex, hist_complex_worksheet, workbook)
+
+
+def write_hist_build_cap_worksheet(hist_build_cap_worksheet, stream_network, watershed_name, workbook):
+    is_complex = False
+    write_header(hist_build_cap_worksheet, watershed_name)
+    write_categories_build_cap(hist_build_cap_worksheet)
+
+    fields = ['SHAPE@Length', "oCC_HPE"]
+    none = 0.0
+    rare = 0.0
+    occasional = 0.0
+    frequent = 0.0
+    pervasive = 0.0
+    total_length = 0.0
+
+    search_cursor(fields, none, rare, occasional, frequent, pervasive, total_length, stream_network, is_complex, hist_build_cap_worksheet, workbook)
+
+
+def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, watershed_name, workbook):
+    column_sizeA = hist_vs_exist_worksheet.set_column('A:A', 25)
+    column_sizeB = hist_vs_exist_worksheet.set_column('B:B', 20)
+    column_sizeC = hist_vs_exist_worksheet.set_column('C:C', 20)
+    column_sizeD = hist_vs_exist_worksheet.set_column('D:D', 25)
+    column_sizeE = hist_vs_exist_worksheet.set_column('E:E', 2)
+    column_sizeF = hist_vs_exist_worksheet.set_column('F:F', 20)
+    column_sizeG = hist_vs_exist_worksheet.set_column('G:G', 20)
+    column_sizeH = hist_vs_exist_worksheet.set_column('H:H', 25)
+    column_sizeI = hist_vs_exist_worksheet.set_column('I:I', 2)
+    column_sizeJ = hist_vs_exist_worksheet.set_column('J:J', 20)
+
+    row = 0
+    col = 0
+    hist_vs_exist_worksheet.write(row, col, watershed_name, column_sizeA)
+    row += 1
+    col += 2
+    hist_vs_exist_worksheet.write(row, col, "Existing Capacity")
+    col += 4
+    hist_vs_exist_worksheet.write(row, col, "Historic Capacity")
+    row += 1
+    col = 0
+    hist_vs_exist_worksheet.write(row, col, "Category")
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_sizeC)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_sizeD)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "", column_sizeE)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_sizeF)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_sizeG)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_sizeH)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "", column_sizeI)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "% Capacity of Historic", column_sizeJ)
+
 
 def write_header(worksheet, watershed_name):
     row = 0
