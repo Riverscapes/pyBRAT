@@ -86,6 +86,20 @@ def write_categories_build_cap(worksheet):
     row += 1
     worksheet.write(row, col, "Total")
 
+def write_categories_hist_vs_exist(worksheet):
+    row = 3
+    col = 0
+    worksheet.write(row, col, "Pervasive")
+    row += 1
+    worksheet.write(row, col, "Frequency")
+    row += 1
+    worksheet.write(row, col, "Occasional")
+    row += 1
+    worksheet.write(row, col, "Rare")
+    row += 1
+    worksheet.write(row, col, "None")
+    row += 1
+    worksheet.write(row, col, "Total")
 
 # Writing the data into the worksheet
 def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workbook):
@@ -272,6 +286,12 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     column_sizeH = hist_vs_exist_worksheet.set_column('H:H', 25)
     column_sizeI = hist_vs_exist_worksheet.set_column('I:I', 2)
     column_sizeJ = hist_vs_exist_worksheet.set_column('J:J', 20)
+    percent_format = workbook.add_format({'num_format': '0.00%'})
+    percent1 = hist_vs_exist_worksheet.set_column('C:C', 20, percent_format)
+    percent2 = hist_vs_exist_worksheet.set_column('G:G', 20, percent_format)
+    color = workbook.add_format()
+    color.set_bg_color('#C0C0C0')
+    hist_vs_exist_worksheet.write("A3", "", color)
 
     row = 0
     col = 0
@@ -302,6 +322,71 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     hist_vs_exist_worksheet.write(row, col, "", column_sizeI)
     col += 1
     hist_vs_exist_worksheet.write(row, col, "% Capacity of Historic", column_sizeJ)
+
+    # Categories:
+    write_categories_hist_vs_exist(hist_vs_exist_worksheet)
+
+    # Existing - Stream Length: Starting at B4 - B8 get numbers from Existing Capacity, B7 - B3
+    row = 3
+    col = 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B7)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B6)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B5)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B4)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B3)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(B4:B8)')
+
+    # Existing - % of Stream Network
+    row = 3
+    col = 2
+    hist_vs_exist_worksheet.write(row, col, '=(B4/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B5/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B6/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B7/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B8/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(C4:C8)', percent1)
+
+    # Historic - Stream Length: Starting at B4 - B8 get numbers from Existing Capacity, B7 - B3
+    row = 3
+    col = 5
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B7)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B6)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B5)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B4)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B3)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(F4:F8)')
+
+    # Historic - % of Stream Network
+    row = 3
+    col = 6
+    hist_vs_exist_worksheet.write(row, col, '=(F4/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F5/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F6/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F7/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F8/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(G4:G8)', percent2)
+
+
 
 
 def write_header(worksheet, watershed_name):
