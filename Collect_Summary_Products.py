@@ -286,6 +286,9 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     column_sizeH = hist_vs_exist_worksheet.set_column('H:H', 25)
     column_sizeI = hist_vs_exist_worksheet.set_column('I:I', 2)
     column_sizeJ = hist_vs_exist_worksheet.set_column('J:J', 20)
+    column_sizeL = hist_vs_exist_worksheet.set_column('L:L', 30)
+    column_sizeM = hist_vs_exist_worksheet.set_column('M:M', 30)
+    column_sizeN = hist_vs_exist_worksheet.set_column('N:N', 20)
     percent_format = workbook.add_format({'num_format': '0.00%'})
     percent1 = hist_vs_exist_worksheet.set_column('C:C', 20, percent_format)
     percent2 = hist_vs_exist_worksheet.set_column('G:G', 20, percent_format)
@@ -293,6 +296,9 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     color.set_bg_color('#C0C0C0')
     hist_vs_exist_worksheet.write("A3", "", color)
 
+    # TODO: Calculate Estimated Capacity for existing and historic, and how to color cells.
+
+    # Headers
     row = 0
     col = 0
     hist_vs_exist_worksheet.write(row, col, watershed_name, column_sizeA)
@@ -322,6 +328,12 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     hist_vs_exist_worksheet.write(row, col, "", column_sizeI)
     col += 1
     hist_vs_exist_worksheet.write(row, col, "% Capacity of Historic", column_sizeJ)
+    col += 2
+    hist_vs_exist_worksheet.write(row, col, "Estimated Existing Dams/km total", column_sizeL)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Estimated Historic Dams/km total", column_sizeM)
+    col += 2
+    hist_vs_exist_worksheet.write(row, col, "%loss", column_sizeN)
 
     # Categories:
     write_categories_hist_vs_exist(hist_vs_exist_worksheet)
