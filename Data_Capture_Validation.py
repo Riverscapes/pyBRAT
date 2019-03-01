@@ -229,8 +229,8 @@ def make_electivity_table(output_network):
     Makes table with totals and electivity indices for modeled capacity categories (i.e., none, rare, occasional, frequent, pervasive)
     :param output_network: The stream network output by the BRAT model with fields added from capacity tools
     """
-    brat_table = arcpy.da.TableToNumPyArray(output_network, ['ReachLen', 'e_DamCt', 'mCC_EX_CT', 'e_DamDens', 'oCC_EX', 'ExCategor'], skip_nulls=True)
-    tot_length = brat_table['ReachLen'].sum()
+    brat_table = arcpy.da.TableToNumPyArray(output_network, ['iGeo_Len', 'e_DamCt', 'mCC_EX_CT', 'e_DamDens', 'oCC_EX', 'ExCategor'], skip_nulls=True)
+    tot_length = brat_table['iGeo_Len'].sum()
     tot_surv_dams = brat_table['e_DamCt'].sum()
     tot_brat_cc = brat_table['mCC_EX_CT'].sum()
     avg_surv_dens = tot_surv_dams/(tot_length/1000)
@@ -252,9 +252,9 @@ def add_electivity_category(brat_table, category, output_table, tot_length, tot_
     Calculates values for each modeled capacity category and adds to output table
     """
     cat_tbl = brat_table[brat_table['ExCategor'] == category]
-    length = cat_tbl['ReachLen'].sum()
+    length = cat_tbl['iGeo_Len'].sum()
     length_km = length/1000
-    network_prop = 100*cat_tbl['ReachLen'].sum()/tot_length
+    network_prop = 100*cat_tbl['iGeo_Len'].sum()/tot_length
     surv_dams = cat_tbl['e_DamCt'].sum()
     brat_cc = cat_tbl['mCC_EX_CT'].sum()
     surv_dens = surv_dams/length_km
