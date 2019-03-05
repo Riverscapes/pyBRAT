@@ -170,21 +170,30 @@ def main(projPath, in_network, out_name):
 
             stream_power = row[14]
 
+            urban = landuse > 0.66
+            no_urban = not urban
+            hist_to_curr_dams_ratio = 9999
+            if curr_dams != 0:
+                hist_to_curr_dams_ratio = float(hist_dams) / float(curr_dams)
+
             # default category is 'Other'
             row[15] = 'Other'
 
-            if hist_dams >= 15 and curr_dams >= 15 and landuse < 0.66 and infrastructure_dist > 100:
-                row[15] = "Best Relocation Sites"
-            elif hist_dams >= 5:
-                if curr_dams > 1 and landuse > 0.66:
-                    row[15] = "Promote 'Living with Beaver' Solutions"
-                elif hist_dams < 15:
-                    if 5 <= curr_dams < 15 and landuse < 0.66 and infrastructure_dist > 30:
+            if hist_dams >= 15 and curr_dams >= 15 and no_urban and infrastructure_dist > 100:
+                row[15] = "Relocation and Conservation"
+            elif hist_to_curr_dams_ratio > 1:
+                if hist_dams >= 5 and curr_dams > 1 and urban:
+                    row[15] = "Living with Beaver Solutions"
+                elif infrastructure_dist > 30 and no_urban:
+                    if 5 <= hist_dams < 15 and 5 <= curr_dams < 15:
                         row[15] = "High Restoration Potential"
-                    elif 1 <= curr_dams < 5 and hist_veg - curr_veg >= 5:
-                        row[15] = "Medium Restoration - Restore Veg First"
-            elif hist_dams < 5 and curr_dams <= 1 and landuse < 0.66 and infrastructure_dist < 30:
-                row[15] =  "Not Suitable"
+                    elif 5 <= hist_dams < 15 and 1 <= curr_dams < 5:
+                        if hist_veg >= 5:
+                            row[15] = "Medium Restoration Potential - Restore Veg First"
+                        else:
+                            row[15] = "Medium Restoration Potential"
+                    elif 1 <= hist_dams < 5 and 1 <= curr_dams < 5 and hist_veg >= 5:
+                        row[15] = "Low Restoration Potential - Restore Veg First"
 
             cursor.updateRow(row)
 
