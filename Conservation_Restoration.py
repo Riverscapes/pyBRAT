@@ -41,48 +41,48 @@ def main(projPath, in_network, out_name):
 
     # use old historic capacity field names if new ones not in combined capacity output
     if 'oVC_PT' in fields:
-        ovc_hpe = 'oVC_PT'
+        hist_veg_field_name = 'oVC_PT'
     else:
-        ovc_hpe = 'oVC_HPE'
+        hist_veg_field_name = 'oVC_HPE'
 
     if 'oCC_PT' in fields:
-        occ_hpe = 'oCC_PT'
+        hist_dams_field_name = 'oCC_PT'
     else:
-        occ_hpe = 'oCC_HPE'
+        hist_dams_field_name = 'oCC_HPE'
     
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', hist_veg_field_name, 'oVC_EX', hist_dams_field_name, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
               'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', "newField"]
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
 
-            occ_ex = row[6]
-            opc_dist = row[11]
-            ipc_lu = row[12]
+            curr_dams = row[6]
+            infrastructure_dist = row[11]
+            landuse = row[12]
 
-            if occ_ex <= 0:
+            if curr_dams <= 0:
                 # if capacity is none risk is negligible
                 row[0] = "Negligible Risk"
             else:
                 # if infrastructure within 30 m or land use is high
                 # if capacity is frequent or pervasive risk is considerable
                 # if capaicty is rare or ocassional risk is some
-                if opc_dist <= 30 or ipc_lu >= 0.66:
-                    if occ_ex >= 5.0:
+                if infrastructure_dist <= 30 or landuse >= 0.66:
+                    if curr_dams >= 5.0:
                         row[0] = "Considerable Risk"
                     else:
                         row[0] = "Some Risk"
                 # if infrastructure within 30 to 100 m
                 # if capacity is frequent or pervasive risk is some
                 # if capaicty is rare or ocassional risk is minor
-                elif opc_dist <= 100:
-                    if occ_ex >= 5.0:
+                elif infrastructure_dist <= 100:
+                    if curr_dams >= 5.0:
                         row[0] = "Some Risk"
                     else:
                         row[0] = "Minor Risk"
                 # if infrastructure within 100 to 300 m or land use is 0.33 to 0.66 risk is minor
-                elif opc_dist <= 300 or ipc_lu >= 0.33:
+                elif infrastructure_dist <= 300 or landuse >= 0.33:
                     row[0] = "Minor Risk"
                 else:
                     row[0] = "Negligible Risk"
@@ -93,9 +93,9 @@ def main(projPath, in_network, out_name):
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
 
-            ovc_hpe = row[3]
-            ovc_ex = row[4]
-            occ_ex = row[6]
+            hist_veg = row[3]
+            curr_veg = row[4]
+            curr_dams = row[6]
             slope = row[7]
             landuse = row[12]
             splow = row[13]
@@ -103,9 +103,9 @@ def main(projPath, in_network, out_name):
 
             # First deal with vegetation limitations
             # Find places historically veg limited first ('oVC_HPE' None)
-            if ovc_hpe <= 0:
+            if hist_veg <= 0:
                 # 'oVC_EX' Occasional, Frequent, or Pervasive (some areas have oVC_EX > oVC_HPE)
-                if ovc_ex > 0:
+                if curr_veg > 0:
                     row[1] = 'Potential Reservoir or Landuse Conversion'
                 else:    
                     row[1] = 'Naturally Vegetation Limited'    
@@ -113,7 +113,7 @@ def main(projPath, in_network, out_name):
             elif slope > 0.23:
                row[1] = 'Slope Limited'
             # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
-            elif occ_ex <= 0:
+            elif curr_dams <= 0:
                 if landuse > 0.3:
                     row[1] = "Anthropogenically Limited"
                 elif splow >= 190 or sp2 >= 2400:
@@ -130,12 +130,12 @@ def main(projPath, in_network, out_name):
         for row in cursor:
             # 'oPBRC_UI' Negligible Risk or Minor Risk
             opbrc_ui = row[0]
-            occ_hpe = row[5]
-            occ_ex = row[6]
+            hist_dams = row[5]
+            curr_dams = row[6]
             mCC_HisDep = row[8]
             iPC_VLowLU = row[9]
             iPC_HighLU = row[10]
-            ipc_lu = row[12]
+            landuse = row[12]
 
             # default category is 'Other'
             row[2] = 'NA'
@@ -143,11 +143,11 @@ def main(projPath, in_network, out_name):
             # if it fits one of these, it'll be changed to that
             if opbrc_ui == 'Negligible Risk' or opbrc_ui == 'Minor Risk':
                 if mCC_HisDep >= 3:
-                    if occ_ex >= 5:
+                    if curr_dams >= 5:
                         row[2] = "Easiest - Low-Hanging Fruit"
-                    elif occ_hpe > 5 and occ_ex > 1 and (ipc_lu < 10 or ipc_lu > 75):
+                    elif hist_dams > 5 and curr_dams > 1 and (landuse < 10 or landuse > 75):
                         row[2] = "Straight Forward - Quick Return"
-                elif occ_hpe >= 5 and occ_ex < 1 and (ipc_lu < 10 or ipc_lu > 75):
+                elif hist_dams >= 5 and curr_dams < 1 and (landuse < 10 or landuse > 75):
                     row[2] = "Strategic - Long-Term Investment"
 
             cursor.updateRow(row)
@@ -157,38 +157,34 @@ def main(projPath, in_network, out_name):
         for row in cursor:
             # 'oPBRC_UI' Negligible Risk or Minor Risk
             opbrc_ui = row[0]
-            ovc_hpe = row[3]
-            ovc_ex = row[4]
-            occ_hpe = row[5]
-            occ_ex = row[6]
+            hist_veg = row[3]
+            curr_veg = row[4]
+            hist_dams = row[5]
+            curr_dams = row[6]
             slope = row[7]
+            hist_dep = row[8]
             iPC_VLowLU = row[9]
             iPC_HighLU = row[10]
-            opc_dist = row[11]
-            ipc_lu = row[12]
+            infrastructure_dist = row[11]
+            landuse = row[12]
 
             stream_power = row[14]
 
             # default category is 'Other'
-            row[15] = 'NA'
+            row[15] = 'Other'
 
-            if ovc_hpe <= 0:
-                #do nothing; all categories require historic veg > 0
-                pass
-            if occ_hpe >= 5:
-                if occ_ex >= 5 and ovc_ex > 0:
-                    if ipc_lu > 0.66 and opc_dist > 30 and slope < 0.23:
-                        row[15] = "Promote 'living with beaver' solutions"
-                    elif ipc_lu <= 0.66 and opc_dist > 100 and slope < 0.23:
-                        row[15] = "Best relocation sites"
-                elif 1 <= occ_ex < 5 and ovc_hpe > 0 and ipc_lu < 0.33 and opc_dist > 30:
-                    if 0 <= ovc_ex < 1:
-                        row[15] = "Restore vegetation first"
-                    elif stream_power >= 2400 or stream_power <= 190:
-                        row[15] = "Restore stream connectivity"
-            elif (occ_ex <= 1 and ovc_hpe > 0 and opc_dist < 30) or slope > 0.23:
-                row[15] = "Not suitable"
-
+            if hist_dams >= 15 and curr_dams >= 15 and landuse < 0.66 and infrastructure_dist > 100:
+                row[15] = "Best Relocation Sites"
+            elif hist_dams >= 5:
+                if curr_dams > 1 and landuse > 0.66:
+                    row[15] = "Promote 'Living with Beaver' Solutions"
+                elif hist_dams < 15:
+                    if 5 <= curr_dams < 15 and landuse < 0.66 and infrastructure_dist > 30:
+                        row[15] = "High Restoration Potential"
+                    elif 1 <= curr_dams < 5 and hist_veg - curr_veg >= 5:
+                        row[15] = "Medium Restoration - Restore Veg First"
+            elif hist_dams < 5 and curr_dams <= 1 and landuse < 0.66 and infrastructure_dist < 30:
+                row[15] =  "Not Suitable"
 
             cursor.updateRow(row)
 
