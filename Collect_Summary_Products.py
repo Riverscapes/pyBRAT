@@ -51,6 +51,41 @@ def write_capacity_sheets(workbook, stream_network, watershed_name):
     write_hist_build_cap_worksheet(hist_build_cap_worksheet, stream_network, watershed_name, workbook)
     write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, watershed_name, workbook)
 
+
+# Maggie's code
+def make_capacity_table(output_network, mcc_hpe):
+    brat_table = arcpy.da.TableToNumPyArray(output_network,
+                                            ['iGeo_Len', 'mCC_EX_CT', 'oCC_EX', 'ExCategor', 'oCC_HPE', 'mCC_HPE_CT',
+                                             'HpeCategor'], skip_nulls=True)
+    tot_length = brat_table['iGeo_Len'].sum()
+    total_ex_capacity = brat_table['mCC_EX_CT'].sum()
+    total_hpe_capacity = brat_table[mcc_hpe].sum()
+    capacity_table = []
+    ex_pervasive = add_capacity_category(brat_table, 'Existing', 'Pervasive', tot_length)
+    ex_frequent = add_capacity_category(brat_table, 'Existing', 'Frequent', tot_length)
+    ex_occasional = add_capacity_category(brat_table, 'Existing', 'Occasional', tot_length)
+    ex_rare = add_capacity_category(brat_table, 'Existing', 'Rare', tot_length)
+    ex_none = add_capacity_category(brat_table, 'Existing', 'None', tot_length)
+    hist_pervasive = add_capacity_category(brat_table, 'Historic', 'Pervasive', tot_length)
+    hist_frequent = add_capacity_category(brat_table, 'Historic', 'Frequent', tot_length)
+    hist_occasional = add_capacity_category(brat_table, 'Historic', 'Occasional', tot_length)
+    hist_rare = add_capacity_category(brat_table, 'Historic', 'Rare', tot_length)
+    hist_none = add_capacity_category(brat_table, 'Historic', 'None', tot_length)
+
+
+# Maggie's code
+def add_capacity_category(brat_table, type, category, tot_length):
+    if type == 'Existing':
+        cat_tbl = brat_table[brat_table['ExCategor'] == category]
+    else:
+        cat_tbl = brat_table[brat_table['HpeCategor'] == category]
+    length = cat_tbl['iGeo_Len'].sum()
+    length_km = length / 1000
+    network_prop = 100 * length / tot_length
+    est_dams = cat_tbl['mCC_EX_CT'].sum()
+    return length, length_km, network_prop, est_dams
+
+
 # Writing the side headers for complex size
 def write_categories_complex(worksheet):
     column_sizeA = worksheet.set_column('A:A', 30)
@@ -297,6 +332,9 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     hist_vs_exist_worksheet.write("A3", "", color)
 
     # TODO: Calculate Estimated Capacity for existing and historic, and how to color cells.
+    row = 3
+    col = 3
+    hist_vs_exist_worksheet.write(row, col, add_capacity_category())
 
     # Headers
     row = 0
