@@ -30,7 +30,7 @@ def main(in_network, dams, output_name):
     arcpy.env.overwriteOutput = True
 
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
-    copy_dams_to_inputs(proj_path, dams)
+    copy_dams_to_inputs(proj_path, dams, in_network)
 
     if output_name.endswith('.shp'):
         output_network = os.path.join(os.path.dirname(in_network), output_name)
@@ -38,11 +38,22 @@ def main(in_network, dams, output_name):
         output_network = os.path.join(os.path.dirname(in_network), output_name + ".shp")
     arcpy.Delete_management(output_network)
 
+    # add catch for old terminology
+    fields = [f.name for f in arcpy.ListFields(in_network)]
+    if 'oCC_PT' in fields:
+        occ_hpe = 'oCC_PT'
+    else:
+        occ_hpe = 'oCC_HPE'
+        
+    #remove Join_Count if already present in conservation restoration output
+    if 'Join_Count' in fields:
+        arcpy.DeleteField_management(in_network, 'Join_Count')
+        
     dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
     other_fields = ['ExCategor', 'HpeCategor', 'mCC_EXvHPE']
     new_fields = dam_fields + other_fields
 
-    input_fields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_HPE']
+    input_fields = ['SHAPE@LENGTH', 'oCC_EX', occ_hpe]
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
@@ -63,7 +74,7 @@ def main(in_network, dams, output_name):
     write_xml(proj_path, in_network, output_network, plot_name)
 
 
-def copy_dams_to_inputs(proj_path, dams):
+def copy_dams_to_inputs(proj_path, dams, in_network):
     """
     If the given dams are not in the inputs,
     :param proj_path: The path to the project root
@@ -77,12 +88,12 @@ def copy_dams_to_inputs(proj_path, dams):
     inputs_folder = find_folder(proj_path, "Inputs")
     beaver_dams_folder = find_folder(inputs_folder, "BeaverDams")
     if beaver_dams_folder is None:
-        beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")
-
+	beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")	
     new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
     new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))
+    coord_sys = arcpy.Describe(in_network).spatialReference
 
-    arcpy.Copy_management(dams, new_dam_path)
+    arcpy.Project_management(dams, new_dam_path, coord_sys)
 
 
 def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
@@ -230,7 +241,10 @@ def observed_v_predicted_plot(output_network):
         ax.set_ylim(0, round(max(y)+2), 1)
     # plot data points, regression line, 1:1 reference
     plot_points(x, y, ax)
-    plot_regression(x, y, ax)
+    if len(x) > 1:
+        plot_regression(x, y, ax)
+    else:
+        print "No regression line plotted - only one reach with dams observed"
     ax.plot([0, 10], [0, 10], color='blue', linewidth=1.5, linestyle=":", label='Line of Perfect Agreement')
     # add legend
     legend = plt.legend(loc="upper left", bbox_to_anchor=(1,1))
@@ -262,9 +276,12 @@ def clean_values(output_network):
 
 def plot_points(x, y, axis):
     # generate some random jitter between 0 and 1
-    jitter = (np.random.rand(*x.shape)-0.5)/x.std()
+    if len(x)>0 and x.std() != 0:
+	jitter = (np.random.rand(*x.shape)-0.5)/x.std()
+    else:
+        jitter = (np.random.rand(*x.shape)-0.5)/10
     # plot points with predicted dams < observed dams in red
-    red_x = x[np.greater(y, x)== True] 
+    red_x = x[np.greater(y, x)== True]
     red_y = y[np.greater(y, x)== True]
     jitter_red = jitter[np.greater(y, x)==True]
     jitter_red_x = np.add(red_x, jitter_red)
@@ -317,3 +334,7 @@ def write_xml(proj_path, in_network, out_network, plot_name):
     xml_file.write()
 
 
+if __name__ == "__main__":
+    main(sys.argv[1],
+         sys.argv[2],
+         sys.argv[3])

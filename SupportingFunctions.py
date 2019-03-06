@@ -12,6 +12,11 @@ import arcpy
 import uuid
 
 
+def field_is_in_network(stream_network, field_name):
+    fields = [field.name for field in arcpy.ListFields(stream_network)]
+    return field_name in fields
+
+
 def find_folder(folder_location, folder_name):
     """
     If the folder exists, returns it. Otherwise, raises an error
