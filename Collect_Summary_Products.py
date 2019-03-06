@@ -46,30 +46,192 @@ def write_capacity_sheets(workbook, stream_network, watershed_name):
     hist_vs_exist_worksheet = workbook.add_worksheet("Existing and Historic Capacity")
 
     write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name, workbook)
+    write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook)
+    write_hist_complex_worksheet(hist_complex_worksheet, stream_network, watershed_name, workbook)
+    write_hist_build_cap_worksheet(hist_build_cap_worksheet, stream_network, watershed_name, workbook)
+    write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, watershed_name, workbook)
+
+
+# Maggie's code
+def make_capacity_table(output_network, mcc_hpe):
+    brat_table = arcpy.da.TableToNumPyArray(output_network,
+                                            ['iGeo_Len', 'mCC_EX_CT', 'oCC_EX', 'ExCategor', 'oCC_HPE', 'mCC_HPE_CT',
+                                             'HpeCategor'], skip_nulls=True)
+    tot_length = brat_table['iGeo_Len'].sum()
+    total_ex_capacity = brat_table['mCC_EX_CT'].sum()
+    total_hpe_capacity = brat_table[mcc_hpe].sum()
+    capacity_table = []
+    ex_pervasive = add_capacity_category(brat_table, 'Existing', 'Pervasive', tot_length)
+    ex_frequent = add_capacity_category(brat_table, 'Existing', 'Frequent', tot_length)
+    ex_occasional = add_capacity_category(brat_table, 'Existing', 'Occasional', tot_length)
+    ex_rare = add_capacity_category(brat_table, 'Existing', 'Rare', tot_length)
+    ex_none = add_capacity_category(brat_table, 'Existing', 'None', tot_length)
+    hist_pervasive = add_capacity_category(brat_table, 'Historic', 'Pervasive', tot_length)
+    hist_frequent = add_capacity_category(brat_table, 'Historic', 'Frequent', tot_length)
+    hist_occasional = add_capacity_category(brat_table, 'Historic', 'Occasional', tot_length)
+    hist_rare = add_capacity_category(brat_table, 'Historic', 'Rare', tot_length)
+    hist_none = add_capacity_category(brat_table, 'Historic', 'None', tot_length)
+
+
+# Maggie's code
+def add_capacity_category(brat_table, type, category, tot_length):
+    if type == 'Existing':
+        cat_tbl = brat_table[brat_table['ExCategor'] == category]
+    else:
+        cat_tbl = brat_table[brat_table['HpeCategor'] == category]
+    length = cat_tbl['iGeo_Len'].sum()
+    length_km = length / 1000
+    network_prop = 100 * length / tot_length
+    est_dams = cat_tbl['mCC_EX_CT'].sum()
+    return length, length_km, network_prop, est_dams
+
+
+# Writing the side headers for complex size
+def write_categories_complex(worksheet):
+    column_sizeA = worksheet.set_column('A:A', 30)
+    row = 2
+    col = 0
+    worksheet.write(row, col, "No Dams", column_sizeA)
+    row += 1
+    worksheet.write(row, col, "Single Dam")
+    row += 1
+    worksheet.write(row, col, "Small Complex (1-3 Dams)")
+    row += 1
+    worksheet.write(row, col, "Medium Complex (3-5 dams)")
+    row += 1
+    worksheet.write(row, col, "Large Complex (>5 dams)")
+    row += 1
+    worksheet.write(row, col, "Total")
+
+
+# Writing the side headers for build capacity
+def write_categories_build_cap(worksheet):
+    column_sizeA = worksheet.set_column('A:A', 30)
+    row = 2
+    col = 0
+    worksheet.write(row, col, "None:0", column_sizeA)
+    row += 1
+    worksheet.write(row, col, "Rare: < 1")
+    row += 1
+    worksheet.write(row, col, "Occasional: 2 - 5")
+    row += 1
+    worksheet.write(row, col, "Frequent: 6 - 15 ")
+    row += 1
+    worksheet.write(row, col, "Pervasive: 16 - 40")
+    row += 1
+    worksheet.write(row, col, "Total")
+
+def write_categories_hist_vs_exist(worksheet):
+    row = 3
+    col = 0
+    worksheet.write(row, col, "Pervasive")
+    row += 1
+    worksheet.write(row, col, "Frequency")
+    row += 1
+    worksheet.write(row, col, "Occasional")
+    row += 1
+    worksheet.write(row, col, "Rare")
+    row += 1
+    worksheet.write(row, col, "None")
+    row += 1
+    worksheet.write(row, col, "Total")
+
+# Writing the data into the worksheet
+def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workbook):
+    KM_TO_MILES_RATIO = 0.6214
+    # Set the column size.
+    column_sizeB = worksheet.set_column('B:B', 20)
+    column_sizeC = worksheet.set_column('C:C', 20)
+    # Adds the percent sign and puts it in percent form.
+    percent_format = workbook.add_format({'num_format': '0.00%'})
+    percent = worksheet.set_column('D:D', 10, percent_format)
+
+    col = 1
+    row = 2
+    worksheet.write(row, col, data1, column_sizeB)
+    col += 1
+    worksheet.write(row, col, data1 * KM_TO_MILES_RATIO, column_sizeC)
+    col += 1
+    worksheet.write(row, col, data1 / total_length, percent)
+
+    col = 1
+    row = 3
+    worksheet.write(row, col, data2)
+    col += 1
+    worksheet.write(row, col, data2 * KM_TO_MILES_RATIO)
+    col += 1
+    worksheet.write(row, col, data2 / total_length, percent)
+
+    col = 1
+    row = 4
+    worksheet.write(row, col, data3)
+    col += 1
+    worksheet.write(row, col, data3 * KM_TO_MILES_RATIO)
+    col += 1
+    worksheet.write(row, col, data3 / total_length, percent)
+
+    col = 1
+    row = 5
+    worksheet.write(row, col, data4)
+    col += 1
+    worksheet.write(row, col, data4 * KM_TO_MILES_RATIO)
+    col += 1
+    worksheet.write(row, col, data4 / total_length, percent)
+
+    col = 1
+    row = 6
+    worksheet.write(row, col, data5)
+    col += 1
+    worksheet.write(row, col, data5 * KM_TO_MILES_RATIO)
+    col += 1
+    worksheet.write(row, col, data5 / total_length, percent)
+
+    # Calculating Total for Stream Length(Km)
+    worksheet.write(7, 1, '=SUM(B3:B7)')
+    # Calculating Total for Stream Length (mi)
+    worksheet.write(7, 2, '=SUM(C3:C7)')
+    # Calculating total percentage.
+    worksheet.write(7, 3, '=SUM(D3:D7)', percent)
+
+
+# Getting the data for Complex Size
+def search_cursor(fields, data1, data2, data3, data4, data5, total, stream_network, is_complex, worksheet, workbook):
+    if is_complex:
+        with arcpy.da.SearchCursor(stream_network, fields) as cursor:
+            for length, ex_dam_complex_size in cursor:
+                total += length
+                if ex_dam_complex_size == 0:
+                    data1 += length
+                elif ex_dam_complex_size <= 1:
+                    data2 += length
+                elif ex_dam_complex_size <= 3:
+                    data3 += length
+                elif ex_dam_complex_size <= 5:
+                    data4 += length
+                else:
+                    data5 += length
+    else:
+        with arcpy.da.SearchCursor(stream_network, fields) as cursor:
+            for length, ex_build_cap_size in cursor:
+                total += length
+                if ex_build_cap_size == 0:
+                    data1 += length
+                elif ex_build_cap_size <= 1:
+                    data2 += length
+                elif ex_build_cap_size <= 5:
+                    data3 += length
+                elif ex_build_cap_size <= 15:
+                    data4 += length
+                elif ex_build_cap_size <= 40:
+                    data5 += length
+    write_data(data1, data2, data3, data4, data5, total, worksheet, workbook)
 
 
 def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name, workbook):
+    is_complex = True
+
     write_header(exist_complex_worksheet, watershed_name)
-    KM_TO_MILES_RATIO = 0.6214
-
-    # Set the column size.
-    column_sizeA = exist_complex_worksheet.set_column('A:A', 30)
-    column_sizeB = exist_complex_worksheet.set_column('B:B', 20)
-    column_sizeC = exist_complex_worksheet.set_column('C:C', 20)
-
-    row = 2
-    col = 0
-    exist_complex_worksheet.write(row, col, "No Dams", column_sizeA)
-    row += 1
-    exist_complex_worksheet.write(row, col, "Single Dam")
-    row += 1
-    exist_complex_worksheet.write(row, col, "Small Complex (1-3 Dams)")
-    row += 1
-    exist_complex_worksheet.write(row, col, "Medium Complex (3-5 dams)")
-    row += 1
-    exist_complex_worksheet.write(row, col, "Large Complex (>5 dams)")
-    row += 1
-    exist_complex_worksheet.write(row, col, "Total")
+    write_categories_complex(exist_complex_worksheet)
 
     fields = ['SHAPE@Length', "mCC_EX_CT"]
     no_dams_length = 0.0
@@ -79,76 +241,202 @@ def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, water
     many_dams_length = 0.0
     total_length = 0.0
 
-    with arcpy.da.SearchCursor(stream_network, fields) as cursor:
-        for length, ex_dam_complex_size in cursor:
-            total_length += length
-            if ex_dam_complex_size == 0:
-                no_dams_length += length
-            elif ex_dam_complex_size <= 1:
-                one_dam_length += length
-            elif ex_dam_complex_size <= 3:
-                some_dams_length += length
-            elif ex_dam_complex_size <= 5:
-                more_dams_length += length
-            else:
-                many_dams_length += length
+    search_cursor(fields, no_dams_length, one_dam_length, some_dams_length, more_dams_length, many_dams_length, total_length, stream_network, is_complex, exist_complex_worksheet, workbook)
 
-    # Adds the percent sign and puts it in percent form.
+    # Writing the chart
+    # chart = workbook.add_chart({'type': 'bar'})
+    # chart.add_series({
+    #    'name': '=Sheet1!$A$1',
+    #    'categories': '=Sheet1!$A$3:$A$7',
+    #    'values': '=Sheet1!$C$3:$C$7',
+    # })
+
+    # chart.add_series({
+    #    'name': ['Sheet1', 0, 2],
+    #   'categories': ['Sheet1', 1, 0, 6, 0],
+    #    'values': ['Sheet1', 1, 2, 6, 2],
+    # })
+
+    # chart.set_title({'name': '=Sheet!$A$1'})
+    # exist_complex_worksheet.insert_chart('G3', chart)
+
+
+def write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook):
+    is_complex = False
+    write_header(exist_build_cap_worksheet, watershed_name)
+
+    write_categories_build_cap(exist_build_cap_worksheet)
+
+    fields = ['SHAPE@Length', "oCC_EX"]
+    none = 0.0
+    rare = 0.0
+    occasional = 0.0
+    frequent = 0.0
+    pervasive = 0.0
+    total_length = 0.0
+
+    search_cursor(fields, none, rare, occasional, frequent, pervasive, total_length, stream_network, is_complex, exist_build_cap_worksheet, workbook)
+
+
+def write_hist_complex_worksheet(hist_complex_worksheet, stream_network, watershed_name, workbook):
+    is_complex = True
+    write_header(hist_complex_worksheet, watershed_name)
+    write_categories_complex(hist_complex_worksheet)
+
+    fields = ['SHAPE@Length', "mCC_HPE_CT"]
+    no_dams_length = 0.0
+    one_dam_length = 0.0
+    some_dams_length = 0.0
+    more_dams_length = 0.0
+    many_dams_length = 0.0
+    total_length = 0.0
+
+    search_cursor(fields, no_dams_length, one_dam_length, some_dams_length, more_dams_length, many_dams_length, total_length, stream_network, is_complex, hist_complex_worksheet, workbook)
+
+
+def write_hist_build_cap_worksheet(hist_build_cap_worksheet, stream_network, watershed_name, workbook):
+    is_complex = False
+    write_header(hist_build_cap_worksheet, watershed_name)
+    write_categories_build_cap(hist_build_cap_worksheet)
+
+    fields = ['SHAPE@Length', "oCC_HPE"]
+    none = 0.0
+    rare = 0.0
+    occasional = 0.0
+    frequent = 0.0
+    pervasive = 0.0
+    total_length = 0.0
+
+    search_cursor(fields, none, rare, occasional, frequent, pervasive, total_length, stream_network, is_complex, hist_build_cap_worksheet, workbook)
+
+
+def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, watershed_name, workbook):
+    column_sizeA = hist_vs_exist_worksheet.set_column('A:A', 25)
+    column_sizeB = hist_vs_exist_worksheet.set_column('B:B', 20)
+    column_sizeC = hist_vs_exist_worksheet.set_column('C:C', 20)
+    column_sizeD = hist_vs_exist_worksheet.set_column('D:D', 25)
+    column_sizeE = hist_vs_exist_worksheet.set_column('E:E', 2)
+    column_sizeF = hist_vs_exist_worksheet.set_column('F:F', 20)
+    column_sizeG = hist_vs_exist_worksheet.set_column('G:G', 20)
+    column_sizeH = hist_vs_exist_worksheet.set_column('H:H', 25)
+    column_sizeI = hist_vs_exist_worksheet.set_column('I:I', 2)
+    column_sizeJ = hist_vs_exist_worksheet.set_column('J:J', 20)
+    column_sizeL = hist_vs_exist_worksheet.set_column('L:L', 30)
+    column_sizeM = hist_vs_exist_worksheet.set_column('M:M', 30)
+    column_sizeN = hist_vs_exist_worksheet.set_column('N:N', 20)
     percent_format = workbook.add_format({'num_format': '0.00%'})
-    percent = exist_complex_worksheet.set_column('D:D', 10, percent_format)
+    percent1 = hist_vs_exist_worksheet.set_column('C:C', 20, percent_format)
+    percent2 = hist_vs_exist_worksheet.set_column('G:G', 20, percent_format)
+    color = workbook.add_format()
+    color.set_bg_color('#C0C0C0')
+    hist_vs_exist_worksheet.write("A3", "", color)
 
-    # no_dams_length
-    col = 1
-    row = 2
-    # no_dams_length cannot be a string. Won't be able to calculate totals.
-    exist_complex_worksheet.write(row, col, no_dams_length, column_sizeB)
-    col += 1
-    exist_complex_worksheet.write(row, col, no_dams_length * KM_TO_MILES_RATIO, column_sizeC)
-    col += 1
-    exist_complex_worksheet.write(row, col, no_dams_length / total_length, percent)
-
-    # one_dam_length
-    col = 1
+    # TODO: Calculate Estimated Capacity for existing and historic, and how to color cells.
     row = 3
-    exist_complex_worksheet.write(row, col, one_dam_length)
-    col += 1
-    exist_complex_worksheet.write(row, col, one_dam_length * KM_TO_MILES_RATIO)
-    col += 1
-    exist_complex_worksheet.write(row, col, one_dam_length / total_length, percent)
+    col = 3
+    hist_vs_exist_worksheet.write(row, col, add_capacity_category())
 
-    # some_dams_length
+    # Headers
+    row = 0
+    col = 0
+    hist_vs_exist_worksheet.write(row, col, watershed_name, column_sizeA)
+    row += 1
+    col += 2
+    hist_vs_exist_worksheet.write(row, col, "Existing Capacity")
+    col += 4
+    hist_vs_exist_worksheet.write(row, col, "Historic Capacity")
+    row += 1
+    col = 0
+    hist_vs_exist_worksheet.write(row, col, "Category")
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_sizeC)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_sizeD)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "", column_sizeE)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_sizeF)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_sizeG)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_sizeH)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "", column_sizeI)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "% Capacity of Historic", column_sizeJ)
+    col += 2
+    hist_vs_exist_worksheet.write(row, col, "Estimated Existing Dams/km total", column_sizeL)
+    col += 1
+    hist_vs_exist_worksheet.write(row, col, "Estimated Historic Dams/km total", column_sizeM)
+    col += 2
+    hist_vs_exist_worksheet.write(row, col, "%loss", column_sizeN)
+
+    # Categories:
+    write_categories_hist_vs_exist(hist_vs_exist_worksheet)
+
+    # Existing - Stream Length: Starting at B4 - B8 get numbers from Existing Capacity, B7 - B3
+    row = 3
     col = 1
-    row = 4
-    exist_complex_worksheet.write(row, col, some_dams_length)
-    col += 1
-    exist_complex_worksheet.write(row, col, some_dams_length * KM_TO_MILES_RATIO)
-    col += 1
-    exist_complex_worksheet.write(row, col, some_dams_length / total_length, percent)
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B7)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B6)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B5)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B4)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Existing Dam Building Capacity'!B3)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(B4:B8)')
 
-    # more_dams_length
-    col = 1
-    row = 5
-    exist_complex_worksheet.write(row, col, more_dams_length)
-    col += 1
-    exist_complex_worksheet.write(row, col, more_dams_length * KM_TO_MILES_RATIO)
-    col += 1
-    exist_complex_worksheet.write(row, col, more_dams_length / total_length, percent)
+    # Existing - % of Stream Network
+    row = 3
+    col = 2
+    hist_vs_exist_worksheet.write(row, col, '=(B4/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B5/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B6/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B7/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(B8/$B$9)', percent1)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(C4:C8)', percent1)
 
-    # many_dams_length
-    col = 1
-    row = 6
-    exist_complex_worksheet.write(row, col, many_dams_length)
-    col += 1
-    exist_complex_worksheet.write(row, col, many_dams_length * KM_TO_MILES_RATIO)
-    col += 1
-    exist_complex_worksheet.write(row, col, many_dams_length / total_length, percent)
+    # Historic - Stream Length: Starting at B4 - B8 get numbers from Existing Capacity, B7 - B3
+    row = 3
+    col = 5
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B7)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B6)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B5)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B4)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, "=INT('Historic Dam Building Capacity'!B3)")
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(F4:F8)')
 
-    # Calculating Total for Stream Length(Km)
-    exist_complex_worksheet.write(7, 1, '=SUM(B3:B7)')
-    # Calculating Total for Stream Length (mi)
-    exist_complex_worksheet.write(7, 2, '=SUM(C3:C7)')
-    # Calculating total percentage. (Unsure if we need to add up all the percentages)
-    exist_complex_worksheet.write(7, 3, '=SUM(D3:D7)', percent)
+    # Historic - % of Stream Network
+    row = 3
+    col = 6
+    hist_vs_exist_worksheet.write(row, col, '=(F4/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F5/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F6/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F7/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=(F8/$F$9)', percent2)
+    row += 1
+    hist_vs_exist_worksheet.write(row, col, '=SUM(G4:G8)', percent2)
+
+
 
 
 def write_header(worksheet, watershed_name):
