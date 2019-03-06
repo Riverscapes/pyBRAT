@@ -184,7 +184,7 @@ def main(projPath, in_network, out_name):
             elif hist_to_curr_dams_ratio > 1:
                 if hist_dams >= 5 and curr_dams > 1 and urban:
                     row[15] = "Living with Beaver Solutions"
-                elif infrastructure_dist > 30 and no_urban:
+                elif no_urban:
                     if 5 <= hist_dams < 15 and 5 <= curr_dams < 15:
                         row[15] = "High Restoration Potential"
                     elif 5 <= hist_dams < 15 and 1 <= curr_dams < 5:
@@ -192,8 +192,11 @@ def main(projPath, in_network, out_name):
                             row[15] = "Medium Restoration Potential - Restore Veg First"
                         else:
                             row[15] = "Medium Restoration Potential"
-                    elif 1 <= hist_dams < 5 and 1 <= curr_dams < 5 and hist_veg >= 5:
-                        row[15] = "Low Restoration Potential - Restore Veg First"
+                    elif 1 <= hist_dams < 5 and 1 <= curr_dams < 5:
+                        if hist_veg >= 5:
+                            row[15] = "Low Restoration Potential - Restore Veg First"
+                        else:
+                            row[15] = "Low Restoration Potential - Restore Veg First"
 
             cursor.updateRow(row)
 
