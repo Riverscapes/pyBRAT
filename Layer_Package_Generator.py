@@ -472,6 +472,7 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     existing_capacity_folder = find_folder(capacity_folder, "ExistingCapacity")
     historic_capacity_folder = find_folder(capacity_folder, "HistoricCapacity")
     management_folder = find_folder(analyses_folder, "Management")
+    validation_folder = find_folder(analyses_folder, "Validation")
 
     existing_capacity_layers = find_layers_in_folder(existing_capacity_folder)
     existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd)
@@ -479,9 +480,11 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd)
     management_layers = find_layers_in_folder(management_folder)
     management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd)
-
+    validation_layers = find_layers_in_folder(validation_folder)
+    validation_layer = group_layers(empty_group_layer, "Beaver Dam Survey Data", validation_layers, df, mxd)
+    
     capacity_layer = group_layers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df, mxd)
-    output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer], df, mxd)
+    output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer, validation_layer], df, mxd)
 
     return output_layer
 
