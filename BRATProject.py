@@ -110,9 +110,17 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
               canal_destinations, ownership_destinations, beaver_dams_destinations, perennial_stream_destinations)
 
-    make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations, topo_folder, landuse_destinations,
+    try:
+        make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations, topo_folder, landuse_destinations,
                 valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations,
                 ownership_destinations, perennial_stream_destinations)
+    except arcpy.ExecuteError as err:
+        if err[0][6:12] == "000873":
+            arcpy.AddError(err)
+            arcpy.AddMessage("The error above prevented us from creating layers")
+        else:
+            raise arcpy.ExecuteError(err)
+
 
 
 def make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations, topo_folder, landuse_destinations,
