@@ -30,7 +30,7 @@ def main(in_network, dams, output_name):
     arcpy.env.overwriteOutput = True
 
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
-    copy_dams_to_inputs(proj_path, dams)
+    copy_dams_to_inputs(proj_path, dams, in_network)
 
     if output_name.endswith('.shp'):
         output_network = os.path.join(os.path.dirname(in_network), output_name)
@@ -38,11 +38,22 @@ def main(in_network, dams, output_name):
         output_network = os.path.join(os.path.dirname(in_network), output_name + ".shp")
     arcpy.Delete_management(output_network)
 
+    # add catch for old terminology
+    fields = [f.name for f in arcpy.ListFields(in_network)]
+    if 'oCC_PT' in fields:
+        occ_hpe = 'oCC_PT'
+    else:
+        occ_hpe = 'oCC_HPE'
+        
+    #remove Join_Count if already present in conservation restoration output
+    if 'Join_Count' in fields:
+        arcpy.DeleteField_management(in_network, 'Join_Count')
+        
     dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
     other_fields = ['ExCategor', 'HpeCategor', 'mCC_EXvHPE']
     new_fields = dam_fields + other_fields
 
-    input_fields = ['SHAPE@LENGTH', 'oCC_EX', 'oCC_HPE']
+    input_fields = ['SHAPE@LENGTH', 'oCC_EX', occ_hpe]
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
@@ -60,10 +71,12 @@ def main(in_network, dams, output_name):
     if dams:
         plot_name = observed_v_predicted_plot(output_network)
 
+    make_electivity_table(output_network)
+
     write_xml(proj_path, in_network, output_network, plot_name)
 
 
-def copy_dams_to_inputs(proj_path, dams):
+def copy_dams_to_inputs(proj_path, dams, in_network):
     """
     If the given dams are not in the inputs,
     :param proj_path: The path to the project root
@@ -77,12 +90,12 @@ def copy_dams_to_inputs(proj_path, dams):
     inputs_folder = find_folder(proj_path, "Inputs")
     beaver_dams_folder = find_folder(inputs_folder, "BeaverDams")
     if beaver_dams_folder is None:
-        beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")
-
+	beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")	
     new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
     new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))
+    coord_sys = arcpy.Describe(in_network).spatialReference
 
-    arcpy.Copy_management(dams, new_dam_path)
+    arcpy.Project_management(dams, new_dam_path, coord_sys)
 
 
 def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
@@ -211,6 +224,45 @@ def clean_up_fields(brat_network, out_network, new_fields):
         arcpy.DeleteField_management(out_network, remove_fields)
 
 
+def make_electivity_table(output_network):
+    """
+    Makes table with totals and electivity indices for modeled capacity categories (i.e., none, rare, occasional, frequent, pervasive)
+    :param output_network: The stream network output by the BRAT model with fields added from capacity tools
+    """
+    brat_table = arcpy.da.TableToNumPyArray(output_network, ['iGeo_Len', 'e_DamCt', 'mCC_EX_CT', 'e_DamDens', 'oCC_EX', 'ExCategor'], skip_nulls=True)
+    tot_length = brat_table['iGeo_Len'].sum()
+    tot_surv_dams = brat_table['e_DamCt'].sum()
+    tot_brat_cc = brat_table['mCC_EX_CT'].sum()
+    avg_surv_dens = tot_surv_dams/(tot_length/1000)
+    avg_brat_dens = tot_brat_cc/(tot_length/1000)
+    electivity_table = []
+    electivity_table.append(['', 'm', 'km', '%', '# of dams', '# of dams', 'dams/km', 'dams/km', '%', ''])
+    add_electivity_category(brat_table, 'None', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Rare', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Occasional', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Frequent', electivity_table, tot_length, tot_surv_dams)
+    add_electivity_category(brat_table, 'Pervasive', electivity_table, tot_length, tot_surv_dams)
+    electivity_table.append(['Total', tot_length, tot_length/1000, 'NA', tot_surv_dams, tot_brat_cc, avg_surv_dens, avg_brat_dens, tot_surv_dams/tot_brat_cc, 'NA'])
+    out_csv = os.path.join(os.path.dirname(output_network), 'electivity.csv')
+    np.savetxt(out_csv, electivity_table, fmt = '%s', delimiter=',', header = "Segment Type, Stream Length, Stream Length, % of Drainage Network, Surveyed Dams, BRAT Estimated Capacity, Average Surveyed Dam Density, Average BRAT Predicted Density, % of Modeled Capacity, Electivity Index")
+
+
+def add_electivity_category(brat_table, category, output_table, tot_length, tot_surv_dams):
+    """
+    Calculates values for each modeled capacity category and adds to output table
+    """
+    cat_tbl = brat_table[brat_table['ExCategor'] == category]
+    length = cat_tbl['iGeo_Len'].sum()
+    length_km = length/1000
+    network_prop = 100*cat_tbl['iGeo_Len'].sum()/tot_length
+    surv_dams = cat_tbl['e_DamCt'].sum()
+    brat_cc = cat_tbl['mCC_EX_CT'].sum()
+    surv_dens = surv_dams/length_km
+    brat_dens = brat_cc/length_km
+    prop_mod_cap = 100*surv_dams/(brat_cc+0.000001)
+    electivity = (surv_dams/tot_surv_dams)/(network_prop/100)
+    output_table.append([category, length, length_km, network_prop, surv_dams, brat_cc, surv_dens, brat_dens, prop_mod_cap, electivity])
+
 
 def observed_v_predicted_plot(output_network):
     x, y = clean_values(output_network)
@@ -230,7 +282,10 @@ def observed_v_predicted_plot(output_network):
         ax.set_ylim(0, round(max(y)+2), 1)
     # plot data points, regression line, 1:1 reference
     plot_points(x, y, ax)
-    plot_regression(x, y, ax)
+    if len(x) > 1:
+        plot_regression(x, y, ax)
+    else:
+        print "No regression line plotted - only one reach with dams observed"
     ax.plot([0, 10], [0, 10], color='blue', linewidth=1.5, linestyle=":", label='Line of Perfect Agreement')
     # add legend
     legend = plt.legend(loc="upper left", bbox_to_anchor=(1,1))
@@ -262,9 +317,12 @@ def clean_values(output_network):
 
 def plot_points(x, y, axis):
     # generate some random jitter between 0 and 1
-    jitter = (np.random.rand(*x.shape)-0.5)/x.std()
+    if len(x)>0 and x.std() != 0:
+	jitter = (np.random.rand(*x.shape)-0.5)/x.std()
+    else:
+        jitter = (np.random.rand(*x.shape)-0.5)/10
     # plot points with predicted dams < observed dams in red
-    red_x = x[np.greater(y, x)== True] 
+    red_x = x[np.greater(y, x)== True]
     red_y = y[np.greater(y, x)== True]
     jitter_red = jitter[np.greater(y, x)==True]
     jitter_red_x = np.add(red_x, jitter_red)
@@ -317,3 +375,7 @@ def write_xml(proj_path, in_network, out_network, plot_name):
     xml_file.write()
 
 
+if __name__ == "__main__":
+    main(sys.argv[1],
+         sys.argv[2],
+         sys.argv[3])
