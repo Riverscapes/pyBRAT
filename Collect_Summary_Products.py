@@ -198,7 +198,7 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
 def chart(workbook, worksheet):
     bar_chart = workbook.add_chart({'type': 'bar'})
     bar_chart.add_series({
-        'name': '=Sheet1!$A1',
+        'name': '=Sheet1!$A$1',
         'categories': '=Sheet1!$A$3:$A$7',
         'values': '=Sheet1!$C$3:$C$7',
     })
@@ -255,15 +255,29 @@ def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, water
     search_cursor(fields, no_dams_length, one_dam_length, some_dams_length, more_dams_length, many_dams_length, total_length, stream_network, is_complex, exist_complex_worksheet, workbook)
 
     # Writing the chart
-    chart(workbook, exist_complex_worksheet)
+    # chart(workbook, exist_complex_worksheet)
+
+    bar_chart = workbook.add_chart({'type': 'bar'})
+    bar_chart.add_series({
+        'name': '=Sheet1!$A$1',
+        'categories': '=Sheet1!$A$3:$A$7',
+        'values': '=Sheet1!$C$3:$C$7',
+    })
+
+    bar_chart.add_series({
+        'name': ['Sheet1', 0, 0],
+        'categories': ['Sheet1', 1, 0, 6, 0],
+        'values': ['Sheet1', 1, 2, 6, 2],
+    })
+
+    bar_chart.set_title({'name': '=Sheet1!$A$1'})
+    bar_chart.set_x_axis({'name': 'Test number'})
+    bar_chart.set_y_axis({'name': 'Sample length (mm)'})
 
 
-    # chart.add_series({
-    #    'name': ['Sheet1', 0, 2],
-    #   'categories': ['Sheet1', 1, 0, 6, 0],
-    #    'values': ['Sheet1', 1, 2, 6, 2],
-    # })
-    # chart.set_title({'name': '=Sheet!$A$1'})
+    # bar_chart.set_style(100) ??
+
+    exist_complex_worksheet.insert_chart('G3', bar_chart)
 
 
 def write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook):
@@ -339,7 +353,6 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     # TODO: Calculate Estimated Capacity for existing and historic.
     row = 3
     col = 3
-
 
     # Headers
     row = 0

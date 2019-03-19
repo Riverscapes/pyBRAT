@@ -815,7 +815,8 @@ class Collect_Summary_Products_tool(object):
             name="clipping_network",
             datatype="DEFeatureClass",
             parameterType="Required",
-            direction="Input")
+            direction="Input",
+            multiValue=True)
 
         param2 = arcpy.Parameter(
             displayName="Watershed Name",
