@@ -54,7 +54,78 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     land_use_folder = make_optional_input_folder(landuse, anthropogenic_folder, "_LandUse")
     land_ownership_folder = make_optional_input_folder(ownership, anthropogenic_folder, "_LandOwnership")
 
+    # add the existing veg inputs to project
+    ex_veg_destinations = copy_multi_input_to_folder(ex_veg_folder, ex_veg, "Ex_Veg", is_raster=True)
 
+
+    # add the historic veg inputs to project
+    hist_veg_destinations = copy_multi_input_to_folder(hist_veg_folder, hist_veg, "Hist_Veg", is_raster=True)
+
+
+    # add the network inputs to project
+    network_destinations = copy_multi_input_to_folder(network_folder, network, "Network", is_raster=False)
+
+    # add the DEM inputs to the project
+    dem_destinations = copy_multi_input_to_folder(topo_folder, DEM, "DEM", is_raster=True)
+
+    # add landuse raster to the project
+    landuse_destinations = []
+    if landuse is not None:
+        landuse_destinations = copy_multi_input_to_folder(land_use_folder, landuse, "Land_Use", is_raster=True)
+
+    # add the conflict inputs to the project
+    valley_bottom_destinations = []
+    if valley is not None:
+        valley_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
+
+    # add road layers to the project
+    road_destinations = []
+    if road is not None:
+        road_destinations = copy_multi_input_to_folder(road_folder, road, "Roads", is_raster=False)
+
+    # add railroad layers to the project
+    rr_destinations = []
+    if rr is not None:
+        rr_destinations = copy_multi_input_to_folder(railroad_folder, rr, "Railroads", is_raster=False)
+
+    # add canal layers to the project
+    canal_destinations = []
+    if canal is not None:
+        canal_destinations = copy_multi_input_to_folder(canals_folder, canal, "Canals", is_raster=False)
+
+    # add land ownership layers to the project
+    ownership_destinations = []
+    if ownership is not None:
+        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land Ownership", is_raster=False)
+
+    beaver_dams_destinations = []
+    if beaver_dams is not None:
+        beaver_dams_destinations = copy_multi_input_to_folder(beaver_dam_folder, beaver_dams, "Beaver_Dam", is_raster=False)
+
+    perennial_stream_destinations = []
+    if perennial_stream is not None:
+        perennial_stream_destinations = copy_multi_input_to_folder(perennial_stream_folder, perennial_stream, "PerennialStream", is_raster=False)
+
+    write_xml(proj_path, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
+              dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
+              canal_destinations, ownership_destinations, beaver_dams_destinations, perennial_stream_destinations)
+
+    try:
+        make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations, topo_folder, landuse_destinations,
+                valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations,
+                ownership_destinations, perennial_stream_destinations)
+    except arcpy.ExecuteError as err:
+        if err[0][6:12] == "000873":
+            arcpy.AddError(err)
+            arcpy.AddMessage("The error above prevented us from creating layers")
+        else:
+            raise arcpy.ExecuteError(err)
+
+
+
+def make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations, topo_folder, landuse_destinations,
+                valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations,
+                ownership_destinations, perennial_stream_destinations):
     source_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(source_code_folder, 'BRATSymbology')
 
@@ -81,81 +152,41 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     flow_direction_symbology = os.path.join(symbology_folder, "Network_FlowDirection.lyr")
     perennial_stream_symbology = os.path.join(symbology_folder, "Perennial.lyr")
 
-    # add the existing veg inputs to project
-    ex_veg_destinations = copy_multi_input_to_folder(ex_veg_folder, ex_veg, "Ex_Veg", is_raster=True)
     make_input_layers(ex_veg_destinations, "Existing Vegetation Suitability for Beaver Dam Building", symbology_layer=ex_veg_suitability_symbology, is_raster=True, file_name="ExVegSuitability")
     make_input_layers(ex_veg_destinations, "Existing Riparian", symbology_layer=ex_veg_riparian_symbology, is_raster=True, check_field="EVT_PHYS")
     make_input_layers(ex_veg_destinations, "Veg Type - EVT Type", symbology_layer=ex_veg_evt_type_symbology, is_raster=True, check_field="EVT_PHYS")
     make_input_layers(ex_veg_destinations, "Veg Type - EVT Class", symbology_layer=ex_veg_evt_class_symbology, is_raster=True)
     # make_input_layers(ex_veg_destinations, "Veg Type - EVT Class Name", symbology_layer=ex_veg_class_name_symbology, is_raster=True)
 
-
-    # add the historic veg inputs to project
-    hist_veg_destinations = copy_multi_input_to_folder(hist_veg_folder, hist_veg, "Hist_Veg", is_raster=True)
     make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name="HistVegSuitability")
     make_input_layers(hist_veg_destinations, "Veg Type - BPS Type", symbology_layer=hist_veg_group_symbology, is_raster=True, check_field="GROUPVEG")
     make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_bps_name_symbology, is_raster=True)
     make_input_layers(hist_veg_destinations, "Historic Riparian", symbology_layer=hist_veg_riparian_symbology, is_raster=True, check_field="GROUPVEG")
 
 
-    # add the network inputs to project
-    network_destinations = copy_multi_input_to_folder(network_folder, network, "Network", is_raster=False)
     make_input_layers(network_destinations, "Network", symbology_layer=network_symbology, is_raster=False)
     make_input_layers(network_destinations, "Flow Direction", symbology_layer=flow_direction_symbology, is_raster=False)
 
-    # add the DEM inputs to the project
-    dem_destinations = copy_multi_input_to_folder(topo_folder, DEM, "DEM", is_raster=True)
     make_topo_layers(topo_folder)
 
-    # add landuse raster to the project
-    landuse_destinations = []
-    if landuse is not None:
-        landuse_destinations = copy_multi_input_to_folder(land_use_folder, landuse, "Land_Use", is_raster=True)
-        make_input_layers(landuse_destinations, "Land Use Raster", symbology_layer=landuse_symbology, is_raster=True)
+    make_input_layers(landuse_destinations, "Land Use Raster", symbology_layer=landuse_symbology, is_raster=True)
 
-    # add the conflict inputs to the project
-    valley_bottom_destinations = []
-    if valley is not None:
-        valley_bottom_destinations = copy_multi_input_to_folder(valley_bottom_folder, valley, "Valley", is_raster=False)
-        make_input_layers(valley_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
-        make_input_layers(valley_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
+    make_input_layers(valley_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology,
+                      is_raster=False)
+    make_input_layers(valley_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology,
+                      is_raster=False)
 
-    # add road layers to the project
-    road_destinations = []
-    if road is not None:
-        road_destinations = copy_multi_input_to_folder(road_folder, road, "Roads", is_raster=False)
-        make_input_layers(road_destinations, "Roads", symbology_layer=roads_symbology, is_raster=False)
+    make_input_layers(road_destinations, "Roads", symbology_layer=roads_symbology, is_raster=False)
 
-    # add railroad layers to the project
-    rr_destinations = []
-    if rr is not None:
-        rr_destinations = copy_multi_input_to_folder(railroad_folder, rr, "Railroads", is_raster=False)
-        make_input_layers(rr_destinations, "Railroads", symbology_layer=railroads_symbology, is_raster=False)
+    make_input_layers(rr_destinations, "Railroads", symbology_layer=railroads_symbology, is_raster=False)
 
-    # add canal layers to the project
-    canal_destinations = []
-    if canal is not None:
-        canal_destinations = copy_multi_input_to_folder(canals_folder, canal, "Canals", is_raster=False)
-        make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
+    make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
 
-    # add land ownership layers to the project
-    ownership_destinations = []
-    if ownership is not None:
-        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land Ownership", is_raster=False)
-        make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
+    make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology,
+                      is_raster=False)
 
-    beaver_dams_destinations = []
-    if beaver_dams is not None:
-        beaver_dams_destinations = copy_multi_input_to_folder(beaver_dam_folder, beaver_dams, "Beaver_Dam", is_raster=False)
-
-    perennial_stream_destinations = []
-    if perennial_stream is not None:
-        perennial_stream_destinations = copy_multi_input_to_folder(perennial_stream_folder, perennial_stream, "PerennialStream", is_raster=False)
-        make_input_layers(perennial_stream_destinations, "Perennial_Stream", symbology_layer=perennial_stream_symbology, is_raster=False)
-
-    write_xml(proj_path, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
-              dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
-              canal_destinations, ownership_destinations, beaver_dams_destinations, perennial_stream_destinations)
+    make_input_layers(perennial_stream_destinations, "Perennial_Stream", symbology_layer=perennial_stream_symbology,
+                      is_raster=False)
 
 
 def make_optional_input_folder(input, file_path, folder_base_name):

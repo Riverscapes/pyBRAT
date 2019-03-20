@@ -17,7 +17,7 @@ import numpy as np
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
-from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, make_folder, find_available_num_suffix
+from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, make_folder, find_available_num_suffix, find_available_num_prefix, make_layer
 
 def main(in_network, dams, output_name):
     """
@@ -71,9 +71,11 @@ def main(in_network, dams, output_name):
     if dams:
         plot_name = observed_v_predicted_plot(output_network)
 
-    make_electivity_table(output_network)
+    make_electivity_table(output_network, output_name)
 
     write_xml(proj_path, in_network, output_network, plot_name)
+
+    makeLayers(output_network, dams)
 
 
 def copy_dams_to_inputs(proj_path, dams, in_network):
@@ -224,7 +226,7 @@ def clean_up_fields(brat_network, out_network, new_fields):
         arcpy.DeleteField_management(out_network, remove_fields)
 
 
-def make_electivity_table(output_network):
+def make_electivity_table(output_network, output_name):
     """
     Makes table with totals and electivity indices for modeled capacity categories (i.e., none, rare, occasional, frequent, pervasive)
     :param output_network: The stream network output by the BRAT model with fields added from capacity tools
@@ -243,7 +245,8 @@ def make_electivity_table(output_network):
     add_electivity_category(brat_table, 'Frequent', electivity_table, tot_length, tot_surv_dams)
     add_electivity_category(brat_table, 'Pervasive', electivity_table, tot_length, tot_surv_dams)
     electivity_table.append(['Total', tot_length, tot_length/1000, 'NA', tot_surv_dams, tot_brat_cc, avg_surv_dens, avg_brat_dens, tot_surv_dams/tot_brat_cc, 'NA'])
-    out_csv = os.path.join(os.path.dirname(output_network), 'electivity.csv')
+    analysis_folder = os.path.dirname(output_network)
+    out_csv = os.path.join(analysis_folder, output_name + 'electivity.csv')
     np.savetxt(out_csv, electivity_table, fmt = '%s', delimiter=',', header = "Segment Type, Stream Length, Stream Length, % of Drainage Network, Surveyed Dams, BRAT Estimated Capacity, Average Surveyed Dam Density, Average BRAT Predicted Density, % of Modeled Capacity, Electivity Index")
 
 
@@ -290,7 +293,7 @@ def observed_v_predicted_plot(output_network):
     # add legend
     legend = plt.legend(loc="upper left", bbox_to_anchor=(1,1))
     # save plot
-    analysis_folder = os.path.join(os.path.dirname(os.path.dirname(output_network)), "02_Analyses")
+    analysis_folder = os.path.join(os.path.dirname(output_network))
     comparison_folder = find_folder(analysis_folder, "Inter-Comparison")
     if comparison_folder is None:
         comparison_folder = make_folder(analysis_folder, "03_Inter-Comparison")
@@ -353,6 +356,26 @@ def plot_regression(x, y, axis):
     axis.fill_between(model_x, y1=upper_CI, y2=lower_CI, facecolor='red', alpha=0.3, label = "95% Confidence Interval")
     # in-plot legend
     axis.legend(loc='best', frameon=False)
+
+
+
+def makeLayers(output_network, dams):
+    """
+    Makes the layers for the modified output
+    :param output network: The path to the network that we'll make a layer from
+    :return:
+    """
+    arcpy.AddMessage("Making layers...")
+    analysis_folder = os.path.dirname(output_network)
+    validation_folder_name = find_available_num_prefix(analysis_folder) + "_Validation"
+    validation_folder = make_folder(analysis_folder, validation_folder_name)
+
+    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
+    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+
+    damSymbology = os.path.join(symbologyFolder, "SurveyedBeaverDamLocations.lyr")
+
+    make_layer(validation_folder, dams, "Surveyed Beaver Dam Locations", damSymbology, is_raster=False)
 
 
 
