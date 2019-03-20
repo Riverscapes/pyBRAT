@@ -37,7 +37,7 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
-    arcpy.AddField_management(out_network, "newField", "TEXT", "", "", 40)
+    arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 40)
 
     # use old historic capacity field names if new ones not in combined capacity output
     if 'oVC_PT' in fields:
@@ -51,7 +51,7 @@ def main(projPath, in_network, out_name):
         hist_dams_field_name = 'oCC_HPE'
     
     fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', hist_veg_field_name, 'oVC_EX', hist_dams_field_name, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
-              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', "newField"]
+              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -168,9 +168,11 @@ def main(projPath, in_network, out_name):
             infrastructure_dist = row[11]
             landuse = row[12]
             stream_power = row[14]
+            road_crossings = row[16]
 
             veg_departure = hist_dams - curr_dams
             urban = landuse > 0.66
+            ag = 0.33 < landuse <= 0.66
             no_urban = not urban
             hist_to_curr_dams_ratio = 9999
             if curr_dams != 0:
@@ -179,27 +181,32 @@ def main(projPath, in_network, out_name):
             # default category is 'Other'
             row[15] = 'Other'
 
-            if hist_dams >= 15 and curr_dams >= 15 and no_urban and infrastructure_dist > 100:
-                row[15] = "Relocation and Conservation"
-            elif hist_to_curr_dams_ratio > 1:
+            if hist_to_curr_dams_ratio > 1:
                 if hist_dams >= 5:
-                    if curr_dams > 1 and urban:
-                        row[15] = "Living with Beaver Solutions"
-                    elif 5 <= curr_dams < 15 and no_urban:
+                    if curr_dams > 1:
+                        if urban:
+                            row[15] = "Living with Beaver Solutions - urban"
+                        if ag:
+                            row[15] = "Living with Beaver Solutions - ag"
+                        if road_crossings <= 30:
+                            row[15] = "Living with Beaver Solutions - road crossings"
+                    if 5 <= curr_dams < 15 and no_urban:
                         if veg_departure >= 5:
                             row[15] = "High Restoration Potential - Veg First"
                         else:
                             row[15] = "High Restoration Potential"
-                    elif 1 <= curr_dams < 5 and no_urban:
+                    if 1 <= curr_dams < 5 and no_urban:
                         if veg_departure >= 5:
                             row[15] = "Medium Restoration Potential - Veg First"
                         else:
                             row[15] = "Medium Restoration Potential"
-                elif 1 <= hist_dams < 5 and 1 <= curr_dams < 5 and no_urban:
+                if 1 <= hist_dams < 5 and 1 <= curr_dams < 5 and no_urban:
                     if veg_departure >= 5:
                         row[15] = "Low Restoration Potential - Veg First"
                     else:
                         row[15] = "Low Restoration Potential"
+            if hist_dams >= 15 and curr_dams >= 15 and no_urban and infrastructure_dist > 100:
+                row[15] = "Relocation and Conservation"
 
 
 
