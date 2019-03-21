@@ -206,35 +206,39 @@ def chart(workbook, worksheet):
 
 
 # Getting the data for Complex Size
+# loop through multiple streams
 def search_cursor(fields, data1, data2, data3, data4, data5, total, stream_network, is_complex, worksheet, workbook):
+    split_input = stream_network.split(";")
     if is_complex:
-        with arcpy.da.SearchCursor(stream_network, fields) as cursor:
-            for length, ex_dam_complex_size in cursor:
-                total += length
-                if ex_dam_complex_size == 0:
-                    data1 += length
-                elif ex_dam_complex_size <= 1:
-                    data2 += length
-                elif ex_dam_complex_size <= 3:
-                    data3 += length
-                elif ex_dam_complex_size <= 5:
-                    data4 += length
-                else:
-                    data5 += length
+        for streams in split_input:
+            with arcpy.da.SearchCursor(streams, fields) as cursor:
+                for length, ex_dam_complex_size in cursor:
+                    total += length
+                    if ex_dam_complex_size == 0:
+                        data1 += length
+                    elif ex_dam_complex_size <= 1:
+                        data2 += length
+                    elif ex_dam_complex_size <= 3:
+                        data3 += length
+                    elif ex_dam_complex_size <= 5:
+                        data4 += length
+                    else:
+                        data5 += length
     else:
-        with arcpy.da.SearchCursor(stream_network, fields) as cursor:
-            for length, ex_build_cap_size in cursor:
-                total += length
-                if ex_build_cap_size == 0:
-                    data1 += length
-                elif ex_build_cap_size <= 1:
-                    data2 += length
-                elif ex_build_cap_size <= 5:
-                    data3 += length
-                elif ex_build_cap_size <= 15:
-                    data4 += length
-                elif ex_build_cap_size <= 40:
-                    data5 += length
+        for streams in split_input:
+            with arcpy.da.SearchCursor(streams, fields) as cursor:
+                for length, ex_build_cap_size in cursor:
+                    total += length
+                    if ex_build_cap_size == 0:
+                        data1 += length
+                    elif ex_build_cap_size <= 1:
+                        data2 += length
+                    elif ex_build_cap_size <= 5:
+                        data3 += length
+                    elif ex_build_cap_size <= 15:
+                        data4 += length
+                    elif ex_build_cap_size <= 40:
+                        data5 += length
     write_data(data1, data2, data3, data4, data5, total, worksheet, workbook)
 
 
@@ -275,7 +279,6 @@ def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, water
     bar_chart.set_y_axis({'name': 'Sample length (mm)'})
 
 
-    # bar_chart.set_style(100) ??
 
     exist_complex_worksheet.insert_chart('G3', bar_chart)
 
