@@ -14,14 +14,16 @@ from SupportingFunctions import find_folder, find_available_num_prefix, make_fol
 import re
 
 
-def main(output_folder, layer_package_name, clipping_network=None):
+def main(output_folder, layer_package_name, should_clip):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
     :param layer_package_name: What we want to name our layer package
-    :param clipping_network: What we want to clip our network to
+    :param should_clip: Whether or not we should clip the network to the perennial network
     :return:
     """
+    should_clip = parse_input_bool(should_clip)
+
     if layer_package_name == None:
         layer_package_name = "LayerPackage"
 
@@ -42,7 +44,7 @@ def main(output_folder, layer_package_name, clipping_network=None):
         arcpy.AddMessage("The error message thrown was the following:")
         arcpy.AddWarning(err)
 
-    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
+    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, should_clip)
 
 
 def validate_inputs(output_folder):
@@ -430,12 +432,12 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
             make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster, file_name=file_name)
 
 
-def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name, clipping_network):
+def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name, should_clip):
     """
     Makes a layer package for the project
     :param output_folder: The folder that we want to base our layer package off of
     :param layer_package_name: The name of the layer package that we'll make
-    :param clipping_network: What we want to clip our network to
+    :param clipping_network: boolean that tells us to clip or not
     :return:
     """
     if layer_package_name == "" or layer_package_name is None:
@@ -443,9 +445,8 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     if not layer_package_name.endswith(".lpk"):
         layer_package_name += ".lpk"
 
-    new_source = None
-    if clipping_network is not None:
-        new_source = get_new_source(clipping_network, analyses_folder)
+    if should_clip:
+        clip_folder_to_peren(output_folder)
 
     arcpy.AddMessage("Assembling Layer Package...")
     empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
@@ -453,7 +454,7 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     mxd = arcpy.mapping.MapDocument("CURRENT")
     mxd.relativePaths = False
     df = arcpy.mapping.ListDataFrames(mxd)[0]
-    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source)
+    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd)
     inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
     intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)
     output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
@@ -462,6 +463,43 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     layer_package = os.path.join(output_folder, layer_package_name)
     arcpy.AddMessage("Saving Layer Package...")
     arcpy.PackageLayer_management(output_layer, layer_package)
+
+
+def clip_folder_to_peren(output_folder):
+    shape_files = get_shape_files(output_folder)
+
+    for shape_file in shape_files:
+        arcpy.AddMessage(shape_file)
+        clip_to_peren(shape_file)
+
+
+def get_shape_files(output_folder):
+    shape_files = []
+    for root, dirs, files in os.walk(output_folder):
+        for file in files:
+            if file.endswith('.shp') and not file.startswith("buffer"):
+                shape_files.append(os.path.join(root, file))
+
+    return shape_files
+
+
+def clip_to_peren(shape_file):
+    if is_peren_not_in_shape_file(shape_file):
+        return
+    copy_shapefile_data(shape_file)
+    delete_non_peren_streams(shape_file)
+
+
+def is_peren_not_in_shape_file(shape_file):
+
+
+
+def copy_shapefile_data(shape_file):
+    pass
+
+
+def delete_non_peren_streams(shape_file):
+    pass
 
 
 def get_new_source(clipping_network, analyses_folder):
@@ -498,7 +536,7 @@ def get_old_source(analyses_folder):
             return os.path.join(analyses_folder, file)
 
 
-def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source):
+def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     """
     Returns the layers we want for the 'Output' section
     :param analyses_folder:
@@ -510,11 +548,11 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source):
     management_folder = find_folder(analyses_folder, "Management")
 
     existing_capacity_layers = find_layers_in_folder(existing_capacity_folder)
-    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd, new_source)
+    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd)
     historic_capacity_layers = find_layers_in_folder(historic_capacity_folder)
-    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd, new_source)
+    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd)
     management_layers = find_layers_in_folder(management_folder)
-    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd, new_source)
+    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd)
 
     capacity_layer = group_layers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df, mxd)
     output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer], df, mxd)
@@ -683,7 +721,7 @@ def find_layers_in_folder(folder_root):
     return layers
 
 
-def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remove_layer=True):
+def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
     """
     Groups a bunch of layers together
     :param group_layer: The empty group layer we'll add stuff to
@@ -710,16 +748,15 @@ def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remo
             layer_instance = layer
         else:
             layer_instance = arcpy.mapping.Layer(layer)
-
-        if new_source is not None and layer_instance.isFeatureLayer:
-            old_source = layer_instance.dataSource
-            # layer_instance.replaceDataSource(old_source, 'NONE', new_source, '')
-            layer_instance.replaceDataSource(new_source, 'SHAPEFILE_WORKSPACE', old_source, '')
-            layer_instance.save()
-
         arcpy.mapping.AddLayerToGroup(df, group_layer, layer_instance)
     if remove_layer:
         arcpy.mapping.RemoveLayer(df, group_layer)
 
     return group_layer
 
+
+def parse_input_bool(given_input):
+    if given_input == 'false' or given_input is None:
+        return False
+    else:
+        return True
