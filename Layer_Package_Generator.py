@@ -497,7 +497,9 @@ def clip_to_peren(shape_file):
 
 
 def is_peren_not_in_shape_file(shape_file):
+    fields = [f.name for f in arcpy.ListFields(shape_file)]
 
+    return 'IsPeren' in fields
 
 
 def copy_shapefile_data(shape_file):
@@ -764,7 +766,6 @@ def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
         arcpy.mapping.RemoveLayer(df, group_layer)
 
     return group_layer
-<<<<<<< HEAD
 
 
 def parse_input_bool(given_input):
@@ -772,5 +773,3 @@ def parse_input_bool(given_input):
         return False
     else:
         return True
-=======
->>>>>>> master
