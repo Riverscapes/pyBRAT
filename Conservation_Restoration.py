@@ -181,32 +181,31 @@ def main(projPath, in_network, out_name):
             # default category is 'Other'
             row[15] = 'Other'
 
-            if hist_to_curr_dams_ratio > 1:
+            if curr_dams >= 5:
+                if urban or ag:
+                    row[15] = "Living with Beaver Solutions - urban and ag use"
+                if infrastructure_dist <= 30:
+                    row[15] = "Living with Beaver Solutions - infrastructure"
+            if hist_dams >= 15 and curr_dams >= 15 and no_urban and infrastructure_dist > 100:
+                row[15] = "Relocation and Conservation"
+
+            if hist_to_curr_dams_ratio > 1 and no_urban:
                 if hist_dams >= 5:
-                    if curr_dams > 1:
-                        if urban:
-                            row[15] = "Living with Beaver Solutions - urban"
-                        if ag:
-                            row[15] = "Living with Beaver Solutions - ag"
-                        if road_crossings <= 30:
-                            row[15] = "Living with Beaver Solutions - road crossings"
-                    if 5 <= curr_dams < 15 and no_urban:
+                    if 5 <= curr_dams < 15:
                         if veg_departure >= 5:
                             row[15] = "High Restoration Potential - Veg First"
                         else:
                             row[15] = "High Restoration Potential"
-                    if 1 <= curr_dams < 5 and no_urban:
+                    if curr_dams < 5:
                         if veg_departure >= 5:
                             row[15] = "Medium Restoration Potential - Veg First"
                         else:
                             row[15] = "Medium Restoration Potential"
-                if 1 <= hist_dams < 5 and 1 <= curr_dams < 5 and no_urban:
+                if 1 <= hist_dams < 5 and curr_dams < 5:
                     if veg_departure >= 5:
                         row[15] = "Low Restoration Potential - Veg First"
                     else:
                         row[15] = "Low Restoration Potential"
-            if hist_dams >= 15 and curr_dams >= 15 and no_urban and infrastructure_dist > 100:
-                row[15] = "Relocation and Conservation"
 
 
 
