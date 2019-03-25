@@ -569,7 +569,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 def add_min_distance(out_network):
     arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal"]
+    all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_RoadVB", "iPC_RailVB", "iPC_Canal"]
     dist_fields = []
     for field in all_dist_fields:
         if field in fields:
