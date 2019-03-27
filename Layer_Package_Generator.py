@@ -491,6 +491,7 @@ def get_shape_files(output_folder):
 
 def clip_to_peren(shape_file):
     if is_peren_not_in_shape_file(shape_file):
+        arcpy.AddWarning("Could not clip layer package to perennial stream")
         return
     copy_shapefile_data(shape_file)
     delete_non_peren_streams(shape_file)
@@ -508,40 +509,6 @@ def copy_shapefile_data(shape_file):
 
 def delete_non_peren_streams(shape_file):
     pass
-
-
-def get_new_source(clipping_network, analyses_folder):
-    """
-    Creates a temporary shape file that will be the source for the clipped regions
-    :param clipping_network: What we want to clip our source to
-    :param analyses_folder: The path to the analyses folder, where our existing source file should be
-    :return:
-    """
-    old_source = get_old_source(analyses_folder)
-    old_source_layer = "old_source_lyr"
-    if arcpy.Exists(old_source_layer):
-        arcpy.Delete_management(old_source_layer)
-    arcpy.MakeFeatureLayer_management(old_source, old_source_layer)
-
-    arcpy.SelectLayerByLocation_management(old_source_layer, "INTERSECT", clipping_network)
-
-    new_source = os.path.join(analyses_folder, "Temp.shp")
-    if os.path.exists(new_source):
-        arcpy.Delete_management(new_source)
-    arcpy.CopyFeatures_management(old_source_layer, new_source)
-    return new_source
-
-
-def get_old_source(analyses_folder):
-    """
-    Looks for the old source in the analyses folder.
-    Assumes that the only shape file in the analyses folder is the old source
-    :param analyses_folder: The path to the analyses folder
-    :return:
-    """
-    for file in os.listdir(analyses_folder):
-        if file.endswith(".shp"):
-            return os.path.join(analyses_folder, file)
 
 
 def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
