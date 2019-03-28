@@ -490,7 +490,7 @@ def get_shape_files(output_folder):
 
 
 def clip_to_peren(shape_file):
-    if is_peren_not_in_shape_file(shape_file):
+    if not is_peren_not_in_shape_file(shape_file):
         arcpy.AddWarning("Could not clip layer package to perennial stream")
         return
     copy_shapefile_data(shape_file)
@@ -504,8 +504,15 @@ def is_peren_not_in_shape_file(shape_file):
 
 
 def copy_shapefile_data(shape_file):
-    pass
+    get_copy_destination(shape_file)
+    #arcpy.CopyFeatures_management(shape_file, my_destination)
 
+
+def get_copy_destination(shape_file):
+    a = os.path.dirname(shape_file)
+    b = os.path.basename(shape_file)
+    new_file_name = b[0:-4] + "_Copied" + b[-4:]
+    return os.path.join(a, new_file_name)
 
 def delete_non_peren_streams(shape_file):
     pass
