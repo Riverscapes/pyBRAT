@@ -24,6 +24,15 @@ def main(
     Qlow_eqtn,
     Q2_eqtn):
 
+    if region is None or region == "None":
+        region = 0
+    else:
+        region = int(region)
+    if Qlow_eqtn == "None":
+        Qlow_eqtn = None
+    if Q2_eqtn == "None":
+        Q2_eqtn = None
+
     scratch = 'in_memory'
 
     arcpy.env.overwriteOutput = True
@@ -47,29 +56,27 @@ def main(
 
     arcpy.AddMessage("Adding Qlow and Q2 to network...")
 
-    if region is None:
-        region = 0
 
     # --regional curve equations for Qlow (baseflow) and Q2 (annual peak streamflow)--
     # # # Add in regional curve equations here # # #
     if Qlow_eqtn is not None:
         Qlow = eval(Qlow_eqtn)
-    elif float(region) == 101:  # example 1 (box elder county)
+    elif region == 101:  # example 1 (box elder county)
         Qlow = 0.019875 * (DAsqm ** 0.6634) * (10 ** (0.6068 * 2.04))
-    elif float(region) == 102:  # example 2 (upper green generic)
+    elif region == 102:  # example 2 (upper green generic)
         Qlow = 4.2758 * (DAsqm ** 0.299)
-    elif float(region) == 24:  # oregon region 5
+    elif region == 24:  # oregon region 5
         Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
     else:
         Qlow = (DAsqm ** 0.2098) + 1
 
     if Q2_eqtn is not None:
         Q2 = eval(Q2_eqtn)
-    elif float(region) == 101:  # example 1 (box elder county)
+    elif region == 101:  # example 1 (box elder county)
         Q2 = 14.5 * DAsqm ** 0.328
-    elif float(region) == 102:  # example 2 (upper green generic)
+    elif region == 102:  # example 2 (upper green generic)
         Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
-    elif float(region) == 24:  # oregon region 5
+    elif region == 24:  # oregon region 5
         Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
     else:
         Q2 = 14.7 * (DAsqm ** 0.815)

@@ -47,6 +47,11 @@ def main(
     should_segment_network,
     is_verbose):
 
+    if flow_acc == "None":
+        flow_acc = None
+    if perennial_network == "None":
+        perennial_network = None
+
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
     is_verbose = parse_input_bool(is_verbose)
@@ -1065,4 +1070,5 @@ if __name__ == '__main__':
         sys.argv[13],
         sys.argv[14],
         sys.argv[15],
-        sys.argv[16])
+        sys.argv[16],
+        sys.argv[17])
