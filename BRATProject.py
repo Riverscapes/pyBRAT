@@ -25,6 +25,12 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
+    if ownership == "None":
+        ownership = None
+    if beaver_dams == "None":
+        beaver_dams = None
+    if perennial_stream == "None":
+        perennial_stream = None
 
     if not os.path.exists(proj_path):
         os.mkdir(proj_path)
@@ -410,4 +416,6 @@ if __name__ == '__main__':
         sys.argv[11],
         sys.argv[12],
         sys.argv[13],
-        sys.argv[14])
+        sys.argv[14],
+        sys.argv[15],
+        sys.argv[16])

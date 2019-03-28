@@ -47,6 +47,11 @@ def main(
     should_segment_network,
     is_verbose):
 
+    if flow_acc == "None":
+        flow_acc = None
+    if perennial_network == "None":
+        perennial_network = None
+
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
     is_verbose = parse_input_bool(is_verbose)
@@ -569,7 +574,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 def add_min_distance(out_network):
     arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal"]
+    all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_RoadVB", "iPC_RailVB", "iPC_Canal"]
     dist_fields = []
     for field in all_dist_fields:
         if field in fields:
@@ -1065,4 +1070,5 @@ if __name__ == '__main__':
         sys.argv[13],
         sys.argv[14],
         sys.argv[15],
-        sys.argv[16])
+        sys.argv[16],
+        sys.argv[17])
