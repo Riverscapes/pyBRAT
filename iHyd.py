@@ -134,8 +134,12 @@ def main(
     arcpy.AddField_management(in_network, "iHyd_SP2", "DOUBLE")
     with arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_QLow", "iHyd_SPLow", "iHyd_Q2", "iHyd_SP2"]) as cursor:
         for row in cursor:
-            row[2] = (1000 * 9.80665) * row[0] * (row[1] * 0.028316846592)
-            row[4] = (1000 * 9.80665) * row[0] * (row[3] * 0.028316846592)
+            if row[0] < 0.001:
+                slope = 0.001
+            else:
+                slope = row[0]
+            row[2] = (1000 * 9.80665) * slope * (row[1] * 0.028316846592)
+            row[4] = (1000 * 9.80665) * slope * (row[3] * 0.028316846592)
             cursor.updateRow(row)
 
     makeLayers(in_network)
