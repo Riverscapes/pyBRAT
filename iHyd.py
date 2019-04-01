@@ -67,6 +67,10 @@ def main(
         Qlow = 4.2758 * (DAsqm ** 0.299)
     elif region == 24:  # oregon region 5
         Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
+    elif region == 1: #Truckee
+        ELEV_FT = 6027.722
+        PRECIP_IN = 23.674
+        Qlow = (10**-7.2182) * (DAsqm**1.013) * (ELEV_FT**01.1236) * (PRECIP_IN**1.4483)
     else:
         Qlow = (DAsqm ** 0.2098) + 1
 
@@ -78,6 +82,9 @@ def main(
         Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
     elif region == 24:  # oregon region 5
         Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
+    elif region == 1: #Truckee
+        PRECIP_IN = 23.674
+        Q2 = 0.0865*(DAsqm**0.736)*(PRECIP_IN**1.59)
     else:
         Q2 = 14.7 * (DAsqm ** 0.815)
 
