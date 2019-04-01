@@ -36,12 +36,12 @@ def main(overwrite = True):
         if dir.startswith('00_'):
             dir_list.remove(dir)
 
-    # extract canals for each huc8 NHD network and save as 'NHDCanals.shp'
+    # extract canals for each huc8 NHD network and save as 'NHDCanalsDitches.shp'
     for dir in dir_list:
 
         # specifying input NHD and output canal shapefiles
         flowline_shp = os.path.join(pf_path, dir, 'NHD/NHDFlowline.shp')
-        canal_shp = os.path.join(pf_path, dir, 'NHD/NHDCanals.shp')
+        canal_shp = os.path.join(pf_path, dir, 'NHD/NHDCanalsDitches.shp')
 
         # extract canals and ditches for all watersheds if none present
         if not os.path.exists(canal_shp) or overwrite is True:

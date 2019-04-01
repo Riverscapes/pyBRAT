@@ -31,13 +31,13 @@ def main():
         if dir.startswith('00_'):
             dir_list.remove(dir)
 
-    # extract canals for each huc8 NHD network and save as 'NHDCanals.shp'
+    # merges perennial and canals/ditches shapefiles and save as 'NHD_24k_Perennial_CanalsDitches.shp'
     for dir in dir_list:
 
         # specifying input perennial and canal shapefiles and output shapefile name
         perennial_shp = os.path.join(pf_path, dir, 'NHD/NHD_24k_Perennial.shp')
-        canal_shp = os.path.join(pf_path, dir, 'NHD/NHDCanals.shp')
-        out_shp = os.path.join(pf_path, dir, 'NHD/NHD_24k_Perennial_Canals.shp')
+        canal_shp = os.path.join(pf_path, dir, 'NHD/NHDCanalsDitches.shp')
+        out_shp = os.path.join(pf_path, dir, 'NHD/NHD_24k_Perennial_CanalsDitches.shp')
 
         # if canals exist then merge with perennial, otherwise just copy perennial
         if os.path.exists(perennial_shp):
