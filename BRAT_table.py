@@ -124,7 +124,7 @@ def main(
     if perennial_network is not None:
         find_is_perennial(seg_network_copy, perennial_network)
 
-    handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose)
+    handle_braids(seg_network_copy, canal, proj_path, find_clusters, perennial_network, is_verbose)
 
     # run write xml function
     arcpy.AddMessage('Writing project xml...')
@@ -978,7 +978,7 @@ def make_layers(out_network):
         make_layer(perennial_folder, out_network, "Perennial", perennial_symbology, is_raster=False, symbology_field="IsPeren")
 
 
-def handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose):
+def handle_braids(seg_network_copy, canal, proj_path, find_clusters, perennial_network, is_verbose):
     if is_verbose:
         arcpy.AddMessage("Finding multi-threaded attributes...")
     add_mainstem_attribute(seg_network_copy)
@@ -987,7 +987,7 @@ def handle_braids(seg_network_copy, canal, proj_path, find_clusters, is_verbose)
     temp_dir = os.path.join(proj_path, 'Temp')
     if not os.path.exists(temp_dir):
         os.mkdir(temp_dir)
-    FindBraidedNetwork.main(seg_network_copy, canal, temp_dir, is_verbose)
+    FindBraidedNetwork.main(seg_network_copy, canal, temp_dir, perennial_network, is_verbose)
 
     if find_clusters:
         arcpy.AddMessage("Finding Clusters...")
