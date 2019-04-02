@@ -475,7 +475,6 @@ def clip_folder_to_peren(output_folder):
     shape_files = get_shape_files(output_folder)
 
     for shape_file in shape_files:
-        arcpy.AddMessage(shape_file)
         clip_to_peren(shape_file)
 
 
@@ -504,8 +503,8 @@ def is_peren_not_in_shape_file(shape_file):
 
 
 def copy_shapefile_data(shape_file):
-    get_copy_destination(shape_file)
-    #arcpy.CopyFeatures_management(shape_file, my_destination)
+    copy_destination = get_copy_destination(shape_file)
+    arcpy.CopyFeatures_management(shape_file, copy_destination)
 
 
 def get_copy_destination(shape_file):
@@ -514,8 +513,12 @@ def get_copy_destination(shape_file):
     new_file_name = b[0:-4] + "_Copied" + b[-4:]
     return os.path.join(a, new_file_name)
 
+
 def delete_non_peren_streams(shape_file):
-    pass
+    temp_shape_layer = "temp_shape_layer"
+    arcpy.MakeFeatureLayer_management(shape_file, temp_shape_layer)
+    arcpy.SelectLayerByAttribute_management(temp_shape_layer, "NEW_SELECTION", '"IsPeren" = 0')
+    arcpy.DeleteFeatures_management(temp_shape_layer)
 
 
 def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
