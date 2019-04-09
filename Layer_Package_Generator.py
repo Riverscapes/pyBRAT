@@ -89,7 +89,10 @@ def check_intermediates(intermediates_folder, symbologyFolder):
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Slope_Feature_Class.lyr", brat_table_file, "TopographicMetrics", "Reach Slope", "iGeo_Slope")
 
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "AnthropogenicMetrics", "Land Use Intensity", "iPC_LU")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Priority_Beaver_Translocation_Areas.lyr", brat_table_file, "AnthropogenicMetrics", "Priority Beaver Translocation Areas", "iPC_Privat")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Ownership_by_Reach.lyr", brat_table_file, "AnthropogenicMetrics", "Land Ownership per Reach", "ADMIN_AGEN")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Canal", "iPC_Canal")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_to_Points_of_Diversion.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Points of Diversion", "iPC_DivPts")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Closest Infrastructure", "oPC_Dist")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad", "iPC_Rail")
     check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
@@ -295,6 +298,7 @@ def check_inputs(inputs_folder, symbology_folder):
     landuse_symbology = os.path.join(symbology_folder, "Land_Use_Raster.lyr")
     land_ownership_symbology = os.path.join(symbology_folder, "SurfaceManagementAgency.lyr")
     canals_symbology = os.path.join(symbology_folder, "Canals.lyr")
+    points_diversion_symbology = os.path.join(symbology_folder, "Points_of_Diversion.lyr")
     roads_symbology = os.path.join(symbology_folder, "Roads.lyr")
     railroads_symbology = os.path.join(symbology_folder, "Railroads.lyr")
     valley_bottom_symbology = os.path.join(symbology_folder, "ValleyBottom.lyr")
@@ -350,6 +354,7 @@ def check_inputs(inputs_folder, symbology_folder):
     if canals_folder is not None:
         canal_destinations = find_destinations(canals_folder)
         make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
+        make_input_layers(canal_destinations, "Points of Diversion", symbology_layer=points_diversion_symbology, is_raster=False)
 
     # add land ownership layers to the project
     ownership_destinations = None
@@ -487,7 +492,7 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     management_layers = find_layers_in_folder(management_folder)
     management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd)
     validation_layers = find_layers_in_folder(validation_folder)
-    validation_layer = group_layers(empty_group_layer, "Beaver Dam Survey Data", validation_layers, df, mxd)
+    validation_layer = group_layers(empty_group_layer, "Current Beaver Dams", validation_layers, df, mxd)
     
     capacity_layer = group_layers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df, mxd)
     output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer, validation_layer], df, mxd)
@@ -542,7 +547,8 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd):
     railroad_layers = find_instance_layers(railroads_folder)
     railroad_layer = group_layers(empty_group_layer, "Railroads", railroad_layers, df, mxd)
     canal_layers = find_instance_layers(canals_folder)
-    canal_layer = group_layers(empty_group_layer, "Canals", canal_layers, df, mxd)
+    canal_layer = group_layers(empty_group_layer, "Canals", canal_layers, df, mxd)  
+    
     land_use_layers = find_instance_layers(land_use_folder)
     land_use_layer = group_layers(empty_group_layer, "Land Use", land_use_layers, df, mxd)
     anthropogenic_layer = group_layers(empty_group_layer, "Anthropogenic Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
@@ -569,12 +575,15 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
         existing_anthropogenic_layers = find_layers_in_folder(anthropogenic_metrics_folder)
 
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoCanal.lyr"))
+        wanted_anthropogemic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoPointsofDiversion.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroad.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroadinValleyBottom.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoad.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadCrossing.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadinValleyBottom.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoClosestInfrastructure.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "PriorityBeaverTranslocationAreas.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "LandOwnershipperReach.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "LandUseIntensity.lyr"))
 
 

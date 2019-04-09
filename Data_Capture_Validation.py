@@ -49,7 +49,7 @@ def main(in_network, dams, output_name):
     if 'Join_Count' in fields:
         arcpy.DeleteField_management(in_network, 'Join_Count')
         
-    dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC']
+    dam_fields = ['e_DamCt', 'e_DamDens', 'e_DamPcC', 'ConsVRest']
     other_fields = ['ExCategor', 'HpeCategor', 'mCC_EXvHPE']
     new_fields = dam_fields + other_fields
 
@@ -67,11 +67,9 @@ def main(in_network, dams, output_name):
 
     if dams:
         clean_up_fields(in_network, output_network, new_fields)
-
-    if dams:
-        plot_name = observed_v_predicted_plot(output_network)
-
-    make_electivity_table(output_network, output_name)
+        #plot_name = observed_v_predicted_plot(output_network)
+        plot_name = None
+        make_electivity_table(output_network, output_name)
 
     write_xml(proj_path, in_network, output_network, plot_name)
 
@@ -92,7 +90,7 @@ def copy_dams_to_inputs(proj_path, dams, in_network):
     inputs_folder = find_folder(proj_path, "Inputs")
     beaver_dams_folder = find_folder(inputs_folder, "BeaverDams")
     if beaver_dams_folder is None:
-	beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")	
+        beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")	
     new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
     new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))
     coord_sys = arcpy.Describe(in_network).spatialReference
@@ -134,6 +132,15 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields):
             else:
                 row[2] = dam_num / oCC_EX
 
+            if oCC_EX >=5:
+                if row[2] >= 0.25:
+                    row[3] = 'Conservation'
+                else:
+                    row[3] = 'Restoration'
+            else:
+                row[3] = 'Low Capacity Habitat'
+                
+
             cursor.updateRow(row)
 
     arcpy.DeleteField_management(output_path, ["Join_Count", "TARGET_FID"])
@@ -147,7 +154,7 @@ def add_fields(output_path, new_fields):
     :param new_fields: All the fields we want to add
     :return:
     """
-    text_fields = ['ExCategor', 'HpeCategor']
+    text_fields = ['ExCategor', 'HpeCategor', 'ConsVRest']
     for field in new_fields:
         if field in text_fields:
             arcpy.AddField_management(output_path, field, field_type="TEXT", field_length=50)
@@ -374,9 +381,10 @@ def makeLayers(output_network, dams):
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
     damSymbology = os.path.join(symbologyFolder, "SurveyedBeaverDamLocations.lyr")
+    damManagementSymbology = os.path.join(symbologyFolder, "BeaverDamManagementStrategies.lyr")
 
     make_layer(validation_folder, dams, "Surveyed Beaver Dam Locations", damSymbology, is_raster=False)
-
+    make_layer(validation_folder, output_network, "Current Beaver Dam Management Strategies", damManagementSymbology, is_raster=False, symbology_field='ConsVRest')
 
 
 def write_xml(proj_path, in_network, out_network, plot_name):
