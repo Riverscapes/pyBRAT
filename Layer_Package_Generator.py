@@ -575,7 +575,7 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
         existing_anthropogenic_layers = find_layers_in_folder(anthropogenic_metrics_folder)
 
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoCanal.lyr"))
-        wanted_anthropogemic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoPointsofDiversion.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoPointsofDiversion.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroad.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroadinValleyBottom.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoad.lyr"))
