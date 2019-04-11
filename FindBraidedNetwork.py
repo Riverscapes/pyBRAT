@@ -94,11 +94,15 @@ def findBraidedReaches(fcLines, perennial_network, is_verbose):
     if arcpy.Exists("lyrBraidedReaches"):
         arcpy.Delete_management("lyrBraidedReaches")
 
-    arcpy.AddMessage(perennial_network)
     # Find donut reaches
-    arcpy.FeatureToPolygon_management(fcLines,"in_memory/DonutPolygons")
+    donut_polygons = "in_memory/DonutPolygons"
+    donut_polygons = "C:\Users\A02150284\Documents\\test\DonutPolygons.shp"
+    if perennial_network is not None:
+        arcpy.FeatureToPolygon_management(perennial_network,donut_polygons)
+    else:
+        arcpy.FeatureToPolygon_management(fcLines,donut_polygons)
     arcpy.MakeFeatureLayer_management(fcLines,"lyrBraidedReaches")
-    arcpy.MakeFeatureLayer_management("in_memory/DonutPolygons","lyrDonuts")
+    arcpy.MakeFeatureLayer_management(donut_polygons,"lyrDonuts")
     arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrDonuts",'',"NEW_SELECTION")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMultiCh",1,"PYTHON")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMainCh",0,"PYTHON")
