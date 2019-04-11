@@ -25,6 +25,12 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     """Create a BRAT project and populate the inputs"""
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
+    if ownership == "None":
+        ownership = None
+    if beaver_dams == "None":
+        beaver_dams = None
+    if perennial_stream == "None":
+        perennial_stream = None
 
     if not os.path.exists(proj_path):
         os.mkdir(proj_path)
@@ -96,7 +102,7 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     # add land ownership layers to the project
     ownership_destinations = []
     if ownership is not None:
-        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land Ownership", is_raster=False)
+        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land_Ownership", is_raster=False)
 
     beaver_dams_destinations = []
     if beaver_dams is not None:
@@ -410,4 +416,6 @@ if __name__ == '__main__':
         sys.argv[11],
         sys.argv[12],
         sys.argv[13],
-        sys.argv[14])
+        sys.argv[14],
+        sys.argv[15],
+        sys.argv[16])
