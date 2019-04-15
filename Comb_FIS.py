@@ -119,10 +119,10 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     splow['probably'] = fuzz.trapmf(splow.universe, [150, 175, 180, 190])
     splow['cannot'] = fuzz.trapmf(splow.universe, [180, 190, 10000, 10000])
 
-    slope['flat'] = fuzz.trapmf(slope.universe, [0, 0, 0.0002, 0.005])
-    slope['can'] = fuzz.trapmf(slope.universe, [0.0002, 0.005, 0.12, 0.15])
-    slope['probably'] = fuzz.trapmf(slope.universe, [0.12, 0.15, 0.17, 0.23])
-    slope['cannot'] = fuzz.trapmf(slope.universe, [0.17, 0.23, 1, 1])
+    slope['flat'] = fuzz.trapmf(slope.universe, [0, 0, 0.00001, 0.001])
+    slope['can'] = fuzz.trapmf(slope.universe, [0.00001, 0.001, 0.06, 0.12])
+    slope['probably'] = fuzz.trapmf(slope.universe, [0.06, 0.12, 0.15, 0.17])
+    slope['cannot'] = fuzz.trapmf(slope.universe, [0.15, 0.17, 1, 1])
 
     density['none'] = fuzz.trimf(density.universe, [0, 0, 0.1])
     density['rare'] = fuzz.trapmf(density.universe, [0, 0.1, 0.5, 1.5])
