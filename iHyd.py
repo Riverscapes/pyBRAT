@@ -24,6 +24,15 @@ def main(
     Qlow_eqtn,
     Q2_eqtn):
 
+    if region is None or region == "None":
+        region = 0
+    else:
+        region = int(region)
+    if Qlow_eqtn == "None":
+        Qlow_eqtn = None
+    if Q2_eqtn == "None":
+        Q2_eqtn = None
+
     scratch = 'in_memory'
 
     arcpy.env.overwriteOutput = True
@@ -52,36 +61,41 @@ def main(
 
     arcpy.AddMessage("Adding Qlow and Q2 to network...")
 
-    if region is None:
-        region = 0
 
     # --regional curve equations for Qlow (baseflow) and Q2 (annual peak streamflow)--
     # # # Add in regional curve equations here # # #
     if Qlow_eqtn is not None:
         Qlow = eval(Qlow_eqtn)
-    elif float(region) == 101:  # example 1 (box elder county)
+    elif region == 101:  # example 1 (box elder county)
         Qlow = 0.019875 * (DAsqm ** 0.6634) * (10 ** (0.6068 * 2.04))
-    elif float(region) == 102:  # example 2 (upper green generic)
+    elif region == 102:  # example 2 (upper green generic)
         Qlow = 4.2758 * (DAsqm ** 0.299)
-    elif float(region) == 24:  # oregon region 5
+    elif region == 24:  # oregon region 5
         Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
-    elif float(region) == 1:
+    elif region == 1:
         PRECIP = 600.6
         Qlow = (10 ** -3.5574) * (DAsqm ** 0.9838) * (EL ** -0.646) * (PRECIP ** 1.779)
+    elif region == 2: #Truckee
+        ELEV_FT = 6027.722
+        PRECIP_IN = 23.674
+        Qlow = (10**-7.2182) * (DAsqm**1.013) * (ELEV_FT**01.1236) * (PRECIP_IN**1.4483)
     else:
         Qlow = (DAsqm ** 0.2098) + 1
 
     if Q2_eqtn is not None:
         Q2 = eval(Q2_eqtn)
-    elif float(region) == 101:  # example 1 (box elder county)
+    elif region == 101:  # example 1 (box elder county)
         Q2 = 14.5 * DAsqm ** 0.328
-    elif float(region) == 102:  # example 2 (upper green generic)
+    elif region == 102:  # example 2 (upper green generic)
         Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
-    elif float(region) == 24:  # oregon region 5
+    elif region == 24:  # oregon region 5
         Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
-    elif float(region) == 1:
+    elif region == 1:
         PRECIP = 600.6
         Q2 = 2.43 * (DAsqm ** 0.924) * (EL ** -0.646) * (PRECIP ** 2.06)
+    elif region == 2: #Truckee
+        PRECIP_IN = 23.674
+        Q2 = 0.0865*(DAsqm**0.736)*(PRECIP_IN**1.59)
     else:
         Q2 = 14.7 * (DAsqm ** 0.815)
 
@@ -138,8 +152,12 @@ def main(
     arcpy.AddField_management(in_network, "iHyd_SP2", "DOUBLE")
     with arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_QLow", "iHyd_SPLow", "iHyd_Q2", "iHyd_SP2"]) as cursor:
         for row in cursor:
-            row[2] = (1000 * 9.80665) * row[0] * (row[1] * 0.028316846592)
-            row[4] = (1000 * 9.80665) * row[0] * (row[3] * 0.028316846592)
+            if row[0] < 0.001:
+                slope = 0.001
+            else:
+                slope = row[0]
+            row[2] = (1000 * 9.80665) * slope * (row[1] * 0.028316846592)
+            row[4] = (1000 * 9.80665) * slope * (row[3] * 0.028316846592)
             cursor.updateRow(row)
 
     makeLayers(in_network)
