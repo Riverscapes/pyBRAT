@@ -102,7 +102,7 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     # add land ownership layers to the project
     ownership_destinations = []
     if ownership is not None:
-        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land Ownership", is_raster=False)
+        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land_Ownership", is_raster=False)
 
     beaver_dams_destinations = []
     if beaver_dams is not None:
