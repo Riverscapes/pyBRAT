@@ -652,7 +652,7 @@ def find_layers_in_folder(folder_root):
     """
     layers = []
     if folder_root is None:
-        return []
+        return layers
     for instance_file in os.listdir(folder_root):
         if instance_file.endswith(".lyr"):
             layers.append(os.path.join(folder_root, instance_file))
