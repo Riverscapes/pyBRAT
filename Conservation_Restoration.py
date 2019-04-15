@@ -50,7 +50,7 @@ def main(projPath, in_network, out_name):
     else:
         occ_hpe = 'oCC_HPE'
     
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2']
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'iPC_Canal']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -59,10 +59,14 @@ def main(projPath, in_network, out_name):
             occ_ex = row[6]
             opc_dist = row[11]
             ipc_lu = row[12]
-
+            ipc_canal = row[15]
+            
             if occ_ex <= 0:
                 # if capacity is none risk is negligible
                 row[0] = "Negligible Risk"
+            elif ipc_canal <=20:
+                # if canals are within 30 meters (usually means canal is on the reach)
+                row[0] = "Considerable Risk"
             else:
                 # if infrastructure within 30 m or land use is high
                 # if capacity is frequent or pervasive risk is considerable

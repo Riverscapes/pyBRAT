@@ -67,6 +67,10 @@ def main(
         Qlow = 4.2758 * (DAsqm ** 0.299)
     elif region == 24:  # oregon region 5
         Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
+    elif region == 1: #Truckee
+        ELEV_FT = 6027.722
+        PRECIP_IN = 23.674
+        Qlow = (10**-7.2182) * (DAsqm**1.013) * (ELEV_FT**01.1236) * (PRECIP_IN**1.4483)
     else:
         Qlow = (DAsqm ** 0.2098) + 1
 
@@ -78,6 +82,9 @@ def main(
         Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
     elif region == 24:  # oregon region 5
         Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
+    elif region == 1: #Truckee
+        PRECIP_IN = 23.674
+        Q2 = 0.0865*(DAsqm**0.736)*(PRECIP_IN**1.59)
     else:
         Q2 = 14.7 * (DAsqm ** 0.815)
 
@@ -134,8 +141,12 @@ def main(
     arcpy.AddField_management(in_network, "iHyd_SP2", "DOUBLE")
     with arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_QLow", "iHyd_SPLow", "iHyd_Q2", "iHyd_SP2"]) as cursor:
         for row in cursor:
-            row[2] = (1000 * 9.80665) * row[0] * (row[1] * 0.028316846592)
-            row[4] = (1000 * 9.80665) * row[0] * (row[3] * 0.028316846592)
+            if row[0] < 0.001:
+                slope = 0.001
+            else:
+                slope = row[0]
+            row[2] = (1000 * 9.80665) * slope * (row[1] * 0.028316846592)
+            row[4] = (1000 * 9.80665) * slope * (row[3] * 0.028316846592)
             cursor.updateRow(row)
 
     makeLayers(in_network)
