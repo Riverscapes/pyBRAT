@@ -321,32 +321,38 @@ def check_inputs(inputs_folder, symbology_folder):
     make_topo_layers(topo_folder)
 
     # add landuse raster to the project
+    landuse_destinations = None
     if land_use_folder is not None:
         landuse_destinations = find_destinations(land_use_folder)
         make_input_layers(landuse_destinations, "Land Use Raster", symbology_layer=landuse_symbology, is_raster=True)
 
     # add the anthropogenic inputs to the project
+    vally_bottom_destinations = None
     if valley_bottom_folder is not None:
         vally_bottom_destinations = find_destinations(valley_bottom_folder)
         make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
         make_input_layers(vally_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
 
     # add road layers to the project
+    road_destinations = None
     if road_folder is not None:
         road_destinations = find_destinations(road_folder)
         make_input_layers(road_destinations, "Roads", symbology_layer=roads_symbology, is_raster=False)
 
     # add railroad layers to the project
+    rr_destinations = None
     if railroad_folder is not None:
         rr_destinations = find_destinations(railroad_folder)
         make_input_layers(rr_destinations, "Railroads", symbology_layer=railroads_symbology, is_raster=False)
 
     # add canal layers to the project
+    canal_destinations = None
     if canals_folder is not None:
         canal_destinations = find_destinations(canals_folder)
         make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
 
     # add land ownership layers to the project
+    ownership_destinations = None
     if land_ownership_folder is not None:
         ownership_destinations = find_destinations(land_ownership_folder)
         make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
@@ -472,6 +478,7 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     existing_capacity_folder = find_folder(capacity_folder, "ExistingCapacity")
     historic_capacity_folder = find_folder(capacity_folder, "HistoricCapacity")
     management_folder = find_folder(analyses_folder, "Management")
+    validation_folder = find_folder(analyses_folder, "Validation")
 
     existing_capacity_layers = find_layers_in_folder(existing_capacity_folder)
     existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd)
@@ -479,9 +486,11 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd)
     management_layers = find_layers_in_folder(management_folder)
     management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd)
-
+    validation_layers = find_layers_in_folder(validation_folder)
+    validation_layer = group_layers(empty_group_layer, "Beaver Dam Survey Data", validation_layers, df, mxd)
+    
     capacity_layer = group_layers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df, mxd)
-    output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer], df, mxd)
+    output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer, validation_layer], df, mxd)
 
     return output_layer
 
@@ -642,6 +651,8 @@ def find_layers_in_folder(folder_root):
     :return:
     """
     layers = []
+    if folder_root is None:
+        return []
     for instance_file in os.listdir(folder_root):
         if instance_file.endswith(".lyr"):
             layers.append(os.path.join(folder_root, instance_file))
@@ -690,4 +701,3 @@ def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
         arcpy.mapping.RemoveLayer(df, group_layer)
 
     return group_layer
-

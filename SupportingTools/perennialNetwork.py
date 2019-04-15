@@ -13,10 +13,10 @@
 # nhd_waterbody_path - path to nhd waterbody shapefile
 # outpath - name and path of output flowline network
 
-nhd_orig_flowline_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\Perennial2\WestWalker\NHDFlowline.shp"
-nhd_area_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\Perennial2\WestWalker\NHDArea.shp"
-nhd_waterbody_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\Perennial2\WestWalker\NHDWaterbody.shp"
-outpath = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\Perennial2\WestWalker\NHD_24k_Perennial.shp"
+nhd_orig_flowline_path = r"C:\Users\Maggie\Downloads\NHD_H_17010103_HU8_Shape\Shape\NHDFlowline.shp"
+nhd_area_path = r"C:\Users\Maggie\Downloads\NHD_H_17010103_HU8_Shape\Shape\NHDArea.shp"
+nhd_waterbody_path = r"C:\Users\Maggie\Downloads\NHD_H_17010103_HU8_Shape\Shape\NHDWaterbody.shp"
+outpath = r"C:\Users\Maggie\Downloads\NHD_H_17010103_HU8_Shape\Shape\NHD_24k_Perennial.shp"
 
 #  import required modules and extensions
 import arcpy
