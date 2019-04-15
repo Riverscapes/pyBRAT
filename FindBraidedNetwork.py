@@ -96,7 +96,6 @@ def findBraidedReaches(fcLines, perennial_network, is_verbose):
 
     # Find donut reaches
     donut_polygons = "in_memory/DonutPolygons"
-    donut_polygons = "C:\Users\A02150284\Documents\\test\DonutPolygons.shp"
     if perennial_network is not None:
         arcpy.FeatureToPolygon_management(perennial_network,donut_polygons)
     else:
