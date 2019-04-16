@@ -61,11 +61,11 @@ def main(projPath, in_network, out_name):
             infrastructure_dist = row[11]
             landuse = row[12]
             ipc_canal = row[17]
-            
+
             if curr_dams <= 0:
                 # if capacity is none risk is negligible
                 row[0] = "Negligible Risk"
-            elif ipc_canal <=20:
+            elif ipc_canal <= 20:
                 # if canals are within 30 meters (usually means canal is on the reach)
                 row[0] = "Considerable Risk"
             else:
@@ -113,8 +113,8 @@ def main(projPath, in_network, out_name):
                     row[1] = 'Potential Reservoir or Landuse Conversion'
                 else:    
                     row[1] = 'Naturally Vegetation Limited'    
-            # 'iGeo_Slope' > 23%
-            elif slope > 0.23:
+            # 'iGeo_Slope' > 17%
+            elif slope > 0.17:
                row[1] = 'Slope Limited'
             # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
             elif curr_dams <= 0:
@@ -210,9 +210,6 @@ def main(projPath, in_network, out_name):
                         row[15] = "Low Restoration Potential - Veg First"
                     else:
                         row[15] = "Low Restoration Potential"
-
-
-
 
             cursor.updateRow(row)
 
