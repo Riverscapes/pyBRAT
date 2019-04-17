@@ -102,8 +102,16 @@ def findBraidedReaches(fcLines, perennial_network, is_verbose):
         arcpy.FeatureToPolygon_management(perennial_network,donut_polygons)
     else:
         arcpy.FeatureToPolygon_management(fcLines,donut_polygons)
-    arcpy.MakeFeatureLayer_management(fcLines,"lyrBraidedReaches")
+
+    # delete extremely large donuts (< 0.5 sq km) since these are false positives for finding side channels
+    with arcpy.da.UpdateCursor(donut_polygons, ['SHAPE@AREA']) as cursor:
+        for row in cursor:
+            if row[0] > 500000:
+                cursor.deleteRow()
+
     arcpy.MakeFeatureLayer_management(donut_polygons,"lyrDonuts")
+    arcpy.MakeFeatureLayer_management(fcLines,"lyrBraidedReaches")
+
     arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrDonuts",'',"NEW_SELECTION")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMultiCh",1,"PYTHON")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMainCh",0,"PYTHON")
