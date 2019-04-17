@@ -8,6 +8,7 @@ import os
 import sys
 import arcpy
 import glob
+import shutil
 
 arcpy.CheckOutExtension('Spatial')
 sys.path.append('C:/etal/LocalCode/pyBRAT/TNC_Changes')
@@ -67,6 +68,12 @@ def main(overwrite = overwrite_run):
             # check if braid handler has already been run by searching for 'AnabranchTypes.lyr'
             # if layer doesn't exist or overwrite is set to true, run update braid handler script
             anabranch_lyr = find_file(proj_path, 'Outputs/Output_01/01_Intermediates/*[0-9]*_AnabranchHandler/AnabranchTypes.lyr')
+
+            # if anabranch_lyr exists and overwrite is set to True delete the layer and AnabranchHandler folder
+            # prevents ending up with multiple AnabranchHandler folders
+            if anabranch_lyr is not None and overwrite is True:
+                anabranch_dir = os.path.dirname(anabranch_lyr)
+                shutil.rmtree(anabranch_dir)
 
             if anabranch_lyr is None or overwrite is True:
                 print "Running braid handler for " + dir
