@@ -1,5 +1,5 @@
 #  define parent folder path and run folder name for directory search
-pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\DACheck'
+pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_PriorityRuns'
 run_folder = 'BatchRun_02'
 overwrite_run = False
 
