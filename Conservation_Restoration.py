@@ -66,7 +66,7 @@ def main(projPath, in_network, out_name):
                 # if capacity is none risk is negligible
                 row[0] = "Negligible Risk"
             elif ipc_canal <= 20:
-                # if canals are within 30 meters (usually means canal is on the reach)
+                # if canals are within 20 meters (usually means canal is on the reach)
                 row[0] = "Considerable Risk"
             else:
                 # if infrastructure within 30 m or land use is high
@@ -123,7 +123,8 @@ def main(projPath, in_network, out_name):
                 elif splow >= 190 or sp2 >= 2400:
                     row[1] = "Stream Power Limited"
                 else:
-                    row[1] = "...TBD..."
+                    row[1] = "Stream Power Limited"
+                    # row[1] = "...TBD..." #todo: still need to 100% verify this
             else:
                 row[1] = 'Dam Building Possible'
 
@@ -163,53 +164,37 @@ def main(projPath, in_network, out_name):
             opbrc_ui = row[0]
             hist_veg = row[3]
             curr_veg = row[4]
-            hist_dams = row[5]
             curr_dams = row[6]
-            slope = row[7]
-            hist_dep = row[8]
-            iPC_VLowLU = row[9]
-            iPC_HighLU = row[10]
             infrastructure_dist = row[11]
             landuse = row[12]
-            stream_power = row[14]
-            road_crossings = row[16]
 
-            veg_departure = hist_dams - curr_dams
+            hist_veg_departure = hist_veg - curr_veg
             urban = landuse > 0.66
             ag = 0.33 < landuse <= 0.66
             no_urban = not urban
-            hist_to_curr_dams_ratio = 9999
-            if curr_dams != 0:
-                hist_to_curr_dams_ratio = float(hist_dams) / float(curr_dams)
 
             # default category is 'Other'
             row[15] = 'Other'
 
             if curr_dams >= 5:
                 if urban or ag:
-                    row[15] = "Living with Beaver Solutions - urban and ag use"
+                    row[15] = "Living with beaver solutions - urban and ag use"
                 if infrastructure_dist <= 30:
-                    row[15] = "Living with Beaver Solutions - infrastructure"
-            if hist_dams >= 15 and curr_dams >= 15 and no_urban and infrastructure_dist > 100:
-                row[15] = "Relocation and Conservation"
+                    row[15] = "Living with beaver solutions - infrastructure"
+            if curr_dams >= 20 and no_urban:
+                row[15] = "Relocation and conservation"
 
-            if hist_to_curr_dams_ratio > 1 and no_urban:
-                if hist_dams >= 5:
-                    if 5 <= curr_dams < 15:
-                        if veg_departure >= 5:
-                            row[15] = "High Restoration Potential - Veg First"
-                        else:
-                            row[15] = "High Restoration Potential"
-                    if curr_dams < 5:
-                        if veg_departure >= 5:
-                            row[15] = "Medium Restoration Potential - Veg First"
-                        else:
-                            row[15] = "Medium Restoration Potential"
-                if 1 <= hist_dams < 5 and curr_dams < 5:
-                    if veg_departure >= 5:
-                        row[15] = "Low Restoration Potential - Veg First"
-                    else:
-                        row[15] = "Low Restoration Potential"
+            if 5 <= curr_dams < 20 and no_urban:
+                if hist_veg_departure >= 10:
+                    row[15] = "High restoration potential - veg first"
+                else:
+                    row[15] = "High restoration potential"
+
+            if 1 <= curr_dams < 5 and no_urban:
+                if hist_veg_departure >= 10:
+                    row[15] = "Low-medium restoration potential - veg first"
+                else:
+                    row[15] = "Low-medium restoration potential"
 
             cursor.updateRow(row)
 
