@@ -37,7 +37,7 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
-    arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 40)
+    arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 50)
 
     # use old historic capacity field names if new ones not in combined capacity output
     if 'oVC_PT' in fields:
@@ -221,11 +221,14 @@ def makeLayers(out_network):
     limitations_dams_symbology = os.path.join(symbologyFolder, "Unsuitable_Limited_Dam_Building_Opportunities.lyr")
     undesirable_dams_symbology = os.path.join(symbologyFolder, "Areas_Beavers_Can_Build_Dams_but_could_be_Undesirable.lyr")
     conservation_restoration_symbology = os.path.join(symbologyFolder, "Possible_Beaver_Dam_Conservation_Restoration_Opportunities.lyr")
+    conservation_strategies_symbology = os.path.join(symbologyFolder, "Strategies_to_Promote_Dam_Building.lyr")
 
     # make_layer(output_folder, out_network, "Beaver Management Zones", management_zones_symbology, is_raster=False)
     make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", limitations_dams_symbology, is_raster=False, symbology_field ='pPBRC_UD')
     make_layer(output_folder, out_network, "Risk of Undesirable Dams", undesirable_dams_symbology, is_raster=False, symbology_field ='pPBRC_UI')
     make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", conservation_restoration_symbology, is_raster=False, symbology_field ='pPBRC_CR')
+    make_layer(output_folder, out_network, "Strategies to Promote Dam Building", conservation_strategies_symbology, is_raster=False, symbology_field ='DamStrat')
+
 
 def write_xml(in_network, out_network):
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
