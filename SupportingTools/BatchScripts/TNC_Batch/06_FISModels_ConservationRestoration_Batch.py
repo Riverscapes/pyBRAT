@@ -1,5 +1,5 @@
 #  define parent folder path and run folder name for directory search
-pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\iHyd'
+pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_PriorityRuns'
 run_folder = 'BatchRun_02'
 overwrite_run = True
 
@@ -65,10 +65,12 @@ def main(overwrite = overwrite_run):
                     print err
 
                 try:
-                    comb_fis(proj_path, brat_table, 500.0, "Combined_Capacity_Model")
+                    comb_fis(proj_path, brat_table, 1000.0, "Combined_Capacity_Model")
                 except Exception as err:
                     print 'Combined capacity model failed for ' + dir + '. Exception thrown was:'
                     print err
+
+                print "Running conservation restoration model for " + dir
 
                 try:
                     cons_rest(proj_path, combined_capacity, "Conservation_Restoration_Model")
