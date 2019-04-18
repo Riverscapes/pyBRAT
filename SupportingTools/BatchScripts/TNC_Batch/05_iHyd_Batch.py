@@ -1,7 +1,7 @@
 #  define parent folder path and run folder name for directory search
-pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\iHyd'
+pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_PriorityRuns'
 run_folder = 'BatchRun_02'
-overwrite_run = True
+overwrite_run = False
 ihyd_csv_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\ModelParameters\TNC_iHyd_HUC8Values.csv"
 
 
