@@ -14,7 +14,7 @@
 
 
 #  define parent folder path and run folder name for directory search
-pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\DACheck'
+pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_PriorityRuns'
 run_folder = 'BatchRun_02'
 da_csv_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\ModelParameters\TNC_BRAT_UpstreamDA.csv"
 
@@ -27,8 +27,6 @@ from collections import defaultdict
 
 arcpy.CheckOutExtension('Spatial')
 sys.path.append('C:/etal/LocalCode/pyBRAT/TNC_Changes')
-from Drainage_Area_Check import main as da_check
-from BRAT_Braid_Handler import main as braid_handler
 
 
 def update_da(inNetwork, inDict):
