@@ -366,7 +366,6 @@ def update_multiCh(input_network):
         ct_unnamed = int(count_unnamed.getOutput(0))
 
         if ct == ct_unnamed:
-            print 'updating multi channel fields'
             with arcpy.da.UpdateCursor("network_lyr", ['ClusterID', 'IsMultiCh', 'IsMainCh']) as cursor:
                 for row in cursor:
                     row[0] = -1
