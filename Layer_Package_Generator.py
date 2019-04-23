@@ -14,15 +14,14 @@ from SupportingFunctions import find_folder, find_available_num_prefix, make_fol
 import re
 
 
-def main(output_folder, layer_package_name, should_clip):
+def main(output_folder, layer_package_name, clipping_network):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
     :param layer_package_name: What we want to name our layer package
-    :param should_clip: Whether or not we should clip the network to the perennial network
+    :param clipping_network: Network to clip to
     :return:
     """
-    should_clip = parse_input_bool(should_clip)
 
     if layer_package_name == None:
         layer_package_name = "LayerPackage"
@@ -44,7 +43,7 @@ def main(output_folder, layer_package_name, should_clip):
         arcpy.AddMessage("The error message thrown was the following:")
         arcpy.AddWarning(err)
 
-    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, should_clip)
+    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
 
 
 def validate_inputs(output_folder):
@@ -438,12 +437,12 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
             make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster, file_name=file_name)
 
 
-def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name, should_clip):
+def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name, clipping_network):
     """
     Makes a layer package for the project
     :param output_folder: The folder that we want to base our layer package off of
     :param layer_package_name: The name of the layer package that we'll make
-    :param clipping_network: boolean that tells us to clip or not
+    :param clipping_network: network to clip to
     :return:
     """
     if layer_package_name == "" or layer_package_name is None:
@@ -451,8 +450,8 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     if not layer_package_name.endswith(".lpk"):
         layer_package_name += ".lpk"
 
-    if should_clip:
-        clip_folder_to_peren(output_folder)
+    if clipping_network is not None:
+        clip_folder_to_peren(output_folder, clipping_network)
 
     arcpy.AddMessage("Assembling Layer Package...")
     empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
@@ -471,11 +470,11 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     arcpy.PackageLayer_management(output_layer, layer_package)
 
 
-def clip_folder_to_peren(output_folder):
+def clip_folder_to_peren(output_folder, clipping_network):
     shape_files = get_shape_files(output_folder)
 
     for shape_file in shape_files:
-        clip_to_peren(shape_file)
+        clip_to_peren(shape_file, clipping_network)
 
 
 def get_shape_files(output_folder):
@@ -488,18 +487,9 @@ def get_shape_files(output_folder):
     return shape_files
 
 
-def clip_to_peren(shape_file):
-    if not is_peren_not_in_shape_file(shape_file):
-        arcpy.AddWarning("Could not clip layer package to perennial stream")
-        return
+def clip_to_peren(shape_file, clipping_network):
     copy_shapefile_data(shape_file)
-    delete_non_peren_streams(shape_file)
-
-
-def is_peren_not_in_shape_file(shape_file):
-    fields = [f.name for f in arcpy.ListFields(shape_file)]
-
-    return 'IsPeren' in fields
+    delete_non_peren_streams(shape_file, clipping_network)
 
 
 def copy_shapefile_data(shape_file):
@@ -514,11 +504,29 @@ def get_copy_destination(shape_file):
     return os.path.join(a, new_file_name)
 
 
-def delete_non_peren_streams(shape_file):
-    temp_shape_layer = "temp_shape_layer"
-    arcpy.MakeFeatureLayer_management(shape_file, temp_shape_layer)
-    arcpy.SelectLayerByAttribute_management(temp_shape_layer, "NEW_SELECTION", '"IsPeren" = 0')
-    arcpy.DeleteFeatures_management(temp_shape_layer)
+def delete_non_peren_streams(shape_file, clipping_network):
+    add_is_clipable(shape_file, clipping_network)
+    # temp_shape_layer = "temp_shape_layer"
+    # arcpy.MakeFeatureLayer_management(shape_file, temp_shape_layer)
+    # arcpy.SelectLayerByAttribute_management(temp_shape_layer, "NEW_SELECTION", '"ShouldKeep" = 0')
+    # arcpy.DeleteFeatures_management(temp_shape_layer)
+
+
+def add_is_clipable(shape_file, clipping_network):
+    fields = [f.name for f in arcpy.ListFields(shape_file)]
+    if "ShouldKeep" in fields:
+        arcpy.DeleteField_management(shape_file, "ShouldKeep")
+    arcpy.AddField_management(shape_file, "ShouldKeep", "SHORT")
+    arcpy.CalculateField_management(shape_file, "ShouldKeep", 0, "PYTHON")
+
+    seg_network_layer = "seg_network_lyr"
+    perennial_network_layer = "perennial_network_layer"
+    arcpy.MakeFeatureLayer_management(shape_file, seg_network_layer)
+    arcpy.MakeFeatureLayer_management(clipping_network, perennial_network_layer)
+
+    arcpy.SelectLayerByLocation_management(seg_network_layer, "SHARE_A_LINE_SEGMENT_WITH", perennial_network_layer, '', "NEW_SELECTION")
+
+    arcpy.CalculateField_management(seg_network_layer,"ShouldKeep",1,"PYTHON")
 
 
 def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):

@@ -761,11 +761,12 @@ class Layer_Package_Generator_tool(object):
             direction="Input")
 
         param2 = arcpy.Parameter(
-            displayName="Clip to perennial network",
-            name="should_clip",
-            datatype="GPBoolean",
+            displayName="Network to clip LP to",
+            name="clipping_network",
+            datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
+        param2.filter.list = ["Polyline"]
 
         return [param0, param1, param2]
 
