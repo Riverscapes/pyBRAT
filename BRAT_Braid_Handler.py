@@ -335,7 +335,6 @@ def make_layers(input_network):
     braid_folder_name = find_available_num_prefix(intermediates_folder) + "_AnabranchHandler"
     braid_folder = make_folder(intermediates_folder, braid_folder_name)
 
-
     trib_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
@@ -343,3 +342,33 @@ def make_layers(input_network):
 
     make_layer(braid_folder, input_network, "Anabranch Types", mainstem_symbology, is_raster=False)
 
+
+def update_multiCh(input_network):
+    """
+    Updates fields if there are no named reaches in the cluster
+    :param input_network: The path to the network that we'll make a layer from
+    :return:
+    """
+    ids = list(set(row[0] for row in arcpy.da.SearchCursor(input_network, "ClusterID")))
+    ids.remove(-1)
+    arcpy.MakeFeatureLayer_management(input_network, "network_lyr")
+
+    for id in ids:
+
+        query = """ "ClusterID" = %s """ %id
+        arcpy.SelectLayerByAttribute_management("network_lyr", "NEW_SELECTION", query)
+        count = arcpy.GetCount_management("network_lyr")
+        ct = int(count.getOutput(0))
+
+        query = """ "StreamName" = '' """
+        arcpy.SelectLayerByAttribute_management("network_lyr", "SUBSET_SELECTION", query)
+        count_unnamed = arcpy.GetCount_management("network_lyr")
+        ct_unnamed = int(count_unnamed.getOutput(0))
+
+        if ct == ct_unnamed:
+            with arcpy.da.UpdateCursor("network_lyr", ['ClusterID', 'IsMultiCh', 'IsMainCh']) as cursor:
+                for row in cursor:
+                    row[0] = -1
+                    row[1] = 0
+                    row[2] = 1
+                    cursor.updateRow(row)

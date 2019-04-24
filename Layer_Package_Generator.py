@@ -22,6 +22,9 @@ def main(output_folder, layer_package_name, clipping_network=None):
     :param clipping_network: What we want to clip our network to
     :return:
     """
+
+    arcpy.env.overwriteOutput = 'TRUE'
+
     if layer_package_name == None:
         layer_package_name = "LayerPackage"
 

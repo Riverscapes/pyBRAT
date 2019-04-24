@@ -43,9 +43,11 @@ def main(fcStreamNetwork, canal, tempDir, perennial_network, is_verbose):
 
 
 def use_stream_names(stream_network):
-    with arcpy.da.UpdateCursor(stream_network, "IsMultiCh") as cursor:
+    with arcpy.da.UpdateCursor(stream_network, ["IsMultiCh", "IsMainCh", "StreamName"]) as cursor:
         for row in cursor:
-            pass
+            if row[0] == 1 and row[2] != ' ':
+                row[1] = 1
+                cursor.updateRow(row)
 
 
 def handleCanals(stream_network, canal, perennial_network, temp_folder, is_verbose):
@@ -61,11 +63,15 @@ def handleCanals(stream_network, canal, perennial_network, temp_folder, is_verbo
         arcpy.AddMessage("Removing canals...")
     if arcpy.GetInstallInfo()['Version'][0:4] == '10.5':
         stream_network_no_canals = os.path.join(temp_folder, "NoCanals.shp")
+        perennial_no_canals = os.path.join(temp_folder, "NoCanals.shp")
     else:
         stream_network_no_canals = os.path.join('in_memory', 'NoCanals')
+        perennial_no_canals = os.path.join(temp_folder, "NoCanals.shp")
 
     arcpy.Erase_analysis(stream_network, canal, stream_network_no_canals)
-    findBraidedReaches(stream_network_no_canals, perennial_network, is_verbose)
+    if perennial_network is not None:
+        arcpy.Erase_analysis(perennial_network, canal, perennial_no_canals)
+    findBraidedReaches(stream_network_no_canals, perennial_no_canals, is_verbose)
 
     with arcpy.da.UpdateCursor(stream_network_no_canals, "IsMultiCh") as cursor: # delete non-braided reaches
         for row in cursor:
@@ -100,8 +106,16 @@ def findBraidedReaches(fcLines, perennial_network, is_verbose):
         arcpy.FeatureToPolygon_management(perennial_network,donut_polygons)
     else:
         arcpy.FeatureToPolygon_management(fcLines,donut_polygons)
-    arcpy.MakeFeatureLayer_management(fcLines,"lyrBraidedReaches")
+
+    # delete extremely large donuts (< 0.5 sq km) since these are false positives for finding side channels
+    with arcpy.da.UpdateCursor(donut_polygons, ['SHAPE@AREA']) as cursor:
+        for row in cursor:
+            if row[0] > 500000:
+                cursor.deleteRow()
+
     arcpy.MakeFeatureLayer_management(donut_polygons,"lyrDonuts")
+    arcpy.MakeFeatureLayer_management(fcLines,"lyrBraidedReaches")
+
     arcpy.SelectLayerByLocation_management("lyrBraidedReaches","SHARE_A_LINE_SEGMENT_WITH","lyrDonuts",'',"NEW_SELECTION")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMultiCh",1,"PYTHON")
     arcpy.CalculateField_management("lyrBraidedReaches","IsMainCh",0,"PYTHON")

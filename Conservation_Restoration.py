@@ -65,7 +65,7 @@ def main(projPath, in_network, out_name):
                 # if capacity is none risk is negligible
                 row[0] = "Negligible Risk"
             elif ipc_canal <=20:
-                # if canals are within 30 meters (usually means canal is on the reach)
+                # if canals are within 20 meters (usually means canal is on the reach)
                 row[0] = "Considerable Risk"
             else:
                 # if infrastructure within 30 m or land use is high
