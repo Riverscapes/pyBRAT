@@ -481,7 +481,7 @@ def get_shape_files(output_folder):
     shape_files = []
     for root, dirs, files in os.walk(output_folder):
         for file in files:
-            if file.endswith('.shp') and not file.startswith("buffer"):
+            if file.endswith('.shp') and not file.startswith("buffer") and not file.endswith("_Copied.shp"):
                 shape_files.append(os.path.join(root, file))
 
     return shape_files
@@ -494,7 +494,8 @@ def clip_to_peren(shape_file, clipping_network):
 
 def copy_shapefile_data(shape_file):
     copy_destination = get_copy_destination(shape_file)
-    arcpy.CopyFeatures_management(shape_file, copy_destination)
+    if not os.path.exists(copy_destination):
+        arcpy.CopyFeatures_management(shape_file, copy_destination)
 
 
 def get_copy_destination(shape_file):
@@ -506,10 +507,10 @@ def get_copy_destination(shape_file):
 
 def delete_non_peren_streams(shape_file, clipping_network):
     add_is_clipable(shape_file, clipping_network)
-    # temp_shape_layer = "temp_shape_layer"
-    # arcpy.MakeFeatureLayer_management(shape_file, temp_shape_layer)
-    # arcpy.SelectLayerByAttribute_management(temp_shape_layer, "NEW_SELECTION", '"ShouldKeep" = 0')
-    # arcpy.DeleteFeatures_management(temp_shape_layer)
+    temp_shape_layer = "temp_shape_layer"
+    arcpy.MakeFeatureLayer_management(shape_file, temp_shape_layer)
+    arcpy.SelectLayerByAttribute_management(temp_shape_layer, "NEW_SELECTION", '"ShouldKeep" = 0')
+    arcpy.DeleteFeatures_management(temp_shape_layer)
 
 
 def add_is_clipable(shape_file, clipping_network):
