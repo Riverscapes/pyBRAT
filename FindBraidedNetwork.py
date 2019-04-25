@@ -87,6 +87,8 @@ def handleCanals(stream_network, canal, perennial_network, temp_folder, is_verbo
     arcpy.CalculateField_management("lyrBraidedReaches","IsMainCh",0,"PYTHON")
 
     arcpy.Delete_management(stream_network_no_canals)
+    if perennial_network is not None:
+        arcpy.Delete_management(perennial_no_canals)
 
 
 def findBraidedReaches(fcLines, perennial_network, is_verbose):
