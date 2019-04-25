@@ -63,10 +63,10 @@ def handleCanals(stream_network, canal, perennial_network, temp_folder, is_verbo
         arcpy.AddMessage("Removing canals...")
     if arcpy.GetInstallInfo()['Version'][0:4] == '10.5':
         stream_network_no_canals = os.path.join(temp_folder, "NoCanals.shp")
-        perennial_no_canals = os.path.join(temp_folder, "NoCanals.shp")
+        perennial_no_canals = os.path.join(temp_folder, "PerenNoCanals.shp")
     else:
         stream_network_no_canals = os.path.join('in_memory', 'NoCanals')
-        perennial_no_canals = os.path.join(temp_folder, "NoCanals.shp")
+        perennial_no_canals = os.path.join('in_memory', "PerenNoCanals")
 
     arcpy.Erase_analysis(stream_network, canal, stream_network_no_canals)
     if perennial_network is not None:
