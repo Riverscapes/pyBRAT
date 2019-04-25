@@ -71,6 +71,8 @@ def handleCanals(stream_network, canal, perennial_network, temp_folder, is_verbo
     arcpy.Erase_analysis(stream_network, canal, stream_network_no_canals)
     if perennial_network is not None:
         arcpy.Erase_analysis(perennial_network, canal, perennial_no_canals)
+    else:
+        perennial_no_canals = None
     findBraidedReaches(stream_network_no_canals, perennial_no_canals, is_verbose)
 
     with arcpy.da.UpdateCursor(stream_network_no_canals, "IsMultiCh") as cursor: # delete non-braided reaches
