@@ -188,7 +188,7 @@ def make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations
 
     make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
 
-    make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology,
+    make_input_layers(ownership_destinations, "Land_Ownership", symbology_layer=land_ownership_symbology,
                       is_raster=False)
 
     make_input_layers(perennial_stream_destinations, "Perennial_Stream", symbology_layer=perennial_stream_symbology,
