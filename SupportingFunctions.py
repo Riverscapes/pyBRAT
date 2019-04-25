@@ -89,7 +89,7 @@ def make_layer(output_folder, layer_base, new_layer_name, symbology_layer=None, 
     new_layer = new_layer_name
     if file_name is None:
         file_name = new_layer_name.replace(' ', '')
-    new_layer_save = os.path.join(output_folder, file_name)
+    new_layer_save = os.path.join(output_folder, file_name.replace(' ', ''))
     if not new_layer_save.endswith(".lyr"):
         new_layer_save += ".lyr"
 
