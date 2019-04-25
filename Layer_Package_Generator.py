@@ -469,6 +469,22 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     arcpy.AddMessage("Saving Layer Package...")
     arcpy.PackageLayer_management(output_layer, layer_package)
 
+    if clipping_network is not None:
+        restore_copies(output_folder)
+
+
+def restore_copies(output_folder):
+    shape_files = get_shape_files(output_folder)
+    for shape_file in shape_files:
+        dest = shape_file
+        source = get_copy_destination(dest)
+        arcpy.AddMessage(dest)
+        arcpy.AddMessage(source)
+
+        #arcpy.Delete_management(dest)
+        #arcpy.CopyFeatures_management(source, dest)
+        #arcpy.Delete_management(source)
+
 
 def clip_folder_to_peren(output_folder, clipping_network):
     shape_files = get_shape_files(output_folder)
