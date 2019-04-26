@@ -3,7 +3,7 @@ title: Step 4 - BRAT Table Tool
 weight: 4
 ---
 
-The first step in using the BRAT toolbox is to run the BRAT Table tool which generates the attributes needed to run the other tools in the toolbox.
+The BRAT Table tool will generate the attributes needed to run the other tools in the toolbox.
 
 ![table_tool]({{ site.baseurl }}/assets/images/table_tool_new.PNG)
 
@@ -43,7 +43,6 @@ Click OK to run the tool.
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATProjectBuilder"><i class="fa fa-arrow-circle-left"></i> Back to Step 3 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4.1-DrainageAreaCheck"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4.1 </a>
 </div>	
-
 ------
 <div align="center">
 
