@@ -1,6 +1,6 @@
 ---
-title: Step 7 - Summary Report (Optional)
-weight: 9
+title: Step 8 - Summary Report (Optional)
+weight: 10
 ---
 
 # Creating a Summary Report (Optional)
@@ -47,9 +47,10 @@ To remedy this BRAT has integrated multichannel line segments from the original 
 ![Multichannel/Anabranch incorporated into the model]({{ site.baseurl }}/assets/images/Summary_Report_Caveat2.png)
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-LayerPackageGenerator"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-LayerPackageGenerator"><i class="fa fa-arrow-circle-right"></i> Continue to Step 9 </a>
 </div>	
+
 ------
 <div align="center">
 

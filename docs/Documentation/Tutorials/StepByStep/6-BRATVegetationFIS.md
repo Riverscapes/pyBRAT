@@ -1,6 +1,6 @@
 ---
-title: Step 5 - BRAT Vegetation Dam Capacity Model
-weight: 7
+title: Step 6 - BRAT Vegetation Dam Capacity Model
+weight: 8
 ---
 
 The vegetation dam capacity model estimates the maximum number of dams each reach could support based solely on the streamside and riparian vegetation.  The model predicts dam capacity for both the historic vegetation and existing vegetation.
@@ -17,10 +17,9 @@ After the tool has been run, the network should now include the attributes `oVC_
 
 [Continue to Step 8]({{ site.baseurl }}/Documentation/8-BRATCombinedFIS) ->
 
-
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4-iHydAttributes"><i class="fa fa-arrow-circle-left"></i> Back to Step 4 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATCombinedFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 6 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-iHydAttributes"><i class="fa fa-arrow-circle-left"></i> Back to Step 5 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 7 </a>
 </div>	
 
 ------

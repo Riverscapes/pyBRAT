@@ -1,6 +1,6 @@
 ---
-title: Step 6 - BRAT Combined Dam Capacity Model
-weight: 8
+title: Step 7 - BRAT Combined Dam Capacity Model
+weight: 9
 ---
 
 After running the Vegetation Dam Capacity Model, you can run the Combined Dam Capacity Model tool.  This fuzzy inference system model predicts the maximum number of dams each reach could support based on 4 inputs: 1) the output of the vegetation dam capacity model 2) the low (base) flow stream power, 3) the high flow (Q2) stream power, and 4) the slope of the reach.  The model predicts dam capacity separately for historic vegetation dam capacity and existing vegetation dam capacity.
@@ -28,11 +28,11 @@ The fields `oCC_HPE` and `oCC_EX` are split into the following categories for ou
 
 [![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
 
-
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-BRATVegetationFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 5 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-SummaryReport"><i class="fa fa-arrow-circle-right"></i> Continue to Step 7 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-SummaryReport"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
 </div>	
+
 ------
 <div align="center">
 

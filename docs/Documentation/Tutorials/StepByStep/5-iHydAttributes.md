@@ -1,6 +1,6 @@
 ---
-title: Step 4 - iHyd Attributes
-weight: 6
+title: Step 5 - iHyd Attributes
+weight: 7
 ---
 
 ## Concept
@@ -80,9 +80,10 @@ After any necessary regressions have been entered, save the changes to the scrip
 
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 3.2 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 5 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 4.2 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 6 </a>
 </div>	
+
 ------
 <div align="center">
 
