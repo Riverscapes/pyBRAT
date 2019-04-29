@@ -1,6 +1,6 @@
 ---
 title: Step 10 - BDWS (Optional)
-weight: 11
+weight: 13
 ---
 
 ## Running the Beaver Dam Water Storage (BDWS) Tool
@@ -14,7 +14,6 @@ The tool will create a BDWS project folder in the folder given for the project r
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-LayerPackageGenerator"><i class="fa fa-arrow-circle-left"></i> Back to Step 9 </a>
 </div>	
-
 ------
 <div align="center">
 
