@@ -1,6 +1,6 @@
 ---
-title: Step 4 - iHyd Attributes
-weight: 6
+title: Step 5 - iHyd Attributes
+weight: 7
 ---
 
 ## Concept
@@ -61,6 +61,8 @@ After any necessary regressions have been entered, save the changes to the scrip
 - **Baseflow Equation** - write the baseflow equation used, the Qlow specified in the code, so that the equation can be included in the project XML.
 - **Highflow Equation** - write the highflow equation used, the Q2 specified in the code, so that it can be included in the project XML.
 
+After running, in addition to creating and calculating the iHyd fields, it will create a folder in `01_Intermediates` called `##_Hydrology`, which will contain layers symbolizing base flow and high flow stream power.
+
 -----
 ## References
 
@@ -80,8 +82,8 @@ After any necessary regressions have been entered, save the changes to the scrip
 
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 3.2 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/5-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 5 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 4.2 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 6 </a>
 </div>	
 ------
 <div align="center">

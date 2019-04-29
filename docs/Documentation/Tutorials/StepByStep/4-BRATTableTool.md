@@ -1,9 +1,9 @@
 ---
-title: Step 3 - BRAT Table Tool
-weight: 3
+title: Step 4 - BRAT Table Tool
+weight: 4
 ---
 
-The first step in using the BRAT toolbox is to run the BRAT Table tool which generates the attributes needed to run the other tools in the toolbox.
+The BRAT Table tool will generate the attributes needed to run the other tools in the toolbox.
 
 ![table_tool]({{ site.baseurl }}/assets/images/table_tool_new.PNG)
 
@@ -21,6 +21,7 @@ Figure 1. The BRAT Table tool interface
 ### Optional Inputs:
 
 - **Input Drainage Area Raster** - if you want, you can derive a drainage area raster from the DEM beforehand.  If you do so, select it here.  If you do not do so, the BRAT Table tool will automatically derive one, which will make the run time longer
+- **Perennial Network** - A perennial network can be given to populate the `IsPeren` field. If a stream network is given here, only perennial streams are used to find multichannel sections of the stream network. This may make it easier to edit the output for the Braid Handler (more on how to do that in the Braid Handler section of this tutorial).
 - **Short Description for Run** - Write a short (less than 100 characters, including spaces) description for the BRAT run to be included in the project XML file. 
 
 **The following inputs are optional but required to run the conflict potential and management models**
@@ -37,12 +38,13 @@ In addition, there are checkboxes that change the behavior of the tool in minor 
 - **Segment Network by Roads** - This option divides reaches based on the roads input. This can be useful if the user wants to compare the results of the model to field data collected from upstream and downstream of bridges. This is not necessary for most users, but can be useful.
 - **Run Verbose** - This option enables ArcMap to provide messages for each step conducted by the tool, letting the user track progress as the tool runs. 
 
-Click OK to run the tool.
+Click OK to run the tool. If the project folder you gave does not contain an `Outputs` folder, the tool will create one. The tool will then create an `Output_##` folder, where "##" is the next available number. The tool will then create an `01_Intermediates` file in the `Output_##` folder that it created. The tool will then copy the stream network given into the `01_Intermediates` folder. This copy will be where all the data from the other inputs is stored, including the `iGeo`, the `iVeg`, and `iPC` attributes. This is the data that will be used to inform the rest of the model.
 
+The tool will also create several folders in the `01_Intermediates` folder. The first created will be a folder with the buffers used to bring the data into the BRAT Table. The folder will be named `##_Buffers`. This folder will contain a 30m buffer and a 100m buffer, as well as a layer for each. The next folder will be called `##_TopographicMetrics`, and will contain layers symbolizing data about the slope and drainage area of the BRAT Table. The third will be named `##_AnthropogenicMetrics`, and will contain layers symbolizing data about the distance to canals, roads, road crossings, roads in the valley bottom, railroads, and land use intensity. This folder will not be created if no conflict inputs are given. The fourth will be named `##_Perennial`, and contains a layer showing what streams have been marked as perennial and which ones are non-perennial.
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/2-Preprocessing"><i class="fa fa-arrow-circle-left"></i> Back to Step 2 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3.1-DrainageAreaCheck"><i class="fa fa-arrow-circle-right"></i> Continue to Step 3.1 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATProjectBuilder"><i class="fa fa-arrow-circle-left"></i> Back to Step 3 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4.1-DrainageAreaCheck"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4.1 </a>
 </div>	
 ------
 <div align="center">
