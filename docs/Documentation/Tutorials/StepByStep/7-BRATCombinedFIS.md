@@ -14,7 +14,7 @@ Inputs and Parameters:
 - **Maximum DA Threshold** - this is a drainage area value above which it is assumed that the stream is too large for beaver to build dams on.  This varies from region to region and should be adjusted according to the hydrologic characteristics of the study area.
 - **Save Output Network** - choose a location and name to save the output
 
-The output network will have the new fields `oCC_HPE` (historic combined dam capacity) and `oCC_EX` (existing combined dam capacity).  When the tool finishes running the second time it should automatically add the output to the map and symbolize the `oCC_EX` field, which represents the existing capacity to support dam building activity.
+The output network will be placed in a new folder in `Output_##` called `02_Analyses`. The output network will have the new fields `oCC_HPE` (historic combined dam capacity) and `oCC_EX` (existing combined dam capacity).  When the tool finishes running the second time it should automatically add the output to the map and symbolize the `oCC_EX` field, which represents the existing capacity to support dam building activity.
 
 The fields `oCC_HPE` and `oCC_EX` are split into the following categories for our symbology:
 
@@ -24,6 +24,8 @@ The fields `oCC_HPE` and `oCC_EX` are split into the following categories for ou
 - Frequent 5-15 dams/km
 - Pervasive: 15-40 dams/km
 
+Layers are created with these symbologies in the folder `01_Capacity`, which is placed in `02_Analyses`.
+
 
 
 [![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
@@ -32,7 +34,6 @@ The fields `oCC_HPE` and `oCC_EX` are split into the following categories for ou
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-SummaryReport"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
 </div>	
-
 ------
 <div align="center">
 
