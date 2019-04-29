@@ -1,11 +1,11 @@
 ---
-title: Step 8 - Summary Report (Optional)
+title: Step 8 - Data Validation (Optional)
 weight: 10
 ---
 
-# Creating a Summary Report (Optional)
+# Using the Data Validation tool (Optional)
 
-After running the BRAT tool, it can sometimes be useful calculate additional metrics on the output. The Summary Report tool adds and calculates a number of fields that further contextualize the results of a BRAT run.
+After running the BRAT tool, it can sometimes be useful calculate additional metrics on the output. The Data Validation tool adds and calculates a number of fields that further contextualize the results of a BRAT run.
 
 ## Running the Tool
 
@@ -36,9 +36,11 @@ The tool produces eight new fields. Three of these fields are reliant on the dam
 * `mCC_HPE_Ct`: The historic capacity density. Calculated by dividing `oCC_HPE` by the segment length.
 * `mCC_EXtoHPE`: The ration between existing and historic capacity. Calculated by dividing `oCC_EX` by `oCC_HPE`.
 
+In addition 
+
 ### Caveats 
 
-Currently the Summary Report tool is limited by the distance and relation that dam capture events to the NHD line. This can result in short reaches being assigned multiple dams and having overestimated dam densities due to the small reach length. While larger reaches adjacent to the short reach which might have been assigned some of the dams are not and have low dam densities. 
+Currently the Data Validation tool is limited by the distance and relation that dam capture events to the NHD line. This can result in short reaches being assigned multiple dams and having overestimated dam densities due to the small reach length. While larger reaches adjacent to the short reach which might have been assigned some of the dams are not and have low dam densities. 
 
 ![Original validation issue]({{ site.baseurl }}/assets/images/Summary_Report_Caveat1.png)
 
@@ -50,7 +52,6 @@ To remedy this BRAT has integrated multichannel line segments from the original 
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-LayerPackageGenerator"><i class="fa fa-arrow-circle-right"></i> Continue to Step 9 </a>
 </div>	
-
 ------
 <div align="center">
 

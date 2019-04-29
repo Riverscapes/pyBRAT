@@ -32,8 +32,9 @@ Layers are created with these symbologies in the folder `01_Capacity`, which is 
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-SummaryReport"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-DataValidation"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
 </div>	
+
 ------
 <div align="center">
 
