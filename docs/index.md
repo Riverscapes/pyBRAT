@@ -11,8 +11,7 @@ title: Beaver Restoration Assessment Tool Home
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/BRATData"><i class="fa fa-map"></i>  BRAT Outputs </a> 
 	<a class="hollow button" href="{{ site.baseurl }}/Download"><i class="fa fa-download"></i> Download BRAT Model</a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/1-InputData"><i class="fa fa-download"></i> Start the Step-by-Step Tutorial</a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation"><i class="fa fa-question-circle"></i>  BRAT Help </a> 
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/1-InputData"><i class="fa fa-question-circle"></i> Start the Step-by-Step Tutorial</a>
     <a class="hollow button" href="{{ site.baseurl }} https://www.sciencedirect.com/science/article/pii/S0169555X15302166"><i class="fa fa-paperclip"></i> BRAT Publication </a>
 </div>
 
