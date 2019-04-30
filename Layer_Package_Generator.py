@@ -462,6 +462,7 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     mxd = arcpy.mapping.MapDocument("CURRENT")
     mxd.relativePaths = False
     df = arcpy.mapping.ListDataFrames(mxd)[0]
+
     analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source)
     inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
     intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)

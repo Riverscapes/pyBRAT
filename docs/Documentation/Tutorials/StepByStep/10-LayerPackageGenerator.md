@@ -16,7 +16,7 @@ BRAT automatically creates output folders, labelled "Output_1", "Output_2", etc.
 
 Any set of characters is acceptable as input for the layer package name. If you choose to not give the tool a name for the layer package, it will default to "LayerPackage.lpk". 
 
-As you run the tool, you may see the layers being rapidly grouped in the Table of Contents, with the map changing accordingly. This is normal. Arcpy requires the layers to be added to the Table of Contents before they can be grouped, which leads to this odd-looking behavior.
+As you run the tool, you may see the layers being rapidly grouped in the Table of Contents, with the map changing accordingly. This is normal. Arcpy requires the layers to be added to the Table of Contents before they can be grouped, which leads to this odd-looking behavior. Once the tool is done saving the layer package, they will be removed from the Table of Contents.
 
 After the tool is run, there should be a layer package file in the output folder selected. This file can be emailed or uploaded without breaking any dependencies.
 
@@ -26,8 +26,8 @@ After the tool is run, there should be a layer package file in the output folder
 
 This is a list of known problems that can prevent the LPG from running correctly, and troubleshooting steps to fix them.
 
-#### An Existing Layer Package in the Table of Contents
-Because the layers are grouped by name in the Table of Contents, having a layer package in the Table of Contents before running the LPG can lead to layers being grouped in unexpected ways. Always make sure that the Table of Contents doesn't have any layer packages or group layers in it before running the LPG. 
+#### An Existing Layer/Layer Package in the Table of Contents
+Because the layers are grouped and referred to by name in the Table of Contents, having a layer or a layer package in the Table of Contents before running the LPG can lead to naming conflicts and layers being grouped in unexpected ways. Always make sure that the Table of Contents doesn't have any layers or layer packages in it before running the LPG. 
 
 #### Non-standard Folder Structure
 The LPG works by looking for layers in the folder structure. If the folders are not in the standard folder structure, created by the latest version of BRAT, the LPG will not work. If you are using data from an old run of BRAT, it may be worthwhile to just run it again all the way through. 
