@@ -195,16 +195,6 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     worksheet.write(7, 3, '=SUM(D3:D7)', percent)
 
 
-def chart(workbook, worksheet):
-    bar_chart = workbook.add_chart({'type': 'bar'})
-    bar_chart.add_series({
-        'name': '=Sheet1!$A$1',
-        'categories': '=Sheet1!$A$3:$A$7',
-        'values': '=Sheet1!$C$3:$C$7',
-    })
-    worksheet.insert_chart('G3', bar_chart)
-
-
 # Getting the data for Complex Size
 # loop through multiple streams
 def search_cursor(fields, data1, data2, data3, data4, data5, total, stream_network, is_complex, worksheet, workbook):
@@ -257,30 +247,6 @@ def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, water
     total_length = 0.0
 
     search_cursor(fields, no_dams_length, one_dam_length, some_dams_length, more_dams_length, many_dams_length, total_length, stream_network, is_complex, exist_complex_worksheet, workbook)
-
-    # Writing the chart
-    # chart(workbook, exist_complex_worksheet)
-
-    bar_chart = workbook.add_chart({'type': 'bar'})
-    bar_chart.add_series({
-        'name': '=Sheet1!$A$1',
-        'categories': '=Sheet1!$A$3:$A$7',
-        'values': '=Sheet1!$C$3:$C$7',
-    })
-
-    bar_chart.add_series({
-        'name': ['Sheet1', 0, 0],
-        'categories': ['Sheet1', 1, 0, 6, 0],
-        'values': ['Sheet1', 1, 2, 6, 2],
-    })
-
-    bar_chart.set_title({'name': '=Sheet1!$A$1'})
-    bar_chart.set_x_axis({'name': 'Test number'})
-    bar_chart.set_y_axis({'name': 'Sample length (mm)'})
-
-
-
-    exist_complex_worksheet.insert_chart('G3', bar_chart)
 
 
 def write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook):
