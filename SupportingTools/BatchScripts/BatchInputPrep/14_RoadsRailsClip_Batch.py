@@ -15,25 +15,39 @@
 # Author:      Sara Bangen (sara.bangen@gmail.com)
 # -------------------------------------------------------------------------------
 
+#  import required modules and extensions
+import arcpy
+import os
+import re
+
 # User defined arguments:
 
 # pf_path - path to parent folder that holds HUC8 folders
 # roads_path - path to roads shapefile to be clipped
 # rails_path - path to rails shapefile to be clipped
 
-pf_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data"
-roads_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\Roads\tl_2018_roads.shp"
-rails_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\Rails\tl_2017_rails.shp"
-
+pf_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data\new"
+roads_path = os.path.join(pf_path, '00_Projectwide/RoadsRails/tl_2018_roads.shp')
+rails_path = "C:/Users/Maggie/Documents/TIGER/tl_2018_us_rails.shp"
+coord_sys = 'NAD 1983 Idaho TM (Meters)'
 
 def main():
 
-    #  import required modules and extensions
-    import arcpy
-    import os
-    import re
+    # load required extension
     arcpy.CheckOutExtension('Spatial')
+    arcpy.env.overwriteOutput = True
+    arcpy.env.workspace = 'in_memory'
 
+    proj_road_folder = os.path.join(pf_path, '00_Projectwide/RoadsRails')
+    if not os.path.exists(proj_road_folder):
+        os.mkdir(proj_road_folder)
+
+    # reprojecting original datasets
+    print "Reprojecting original railroad data set..."
+    outCS = arcpy.SpatialReference(coord_sys)
+    out_path = os.path.join(proj_road_folder, 'tl_2018_us_rails.shp')
+    proj_rails = arcpy.Project_management(rails_path, out_path, outCS) 
+    
     # change directory to the parent folder path
     os.chdir(pf_path)
     # list all folders in parent folder path - note this is not recursive
@@ -61,7 +75,7 @@ def main():
             # clip roads to the huc 8 shp
             arcpy.Clip_analysis(roads_path, huc8_shp, os.path.join(out_folder, os.path.basename(roads_path)))
             # clip rails to the huc 8 shp and save only if rails exist
-            rails_clip = arcpy.Clip_analysis(rails_path, huc8_shp, 'in_memory/rails_clip')
+            rails_clip = arcpy.Clip_analysis(proj_rails, huc8_shp, 'in_memory/rails_clip')
             count = arcpy.GetCount_management(rails_clip)
             ct = int(count.getOutput(0))
             if ct >= 1:

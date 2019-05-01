@@ -25,10 +25,10 @@
 # huc8_aoi_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\NHD\WBDHU8_ProjectArea.shp'
 # coord_sys - coordinate system name that data will be projected to(e.g., 'NAD 1983 California (Teale) Albers (Meters)')
 
-pf_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data"
-nhd_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\NHD"
-huc8_aoi_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\ProjectBoundary\WBDHU8_ProjectArea.shp"
-coord_sys = 'NAD 1983 California (Teale) Albers (Meters)'
+pf_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data"
+nhd_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\NHD"
+huc8_aoi_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\NHD\WBDHU8.shp"
+coord_sys = 'NAD 1983 Idaho TM (Meters)'
 
 #  import required modules and extensions
 import arcpy
@@ -90,15 +90,15 @@ def main():
         # delete identical flowlines (isn't always the case but found is an issue with some nhd polylines)
         arcpy.DeleteIdentical_management(huc8_flowlines, ['Shape'])
 
-        #  select lines that are coded as canals (ftype 336) or have 'Ditch' in their name
-        #  note: only creates 'NHDCanalsDtiches.shp' if there are canal flowlines
+        #  select lines that are coded as canals (ftype 336)
+        #  note: only creates 'NHDCanals.shp' if there are canal flowlines
         arcpy.MakeFeatureLayer_management(huc8_flowlines, 'huc8_flowlines_lyr')
-        quer = """ "FTYPE" = 336 OR "GNIS_NAME" LIKE '%Ditch%' """
+        quer = """ "FTYPE" = 336 """
         arcpy.SelectLayerByAttribute_management('huc8_flowlines_lyr', 'NEW_SELECTION', quer)
         count = arcpy.GetCount_management('huc8_flowlines_lyr')
         ct = int(count.getOutput(0))
         if ct >= 1:
-            arcpy.CopyFeatures_management('huc8_flowlines_lyr', os.path.join(nhd_folder, 'NHDCanalsDitches.shp'))
+            arcpy.CopyFeatures_management('huc8_flowlines_lyr', os.path.join(nhd_folder, 'NHDCanals.shp'))
         arcpy.SelectLayerByAttribute_management('huc8_flowlines_lyr', "CLEAR_SELECTION")
 
 

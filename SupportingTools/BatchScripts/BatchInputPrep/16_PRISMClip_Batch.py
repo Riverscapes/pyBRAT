@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------
-# Name:        DEM Clip (Batch)
+# Name:        PRISM Clip (Batch)
 #
 # Purpose:     Script clips project-scale DEM to individual HUC8 polygon shapefiles.
 #              The individual clipped DEMs are written to a 'DEM' subfolder (which
@@ -24,9 +24,9 @@
 # out_name - output raster name without file extension(for ETAL users using 10 m DEMS should use 'NED_DEM_10m')
 
 #  user defined paths
-pf_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data"
-dem_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\DEM\NED_DEM_10m.tif"
-out_name = 'NED_DEM_10m'
+pf_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data"
+prism_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\PRISM\PRISM_ppt_30yr_normal_800mM2_annual_ProjectArea.tif"
+out_name = 'PRISM_ppt_30yr_normal_800mM2_annual'
 
 #  import required modules and extensions
 import arcpy
@@ -34,21 +34,21 @@ import os
 arcpy.CheckOutExtension('Spatial')
 
 
-def dem_clip(x):
+def prism_clip(x):
 
     # print subdir name to track script progress for user
-    print 'Clipping DEM for: ' + str(x)
+    print 'Clipping PRISM for: ' + str(x)
 
     # create output dem folder if it doesn't already exist
-    dem_folder = os.path.join(pf_path, x, 'DEM')
-    if not os.path.exists(dem_folder):
-        os.makedirs(dem_folder)
+    prism_folder = os.path.join(pf_path, x, 'PRISM')
+    if not os.path.exists(prism_folder):
+        os.makedirs(prism_folder)
 
     # read in huc8 shp and get the huc8 code
     huc8_shp = os.path.join(pf_path, x, 'NHD', 'WBDHU8.shp')
 
     # clip input dem by huc8_shp
-    arcpy.Clip_management(dem_path, '', os.path.join(dem_folder, out_name + '.tif'), huc8_shp, '', 'ClippingGeometry', 'NO_MAINTAIN_EXTENT')
+    arcpy.Clip_management(prism_path, '', os.path.join(prism_folder, out_name + '.tif'), huc8_shp, '', 'ClippingGeometry', 'NO_MAINTAIN_EXTENT')
 
 
 def main():
@@ -70,7 +70,12 @@ def main():
 
     # run dem_clip function for each huc8 folder
     for dir in dir_list:
-        dem_clip(dir)
+        if not os.path.exists(os.path.join(pf_path, dir, 'PRISM')):
+            try:
+                prism_clip(dir)
+            except Exception as err:
+                print "Clipping DEM failed for " + dir + ". The exception thrown was:"
+                print err
 
     # clear environment settings
     arcpy.ResetEnvironments()

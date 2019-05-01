@@ -3,11 +3,11 @@ import arcpy
 import os
 arcpy.CheckOutExtension('Spatial')
 
-ras_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\LANDFIRE\tiles'
-out_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\LANDFIRE'
+ras_path = r'C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\LANDFIRE\tiles'
+out_path = os.path.dirname(ras_path)
 #scratch = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\scratch'
-aoi_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\ProjectArea.shp'
-coord_sys = 'NAD 1983 California (Teale) Albers (Meters)'
+aoi_path = r'C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\ProjectBoundary\WBDHU8_ProjectArea.shp'
+coord_sys = 'NAD 1983 Idaho TM (Meters)'
 
 
 def main():

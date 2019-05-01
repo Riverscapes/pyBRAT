@@ -23,22 +23,37 @@
 # coord_sys - coordinate system name that DEM will be projected to(e.g., 'NAD 1983 California (Teale) Albers (Meters)')
 
 #  user defined paths
-dem_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\DEM\tiles'
-out_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\DEM'
+dem_path = r'C:\Users\Maggie\Downloads\ID_DEMs'
+out_path = r'C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\DEM'
 out_name = 'NED_DEM_10m'
-aoi_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\ProjectBoundary\ProjectArea.shp'
-coord_sys = 'NAD 1983 California (Teale) Albers (Meters)'
+aoi_path = r'C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\ProjectBoundary\ProjectArea_NoHoles.shp'
+coord_sys = 'NAD 1983 Idaho TM (Meters)'
 
 #  import required modules and extensions
 import arcpy
 import os
 import glob
+import zipfile
 arcpy.CheckOutExtension('Spatial')
 
 
 def main():
+    
+
+#  unzip all downloaded folders
+    print "Extracting DEM data from tile zip files..."
+    os.chdir(dem_path)  # change directory from working dir to dir with files
+    extension = ".zip"
+    for item in os.listdir(dem_path):  # loop through items in dir
+        if item.endswith(extension):  # check for ".zip" extension
+            file_name = os.path.abspath(item)  # get full path of files
+            zip_ref = zipfile.ZipFile(file_name)  # create zipfile object
+            zip_ref.extractall(os.path.join(dem_path, 'zipped'))  # extract file to dir
+            zip_ref.close()  # close file
+            os.remove(file_name)  # delete zipped file
 
     # get list of all '*.img' rasters in dem_path folder
+    print 'Getting list of all DEM data...'
     os.chdir(dem_path)
     dems = glob.glob('*.img')
     dem_list = ";".join(dems)
@@ -49,17 +64,21 @@ def main():
     outCS = arcpy.SpatialReference(coord_sys)
 
     # mosaic individual tiles to single raster
+    print "Merging DEM data..."
     tmp_dem = arcpy.MosaicToNewRaster_management(dem_list, out_path, 'tmp_' + out_name + '.tif', outCS, "32_BIT_FLOAT", "", "1")
 
     # clip raster to aoi shapefile
+    print 'Clipping output to project boundary...'
     out_dem = arcpy.Clip_management(tmp_dem, '', os.path.join(out_path, out_name + '.tif'), aoi_path, '', 'ClippingGeometry', 'NO_MAINTAIN_EXTENT')
 
     # create and save hillshade
+    print 'Creating hillshade...'
     arcpy.ResetEnvironments()
     out_hs = arcpy.sa.Hillshade(out_dem, '', '', "NO_SHADOWS")
     out_hs.save(os.path.join(out_path, out_name + '_HS.tif'))
 
     # check raster cell size
+    print 'Raster Size Check:'
     xResult = arcpy.GetRasterProperties_management(tmp_dem, 'CELLSIZEX')
     print 'Mosaic Raster Cell Size: ' + str(xResult.getOutput(0))
     xResult = arcpy.GetRasterProperties_management(out_dem, 'CELLSIZEX')

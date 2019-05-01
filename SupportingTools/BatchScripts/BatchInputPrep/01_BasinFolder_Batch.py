@@ -12,8 +12,8 @@
 # out_path - path to parent folder where all HUC8 subfolders will be created
 # huc8_aoi_path - filepath to project area HUC8 shapefile
 
-out_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data"
-huc8_aoi_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\ProjectBoundary\WBDHU8_ProjectArea.shp"
+out_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data"
+huc8_aoi_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\WBDHU8.shp"
 
 #  import required modules and extensions
 import arcpy

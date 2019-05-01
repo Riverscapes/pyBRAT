@@ -16,7 +16,7 @@ import os
 arcpy.CheckOutExtension('Spatial')
 
 # user defined paths
-pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\DitchesTest' # project folder path
+pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Runs' # project folder path
 
 
 def main(overwrite = True):

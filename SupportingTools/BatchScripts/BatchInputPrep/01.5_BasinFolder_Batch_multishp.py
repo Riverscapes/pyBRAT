@@ -1,14 +1,15 @@
 # --------------------------------------------------------------------------
 # Name: Basin Folder 2 (Batch)
-# Purpose: Creates basin subfolders from list of HUC8 NHD folders
-#          Folder names are compressed basin names followed by HUC ID #
+# Purpose: Mostly copied from Sara Bangen's 01_BasinFolder_Batch & 02_NHDClip_Batch
+#          Adapted to create basin subfolders, clip and copy over NHD data downloaded
+#             by watershed rather than by project area          
 #
 # Author: Maggie Hallerud
 # --------------------------------------------------------------------------
 
 
 nhd_path = 'C:/Users/Maggie/Downloads/GYA'
-pf_path = 'C:/Users/Maggie/Desktop/GYA/raw_Data'
+pf_path = 'C:/Users/Maggie/Desktop/GYA/wrk_Data'
 coord_sys = 'NAD 1983 UTM Zone 12N'
 
 import os
@@ -17,9 +18,12 @@ import arcpy
 
 
 def main(nhd_path, pf_path, coord_sys):
+    arcpy.env.overwriteOutput = True
+    arcpy.env.workspace = 'in_memory'
     outCS = arcpy.SpatialReference(coord_sys)
     os.chdir(nhd_path)
     dir_list = filter(lambda x: os.path.isdir(x), os.listdir('.'))
+    os.mkdir(os.path.join(pf_path, '00_Projectwide')
     for dir in dir_list:
         # make huc folder
         dir_sep = dir.split('_')
@@ -38,8 +42,9 @@ def main(nhd_path, pf_path, coord_sys):
         wbd_shp = huc_wbd
 
         # include only streams and canals
+        arcpy.MakeFeatureLayer_management(flowline_shp, 'tmp_huc8_flowlines_lyr')
         quer = """ "FTYPE" = 428 OR "FTYPE" = 420 OR "FTYPE" = 566 """
-        arcpy.SelectLayerByAttribute_management(flowline_shp, 'NEW_SELECTION', quer)
+        arcpy.SelectLayerByAttribute_management('tmp_huc8_flowline_lyr', 'NEW_SELECTION', quer)
         arcpy.SelectLayerByAttribute_management('tmp_huc8_flowlines_lyr', 'SWITCH_SELECTION')
         huc8_flowlines = arcpy.CopyFeatures_management('tmp_huc8_flowlines_lyr', os.path.join(nhd_folder, 'NHDFlowline.shp'))        
 
