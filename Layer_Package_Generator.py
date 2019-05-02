@@ -453,14 +453,19 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
         layer_package_name += ".lpk"
 
     new_source = None
+    if clipping_network is not None:
+        new_source = get_new_source(clipping_network, analyses_folder)
 
     arcpy.AddMessage("Assembling Layer Package...")
     empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
 
     mxd = arcpy.mapping.MapDocument("CURRENT")
+    mxd.relativePaths = False
     df = arcpy.mapping.ListDataFrames(mxd)[0]
+    for lyr in arcpy.mapping.ListLayers(mxd, "", df):
+        arcpy.mapping.RemoveLayer(df, lyr)
 
-    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd)
+    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source)
     inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
     intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)
     output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
@@ -471,7 +476,41 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     arcpy.PackageLayer_management(output_layer, layer_package)
 
 
-def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
+def get_new_source(clipping_network, analyses_folder):
+    """
+    Creates a temporary shape file that will be the source for the clipped regions
+    :param clipping_network: What we want to clip our source to
+    :param analyses_folder: The path to the analyses folder, where our existing source file should be
+    :return:
+    """
+    old_source = get_old_source(analyses_folder)
+    old_source_layer = "old_source_lyr"
+    if arcpy.Exists(old_source_layer):
+        arcpy.Delete_management(old_source_layer)
+    arcpy.MakeFeatureLayer_management(old_source, old_source_layer)
+
+    arcpy.SelectLayerByLocation_management(old_source_layer, "INTERSECT", clipping_network)
+
+    new_source = os.path.join(analyses_folder, "Temp.shp")
+    if os.path.exists(new_source):
+        arcpy.Delete_management(new_source)
+    arcpy.CopyFeatures_management(old_source_layer, new_source)
+    return new_source
+
+
+def get_old_source(analyses_folder):
+    """
+    Looks for the old source in the analyses folder.
+    Assumes that the only shape file in the analyses folder is the old source
+    :param analyses_folder: The path to the analyses folder
+    :return:
+    """
+    for file in os.listdir(analyses_folder):
+        if file.endswith(".shp"):
+            return os.path.join(analyses_folder, file)
+
+
+def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source):
     """
     Returns the layers we want for the 'Output' section
     :param analyses_folder:
@@ -484,11 +523,11 @@ def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd):
     validation_folder = find_folder(analyses_folder, "Validation")
 
     existing_capacity_layers = find_layers_in_folder(existing_capacity_folder)
-    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd)
+    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd, new_source)
     historic_capacity_layers = find_layers_in_folder(historic_capacity_folder)
-    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd)
+    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd, new_source)
     management_layers = find_layers_in_folder(management_folder)
-    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd)
+    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd, new_source)
     validation_layers = find_layers_in_folder(validation_folder)
     validation_layer = group_layers(empty_group_layer, "Beaver Dam Survey Data", validation_layers, df, mxd)
     
@@ -563,8 +602,6 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
     :return: Layer for intermediates
     """
     intermediate_layers = []
-
-    # findAndGroupLayers(intermediate_layers, intermediatesFolder, "AnthropogenicIntermediates", "Anthropogenic Intermediates", emptyGroupLayer, df, mxd)
     anthropogenic_metrics_folder = find_folder(intermediates_folder, "AnthropogenicMetrics")
     if anthropogenic_metrics_folder:
         sorted_anthropogenic_layers = []
@@ -662,16 +699,7 @@ def find_layers_in_folder(folder_root):
     return layers
 
 
-def change_layer_source(layer_path, new_source=None):
-    """
-    Changes the layer source to a clipped version
-    :param layer_path:
-    :param new_source: The new source
-    :return:
-    """
-
-
-def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
+def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remove_layer=True):
     """
     Groups a bunch of layers together
     :param group_layer: The empty group layer we'll add stuff to
@@ -694,12 +722,18 @@ def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
     group_layer = arcpy.mapping.ListLayers(mxd, group_name, df)[0]
 
     for layer in layers:
-        if not isinstance(layer, arcpy.mapping.Layer):
-            layer_instance = arcpy.mapping.Layer(layer)
-        else:
+        if isinstance(layer, arcpy.mapping.Layer):
             layer_instance = layer
-        arcpy.mapping.AddLayerToGroup(df, group_layer, layer_instance)
+        else:
+            layer_instance = arcpy.mapping.Layer(layer)
 
+        if new_source is not None and layer_instance.isFeatureLayer:
+            old_source = layer_instance.dataSource
+            # layer_instance.replaceDataSource(old_source, 'NONE', new_source, '')
+            layer_instance.replaceDataSource(new_source, 'SHAPEFILE_WORKSPACE', old_source, '')
+            layer_instance.save()
+
+        arcpy.mapping.AddLayerToGroup(df, group_layer, layer_instance)
     if remove_layer:
         arcpy.mapping.RemoveLayer(df, group_layer)
 

@@ -1,6 +1,6 @@
 ---
-title: Step 8 - Layer Package Generator (Optional)
-weight: 10
+title: Step 10 - Layer Package Generator (Optional)
+weight: 12
 ---
 ## Purpose of the Layer Package Generator (LPG)
 
@@ -16,28 +16,29 @@ BRAT automatically creates output folders, labelled "Output_1", "Output_2", etc.
 
 Any set of characters is acceptable as input for the layer package name. If you choose to not give the tool a name for the layer package, it will default to "LayerPackage.lpk". 
 
-As you run the tool, you may see the layers being rapidly grouped in the Table of Contents, with the map changing accordingly. This is normal. Arcpy requires the layers to be added to the Table of Contents before they can be grouped, which leads to this odd-looking behavior.
+As you run the tool, you may see the layers being rapidly grouped in the Table of Contents, with the map changing accordingly. This is normal. Arcpy requires the layers to be added to the Table of Contents before they can be grouped, which leads to this odd-looking behavior. Once the tool is done saving the layer package, they will be removed from the Table of Contents.
 
 After the tool is run, there should be a layer package file in the output folder selected. This file can be emailed or uploaded without breaking any dependencies.
 
-```markdown
 [Link to a YouTube video demoing the Layer Package Generator](http://www.youtube.com/watch?v=iIVRsHuT7es)
-```
 
 ## Possible Problems Running the LPG
 
 This is a list of known problems that can prevent the LPG from running correctly, and troubleshooting steps to fix them.
 
-#### An Existing Layer Package in the Table of Contents
-Because the layers are grouped by name in the Table of Contents, having a layer package in the Table of Contents before running the LPG can lead to layers being grouped in unexpected ways. Always make sure that the Table of Contents doesn't have any layer packages or group layers in it before running the LPG. 
+#### An Existing Layer/Layer Package in the Table of Contents
+Because the layers are grouped and referred to by name in the Table of Contents, having a layer or a layer package in the Table of Contents before running the LPG can lead to naming conflicts and layers being grouped in unexpected ways. Always make sure that the Table of Contents doesn't have any layers or layer packages in it before running the LPG. 
 
 #### Non-standard Folder Structure
 The LPG works by looking for layers in the folder structure. If the folders are not in the standard folder structure, created by the latest version of BRAT, the LPG will not work. If you are using data from an old run of BRAT, it may be worthwhile to just run it again all the way through. 
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-SummaryReport"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-SummaryProduct"><i class="fa fa-arrow-circle-left"></i> Back to Step 9 </a>
 
-​	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-BDWS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 9 </a>
+
+
+
+​	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/10-BDWS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 10</a>
 
 </div>	
 
@@ -45,7 +46,6 @@ The LPG works by looking for layers in the folder structure. If the folders are 
 
 <div align="center">
 </div>	
-
 ------
 
 <div align="center">

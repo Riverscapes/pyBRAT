@@ -62,7 +62,7 @@ Table 2. Land Use Code and Class Descriptions
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/1-InputData"><i class="fa fa-arrow-circle-left"></i> Back to Step 1 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATTableTool"><i class="fa fa-arrow-circle-right"></i> Continue to Step 3 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATProjectBuilder"><i class="fa fa-arrow-circle-right"></i> Continue to Step 3 </a>
 </div>	
 
 ------

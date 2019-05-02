@@ -30,6 +30,7 @@ def main(
 
     output_folder = os.path.dirname(os.path.dirname(in_network))
     analyses_folder = make_folder(output_folder, "02_Analyses")
+
     if out_name.endswith('.shp'):
         out_network = os.path.join(analyses_folder, out_name)
     else:

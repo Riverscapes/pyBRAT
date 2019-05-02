@@ -1,6 +1,6 @@
 ---
-title: Step 9 - BDWS (Optional)
-weight: 11
+title: Step 11 - BDWS (Optional)
+weight: 13
 ---
 
 ## Running the Beaver Dam Water Storage (BDWS) Tool
@@ -12,9 +12,8 @@ If you want to run BDFlopy, you will need to enter the optional inputs. If you d
 The tool will create a BDWS project folder in the folder given for the project root. It is recommended that you use the output folder as the project root, but it will run no matter where you choose to store the outputs. The project folder will have an Inputs, Modflow, and Output folder.
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-LayerPackageGenerator"><i class="fa fa-arrow-circle-left"></i> Back to Step 8 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-LayerPackageGenerator"><i class="fa fa-arrow-circle-left"></i> Back to Step 9 </a>
 </div>	
-
 ------
 <div align="center">
 
