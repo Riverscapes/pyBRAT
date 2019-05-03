@@ -12,10 +12,10 @@ import os
 arcpy.CheckOutExtension('Spatial')
 
 # user defined paths
-pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Runs' # project folder path
+pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest' # project folder path
 
 
-def main(overwrite = True): # if overwrite = False, will not overwrite current perennial network shapefile if it already exists
+def main(overwrite = False): # if overwrite = False, will not overwrite current perennial network shapefile if it already exists
 
     # set up arcpy environment
     arcpy.env.workspace = 'in_memory'
