@@ -21,7 +21,7 @@ def find_file(proj_path, file_pattern):
 
     search_path = os.path.join(proj_path, file_pattern)
     if len(glob.glob(search_path)) > 0:
-        file_path = glob.glob(search_path)[0]
+        file_path = glob.glob(search_path)
     else:
         file_path = None
 
@@ -50,25 +50,59 @@ def main(overwrite = overwrite_run):
         combined_capacity = os.path.join(pf_path, dir, 'BRAT', run_folder, 'Outputs/Output_01/02_Analyses/Combined_Capacity_Model.shp')
 
         if os.path.exists(brat_table):
-            # check if update drainage area has already been run by searching for 'Orig_DA' field
-            # if 'Orig_DA' not in brat table fields or overwrite is set to true, run update drainage area script
-            fields = [f.name for f in arcpy.ListFields(brat_table)]
 
-            if overwrite is True:
+            # check if veg capacity model has already been run by searching for 'VegDamCapacity' folder
+            # if directory doesn't exist or overwrite is set to true, run vegetation capacity model script
+            veg_dirs = find_file(proj_path, 'Outputs/Output_01/01_Intermediates/*[0-9]*_VegDamCapacity')
 
-                print "Running FIS models for " + dir
+            if veg_dirs is not None and overwrite is True:
+                for veg_dir in veg_dirs:
+                    shutil.rmtree(veg_dir)
+
+            if veg_dirs is None or overwrite is True:
+
+                print "Running vegetation capacity models for " + dir
 
                 try:
                     veg_fis(brat_table)
                 except Exception as err:
-                    print 'Vegetation model failed for ' + dir + '. Exception thrown was:'
+                    print 'Vegetation capacity model failed for ' + dir + '. Exception thrown was:'
                     print err
+            else:
+
+                print "Vegetation capacity models have already been run.  Skipping " + dir
+
+
+            # check if combined capacity model has already been run by searching for 'Capacity' folder
+            # if directory doesn't exist or overwrite is set to true, run combined capacity model script
+            capacity_dirs = find_file(proj_path, 'Outputs/Output_01/02_Analyses/*[0-9]*_Capacity')
+
+            if capacity_dirs is not None and overwrite is True:
+                for capacity_dir in capacity_dirs:
+                    shutil.rmtree(capacity_dir)
+
+            if capacity_dirs is None or overwrite is True:
+
+                print "Running combined capacity models for " + dir
 
                 try:
                     comb_fis(proj_path, brat_table, 1000.0, "Combined_Capacity_Model")
                 except Exception as err:
                     print 'Combined capacity model failed for ' + dir + '. Exception thrown was:'
                     print err
+            else:
+
+                print "Combined capacity models have already been run.  Skipping " + dir
+
+            # check if management model has already been run by searching for 'Management' folder
+            # if directory doesn't exist or overwrite is set to true, run combined capacity model script
+            mgmt_dirs = find_file(proj_path, 'Outputs/Output_01/02_Analyses/*[0-9]*_Management')
+
+            if mgmt_dirs is not None and overwrite is True:
+                for mgmt_dir in mgmt_dirs:
+                    shutil.rmtree(mgmt_dir)
+
+            if mgmt_dirs is None or overwrite is True:
 
                 print "Running conservation restoration model for " + dir
 
@@ -77,31 +111,10 @@ def main(overwrite = overwrite_run):
                 except Exception as err:
                     print 'Combined capacity model failed for ' + dir + '. Exception thrown was:'
                     print err
+            else:
 
-            # else:
-            #
-            #     print "DA values have already been updated.  Skipping " + dir
-                
-            # # check if braid handler has already been run by searching for 'AnabranchTypes.lyr'
-            # # if layer doesn't exist or overwrite is set to true, run update braid handler script
-            # anabranch_lyr = find_file(proj_path, 'Outputs/Output_01/01_Intermediates/*[0-9]*_AnabranchHandler/AnabranchTypes.lyr')
-            #
-            # # if anabranch_lyr exists and overwrite is set to True delete the layer and AnabranchHandler folder
-            # # prevents ending up with multiple AnabranchHandler folders
-            # if anabranch_lyr is not None and overwrite is True:
-            #     anabranch_dir = os.path.dirname(anabranch_lyr)
-            #     shutil.rmtree(anabranch_dir)
-            #
-            # if anabranch_lyr is None or overwrite is True:
-            #     print "Running braid handler for " + dir
-            #     try:
-            #         braid_handler(brat_table)
-            #     except Exception as err:
-            #         print 'BRAT braid handler failed for ' + dir + '. Exception thrown was:'
-            #         print err
-            # else:
-            #
-            #     print "Anabranch handler layer already exists.  Skipping " + dir
+                print "Conservation restoration model has already been run.  Skipping " + dir
+
         else:
             print "WARNING: Script cannot be run.  BRAT table doesn't exist for " + dir
 
