@@ -1,7 +1,13 @@
 #  define parent folder path and run folder name for directory search
-pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_PriorityRuns'
+pf_path = r'C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_CodeTest\StratMap'
+
 run_folder = 'BatchRun_02'
-overwrite_run = True
+overwrite_run = False
+
+dam_data_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_PriorityRuns\00_BRAT_StrategyMapRun_18April2019\CensusData\WebApp\BeaverDams_WebApp_15April2019.shp"
+cpad_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\LandOwnership\ProtectedAreas\CPAD_2017a_SuperUnits.shp"
+cced_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\LandOwnership\ConservationEasements\CCED2016_upd1.shp"
+
 
 #  import required modules and extensions
 import os
@@ -107,9 +113,9 @@ def main(overwrite = overwrite_run):
                 print "Running conservation restoration model for " + dir
 
                 try:
-                    cons_rest(proj_path, combined_capacity, "Conservation_Restoration_Model")
+                    cons_rest(proj_path, combined_capacity, "Conservation_Restoration_Model", dam_data = dam_data_path, cpad = cpad_path, cced = cced_path)
                 except Exception as err:
-                    print 'Combined capacity model failed for ' + dir + '. Exception thrown was:'
+                    print 'Conservation model failed for ' + dir + '. Exception thrown was:'
                     print err
             else:
 

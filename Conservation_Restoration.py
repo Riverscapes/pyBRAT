@@ -19,7 +19,7 @@ reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(projPath, in_network, out_name):
+def main(projPath, in_network, out_name, dam_data, cpad, cced):
     arcpy.env.overwriteOutput = True
 
     out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
@@ -38,6 +38,10 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
     arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 50)
+    arcpy.AddField_management(out_network, "ObsDam", "TEXT", "", "", 10)
+    arcpy.AddField_management(out_network, "CPAD", "TEXT", "", "", 10)
+    arcpy.AddField_management(out_network, "CCED", "TEXT", "", "", 10)
+
 
     # use old historic capacity field names if new ones not in combined capacity output
     if 'oVC_PT' in fields:
@@ -51,7 +55,7 @@ def main(projPath, in_network, out_name):
         hist_dams_field_name = 'oCC_HPE'
 
     fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', hist_veg_field_name, 'oVC_EX', hist_dams_field_name, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
-              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX', 'iPC_Canal']
+              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX', 'iPC_Canal', 'ObsDam', 'CPAD', 'CCED']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -71,7 +75,7 @@ def main(projPath, in_network, out_name):
             else:
                 # if infrastructure within 30 m or land use is high
                 # if capacity is frequent or pervasive risk is considerable
-                # if capaicty is rare or ocassional risk is some
+                # if capacity is rare or occasional risk is some
                 if infrastructure_dist <= 30 or landuse >= 0.66:
                     if curr_dams >= 5.0:
                         row[0] = "Considerable Risk"
@@ -79,7 +83,7 @@ def main(projPath, in_network, out_name):
                         row[0] = "Some Risk"
                 # if infrastructure within 30 to 100 m
                 # if capacity is frequent or pervasive risk is some
-                # if capaicty is rare or ocassional risk is minor
+                # if capacity is rare or occasional risk is minor
                 elif infrastructure_dist <= 100:
                     if curr_dams >= 5.0:
                         row[0] = "Some Risk"
@@ -92,6 +96,7 @@ def main(projPath, in_network, out_name):
                     row[0] = "Negligible Risk"
 
             cursor.updateRow(row)
+
 
     # 'oPBRC_UD' (Areas beavers can't build dams and why)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -113,8 +118,8 @@ def main(projPath, in_network, out_name):
                     row[1] = 'Potential Reservoir or Landuse Conversion'
                 else:    
                     row[1] = 'Naturally Vegetation Limited'    
-            # 'iGeo_Slope' > 17%
-            elif slope > 0.17:
+            # 'iGeo_Slope' > 23%
+            elif slope > 0.23:
                row[1] = 'Slope Limited'
             # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
             elif curr_dams <= 0:
@@ -123,12 +128,13 @@ def main(projPath, in_network, out_name):
                 elif splow >= 190 or sp2 >= 2400:
                     row[1] = "Stream Power Limited"
                 else:
-                    row[1] = "Stream Power Limited"
+                    row[1] = "Stream Size Limited"
                     # row[1] = "...TBD..." #todo: still need to 100% verify this
             else:
                 row[1] = 'Dam Building Possible'
 
             cursor.updateRow(row)
+
 
     # 'oPBRC_CR' (Conservation & Restoration Opportunties)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
@@ -157,7 +163,38 @@ def main(projPath, in_network, out_name):
 
             cursor.updateRow(row)
 
+
     # 'newField'  The test field for TNC
+    with arcpy.da.UpdateCursor(out_network, ["ObsDam", "CPAD", "CCED"]) as cursor:
+        for row in cursor:
+            row[0] = "No"
+            row[1] = "No"
+            row[2] = "No"
+            cursor.updateRow(row)
+
+    network_lyr = arcpy.MakeFeatureLayer_management(out_network, "network_lyr")
+
+    dams = os.path.join(projPath, 'tmp_snapped_dams.shp')
+    arcpy.CopyFeatures_management(dam_data, dams)
+    arcpy.Snap_edit(dams, [[out_network, 'EDGE', '60 Meters']])
+    arcpy.SelectLayerByLocation_management(network_lyr, "INTERSECT", dams, '', "NEW_SELECTION")
+    with arcpy.da.UpdateCursor(network_lyr, ["ObsDam"]) as cursor:
+        for row in cursor:
+            row[0] = "Yes"
+            cursor.updateRow(row)
+
+    arcpy.SelectLayerByLocation_management(network_lyr, "INTERSECT", cpad, '', "NEW_SELECTION")
+    with arcpy.da.UpdateCursor(network_lyr, ["CPAD"]) as cursor:
+        for row in cursor:
+            row[0] = "Yes"
+            cursor.updateRow(row)
+
+    arcpy.SelectLayerByLocation_management(network_lyr, "INTERSECT", cced, '', "NEW_SELECTION")
+    with arcpy.da.UpdateCursor(network_lyr, ["CCED"]) as cursor:
+        for row in cursor:
+            row[0] = "Yes"
+            cursor.updateRow(row)
+
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
             # 'oPBRC_UI' Negligible Risk or Minor Risk
@@ -167,37 +204,51 @@ def main(projPath, in_network, out_name):
             curr_dams = row[6]
             infrastructure_dist = row[11]
             landuse = row[12]
+            obs_dams = row[18]
+            protected = row[19]
+            easement = row[20]
 
             hist_veg_departure = hist_veg - curr_veg
             urban = landuse > 0.66
             ag = 0.33 < landuse <= 0.66
             no_urban = not urban
+            no_ag = not ag
 
             # default category is 'Other'
             row[15] = 'Other'
 
             if curr_dams >= 5:
+                if no_urban:
+                    if hist_veg_departure >= 4:
+                        row[15] = "3a. High restoration potential (vegetation first)"
+                    else:
+                        row[15] = "3. High restoration potential"
                 if urban or ag:
-                    row[15] = "Living with beaver solutions - urban and ag use"
+                    row[15] = "7. Living with beaver solutions (urban and ag use)"
                 if infrastructure_dist <= 30:
-                    row[15] = "Living with beaver solutions - infrastructure"
-            if curr_dams >= 20 and no_urban:
-                row[15] = "Relocation and conservation"
+                    row[15] = "6. Living with beaver solutions (infrastructure)"
 
-            if 5 <= curr_dams < 20 and no_urban:
-                if hist_veg_departure >= 10:
-                    row[15] = "High restoration potential - veg first"
-                else:
-                    row[15] = "High restoration potential"
+            if curr_dams >= 20 and protected == 'Yes':
+                row[15] = "2. Beaver relocation, translocation"
+
+            if curr_dams >= 20 and easement == 'Yes':
+                row[15] = "2. Beaver relocation, translocation"
+
+            if obs_dams == 'Yes' and no_urban and no_ag:
+                row[15] = "1. Beaver conservation"
 
             if 1 <= curr_dams < 5 and no_urban:
-                if hist_veg_departure >= 10:
-                    row[15] = "Low-medium restoration potential - veg first"
+                if hist_veg_departure >= 4:
+                    row[15] = "4a. Medium-low restoration potential (vegetation first)"
                 else:
-                    row[15] = "Low-medium restoration potential"
+                    row[15] = "4. Medium-low restoration potential"
+
+            if 0 < curr_dams < 1 and no_urban:
+                row[15] = "5. Strategic long-term investement"
 
             cursor.updateRow(row)
 
+    arcpy.Delete_management(dams)
     makeLayers(out_network)
 
     write_xml(in_network, out_network)
