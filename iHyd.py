@@ -21,21 +21,20 @@ XMLBuilder = XMLBuilder.XMLBuilder
 def main(
     in_network,
     region,
-    Qlow_eqtn,
-    Q2_eqtn):
-
-    if region is None or region == "None":
-        region = 0
-    else:
-        region = int(region)
-    if Qlow_eqtn == "None":
-        Qlow_eqtn = None
-    if Q2_eqtn == "None":
-        Q2_eqtn = None
+    in_elev,
+    in_slope,
+    in_precip,
+    Qlow_eqtn = None,
+    Q2_eqtn = None):
 
     scratch = 'in_memory'
 
     arcpy.env.overwriteOutput = True
+
+    # set basin specific variables
+    ELEV_FT = float(in_elev)
+    SLOPE_PCT = float(in_slope)
+    PRECIP_IN = float(in_precip)
 
     # create segid array for joining output to input network
     segid_np = arcpy.da.FeatureClassToNumPyArray(in_network, "ReachID")
@@ -45,10 +44,14 @@ def main(
     DA_array = arcpy.da.FeatureClassToNumPyArray(in_network, "iGeo_DA")
     DA = np.asarray(DA_array, np.float32)
 
+    # # create array for input network elevation
+    # EL_array = arcpy.da.FeatureClassToNumPyArray(in_network, "iGeo_ElMin")
+    # EL = np.asarray(EL_array, np.float32)
+
     # convert drainage area (in square kilometers) to square miles
     # note: this assumes that streamflow equations are in US customary units (e.g., inches, feet)
-    DAsqm = np.zeros_like(DA)
-    DAsqm = DA * 0.3861021585424458
+    DA_SQM = np.zeros_like(DA)
+    DA_SQM = DA * 0.3861021585424458
 
     # create Qlow and Q2
     Qlow = np.zeros_like(DA)
@@ -56,37 +59,42 @@ def main(
 
     arcpy.AddMessage("Adding Qlow and Q2 to network...")
 
+    if region is None:
+        region = 0
 
     # --regional curve equations for Qlow (baseflow) and Q2 (annual peak streamflow)--
     # # # Add in regional curve equations here # # #
     if Qlow_eqtn is not None:
         Qlow = eval(Qlow_eqtn)
-    elif region == 101:  # example 1 (box elder county)
-        Qlow = 0.019875 * (DAsqm ** 0.6634) * (10 ** (0.6068 * 2.04))
-    elif region == 102:  # example 2 (upper green generic)
-        Qlow = 4.2758 * (DAsqm ** 0.299)
-    elif region == 24:  # oregon region 5
-        Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
-    elif region == 1: #Truckee
-        ELEV_FT = 6027.722
-        PRECIP_IN = 23.674
-        Qlow = (10**-7.2182) * (DAsqm**1.013) * (ELEV_FT**01.1236) * (PRECIP_IN**1.4483)
+    elif float(region) == 1:  # North Coast
+        Qlow = (10**-2.8397) * (DA_SQM**1.2021) * (SLOPE_PCT**1.1394)
+    elif float(region) == 2:  # Lahontan
+        Qlow = (10**-12.6104) * (DA_SQM**1.0762) * (ELEV_FT**2.3032) * (PRECIP_IN**2.1072)
+    elif float(region) == 3:  # Sierra Nevada
+        Qlow = (10**-7.2182) * (DA_SQM**1.013) * (ELEV_FT**01.1236) * (PRECIP_IN**1.4483)
+    elif float(region) == 4:  # Central Coast
+        Qlow = (10**-9.0231) * (DA_SQM**1.9398) * (SLOPE_PCT**3.9156)
+    elif float(region) == 6: # Desert
+        Qlow = (10**0.4406) * (DA_SQM**0.7301)
     else:
-        Qlow = (DAsqm ** 0.2098) + 1
+        arcpy.AddMessage("WARNING: Region is not part of project area.  Quitting iHyd script")
+        return
 
     if Q2_eqtn is not None:
         Q2 = eval(Q2_eqtn)
-    elif region == 101:  # example 1 (box elder county)
-        Q2 = 14.5 * DAsqm ** 0.328
-    elif region == 102:  # example 2 (upper green generic)
-        Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
-    elif region == 24:  # oregon region 5
-        Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
-    elif region == 1: #Truckee
-        PRECIP_IN = 23.674
-        Q2 = 0.0865*(DAsqm**0.736)*(PRECIP_IN**1.59)
+    elif float(region) == 1:  # North Coast
+        Q2 = 1.82 * (DA_SQM**0.904) * (PRECIP_IN**0.983)
+    elif float(region) == 2:  # Lahontan
+        Q2 = 0.0865 * (DA_SQM**0.736)*(PRECIP_IN**1.59)
+    elif float(region) == 3:  # Sierra Nevada
+        Q2 = 2.43 * (DA_SQM**0.924)*(ELEV_FT**-0.646)*(PRECIP_IN**2.06)
+    elif float(region) == 4: # Central Coast
+        Q2 = 0.00459 * (DA_SQM ** 0.856) * (PRECIP_IN**2.58)
+    elif float(region) == 6: # Desert
+        Q2 = 10.3 * (DA_SQM ** 0.506)
     else:
-        Q2 = 14.7 * (DAsqm ** 0.815)
+        arcpy.AddMessage("WARNING: Region is not part of project area.  Quitting iHyd script")
+        return
 
     # save segid, Qlow, Q2 as single table
     columns = np.column_stack((segid, Qlow, Q2))
@@ -218,7 +226,7 @@ def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
 
     # add base flow equation to XML if specified or using generic
     if Qlow_eqtn is None and region is 0:
-        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = "(DAsqm ** 0.2098) + 1")
+        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = "(DA_SQM ** 0.2098) + 1")
     elif Q2_eqtn is None and region is not 0:
         xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = "Not specified - see iHyd code.")
     else:
@@ -226,7 +234,7 @@ def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
 
     # add high flow equation to XML if specified or using generic
     if Q2_eqtn is None and region is 0:
-        xml_file.add_sub_element(ihyd_element, name = "Highflow equation", text = "14.7 * (DAsqm ** 0.815)")
+        xml_file.add_sub_element(ihyd_element, name = "Highflow equation", text = "14.7 * (DA_SQM ** 0.815)")
     elif Q2_eqtn is None and region is not 0:
         xml_file.add_sub_element(ihyd_element, name = "Highflow equation", text = "Not specified - see iHyd code.")
     else:
@@ -240,4 +248,8 @@ if __name__ == '__main__':
         sys.argv[1],
         sys.argv[2],
         sys.argv[3],
-        sys.argv[4])
+        sys.argv[4],
+        sys.argv[5],
+        sys.argv[6],
+        sys.argv[7],
+    )

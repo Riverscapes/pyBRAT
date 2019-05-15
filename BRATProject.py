@@ -47,8 +47,8 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     network_folder = make_folder(inputs_folder, "02_Network")
     topo_folder = make_folder(inputs_folder, "03_Topography")
     anthropogenic_folder = make_folder(inputs_folder, "04_Anthropogenic")
-    beaver_dam_folder = make_optional_input_folder(beaver_dams, inputs_folder, "_BeaverDams")
     perennial_stream_folder = make_optional_input_folder(perennial_stream, inputs_folder, "_PerennialStream")
+    beaver_dam_folder = make_optional_input_folder(beaver_dams, inputs_folder, "_BeaverDams")
 
     ex_veg_folder = make_folder(vegetation_folder, "01_ExistingVegetation")
     hist_veg_folder = make_folder(vegetation_folder, "02_HistoricVegetation")
@@ -102,15 +102,15 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     # add land ownership layers to the project
     ownership_destinations = []
     if ownership is not None:
-        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land Ownership", is_raster=False)
-
-    beaver_dams_destinations = []
-    if beaver_dams is not None:
-        beaver_dams_destinations = copy_multi_input_to_folder(beaver_dam_folder, beaver_dams, "Beaver_Dam", is_raster=False)
+        ownership_destinations = copy_multi_input_to_folder(land_ownership_folder, ownership, "Land_Ownership", is_raster=False)
 
     perennial_stream_destinations = []
     if perennial_stream is not None:
         perennial_stream_destinations = copy_multi_input_to_folder(perennial_stream_folder, perennial_stream, "PerennialStream", is_raster=False)
+
+    beaver_dams_destinations = []
+    if beaver_dams is not None:
+        beaver_dams_destinations = copy_multi_input_to_folder(beaver_dam_folder, beaver_dams, "Beaver_Dam", is_raster=False)
 
     write_xml(proj_path, proj_name, huc_ID, watershed_name, ex_veg_destinations, hist_veg_destinations, network_destinations,
               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
@@ -166,7 +166,7 @@ def make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations
 
     make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name="HistVegSuitability")
     make_input_layers(hist_veg_destinations, "Veg Type - BPS Type", symbology_layer=hist_veg_group_symbology, is_raster=True, check_field="GROUPVEG")
-    make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_bps_name_symbology, is_raster=True)
+    # make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_bps_name_symbology, is_raster=True)
     make_input_layers(hist_veg_destinations, "Historic Riparian", symbology_layer=hist_veg_riparian_symbology, is_raster=True, check_field="GROUPVEG")
 
 

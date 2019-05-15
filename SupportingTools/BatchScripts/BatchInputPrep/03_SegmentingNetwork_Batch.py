@@ -5,8 +5,9 @@
 ################################################################################
 
 # give project folder and supporting tools folder
-supportingTools = 'C:/Users/Maggie/Desktop/pyBRAT/SupportingTools'
-pf_path = 'C:/Users/Maggie/Desktop/GYA/wrk_Data'
+supportingTools = r"C:\etal\LocalCode\pyBRAT\TNC_Changes\SupportingTools"
+pf_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Runs"
+overwrite = True
 
 # load dependencies
 import os
@@ -29,14 +30,9 @@ for dir in dir_list:
     print "Segmenting network for " + dir
     nhd_flowline_path = os.path.join(pf_path, dir, 'NHD/NHDFlowline.shp')
     out_path = os.path.join(pf_path, dir, 'NHD/NHD_24k_300mReaches')
-    if not os.path.exists(out_path):
+    if not os.path.exists(out_path) or overwrite is True:
         try:
-            segmentNetwork.main(nhd_flowline_path, outpath)
+            segmentNetwork.main(nhd_flowline_path, out_path)
         except Exception as err:
             print "Segmenting network failed for watershed " + dir + ". The exception thrown was:"
             print err
-            
-            
-if __name__ == '__main__':
-    main()
-    
