@@ -41,6 +41,8 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     summary_folder = make_folder(proj_path, "SummaryProducts")
     add_to_summary_folder(summary_folder, 'PNG')
     add_to_summary_folder(summary_folder, 'PDF')
+    add_to_summary_folder(summary_folder, 'KMZ')
+    add_to_summary_folder(summary_folder, 'LPK')
     add_to_summary_folder(summary_folder, 'AI')
 
     vegetation_folder = make_folder(inputs_folder, "01_Vegetation")

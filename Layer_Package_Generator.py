@@ -34,7 +34,7 @@ def main(output_folder, layer_package_name, clipping_network=None):
     inputsFolder = find_folder(projectFolder, "Inputs")
     intermediatesFolder = os.path.join(output_folder, "01_Intermediates")
     analysesFolder = os.path.join(output_folder, "02_Analyses")
-
+    summaryFolder = os.path.join(projectFolder, "SummaryProducts") 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
@@ -45,7 +45,7 @@ def main(output_folder, layer_package_name, clipping_network=None):
         arcpy.AddMessage("The error message thrown was the following:")
         arcpy.AddWarning(err)
 
-    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
+    make_layer_package(summaryFolder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
 
 
 def validate_inputs(output_folder):
@@ -447,7 +447,7 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
 def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name, clipping_network):
     """
     Makes a layer package for the project
-    :param output_folder: The folder that we want to base our layer package off of
+    :param output_folder: The folder that the layer package is saved to
     :param layer_package_name: The name of the layer package that we'll make
     :param clipping_network: What we want to clip our network to
     :return:
@@ -471,7 +471,7 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
     output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
 
-    layer_package = os.path.join(output_folder, layer_package_name)
+    layer_package = os.path.join(summaryFolder, layer_package_name)
     arcpy.AddMessage("Saving Layer Package...")
     arcpy.PackageLayer_management(output_layer, layer_package)
 

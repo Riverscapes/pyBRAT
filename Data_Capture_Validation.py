@@ -10,6 +10,7 @@
 import os
 import arcpy
 import matplotlib as mpl
+import glob
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 import scipy.stats as stat
@@ -88,9 +89,9 @@ def copy_dams_to_inputs(proj_path, dams, in_network):
         return
 
     inputs_folder = find_folder(proj_path, "Inputs")
-    beaver_dams_folder = find_folder(inputs_folder, "BeaverDams")
+    beaver_dams_folder = find_folder(inputs_folder, "*[0-9]*_BeaverDams")
     if beaver_dams_folder is None:
-        beaver_dams_folder = make_folder(inputs_folder, "BeaverDams")	
+        beaver_dams_folder = make_folder(inputs_folder, find_available_num_prefix(inputs_folder) + "_BeaverDams")	
     new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
     new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))
     coord_sys = arcpy.Describe(in_network).spatialReference
@@ -404,6 +405,21 @@ def write_xml(proj_path, in_network, out_network, plot_name):
     write_xml_element_with_path(xml_file, analysis_element, "Plot", "Observed vs. Predicted Plot", plot_name, proj_path)
 
     xml_file.write()
+
+
+
+
+def find_file(proj_path, file_pattern):
+
+    search_path = os.path.join(proj_path, file_pattern)
+    if len(glob.glob(search_path)) > 0:
+        file_path = glob.glob(search_path)[0]
+    else:
+        file_path = None
+
+    return file_path
+
+
 
 
 if __name__ == "__main__":
