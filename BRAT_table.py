@@ -1027,8 +1027,11 @@ def make_layers(out_network, canal):
     topo_folder = make_folder(intermediates_folder, "02_TopographicMetrics")
     anthropogenic_metrics_folder = make_folder(intermediates_folder, "03_AnthropogenicMetrics")
     perennial_folder = make_folder(intermediates_folder, "04_Perennial")
-    canal_folder = os.path.dirname(canal)
-    diversion_pts = os.path.join(canal_folder, "points_of_diversion.shp")
+    if canal:
+        canal_folder = os.path.dirname(canal)
+        diversion_pts = os.path.join(canal_folder, "points_of_diversion.shp")
+    else:
+        diversion_pts = None
     
     trib_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
@@ -1054,7 +1057,7 @@ def make_layers(out_network, canal):
     make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
     make_layer(topo_folder, out_network, "Reach Slope", slope_symbology, is_raster=False)
     make_layer(topo_folder, out_network, "Drainage Area", drain_area_symbology, is_raster=False)
-    if os.path.exists(diversion_pts):
+    if diversion_pts:
         try:
             make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
         except Exception as err:
@@ -1187,4 +1190,5 @@ if __name__ == '__main__':
         sys.argv[15],
         sys.argv[16],
         sys.argv[17],
-        sys.argv[18])
+        sys.argv[18],
+        sys.argv[19])
