@@ -223,10 +223,6 @@ def main(projPath, in_network, out_name, dam_data, cpad, cced):
                         row[15] = "3a. High restoration potential (vegetation first)"
                     else:
                         row[15] = "3. High restoration potential"
-                if urban or ag:
-                    row[15] = "7. Living with beaver solutions (urban and ag use)"
-                if infrastructure_dist <= 30:
-                    row[15] = "6. Living with beaver solutions (infrastructure)"
 
             if curr_dams >= 20 and protected == 'Yes':
                 row[15] = "2. Beaver relocation, translocation"
@@ -234,17 +230,23 @@ def main(projPath, in_network, out_name, dam_data, cpad, cced):
             if curr_dams >= 20 and easement == 'Yes':
                 row[15] = "2. Beaver relocation, translocation"
 
-            if obs_dams == 'Yes' and no_urban and no_ag:
-                row[15] = "1. Beaver conservation"
-
             if 1 <= curr_dams < 5 and no_urban:
                 if hist_veg_departure >= 4:
                     row[15] = "4a. Medium-low restoration potential (vegetation first)"
                 else:
                     row[15] = "4. Medium-low restoration potential"
 
-            if 0 < curr_dams < 1 and no_urban:
-                row[15] = "5. Strategic long-term investement"
+            if curr_dams >= 1 and infrastructure_dist <= 30:
+                row[15] = "5. Living with beaver solutions (infrastructure)"
+
+            if curr_dams >= 1 and urban:
+                row[15] = "6. Living with beaver solutions (urban and ag use)"
+
+            if curr_dams >= 1 and ag:
+                row[15] = "6. Living with beaver solutions (urban and ag use)"
+
+            if obs_dams == 'Yes' and no_urban and no_ag:
+                row[15] = "1. Beaver conservation"
 
             cursor.updateRow(row)
 
