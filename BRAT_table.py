@@ -40,11 +40,13 @@ def main(
     railroad,
     canal,
     landuse,
+    ownership,
     perennial_network,
     out_name,
     description,
     find_clusters,
     should_segment_network,
+    ownership_segment_network,
     is_verbose):
 
     if flow_acc == "None":
@@ -54,6 +56,7 @@ def main(
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
+    ownership_segment_network = parse_input_bool(should_segment_network)
     is_verbose = parse_input_bool(is_verbose)
 
     scratch = 'in_memory'
@@ -66,7 +69,7 @@ def main(
 
     # name and create output folder
     new_output_folder, intermediate_folder, seg_network_copy = build_output_folder(proj_path, out_name, seg_network, road,
-                                                                                  should_segment_network, is_verbose)
+                                                                                  should_segment_network, ownership, ownership_segment_network, is_verbose)
 
     # --check input network fields--
     # add flowline reach id field ('ReachID') if it doens't already exist
@@ -119,7 +122,7 @@ def main(
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
         arcpy.AddMessage('Adding "iPC" attributes to network...')
-        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose)
+        ipc_attributes(seg_network_copy, road, railroad, canal, perennial_network, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose)
 
     if perennial_network is not None:
         find_is_perennial(seg_network_copy, perennial_network)
@@ -135,7 +138,7 @@ def main(
     flow_accumulation_sym_layer = os.path.join(symbology_folder, "Flow_Accumulation.lyr")
     make_layer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flow_accumulation_sym_layer, is_raster=True)
 
-    make_layers(seg_network_copy)
+    make_layers(seg_network_copy, canal)
     write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, DrAr,
               road, railroad, canal, buf_30m, buf_100m, seg_network_copy, description)
 
@@ -172,7 +175,7 @@ def find_dr_ar(flow_acc, in_DEM):
     return DrArea
 
 
-def build_output_folder(proj_path, out_name, seg_network, road, should_segment_network, is_verbose):
+def build_output_folder(proj_path, out_name, seg_network, road, should_segment_network, ownership, ownership_segment_network, is_verbose):
     if is_verbose:
         arcpy.AddMessage("Building folder structure...")
     master_outputs_folder = os.path.join(proj_path, "Outputs")
@@ -201,15 +204,21 @@ def build_output_folder(proj_path, out_name, seg_network, road, should_segment_n
         seg_network_copy = os.path.join(intermediate_folder, out_name + ".shp")
 
     if should_segment_network:
-        segment_by_roads(seg_network, seg_network_copy, road, is_verbose)
+        segment_by_roads(seg_network, seg_network_copy, road, ownership, is_verbose)
     else:
         arcpy.CopyFeatures_management(seg_network, seg_network_copy)
+
+    if ownership:
+        if ownership_segment_network:
+            segment_by_ownership(seg_network_copy, ownership, is_verbose)
+        else:
+            pass
 
     return new_output_folder, intermediate_folder, seg_network_copy
 
 
 
-def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
+def segment_by_roads(seg_network, seg_network_copy, roads, ownership, is_verbose):
     """
     Segments the seg_network by roads, and puts segmented network at seg_network_copy
     :param seg_network: Path to the seg_network that we want to segment further
@@ -232,8 +241,41 @@ def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
     arcpy.CopyFeatures_management(temp_layer, seg_network_copy)
 
     delete_with_arcpy([temp_layer, temp_seg_network_layer, temp_network])
-    add_reach_dist(seg_network, seg_network_copy, is_verbose)
 
+    if not ownership:
+        add_reach_dist(seg_network, seg_network_copy, is_verbose)
+    else:
+        pass
+
+
+def segment_by_ownership(seg_network_copy, ownership, is_verbose):
+    """
+    Segments the seg_network by roads, and puts segmented network at seg_network_copy
+    :param seg_network: Path to the seg_network that we want to segment further
+    :param seg_network_copy: Path to where we want the new network to go
+    :param ownership: The shape file we use to segment
+    :return:
+    """
+    arcpy.AddMessage("Segmenting network by ownership...")
+    
+    temp_seg_network_copy = os.path.join(os.path.dirname(seg_network_copy), "temp_seg_network_copy.shp")
+    temp_network = os.path.join(os.path.dirname(seg_network_copy), "temp.shp")
+    temp_layer = "temp_lyr"
+    temp_seg_network_copy_layer = "seg_network_lyr"
+
+    arcpy.CopyFeatures_management(seg_network_copy, temp_seg_network_copy)
+    arcpy.FeatureToLine_management([seg_network_copy, ownership], temp_network)
+
+    arcpy.MakeFeatureLayer_management(temp_network, temp_layer)
+    arcpy.MakeFeatureLayer_management(seg_network_copy, temp_seg_network_copy_layer)
+
+    arcpy.SelectLayerByLocation_management(temp_layer, "WITHIN", temp_seg_network_copy_layer)
+    arcpy.CopyFeatures_management(temp_layer, seg_network_copy)
+    
+    add_reach_dist(temp_seg_network_copy, seg_network_copy, is_verbose)
+    delete_with_arcpy([temp_layer, temp_seg_network_copy_layer, temp_network, temp_seg_network_copy])
+
+    
 
 def add_reach_dist(seg_network, seg_network_copy, is_verbose):
     if is_verbose:
@@ -526,7 +568,7 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 
 # conflict potential function
 # calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
-def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose):
+def ipc_attributes(out_network, road, railroad, canal, perennial_network, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose):
     # create temp directory
     if is_verbose:
         arcpy.AddMessage("Deleting and remaking temp dir...")
@@ -558,9 +600,59 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
         find_distance_from_feature(out_network, railroad, valley_bottom, temp_dir, buf_30m, "railroadvb", "iPC_RailVB", scratch, is_verbose, clip_feature = True)
         find_distance_from_feature(out_network, railroad, valley_bottom, temp_dir, buf_30m, "railroad", "iPC_Rail", scratch, is_verbose, clip_feature = False)
 
+    # calculate mean distance from canals ('iPC_Canal') and points of diversion ('iPC_DivPts')
     if canal is not None:
+        if is_verbose:
+            arcpy.AddMessage("Finding points of diversion...")
+        canal_folder= os.path.dirname(canal)
         find_distance_from_feature(out_network, canal, valley_bottom, temp_dir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
+        diversion_points = canal_folder + "\\points_of_diversion.shp"
+        canal_dissolve = temp_dir + "\\canals_dissolved.shp"
+        # dissolve canals into single feature
+        arcpy.Dissolve_management(canal, canal_dissolve, '', '', 'SINGLE_PART', 'UNSPLIT_LINES')
+        # create points at canal-stream intersections
+        if perennial_network:
+            arcpy.Intersect_analysis([perennial_network, canal_dissolve], diversion_points, "", 12, "POINT")
+        else:
+            temp_network_no_canals_shp = os.path.join(temp_dir, "network_no_canals.shp")
+            temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(out_network, 'temp_network_no_canals_lyr')
+            arcpy.SelectLayerByLocation_management(in_layer=temp_network_no_canals_lyr, overlap_type='HAVE_THEIR_CENTER_IN', select_features=canal_dissolve, search_distance=5, selection_type='NEW_SELECTION')
+            arcpy.SelectLayerByAttribute_management(temp_network_no_canals_lyr, 'SWITCH_SELECTION')
+            arcpy.CopyFeatures_management(temp_network_no_canals_lyr, temp_network_no_canals_shp)
+            arcpy.Intersect_analysis([temp_network_no_canals_shp, canal_dissolve], diversion_points, "", 12, "POINT")
+        # calculate distance from points
+        find_distance_from_feature(out_network, diversion_points, valley_bottom, temp_dir, buf_30m, "diversion", "iPC_DivPts", scratch, is_verbose, clip_feature = False)
 
+    # assign land ownership agency to each reach
+    if ownership is not None:
+        if is_verbose:
+            arcpy.AddMessage('Assigning land ownership to each reach...')
+        spatial_join_temp = temp_dir + "\\ownership_network_join.shp"
+        if os.path.exists(spatial_join_temp):
+            arcpy.Delete_management(spatial_join_temp)
+        ownership_fields = [f.name for f in arcpy.ListFields(ownership)]
+        network_fields = [f.name for f in arcpy.ListFields(out_network)]
+        if 'FID' in network_fields:
+            network_fields.remove('FID')
+        if 'Shape' in network_fields:
+            network_fields.remove('Shape')
+        for field in ownership_fields:
+            if field in network_fields:
+                arcpy.DeleteField_management(out_network, str(field)) 
+        arcpy.SpatialJoin_analysis(out_network, ownership, spatial_join_temp, 'JOIN_ONE_TO_ONE', 'KEEP_ALL', match_option = 'HAVE_THEIR_CENTER_IN')           
+        arcpy.JoinField_management(in_data=out_network, in_field='FID', join_table=spatial_join_temp, join_field='FID', fields='ADMIN_AGEN')
+        with arcpy.da.UpdateCursor(out_network, 'ADMIN_AGEN') as cursor:
+            for row in cursor:
+                if row[0] == ' ':
+                    row[0] = 'None'
+                cursor.updateRow(row)
+        # calculate minimum distance from private land ('iPC_Privat') 
+        private = temp_dir + "\\private_land.shp"
+        private_lyr = arcpy.MakeFeatureLayer_management(ownership, "private_lyr")
+        arcpy.SelectLayerByAttribute_management(private_lyr, 'NEW_SELECTION', """ "ADMIN_AGEN" = 'PVT' OR "ADMIN_AGEN" = 'UND' """)
+        arcpy.CopyFeatures_management(private_lyr, private)
+        find_distance_from_feature(out_network, private, valley_bottom, temp_dir, buf_30m, "private_land", "iPC_Privat", scratch, is_verbose, clip_feature=False)
+    
     # calculate mean landuse value ('iPC_LU')
     if landuse is not None:
         add_landuse_to_table(out_network, landuse, buf_100m, scratch, is_verbose)
@@ -574,7 +666,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, buf_30m, b
 def add_min_distance(out_network):
     arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_RoadVB", "iPC_RailVB", "iPC_Canal"]
+    all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_RoadVB", "iPC_RailVB", "iPC_Canal", "iPC_DivPts"]
     dist_fields = []
     for field in all_dist_fields:
         if field in fields:
@@ -923,7 +1015,7 @@ def add_mainstem_attribute(out_network):
     arcpy.CalculateField_management(out_network,"IsMainCh",1,"PYTHON")
 
 
-def make_layers(out_network):
+def make_layers(out_network, canal):
     """
     Writes the layers
     :param out_network: The output network, which we want to make into a layer
@@ -935,7 +1027,9 @@ def make_layers(out_network):
     topo_folder = make_folder(intermediates_folder, "02_TopographicMetrics")
     anthropogenic_metrics_folder = make_folder(intermediates_folder, "03_AnthropogenicMetrics")
     perennial_folder = make_folder(intermediates_folder, "04_Perennial")
-
+    canal_folder = os.path.dirname(canal)
+    diversion_pts = os.path.join(canal_folder, "points_of_diversion.shp")
+    
     trib_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
@@ -946,7 +1040,11 @@ def make_layers(out_network):
     dist_to_railroad_in_valley_bottom_symbology = os.path.join(symbology_folder, "Distance_to_Railroad_in_Valley_Bottom.lyr")
     dist_to_railroad_symbology = os.path.join(symbology_folder, "Distance_to_Railroad.lyr")
     dist_to_canal_symbology = os.path.join(symbology_folder, "Distance_to_Canal.lyr")
+    pts_diversion_symbology = os.path.join(symbology_folder, "Points_of_Diversion.lyr")
+    dist_to_pts_diversion_symbology = os.path.join(symbology_folder, "Distance_to_Points_of_Diversion.lyr")
     land_use_symbology = os.path.join(symbology_folder, "Land_Use_Intensity.lyr")
+    land_ownership_per_reach_symbology = os.path.join(symbology_folder, "Land_Ownership_by_Reach.lyr")
+    priority_translocations_symbology = os.path.join(symbology_folder, "Priority_Beaver_Translocation_Areas.lyr")    
     slope_symbology = os.path.join(symbology_folder, "Slope_Feature_Class.lyr")
     drain_area_symbology = os.path.join(symbology_folder, "Drainage_Area_Feature_Class.lyr")
     buffer_30m_symbology = os.path.join(symbology_folder, "buffer_30m.lyr")
@@ -956,7 +1054,12 @@ def make_layers(out_network):
     make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
     make_layer(topo_folder, out_network, "Reach Slope", slope_symbology, is_raster=False)
     make_layer(topo_folder, out_network, "Drainage Area", drain_area_symbology, is_raster=False)
-
+    if os.path.exists(diversion_pts):
+        try:
+            make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
+        except Exception as err:
+            print err
+    
     fields = [f.name for f in arcpy.ListFields(out_network)]
     if 'iPC_LU' in fields:
         make_layer(anthropogenic_metrics_folder, out_network, "Land Use Intensity", land_use_symbology, is_raster=False)
@@ -972,10 +1075,18 @@ def make_layers(out_network):
         make_layer(anthropogenic_metrics_folder, out_network, "Distance to Railroad in Valley Bottom", dist_to_railroad_in_valley_bottom_symbology, is_raster=False, symbology_field ='iPC_RailVB')
     if 'iPC_Canal' in fields:
         make_layer(anthropogenic_metrics_folder, out_network, "Distance to Canal", dist_to_canal_symbology, is_raster=False, symbology_field ='iPC_Canal')
+    if 'iPC_DivPts' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Distance to Points of Diversion", dist_to_pts_diversion_symbology, is_raster=False, symbology_field='iPC_DivPts')
+    if 'ADMIN_AGEN' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Land Ownership per Reach", land_ownership_per_reach_symbology, is_raster=False, symbology_field='ADMIN_AGEN')
+    if 'iPC_Privat' in fields:
+        make_layer(anthropogenic_metrics_folder, out_network, "Priority Beaver Translocation Areas", priority_translocations_symbology, is_raster=False, symbology_field='iPC_Privat')
     if 'oPC_Dist' in fields:
         make_layer(anthropogenic_metrics_folder, out_network, "Distance to Closest Infrastructure", dist_to_infrastructure_symbology, is_raster=False, symbology_field ='oPC_Dist')
     if 'IsPeren' in fields:
         make_layer(perennial_folder, out_network, "Perennial", perennial_symbology, is_raster=False, symbology_field="IsPeren")
+
+        
 
 
 def handle_braids(seg_network_copy, canal, proj_path, find_clusters, perennial_network, is_verbose):
@@ -1076,4 +1187,5 @@ if __name__ == '__main__':
         sys.argv[14],
         sys.argv[15],
         sys.argv[16],
-        sys.argv[17])
+        sys.argv[17],
+        sys.argv[18])
