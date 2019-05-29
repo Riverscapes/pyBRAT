@@ -7,7 +7,7 @@ weight: 7
 
 The "iHyd" tool basically helps you prepare the hydrologic inputs to BRAT (namely a baseflow statistic and a typical flood statistic). Since BRAT is not a hydrologic model (i.e. a model that takes precipitation and a routes it as runoff across a watershed), we simply use regional curves to estimate a flow statistic for every reach. In other words, we can calculate upstream drainage area for every reach from the DEM, and use regional curves. These regonal curves take many forms, but generally relate discharge (y in figure below) to drainage area (x in figure below): 
 
-![ihyd_code]({{ site.baseurl }}/assets/images/RegionalCurve.PNG)
+![ihyd_code]({{ site.baseurl }}/assets/images/RegionalCurve.png)
 
 ## What you need
 
