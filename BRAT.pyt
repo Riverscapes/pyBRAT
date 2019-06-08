@@ -811,7 +811,7 @@ class Collect_Summary_Products_tool(object):
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Stream Network (for creating the Excel file)",
+            displayName="Stream Network(s)",
             name="clipping_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -819,7 +819,7 @@ class Collect_Summary_Products_tool(object):
             multiValue=True)
 
         param2 = arcpy.Parameter(
-            displayName="Watershed Name",
+            displayName="Watershed/Area Name",
             name="watershed_name",
             datatype="GPString",
             parameterType="Required",
