@@ -22,8 +22,8 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-        Conservation_Restoration_tool, Data_Capture_Validation_tool, Drainage_Area_Check_tool, Layer_Package_Generator_tool,
-        Collect_Summary_Products_tool]
+                        Conservation_Restoration_tool, Data_Capture_Validation_tool, Drainage_Area_Check_tool,
+                        Layer_Package_Generator_tool, Collect_Summary_Products_tool]
 
 class BRAT_project_tool(object):
     def __init__(self):
@@ -118,7 +118,7 @@ class BRAT_project_tool(object):
             direction="Input",
             multiValue=True)
 
-	param11 = arcpy.Parameter(
+        param11 = arcpy.Parameter(
             displayName="Select railroads datasets",
             name="rr",
             datatype="DEFeatureClass",
@@ -288,64 +288,50 @@ class BRAT_table_tool(object):
             datatype="DERasterDataset",
             parameterType="Optional",
             direction="Input")
-			
-	param11 = arcpy.Parameter(
-	    displayName="Input land ownership feature class",
-	    name="ownership",
-	    datatype="DEFeatureClass",
-	    parameterType="Optional",
-	    direction="Input")
 
-	param12 = arcpy.Parameter(
+        param11 = arcpy.Parameter(
             displayName="Perennial stream network",
             name="perennial_network",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
 
-        param13 = arcpy.Parameter(
+        param12 = arcpy.Parameter(
             displayName="Name BRAT table output feature class",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
 
-        param14 = arcpy.Parameter(
+        param13 = arcpy.Parameter(
             displayName="Short description for run - less than 100 characters",
             name="description",
             datatype="GPString",
             parameterType="Optional",
             direction="Input")
-
-	param15 = arcpy.Parameter(
+ 
+        param14 = arcpy.Parameter(
             displayName="Find Clusters",
             name="find_clusters",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param16 = arcpy.Parameter(
+        param15 = arcpy.Parameter(
             displayName="Segment Network by Roads",
             name="should_segment_network",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-	param17 = arcpy.Parameter(
-	    displayName="Segment Network by Land Ownership",
-	    name="ownership_segment_network",
-	    datatype="GPBoolean",
-	    parameterType="Optional",
-	    direction="Input")
-
-	param18 = arcpy.Parameter(
+        param16 = arcpy.Parameter(
             displayName="Run Verbose",
             name="is_verbose",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
-
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16, param17, param18]
+       
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -381,9 +367,7 @@ class BRAT_table_tool(object):
                         p[13].valueAsText,
                         p[14].valueAsText,
                         p[15].valueAsText,
-                        p[16].valueAsText,
-						p[17].valueAsText,
-						p[18].valueAsText)
+                        p[16].valueAsText)
         return
 
 
@@ -622,12 +606,11 @@ class Conservation_Restoration_tool(object):
         param1.filter.list = ["Polyline"]
 
         param2 = arcpy.Parameter(
-            displayName="Name conservation restoration model output feature class",
+            displayName="Name the conservation restoration output",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        # param2.symbology = os.path.join(os.path.dirname(__file__), "oPBRC.lyr")
 
         return [param0, param1, param2]
 
@@ -686,14 +669,7 @@ class Data_Capture_Validation_tool(object):
             parameterType="Required",
             direction="Input")
 
-        param3 = arcpy.Parameter(
-            displayName="Maximum DA threshold (in square kilometers)",
-            name="DA_threshold",
-            datatype="GPDouble",
-            parameterType="Optional",
-            direction="Input")
-
-    	return [param0, param1, param2, param3]
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -715,9 +691,7 @@ class Data_Capture_Validation_tool(object):
         reload(Data_Capture_Validation)
         Data_Capture_Validation.main(p[0].valueAsText,
                                      p[1].valueAsText,
-                                     p[2].valueAsText,
-                                     p[3].valueAsText)
-        return
+                                     p[2].valueAsText)
 
 
 class Drainage_Area_Check_tool(object):
@@ -819,7 +793,6 @@ class Layer_Package_Generator_tool(object):
         return
 
 
-
 class Collect_Summary_Products_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
@@ -838,7 +811,7 @@ class Collect_Summary_Products_tool(object):
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Stream Network (for creating the Excel file)",
+            displayName="Stream Network(s)",
             name="clipping_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -846,7 +819,7 @@ class Collect_Summary_Products_tool(object):
             multiValue=True)
 
         param2 = arcpy.Parameter(
-            displayName="Watershed Name",
+            displayName="Watershed/Area Name",
             name="watershed_name",
             datatype="GPString",
             parameterType="Required",

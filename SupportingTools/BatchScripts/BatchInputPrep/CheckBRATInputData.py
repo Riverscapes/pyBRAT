@@ -16,15 +16,16 @@ import os
 
 
 zip_folder = None
-pf_path = 'C:/Users/Maggie/Desktop/TNC_BRAT/TNC_BRAT/wrk_Data'
-#coord_sys= 'NAD 1983 Idaho TM (Meters)'
-coord_sys = 'NAD 1983 California (Teale) Albers (Meters)'
-BRAT_folder = 'BatchRun_02' 
+pf_path = 'C:/Users/a02046349/Desktop/Idaho_BRAT/wrk_Data'
+coord_sys= 'NAD 1983 Idaho TM (Meters)'
+#coord_sys = 'NAD 1983 California (Teale) Albers (Meters)'
+outCS = arcpy.SpatialReference(coord_sys)
+cs_string = outCS.exportToString()
+BRAT_folder = 'BatchRun_01' 
 
 def main():
 
-    outCS = arcpy.SpatialReference(coord_sys)
-    cs_string = outCS.exportToString()
+
 
     if zip_folder:
         unzip_files(zip_folder, pf_path)
@@ -41,7 +42,7 @@ def main():
     for dir in dir_list:
         huc_name = dir.split('_')[0]
         huc_id = dir.split('_')[1]
-        print dir
+        print dir + '.................................................'
         nhd_folder = os.path.join(pf_path, dir, 'NHD')
         dem_folder = os.path.join(pf_path, dir, 'DEM')
         landfire_folder = os.path.join(dir, 'LANDFIRE')
@@ -93,20 +94,20 @@ def check_nhd_files(nhd_folder, huc_name, huc_id, cs_string):
             check_projection(segmented_network, cs_string)
             check_huc_fields(segmented_network)
         else:
-            print '     ' + segmented_network + ' MISSING.'
+            print '     segmented network missing.'
         # check for perennial network, correct projection, and huc fields
         if os.path.exists(peren_canals):
             #print '.......... Checking ' + peren_canals
             check_projection(peren_canals, cs_string)
             check_huc_fields(peren_canals)
         else:
-            print '     ' + peren_canals + ' MISSING.'
+            print '     perennial canals missing.'
         if os.path.exists(peren):
             #print '.......... Checking ' + peren
             check_projection(peren, cs_string)
             check_huc_fields(peren)
         else:
-            print '     ' + peren + ' MISSING.'
+            print '     perennial missing.'
         # check for other files and correct projection
         for file in files:
             if os.path.exists(file):
@@ -116,13 +117,13 @@ def check_nhd_files(nhd_folder, huc_name, huc_id, cs_string):
                 print '     ' + file + ' MISSING.'
         
     else:
-        print '***** NHD FOLDER DOES NOT EXIST FOR ' + huc_name + huc_id + ' *****'
+        print '     NHD FOLDER MISSING'
 
 
 
 def check_dem_files(dem_folder, huc_name, huc_id, cs_string):
     if os.path.exists(dem_folder):
-        dem = os.path.join(dem_folder, 'NED_DEM_10m.tif')
+        dem = os.path.join(dem_folder, 'NED_DEM_10m_'+huc_id+'.tif')
         hs = os.path.join(dem_folder, 'NED_HS_10m.tif')
         # check DEM 
         if os.path.exists(dem):
@@ -130,34 +131,55 @@ def check_dem_files(dem_folder, huc_name, huc_id, cs_string):
             min_elev = arcpy.GetRasterProperties_management(dem, "MINIMUM")
             max_elev = arcpy.GetRasterProperties_management(dem, "MAXIMUM")
             if min_elev == max_elev:
-                print '     DEM MIN = MAX - CHECK VALUES'
+                print '     Check DEM values: min = max  '
         else:
-            print '     ' + dem + ' MISSING.'
+            print '     DEM missing.'
         # check hillshade
         if os.path.exists(hs):
             check_projection(hs, cs_string)
             min_elev = arcpy.GetRasterProperties_management(hs, "MINIMUM")
             max_elev = arcpy.GetRasterProperties_management(hs, "MAXIMUM")
             if min_elev == max_elev:
-                print '     HILLSHADE MIN = MAX - CHECK VALUES'
-        else:
-            print '     ' + hs + ' MISSING.'
+                print '     Check hillshade values: min = max'
+        #else:
+        #    print '     ' + hs + ' MISSING.'
     else:
-        print '***** DEM FOLDER DOES NOT EXIST FOR ' + huc_name + huc_id + ' *****'
+        print '     DEM FOLDER MISSING'
 
 
 
 def check_vegetation(veg_folder, huc_name, huc_id, cs_string):
     if os.path.exists(veg_folder):
-        evt = os.path.join(veg_folder, 'LANDFIRE_140EVT.tif')
-        bps = os.path.join(veg_folder, 'LANDFIRE_140BPS.tif')
+        evt = os.path.join(veg_folder, 'LANDFIRE_200EVT.tif')
+        bps = os.path.join(veg_folder, 'LANDFIRE_200BPS.tif')
+        evt_merge = os.path.join(veg_folder, 'LANDFIRE_EVT_merge.tif')
+        bps_merge = os.path.join(veg_folder, 'LANDFIRE_BPS_merge.tif')
         # check existing vegetation & landuse
         if os.path.exists(evt):
+            check_evt(evt)
+        elif os.path.exists(evt_merge):
+            check_evt(evt_merge)
+        else:
+            print '     EVT missing.' 
+
+        # check historic vegetation
+        if os.path.exists(bps):
+            check_bps(bps)
+        elif os.path.exists(bps_merge):
+            check_bps(bps_merge)
+        else:
+            print '     BPS missing.'
+    else:
+        print '     LANDFIRE FOLDER MISSING'
+
+
+
+def check_evt(evt):
             #print '.......... Checking ' + evt
             check_projection(evt, cs_string)
             fields = [f.name for f in arcpy.ListFields(evt)]
-            if 'CLASSNAME' not in fields:
-                print '                 CLASSNAME not in fields - EVT layer will not draw'
+            if 'EVT_NAME' not in fields:
+                print '                 EVT_NAME not in fields - EVT layer will not draw'
             if 'EVT_CLASS' not in fields:
                 print '                 EVT_CLASS not in fields - EVT layer will not draw'
             if 'EVT_PHYS' not in fields:
@@ -193,21 +215,21 @@ def check_vegetation(veg_folder, huc_name, huc_id, cs_string):
             except Exception as err:
                 print 'Could not check unique value for ' + evt
                 print err
-        else:
-            print '     ' + evt + ' MISSING.' 
-        # check historic vegetation
-        if os.path.exists(bps):
-            #print '.......... Checking ' + bps
+
+
+    
+def check_bps(bps):
+    #print '.......... Checking ' + bps
             check_projection(bps, cs_string)
             fields = [f.name for f in arcpy.ListFields(bps)]
             if 'BPS_NAME' not in fields:
-                print '                 CLASSNAME not in fields - BPS layer will not draw'
+                print '                 BPS_NAME not in fields - BPS layer will not draw'
             if 'GROUPVEG' not in fields:
                 print '                 GROUPVEG not in fields - BPS layers will not draw'
             if 'VEG_CODE' not in fields:
                 print '                 VEG_CODE MUST BE ADDED TO BPS'
             else:
-                with arcpy.da.SearchCursor(evt, "VEG_CODE") as cursor:
+                with arcpy.da.SearchCursor(bps, "VEG_CODE") as cursor:
                     for row in cursor:
                         if row[0] == ' ':
                             print '                 BLANKS IN BPS VEG_CODE'
@@ -220,19 +242,16 @@ def check_vegetation(veg_folder, huc_name, huc_id, cs_string):
                 if count <= 5:
                     print '                 5 OR LESS BPS VALUES - CHECK VALUES'
             except Exception as err:
-                print 'Could not check unique value for ' + evt
+                print '     Could not check unique value for ' + bps
                 print err
-        else:
-            print '     ' + bps + ' MISSING.'
-    else:
-        print '***** LANDFIRE FOLDER MISSING FOR ' + huc_name + huc_id + ' *****'
+
             
 
 
 def check_management_inputs(dir, huc_name, huc_id, cs_string):
-    vbet = os.path.join(dir, 'ValleyBottom', 'Provisional_ValleyBottom_Unedited.shp')
-    roads = os.path.join(dir, 'RoadsRails', 'tl_2017_county_roads.shp')
-    rail = os.path.join(dir, 'RoadsRails', 'tl_2017_rails.shp')
+    vbet = os.path.join(dir, 'VBET/BatchRun_01/02_Analyses/Output_1/Provisional_ValleyBottom_Unedited.shp')
+    roads = os.path.join(dir, 'RoadsRails', 'tl_2018_roads.shp')
+    rail = os.path.join(dir, 'RoadsRails', 'tl_2018_us_rails.shp')
     ownership = os.path.join(dir, 'LandOwnership', 'NationalSurfaceManagementAgency.shp')
     files = [vbet, roads, rail, ownership]
     for file in files:

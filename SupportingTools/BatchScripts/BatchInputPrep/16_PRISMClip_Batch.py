@@ -24,8 +24,8 @@
 # out_name - output raster name without file extension(for ETAL users using 10 m DEMS should use 'NED_DEM_10m')
 
 #  user defined paths
-pf_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data"
-prism_path = r"C:\Users\Maggie\Desktop\Idaho\wrk_Data\00_Projectwide\PRISM\PRISM_ppt_30yr_normal_800mM2_annual_ProjectArea.tif"
+pf_path = r"C:\Users\a02046349\Desktop\GYE_BRAT\wrk_Data"
+prism_path = r"C:\Users\a02046349\Documents\PRISM\PRISM_ppt_30yr_normal_800mM2_annual_bil.bil"
 out_name = 'PRISM_ppt_30yr_normal_800mM2_annual'
 
 #  import required modules and extensions
@@ -70,11 +70,11 @@ def main():
 
     # run dem_clip function for each huc8 folder
     for dir in dir_list:
-        if not os.path.exists(os.path.join(pf_path, dir, 'PRISM')):
+        #if not os.path.exists(os.path.join(pf_path, dir, 'PRISM')):
             try:
                 prism_clip(dir)
             except Exception as err:
-                print "Clipping DEM failed for " + dir + ". The exception thrown was:"
+                print "Clipping PRISM failed for " + dir + ". The exception thrown was:"
                 print err
 
     # clear environment settings

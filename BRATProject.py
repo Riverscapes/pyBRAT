@@ -44,6 +44,7 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
     add_to_summary_folder(summary_folder, 'KMZ')
     add_to_summary_folder(summary_folder, 'LPK')
     add_to_summary_folder(summary_folder, 'AI')
+    add_to_summary_folder(summary_folder, 'SummaryTables')
 
     vegetation_folder = make_folder(inputs_folder, "01_Vegetation")
     network_folder = make_folder(inputs_folder, "02_Network")

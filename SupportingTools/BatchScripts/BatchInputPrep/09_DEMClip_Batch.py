@@ -24,8 +24,8 @@
 # out_name - output raster name without file extension(for ETAL users using 10 m DEMS should use 'NED_DEM_10m')
 
 #  user defined paths
-pf_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data"
-dem_path = r"C:\etal\Shared\Projects\USA\California\SierraNevada\BRAT\wrk_Data\00_Projectwide\DEM\NED_DEM_10m.tif"
+pf_path = 'C:/Users/a02046349/Desktop/Idaho_BRAT/wrk_Data/00_VBET_Missing'
+dem_path = 'C:/Users/a02046349/Desktop/Idaho_BRAT/wrk_Data/00_Projectwide/DEM/NED_DEM_10m.tif'
 out_name = 'NED_DEM_10m'
 
 #  import required modules and extensions
@@ -47,8 +47,9 @@ def dem_clip(x):
     # read in huc8 shp and get the huc8 code
     huc8_shp = os.path.join(pf_path, x, 'NHD', 'WBDHU8.shp')
 
+    hucID = x.split('_')[1]
     # clip input dem by huc8_shp
-    arcpy.Clip_management(dem_path, '', os.path.join(dem_folder, out_name + '.tif'), huc8_shp, '', 'ClippingGeometry', 'NO_MAINTAIN_EXTENT')
+    arcpy.Clip_management(dem_path, '', os.path.join(dem_folder, out_name + hucID + '.tif'), huc8_shp, '', 'ClippingGeometry', 'NO_MAINTAIN_EXTENT')
 
 
 def main():

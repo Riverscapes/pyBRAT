@@ -76,7 +76,7 @@ def main(in_network, dams, output_name, DA_threshold):
         plot_name = None
         make_electivity_table(output_network, output_name)
 
-    write_xml(proj_path, in_network, output_network, plot_name)
+    #write_xml(proj_path, in_network, output_network, plot_name)
 
     makeLayers(output_network, dams)
 
@@ -164,14 +164,14 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, D
 
             # differentiate management strategies
             if row[-1] == "Easiest - Low-Hanging Fruit":
-                if row[2] >= 0.5: 
+                if row[2] >= 0.25: 
                     row[3] = "Immediate - Beaver Conservation" #if "Low-hanging fruit" & surveyed dams >=50% of existing capacity
                 else:
                     row[3] = "Immediate - Potential Beaver Translocation" #if "Low-hanging fruit & underutilized or no capacity (<50% of capacity met by surveyed dams)
             elif row[-1] == "Straight Forward - Quick Return":
-                row[3] = "Short Term: Process-based Riparian Veg Restoration" #if "Quick return" & underutilized or no capacity (<50% of capacity met by surveyed dams)
+                row[3] = "Mid Term - Process-based Riparian Vegetation Restoration" #if "Quick return" & underutilized or no capacity (<50% of capacity met by surveyed dams)
             elif row[-1] == "Strategic - Long-Term Investment":
-                row[3] = "Long Term: Riparian Veg Reestablishment"
+                row[3] = "Long Term: Riparian Vegetation Reestablishment"
             else:
                 row[3] = 'Low Capacity Habitat'
 
@@ -179,7 +179,39 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, D
             cursor.updateRow(row)
 
     arcpy.DeleteField_management(output_path, ["Join_Count", "TARGET_FID"])
+    
+    add_snapped_attribute(dams, brat_output)
 
+
+
+def add_snapped_attribute(dams, brat_output):
+    # add attribute to dams indicating whether point was snapped to network
+    out_dams = os.path.join(os.path.dirname(dams), 'Dams_Snapped.shp')
+    arcpy.SpatialJoin_analysis(dams,
+                                brat_output,
+                                out_dams,
+                                join_operation='JOIN_ONE_TO_ONE',
+                                join_type='KEEP_ALL',
+                                match_option='INTERSECT')
+    arcpy.AddField_management(out_dams, 'Snapped', 'TEXT')
+    with arcpy.da.UpdateCursor(out_dams, ['Join_Count', 'Snapped']) as cursor:
+        for row in cursor:
+            if row[0] > 0:
+                row[1] = 'Snapped to network'
+            else:
+                row[1] = 'Not snapped to network'
+            cursor.updateRow(row)
+    # clean up dam fields
+    dam_fields = [f.name for f in arcpy.ListFields(dams)]
+    dam_fields.append('Snapped')
+    out_fields = [f.name for f in arcpy.ListFields(out_dams)]
+    for field in out_fields:
+        if field not in dam_fields:
+            arcpy.DeleteField_management(out_dams, field)
+    # only keep edited dam shapefile and rename as original filename
+    arcpy.Delete_management(dams)
+    arcpy.Rename_management(out_dams, dams)
+    
 
 
 def add_fields(output_path, new_fields):

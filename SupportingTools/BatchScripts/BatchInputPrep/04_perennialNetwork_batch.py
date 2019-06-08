@@ -8,7 +8,7 @@
 
 # User defined arguments:
 # pf_path - path to project folder for batch processing
-pf_path = 'C:\Users\Maggie\Desktop\Idaho\wrk_Data\new'
+pf_path = 'C:/Users/a02046349/Desktop/GYE_BRAT/wrk_Data'
 
 #  import required modules and extensions
 import arcpy
@@ -19,6 +19,7 @@ import os
 def main():
     arcpy.env.workspace = 'in_memory'
     arcpy.env.overwriteOutput = True
+    arcpy.env.outputZFlag = "Disabled"
     os.chdir(pf_path)
 
     dir_list = filter(lambda x: os.path.isdir(x), os.listdir('.'))

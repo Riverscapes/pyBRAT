@@ -3,10 +3,10 @@ import arcpy
 import os
 import re
 
-pf_path = r"C:\Users\Maggie\Desktop\GYA\wrk_Data"
-proj_bound = 'C:/Users/Maggie/Desktop/GYA/wrk_Data/00_Projectwide/ProjectBoundary/ProjectArea_NoHoles.shp'
-ownership_path = r"C:\Users\Maggie\Documents\NationalSurfaceManagementAgency\NationalSurfaceManagementAgency.shp"
-coord_sys = 'NAD 1983 UTM Zone 12 N'
+pf_path = r"C:\Users\a02046349\Desktop\GYE_BRAT\wrk_Data"
+proj_bound = r"C:\Users\a02046349\Desktop\GYE_BRAT\wrk_Data\00_Projectwide\ProjectBoundary\GYE_ProjectBoundary_WY.shp"
+ownership_path = r"C:\Users\a02046349\Desktop\GYE_BRAT\wrk_Data\00_Projectwide\LandOwnership\NationalSurfaceManagementAgency.shp"
+coord_sys = 'NAD 1983 UTM Zone 12N'
 
 def main():
     # set up arcpy environment
@@ -15,15 +15,16 @@ def main():
     arcpy.CheckOutExtension('Spatial')
 
     # clip national layer to project boundary and reproject
-    print "Clipping national shapefile to project boundary..."
-    land_folder = os.path.join(pf_path, '00_ProjectWide/LandOwnership')
+    
+    land_folder = os.path.join(pf_path, '00_Projectwide/LandOwnership')
     if not os.path.exists(land_folder):
         os.mkdir(land_folder)
-    print "Projecting project ownership to standardized coordinate system..."
-    landown_proj = os.path.join(land_folder, 'NationalSurfaceManagementAgency_project.shp')
+    landown_proj = os.path.join(land_folder, 'NationalSurfaceManagementAgency.shp')
     if not os.path.exists(landown_proj):
+        print "Clipping national shapefile to project boundary..."
         arcpy.Clip_analysis(ownership_path, proj_bound, 'tmp_ownership')
         outCS = arcpy.SpatialReference(coord_sys)
+        print "Projecting project ownership to standardized coordinate system..."
         arcpy.Project_management('tmp_ownership', landown_proj, outCS) 
 
     # change directory to the parent folder path
@@ -39,7 +40,7 @@ def main():
 
     # for each folder in the list....
     for dir in dir_list:
-        print dir
+        print 'Clipping land ownership for ' + dir
 
         # create output folder
         out_folder = os.path.join(pf_path, dir, 'LandOwnership')

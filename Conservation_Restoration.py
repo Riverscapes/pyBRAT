@@ -26,12 +26,12 @@ def main(projPath, in_network, out_name):
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # check for oPBRC fields and delete if exists
-    fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "oPBRC_UI" in fields:
+    old_fields = [f.name for f in arcpy.ListFields(out_network)]
+    if "oPBRC_UI" in old_fields:
         arcpy.DeleteField_management(out_network, "oPBRC_UI")
-    if "oPBRC_UD" in fields:
+    if "oPBRC_UD" in old_fields:
         arcpy.DeleteField_management(out_network, "oPBRC_UD")
-    if "oPBRC_CR" in fields:
+    if "oPBRC_CR" in old_fields:
         arcpy.DeleteField_management(out_network, "oPBRC_CR")
 
     arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 30)
@@ -39,16 +39,20 @@ def main(projPath, in_network, out_name):
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
 
     # use old historic capacity field names if new ones not in combined capacity output
-    if 'oVC_PT' in fields:
+    if 'oVC_PT' in old_fields:
         ovc_hpe = 'oVC_PT'
     else:
-        ovc_hpe = 'oVC_HPE'
-
-    if 'oCC_PT' in fields:
+        ovc_hpe = 'oVC_Hpe'
+    if 'oCC_PT' in old_fields:
         occ_hpe = 'oCC_PT'
     else:
         occ_hpe = 'oCC_HPE'
-    
+
+    # add arbitrarily large value to avoid error
+    if 'iPC_Canal' not in old_fields:
+       arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
+       arcpy.CalculateField_management(out_network, 'iPC_Canal', """500000""", "PYTHON")
+
     fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep', 'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'iPC_Canal']
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
@@ -161,6 +165,9 @@ def main(projPath, in_network, out_name):
                 row[2] = 'NA'
             cursor.updateRow(row)
 
+    # delete canals field if not in original network
+    if 'iPC_Canal' not in old_fields:
+        arcpy.DeleteField_management(out_network, 'iPC_Canal')
     makeLayers(out_network)
 
     write_xml(in_network, out_network)
@@ -188,7 +195,7 @@ def makeLayers(out_network):
     # make_layer(output_folder, out_network, "Beaver Management Zones", management_zones_symbology, is_raster=False)
     make_layer(output_folder, out_network, "Unsuitable or Limited Opportunities", limitations_dams_symbology, is_raster=False, symbology_field ='pPBRC_UD')
     make_layer(output_folder, out_network, "Risk of Undesirable Dams", undesirable_dams_symbology, is_raster=False, symbology_field ='pPBRC_UI')
-    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", conservation_restoration_symbology, is_raster=False, symbology_field ='pPBRC_CR')
+    #make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", conservation_restoration_symbology, is_raster=False, symbology_field ='pPBRC_CR')
 
 def write_xml(in_network, out_network):
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))

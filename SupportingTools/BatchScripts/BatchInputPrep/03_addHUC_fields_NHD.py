@@ -1,7 +1,7 @@
 import os
 import arcpy
 
-pf_path = 'C:\Users\Maggie\Desktop\Idaho\wrk_Data\new'
+pf_path = 'C:/Users/a02046349/Desktop/GYE_BRAT/wrk_Data'
 
 def main():
     os.chdir(pf_path)
@@ -35,7 +35,7 @@ def main():
                     pass
                 arcpy.AddField_management(file, 'HUC_ID', 'TEXT')
                 arcpy.CalculateField_management(file, 'HUC_NAME', name, "PYTHON_9.3")
-                arcpy.CalculateField_management(file, 'HUC_ID', huc_id)
+                arcpy.CalculateField_management(file, 'HUC_ID', huc_id, "PYTHON_9.3")
         except Exception as err:
             print "Could not add fields for " + dir
             print err

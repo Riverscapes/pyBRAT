@@ -4,9 +4,10 @@ import os
 
 arcpy.CheckOutExtension('Spatial')
 
-evt_path = 'C:/Users/Maggie/Desktop/Idaho/wrk_Data/00_Projectwide/LANDFIRE/LANDFIRE_200EVT.tif'
-bps_path = 'C:/Users/Maggie/Desktop/Idaho/wrk_Data/00_Projectwide/LANDFIRE/LANDFIRE_200BPS.tif'
-pf_path = 'C:/Users/Maggie/Desktop/Idaho/wrk_Data'
+evt_path = 'C:/Users/a02046349/Desktop/GYE_BRAT/wrk_Data/00_Projectwide/LANDFIRE/LANDFIRE_200EVT.tif'
+bps_path = 'C:/Users/a02046349/Desktop/GYE_BRAT/wrk_Data/00_Projectwide/LANDFIRE/LANDFIRE_200BPS.tif'
+pf_path = 'C:/Users/a02046349/Desktop/GYE_BRAT/wrk_Data'
+fix_list = ['GrosVentre_17040102', 'LittleWind_10080002', 'NewFork_14040102', 'NorthForkShoshone_10080012', 'PopoAgie_10080003', 'SouthForkShoshone_10080013']
 
 def ras_clip(x, type):
     if type == 'evt':
@@ -49,7 +50,7 @@ def main():
     arcpy.env.overwriteOutput = 'TRUE'  # overwrite output
     arcpy.env.resamplingMethod = 'NEAREST'  # set resampling method to nearest in case arc does any behind the scenes dem re-sampling
     # run ras_clip function for each huc8 folder
-    for dir in dir_list:
+    for dir in fix_list:
         try:
             evt_clip = ras_clip(dir, 'evt')
             join_attributes(evt_clip, evt_path)
