@@ -14,11 +14,6 @@ from SupportingFunctions import find_folder, find_available_num_prefix, make_fol
 import re
 import glob
 
-output_foler = 'C:/Users/a02046349/Desktop/BRAT/BatchRun_01/Outputs/Output_01'
-layer_package_name = 'TEST'
-mxd_path = 'C:/Users/a02046349/Desktop/lpk.mxd'
-clipping_network = 'C:/Users/a02046349/Desktop/BRAT/BatchRun_01/Inputs/05_PerennialStream/PerennialStream_01/NHD_24k_Perennial.shp'
-
 
 def main(output_folder, layer_package_name, mxd_path, clipping_network=None, LANDFIRE_2016=False):
     """
