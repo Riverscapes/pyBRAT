@@ -14,12 +14,11 @@ from SupportingFunctions import find_folder, find_available_num_prefix, make_fol
 import re
 import glob
 
-
-output_folder = 'C:/Users/a02046349/Desktop/BRAT/BatchRun_01/Outputs/Output_01'
+output_foler = 'C:/Users/a02046349/Desktop/BRAT/BatchRun_01/Outputs/Output_01'
 layer_package_name = 'TEST'
 mxd_path = 'C:/Users/a02046349/Desktop/lpk.mxd'
 clipping_network = 'C:/Users/a02046349/Desktop/BRAT/BatchRun_01/Inputs/05_PerennialStream/PerennialStream_01/NHD_24k_Perennial.shp'
-LANDFIRE_2016 = True
+
 
 def main(output_folder, layer_package_name, mxd_path, clipping_network=None, LANDFIRE_2016=False):
     """
@@ -62,6 +61,7 @@ def main(output_folder, layer_package_name, mxd_path, clipping_network=None, LAN
     
     make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, mxd_path, clipping_network)
 
+    """ Crashing ARC for some reason
     # remove clipped layers (mainly to save storage space)
     if clipping_network:
         arcpy.Delete_management(brat_table_clip)
@@ -69,6 +69,7 @@ def main(output_folder, layer_package_name, mxd_path, clipping_network=None, LAN
         arcpy.Delete_management(cons_rest_clip)
         if os.path.exists(valid_clip):
             arcpy.Delete_management(valid_clip)
+    """
     
 
 def create_clipped_layers(output_folder, clipping_network, symbologyFolder):
@@ -112,8 +113,11 @@ def create_clipped_layers(output_folder, clipping_network, symbologyFolder):
                
     # make new intermediates layers
     inter_folders = filter(lambda x: os.path.isdir(os.path.join(intermediates_folder, x)), os.listdir(intermediates_folder))
+    perennial_folder = find_folder(intermediates_folder, "Perennial")
     if os.path.basename(buffer_folder) in inter_folders:
 	inter_folders.remove(os.path.basename(buffer_folder))
+    if os.path.basename(perennial_folder) in inter_folders:
+	inter_folders.remove(os.path.basename(perennial_folder))
     if len(inter_folders) > 0:
         for folder_name in inter_folders:
             folder = os.path.join(intermediates_folder, folder_name)
@@ -397,7 +401,7 @@ def find_shape_file_with_field(folder, field_name):
     return None
 
 
-def check_inputs(inputs_folder, symbology_folder,LANDFIRE_2016):
+def check_inputs(inputs_folder, symbology_folder, LANDFIRE_2016):
     """
     Checks for all the intermediate layers
     :param inputs_folder: Where our inputs are kept
@@ -612,7 +616,11 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
     output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
 
-    layer_package = os.path.join(output_folder, layer_package_name)
+    lpk_folder = os.path.join(os.path.dirname(os.path.dirname(output_folder)), 'SummaryProducts', 'LPK')
+    if os.path.exists(lpk_folder):
+        layer_package = os.path.join(lpk_folder, layer_package_name)
+    else:
+        layer_package = os.path.join(output_folder, layer_package_name)
     arcpy.AddMessage("Saving Layer Package...")
     arcpy.PackageLayer_management(output_layer, layer_package)
 
@@ -664,7 +672,7 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd, clipping_network
     hist_veg_folder = find_folder(vegetation_folder, "_HistoricVegetation")
 
     network_folder = find_folder(inputs_folder, "_Network")
-
+    
     topo_folder = find_folder(inputs_folder, "_Topography")
 
     anthropogenic_folder = find_folder(inputs_folder, "Anthropogenic")
@@ -681,7 +689,7 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd, clipping_network
     hist_veg_layer = group_layers(empty_group_layer, "Historic Vegetation Dam Capacity", hist_veg_layers, df, mxd)
     veg_layer = group_layers(empty_group_layer, "Vegetation", [hist_veg_layer, ex_veg_layer], df, mxd)
 
-    network_layers = find_layers_in_folder(network_folder, clipping_network)
+    network_layers = find_instance_layers(network_folder, clipping_network)
     network_layer = group_layers(empty_group_layer, "Network", network_layers, df, mxd)
 
     dem_layers = find_instance_layers(topo_folder)
@@ -755,11 +763,11 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd, c
 
         intermediate_layers.append(group_layers(empty_group_layer, "Anthropogenic Intermediates", sorted_anthropogenic_layers, df, mxd))
 
-    find_and_group_layers(intermediate_layers, intermediates_folder, "VegDamCapacity", "Overall Vegetation Dam Capacity", empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "Buffers", "Buffers", empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "Hydrology", "Hydrology", empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "AnabranchHandler", "Anabranch Handler", empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "TopographicMetrics", "Topographic Index", empty_group_layer, df, mxd)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "VegDamCapacity", "Overall Vegetation Dam Capacity", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "Buffers", "Buffers", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "Hydrology", "Hydrology", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "AnabranchHandler", "Anabranch Handler", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "TopographicMetrics", "Topographic Index", empty_group_layer, df, mxd, clipping_network)
     find_and_group_layers(intermediate_layers, intermediates_folder, "Perennial", "Perennial", empty_group_layer, df, mxd)
 
     return group_layers(empty_group_layer, "Intermediates", intermediate_layers, df, mxd)
