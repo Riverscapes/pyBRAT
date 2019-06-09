@@ -14,7 +14,7 @@ import os
 import xlsxwriter
 import arcpy
 
-def main(project_folder, stream_network, watershed_name, excel_file_name=None):
+def main(project_folder, stream_network, watershed_name, excel_file_name=None, output_folder=None):
     """
     Our main function
     :param project_folder: The BRAT Project that we want to collect the summary products for
@@ -29,13 +29,17 @@ def main(project_folder, stream_network, watershed_name, excel_file_name=None):
     summary_prods_folder = os.path.join(project_folder, "SummaryProducts")
     table_folder = make_folder(summary_prods_folder, "SummaryTables")
 
+    if output_folder is None:
+        output_folder = table_folder
+        
     create_folder_structure(project_folder, summary_prods_folder)
 
     if (stream_network.count(';')>0):
         stream_network = merge_networks(summary_prods_folder, stream_network)
 
     fields = [f.name for f in arcpy.ListFields(stream_network)]
-    create_excel_file(excel_file_name, stream_network, table_folder, watershed_name, fields)
+    create_excel_file(excel_file_name, stream_network, output_folder, watershed_name, fields)
+
 
 def split_multi_inputs(multi_input_parameter):
     """
@@ -50,7 +54,8 @@ def split_multi_inputs(multi_input_parameter):
         return multi_input_parameter.split(";")
     except:
         raise Exception("Could not split multi-input")
-    
+
+
 def merge_networks(summary_prods_folder, stream_network):
 
     mergedFile = os.path.join(summary_prods_folder, "Merged.shp")
@@ -59,10 +64,9 @@ def merge_networks(summary_prods_folder, stream_network):
     arcpy.Append_management (toMerge, mergedFile, "NO_TEST")
     return mergedFile
 
-
     
-def create_excel_file(excel_file_name, stream_network, summary_prods_folder, watershed_name, fields):
-    workbook = xlsxwriter.Workbook(os.path.join(summary_prods_folder, excel_file_name))
+def create_excel_file(excel_file_name, stream_network, output_folder, watershed_name, fields):
+    workbook = xlsxwriter.Workbook(os.path.join(output_folder, excel_file_name))
     write_capacity_sheets(workbook, stream_network, watershed_name, fields)
     workbook.close()
 
@@ -363,7 +367,7 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
     worksheet.set_row(0,None,header_format)
     worksheet.set_row(1,None,header_format)
     percent_format = workbook.add_format({'num_format': '0.00%'})
-    percent1 = worksheet.set_column('E:E', 7, percent_format)
+    percent1 = worksheet.set_column('E:E', 10, percent_format)
     color = workbook.add_format()
     color.set_bg_color ('C0C0C0')
     cell_format1 = workbook.add_format()
@@ -385,7 +389,7 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
     row += 1
     worksheet.write(row, col, "Total Historic Dam Complex Size")
     row += 1
-    worksheet.write(row, col, "Total Predicted Vegetation Capacity")
+    worksheet.write(row, col, "Total Existing Vegetation Capacity")
     row += 1
     worksheet.write(row, col, "Total Historic Vegetation Capacity")
     
@@ -477,11 +481,14 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
                     for length, valid in cursor:
                         if valid >= 1:
                             estimateRight += 1
-                        else:
+                        elif valid == -1:
+                            estimateRight += 1
+                        elif valid < 1:
                             estimateWrong += 1
+                        else:
+                            pass
 
- 
-        percentCorrectEstimate = float(estimateRight) / float (estimateWrong)
+        percentCorrectEstimate = float(estimateRight) / (float(estimateWrong) + float(estimateRight))
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
         percentCorrectEstimate = "N/A"
@@ -1279,9 +1286,9 @@ def write_strategies_worksheet(worksheet, stream_network, watershed_name, workbo
     row += 1
     worksheet.write(row, col, "Immediate - Beaver Translocation")
     row += 1
-    worksheet.write(row, col, "Medium Term - Riparian Veg Restoration")
+    worksheet.write(row, col, "Mid Term - Riparian Vegetation Restoration")
     row += 1
-    worksheet.write(row, col, "Long Term - Riparian Veg Reestablishment")
+    worksheet.write(row, col, "Long Term - Riparian Vegetation Reestablishment")
     row += 1
     worksheet.write(row, col, "Low Capacity Habitat")
     row += 1
@@ -1303,9 +1310,9 @@ def write_strategies_worksheet(worksheet, stream_network, watershed_name, workbo
                     cons += length
                 elif category == "Immediate - Potential Beaver Translocation":
                     trns += length
-                elif category == "Mid Term - Process-based Riparian Vegetation Resto":
+                elif category == "Mid Term - Process-based Riparian Vegetation Restoration":
                     rest += length
-                elif category == "Long Term: Riparian Vegetation Reestablishment":
+                elif category == "Long Term - Riparian Vegetation Reestablishment":
                     veg += length
                 elif category == "Low Capacity Habitat":
                     low += length
