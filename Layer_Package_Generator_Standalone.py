@@ -92,6 +92,8 @@ def create_clipped_layers(output_folder, clipping_network, symbologyFolder):
     cons_rest_clip = clip_file(conservation_restoration_file, clipping_network)
     if validation_file is not None:
         valid_clip = clip_file(validation_file, clipping_network)
+    else:
+        valid_clip = None
 
     # make new network layer
     make_clipped_layers(os.path.dirname(network), network_clip, clipping_network, symbologyFolder)
