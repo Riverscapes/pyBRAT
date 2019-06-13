@@ -47,12 +47,17 @@ def main(projPath, in_network, out_name, dam_data, cpad, cced):
     if 'oVC_PT' in fields:
         hist_veg_field_name = 'oVC_PT'
     else:
-        hist_veg_field_name = 'oVC_HPE'
+        hist_veg_field_name = 'oVC_Hpe'
 
     if 'oCC_PT' in fields:
         hist_dams_field_name = 'oCC_PT'
     else:
         hist_dams_field_name = 'oCC_HPE'
+
+    # add arbitrarily large value to avoid error
+    if 'iPC_Canal' not in old_fields:
+       arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
+       arcpy.CalculateField_management(out_network, 'iPC_Canal', """500000""", "PYTHON")
 
     fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', hist_veg_field_name, 'oVC_EX', hist_dams_field_name, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
               'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX', 'iPC_Canal', 'ObsDam', 'CPAD', 'CCED']
