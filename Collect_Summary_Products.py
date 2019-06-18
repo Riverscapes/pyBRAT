@@ -14,7 +14,7 @@ import os
 import xlsxwriter
 import arcpy
 
-def main(project_folder, stream_network, watershed_name, excel_file_name=None):
+def main(project_folder, stream_network, watershed_name, excel_file_name=None, dams_shapefile=None):
     """
     Our main function
     :param project_folder: The BRAT Project that we want to collect the summary products for
@@ -35,7 +35,7 @@ def main(project_folder, stream_network, watershed_name, excel_file_name=None):
         stream_network = merge_networks(summary_prods_folder, stream_network)
 
     fields = [f.name for f in arcpy.ListFields(stream_network)]
-    create_excel_file(excel_file_name, stream_network, table_folder, watershed_name, fields)
+    create_excel_file(excel_file_name, stream_network, table_folder, watershed_name, fields, dams_shapefile)
 
 def split_multi_inputs(multi_input_parameter):
     """
@@ -61,16 +61,16 @@ def merge_networks(summary_prods_folder, stream_network):
 
 
     
-def create_excel_file(excel_file_name, stream_network, summary_prods_folder, watershed_name, fields):
+def create_excel_file(excel_file_name, stream_network, summary_prods_folder, watershed_name, fields, dams_shapefile):
     workbook = xlsxwriter.Workbook(os.path.join(summary_prods_folder, excel_file_name))
-    write_capacity_sheets(workbook, stream_network, watershed_name, fields)
+    write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams_shapefile)
     workbook.close()
 
 
-def write_capacity_sheets(workbook, stream_network, watershed_name, fields):
+def write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams_shapefile):
 
     summary_worksheet = workbook.add_worksheet("Watershed Summary")
-    write_summary_worksheet (summary_worksheet, stream_network, watershed_name, workbook, fields)
+    write_summary_worksheet (summary_worksheet, stream_network, watershed_name, workbook, fields, dams_shapefile)
     if 'oCC_EX' in fields:
         exist_build_cap_worksheet = workbook.add_worksheet("Existing Dam Building Capacity")
         write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook)
@@ -121,11 +121,17 @@ def write_capacity_sheets(workbook, stream_network, watershed_name, fields):
         write_validation_worksheet(validation_worksheet, stream_network, watershed_name, workbook)
     else:
         arcpy.AddWarning("Predicted vs. surveyed worksheet could not be built because BRATvSurv not in fields")
+    if 'iPC_LU' in fields and 'BRATvSurv' in fields:
+        land_use_worksheet = workbook.add_worksheet("Land Use")
+        write_land_use_worksheet(land_use_worksheet, stream_network, watershed_name, workbook)
+    else:
+        arcpy.AddWarning("Land Use worksheet could not be built because iPC_LU or BRATvSurv not in fields")
     if 'e_DamCt' in fields:
         electivity_worksheet = workbook.add_worksheet("Electivity Index")
         write_electivity_worksheet(electivity_worksheet, stream_network, watershed_name, workbook)
     else:
-        arcpy.AddWarning("Electivity index could not be built because e_DamCt not in fields")
+        arcpy.AddWarning("Electivity index worksheet could not be built because e_DamCt not in fields")
+
     
 
 
@@ -349,26 +355,28 @@ def column_calc (minimum, watershed):
     else:
         return (len(watershed)+10)
 
-def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook, fields_list):
+def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook, fields_list, dams):
     
     # formatting
     
-    column_sizeA = worksheet.set_column('A:A', column_calc (32, watershed_name))
+    column_sizeA = worksheet.set_column('A:A', column_calc (40, watershed_name))
     column_sizeB = worksheet.set_column('B:B', 10)
     column_sizeC = worksheet.set_column('C:C', 5)
-    column_sizeD = worksheet.set_column('D:D', 37)
+    column_sizeD = worksheet.set_column('D:D', 57)
     header_format = workbook.add_format()
     header_format.set_align ('center')
     header_format.set_bold()
     worksheet.set_row(0,None,header_format)
     worksheet.set_row(1,None,header_format)
     percent_format = workbook.add_format({'num_format': '0.00%'})
-    percent1 = worksheet.set_column('E:E', 7, percent_format)
+    percent_format.set_align ('right')
+    percent1 = worksheet.set_column('E:E', 8, percent_format)
     color = workbook.add_format()
     color.set_bg_color ('C0C0C0')
     cell_format1 = workbook.add_format()
     cell_format1.set_num_format(0x01)
-    cell_format1.set_align ('right') 
+    cell_format1.set_align ('right')
+    
     
     
     # categories
@@ -388,16 +396,26 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
     worksheet.write(row, col, "Total Predicted Vegetation Capacity")
     row += 1
     worksheet.write(row, col, "Total Historic Vegetation Capacity")
+    row += 1
+    worksheet.write(row, col, "Total Length (Km) Observed > 80% Predicted")
+    row += 1
+    worksheet.write(row, col, "Number Dams Snapped")
+    row += 1
+    worksheet.write(row, col, "Dams/Km (Census)")
     
-    row = 2
+    row = 4
     col = 3
-    worksheet.write(row, col, "% Reaches Estimated Correctly")
+    worksheet.write(row, col, "% Reaches Within Capacity Estimate")
     row += 1
     worksheet.write(row, col, "% Network \"Easiest - Low-Hanging Fruit\"")
     row += 1
     worksheet.write(row, col, "% Network \"Dam Building Possible\"")
     row += 1
     worksheet.write(row, col, "% Network \"Negligible Risk\"")
+    row += 1
+    worksheet.write(row, col, "% Observed > 80% Predicted")
+    row += 1
+    worksheet.write(row, col, "% Total Dams Snapped to Network")
     
     split_input = stream_network.split(";")
     
@@ -440,7 +458,7 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
         totalHistoricComplex = "N/A"
 
-    # total vegetaion capacity
+    # total vegetation capacity
 
     fields = ['SHAPE@Length', "oVC_EX"]
     if fields[1] in fields_list:
@@ -463,11 +481,75 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
         totalHistoricVeg = "N/A"
+        
+    # observed vs. predicted
 
+    fields = ['SHAPE@Length', "e_DamDens", "oCC_EX"]
+    if (fields[1] in fields_list) and (fields[2] in fields_list):
+        totalSurveyedGreaterLength = 0.0
+        totalSurveyedGreaterCount = 0.0
+        reachCount = 0.0
+        for streams in split_input:
+                with arcpy.da.SearchCursor(streams, fields) as cursor:
+                    for length, surveyed, predicted in cursor:
+                        reachCount += 1
+                        if (surveyed > (predicted * .8)):
+                            totalSurveyedGreaterLength += (length/1000)
+                            totalSurveyedGreaterCount += 1
+                        else:
+                            pass
+        totalSurveyedGreaterPercent = float(totalSurveyedGreaterCount)/ float(reachCount)
+    else:
+        arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
+        totalSurveyedGreaterPercent = "N/A"
+        totalSurveyedGreaterLength = "N/A"
+
+    # dams snapped
+    if not dams == None:
+        dam_fields = [f.name for f in arcpy.ListFields(dams)]
+        if "Snapped" in dam_fields:
+            totalSnapped = 0.0
+            notSnapped = 0.0
+            percentSnapped = 0.0
+            with arcpy.da.SearchCursor(dams, "Snapped") as cursor:
+                    for snapped in cursor:
+                        if snapped[0] == "Not snapped to network":
+                            notSnapped += 1
+                        elif snapped[0] == "Snapped to network":
+                            totalSnapped += 1
+                        else:
+                            pass
+            
+            percentSnapped = float(totalSnapped) / (float(totalSnapped) + float(notSnapped))
+        else:
+            arcpy.AddWarning("Could not complete summary worksheet: \"Snapped\" field in Dams shapefile missing")
+            totalSnapped = "N/A"
+            percentSnapped = "N/A"
+    else:
+        arcpy.AddWarning("Could not complete summary worksheet: Dams shapefile missing")
+        totalSnapped = "N/A"
+        percentSnapped = "N/A"
+        
+    # dam census density
+	
+    if not dams == None:
+        damCensusDensity = 0.0
+	with arcpy.da.SearchCursor(dams, 'SHAPE@Length') as cursor:
+	    for length in cursor:
+                damCensusDensity += 1
+        damCensusDensity /= totalStreamLengthKm
+		
+    else:
+        arcpy.AddWarning("Could not complete summary worksheet: Dams shapefile missing")
+        totalSnapped = "N/A"
+        percentSnapped = "N/A"
+        
+	
     # percent estimated correctly
 
     estimateRight = 0
-    estimateWrong =0
+    estimateWrong = 0
+    estimateWrongShort = 0
 
     fields = ['SHAPE@Length', 'BRATvSurv']
     if fields[1] in fields_list:
@@ -477,11 +559,17 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
                     for length, valid in cursor:
                         if valid >= 1:
                             estimateRight += 1
-                        else:
+                        elif valid == -1:
+                            estimateRight += 1
+                        elif valid < 1:
                             estimateWrong += 1
+                            if length < 150:
+                                estimateWrongShort += 1
+                        else:
+                            pass
 
  
-        percentCorrectEstimate = float(estimateRight) / float (estimateWrong)
+        percentCorrectEstimate = float(estimateRight) / (float(estimateWrong) + float(estimateRight))
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
         percentCorrectEstimate = "N/A"
@@ -558,7 +646,13 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
     worksheet.write(row, col, totalExistingVeg, cell_format1)
     row += 1
     worksheet.write(row, col, totalHistoricVeg, cell_format1)
-    row = 2
+    row += 1
+    worksheet.write(row, col, totalSurveyedGreaterLength, cell_format1)
+    row += 1
+    worksheet.write(row, col, totalSnapped, cell_format1)
+    row += 1
+    worksheet.write(row, col, damCensusDensity, cell_format1)
+    row = 4
     col = 4
     worksheet.write(row, col, percentCorrectEstimate, percent1)
     row += 1
@@ -567,6 +661,15 @@ def write_summary_worksheet (worksheet, stream_network, watershed_name, workbook
     worksheet.write(row, col, percentPossible, percent1)
     row += 1
     worksheet.write(row, col, percentNegligible, percent1)
+    row += 1
+    worksheet.write(row, col, totalSurveyedGreaterPercent, percent1)
+    row += 1
+    worksheet.write(row, col, percentSnapped, percent1)
+    row = 10
+    col = 3
+    if not dams == None:
+        if estimateWrong > 0:
+            worksheet.write (row,col, (str(estimateWrongShort) + " out of the " + str(estimateWrong) + " reaches underpredicted were less than 150m"))
     
 
 
@@ -670,7 +773,7 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     percent_format = workbook.add_format({'num_format': '0.00%'})
     percent1 = hist_vs_exist_worksheet.set_column('C:C', 20, percent_format)
     percent2 = hist_vs_exist_worksheet.set_column('G:G', 20, percent_format)
-    percent3 = hist_vs_exist_worksheet.set_column('O:O', 7, percent_format)
+    percent3 = hist_vs_exist_worksheet.set_column('O:O', 8, percent_format)
     percent4 = hist_vs_exist_worksheet.set_column('J:J', 20, percent_format)
     color = workbook.add_format()
     color.set_bg_color('#C0C0C0')
@@ -885,7 +988,6 @@ def write_conservation_restoration(worksheet, stream_network, watershed_name, wo
     color.set_bg_color('#C0C0C0')
     cell_format1 = workbook.add_format()
     cell_format1.set_num_format(0x01)
-    cell_format1.set_align ('right')
     cell_format1.set_align ('right')
 
 
@@ -1242,7 +1344,7 @@ def write_risk_worksheet(worksheet, stream_network, watershed_name, workbook):
 
 
 def write_strategies_worksheet(worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = worksheet.set_column('A:A', column_calc (25, watershed_name))
+    column_sizeA = worksheet.set_column('A:A', column_calc (40, watershed_name))
     column_sizeB = worksheet.set_column('B:B', 20)
     column_sizeC = worksheet.set_column('C:C', 20)
     column_sizeD = worksheet.set_column('D:D', 15)
@@ -1500,6 +1602,9 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
     row += 1
     worksheet.write(row, col, '=D6/D6', percent2)
 
+def write_land_use_worksheet(land_use_worksheet, stream_network, watershed_name, workbook):
+	arcpy.AddMessage ('TODO')
+	
 def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbook):
 
     # Formatting
@@ -1859,4 +1964,5 @@ if __name__ == "__main__":
         sys.argv[1],
         sys.argv[2],
         sys.argv[3],
-        sys.argv[4])
+        sys.argv[4],
+        sys.argv[5])
