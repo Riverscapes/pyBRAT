@@ -37,7 +37,7 @@ def main(projPath, in_network, out_name, dam_data, cpad, cced):
     arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
-    arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 50)
+    arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 60)
     arcpy.AddField_management(out_network, "ObsDam", "TEXT", "", "", 10)
     arcpy.AddField_management(out_network, "CPAD", "TEXT", "", "", 10)
     arcpy.AddField_management(out_network, "CCED", "TEXT", "", "", 10)
@@ -225,31 +225,33 @@ def main(projPath, in_network, out_name, dam_data, cpad, cced):
             if curr_dams >= 5:
                 if no_urban:
                     if hist_veg_departure >= 4:
-                        row[15] = "3a. High restoration potential (vegetation first)"
+                        row[15] = "3a. Vegetation restoration first-priority"
                     else:
                         row[15] = "3. High restoration potential"
-                if urban or ag:
-                    row[15] = "7. Living with beaver solutions (urban and ag use)"
-                if infrastructure_dist <= 30:
-                    row[15] = "6. Living with beaver solutions (infrastructure)"
 
             if curr_dams >= 20 and protected == 'Yes':
-                row[15] = "2. Beaver relocation, translocation"
+                row[15] = "2. Highest restoration potential - translocation"
 
             if curr_dams >= 20 and easement == 'Yes':
-                row[15] = "2. Beaver relocation, translocation"
-
-            if obs_dams == 'Yes' and no_urban and no_ag:
-                row[15] = "1. Beaver conservation"
+                row[15] = "2. Highest restoration potential - translocation"
 
             if 1 <= curr_dams < 5 and no_urban:
                 if hist_veg_departure >= 4:
-                    row[15] = "4a. Medium-low restoration potential (vegetation first)"
+                    row[15] = "4a. Vegetation restoration first-priority"
                 else:
                     row[15] = "4. Medium-low restoration potential"
 
-            if 0 < curr_dams < 1 and no_urban:
-                row[15] = "5. Strategic long-term investement"
+            if curr_dams >= 1 and infrastructure_dist <= 30:
+                row[15] = "5. Restoration with infrastructure modification"
+
+            if curr_dams >= 1 and urban:
+                row[15] = "6. Restoration with urban or agricultural modification"
+
+            if curr_dams >= 1 and ag:
+                row[15] = "6. Restoration with urban or agricultural modification"
+
+            if obs_dams == 'Yes' and no_urban and no_ag:
+                row[15] = "1. Beaver conservation"
 
             cursor.updateRow(row)
 
