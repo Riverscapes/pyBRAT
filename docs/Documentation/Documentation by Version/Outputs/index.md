@@ -8,7 +8,7 @@ Using the navigation menu, pyBRAT outputs (by version) are listed here for refer
 ## Contents 
 
 1. [BRAT v2.0 Outputs](http://brat.riverscapes.xyz/Documentation/Outputs/pyBRAT%20Outputs/WorkingWithBRATOutputs.html)
-2. [BRAT v3X Outputs](http://brat.riverscapes.xyz/Documentation/Outputs/pyBRAT%20Outputs/WorkingWithBRATv3XOutput.html)
+2. [BRAT v3X Outputs](http://brat.riverscapes.xyz/Documentation/Outputs/pyBRAT%20Outputs/WorkingWithBRATv3XOutputs.html)
 
 ------
 <div align="center">
