@@ -26,13 +26,13 @@ def main(project_folder, stream_network, watershed_name, excel_file_name=None, o
         excel_file_name += ".xlsx"
         
     
-    summary_prods_folder = os.path.join(project_folder, "SummaryProducts")
-    table_folder = make_folder(summary_prods_folder, "SummaryTables")
+    
 
     if output_folder is None:
+        summary_prods_folder = os.path.join(project_folder, "SummaryProducts")
+        table_folder = make_folder(summary_prods_folder, "SummaryTables")
         output_folder = table_folder
-        
-    create_folder_structure(project_folder, summary_prods_folder)
+        create_folder_structure(project_folder, summary_prods_folder)
 
     if (stream_network.count(';')>0):
         stream_network = merge_networks(summary_prods_folder, stream_network)
