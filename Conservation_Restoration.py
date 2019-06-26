@@ -22,6 +22,7 @@ XMLBuilder = XMLBuilder.XMLBuilder
 def main(projPath, in_network, out_name, dam_data, cpad, cced):
     arcpy.env.overwriteOutput = True
 
+    old_fields = [f.name for f in arcpy.ListFields(in_network)]
     out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
     arcpy.CopyFeatures_management(in_network, out_network)
 
@@ -146,26 +147,33 @@ def main(projPath, in_network, out_name, dam_data, cpad, cced):
         for row in cursor:
             # 'oPBRC_UI' Negligible Risk or Minor Risk
             opbrc_ui = row[0]
-            hist_dams = row[5]
-            curr_dams = row[6]
+            occ_hpe = row[5]
+            occ_ex = row[6]
             mCC_HisDep = row[8]
             iPC_VLowLU = row[9]
             iPC_HighLU = row[10]
-            landuse = row[12]
-
-            # default category is 'Other'
-            row[2] = 'NA'
-
-            # if it fits one of these, it'll be changed to that
             if opbrc_ui == 'Negligible Risk' or opbrc_ui == 'Minor Risk':
-                if mCC_HisDep >= 3:
-                    if curr_dams >= 5:
-                        row[2] = "Easiest - Low-Hanging Fruit"
-                    elif hist_dams > 5 and curr_dams > 1 and (landuse < 10 or landuse > 75):
-                        row[2] = "Straight Forward - Quick Return"
-                elif hist_dams >= 5 and curr_dams < 1 and (landuse < 10 or landuse > 75):
-                    row[2] = "Strategic - Long-Term Investment"
-
+                # 'oCC_EX' Frequent or Pervasive
+                # 'mCC_HisDep' <= 3
+                if occ_ex >= 5 and mCC_HisDep <= 3:
+                    row[2] = 'Easiest - Low-Hanging Fruit'
+                # 'oCC_EX' Occasional, Frequent, or Pervasive
+                # 'oCC_HPE' Frequent or Pervasive
+                # 'mCC_HisDep' <= 3
+                # 'iPC_VLowLU'(i.e., Natural) > 75
+                # 'iPC_HighLU' (i.e., Developed) < 10
+                elif occ_ex > 1 and mCC_HisDep <= 3 and occ_hpe >= 5 and iPC_VLowLU > 75 and iPC_HighLU < 10:
+                    row[2] = 'Straight Forward - Quick Return'
+                # 'oCC_EX' Rare or Occasional
+                # 'oCC_HPE' Frequent or Pervasive
+                # 'iPC_VLowLU'(i.e., Natural) > 75
+                # 'iPC_HighLU' (i.e., Developed) < 10
+                elif occ_ex > 0 and occ_ex < 5 and occ_hpe >= 5 and iPC_VLowLU > 75 and iPC_HighLU < 10:
+                    row[2] = 'Strategic - Long-Term Investment'
+                else:
+                    row[2] = 'NA'
+            else:
+                row[2] = 'NA'
             cursor.updateRow(row)
 
 
