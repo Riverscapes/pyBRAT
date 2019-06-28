@@ -249,8 +249,11 @@ These are values that are presently generated and used by the latest version of 
 These are values that were once used by pyBRAT, but were discontinued for one reason or another.
 
 **SegID -** Was renamed to ReachID. Served the same purpose.
+
 **SegLength - ** Was renamed to ReachLen. Served the same purpose.
+
 **IsBraided -** Was renamed to "IsMultiThr" for accuracy reasons. Served the same purpose.
+
 **IsMainstem -** Was renamed to "IsMainCh" for clarity reasons. Served the same purpose.
 
 
