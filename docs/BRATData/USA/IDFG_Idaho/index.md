@@ -8,7 +8,7 @@ weight: 5
 
 ### Executive Summary
 
-This report presents an application of the Beaver Restoration Assessment Tool 3.0.20 (BRAT; http://brat.riverscapes.xyz/) a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams within the state of Idaho.
+This website presents an application of the Beaver Restoration Assessment Tool 3.0.20 (BRAT; http://brat.riverscapes.xyz/) a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams within the state of Idaho.
 
 
 
@@ -16,11 +16,11 @@ The backbone to BRAT is a capacity model developed to assess the upper limits of
 
 
 
-The estimated existing Idaho statewide capacity is 869,461 dams or roughly 7 dams/km. By contrast, the same model driven with estimates of historic vegetation types estimated the statewide capacity at 1,676,677 dams or roughly 14 dams/km reflecting a 48% loss compared to historic capacity.
-
-
-
-Nearly all of the capacity loss from historic conditions can be explained in terms of riparian vegetation loss, vegetation conversion and degradation associated with high intensity land use including: 1) conversion of valley bottoms to urban and agricultural land uses, 2) overgrazing in riparian and upland areas, 3) conifer encroachment of wet meadow areas. Despite the losses in beaver dam capacity, Idaho’s waterways are still capable of supporting and sustaining a substantial amount of beaver dam-building activity (869,461 dams).
+The estimated existing Idaho statewide capacity is 994,299 dams or roughly 8 dams/km. By contrast, the same model driven with estimates of historic vegetation types estimated the statewide capacity at 1,743,459 dams or roughly 15 dams/km reflecting a 43% loss compared to historic capacity.
+        
+	
+	
+Nearly all of the capacity loss from historic conditions can be explained in terms of riparian vegetation loss, vegetation conversion and degradation associated with high intensity land use including: 1) conversion of valley bottoms to urban and agricultural land uses, 2) overgrazing in riparian and upland areas, 3) conifer encroachment of wet meadow areas. Despite the losses in beaver dam capacity, Idaho’s waterways are still capable of supporting and sustaining a substantial amount of beaver dam-building activity (994,299 dams).
 
 
 
@@ -33,6 +33,8 @@ The existing capacity model was verified statewide using a total of 9,094 dams c
 
 
 The spatially explicit outputs from this application of BRAT provides Idaho Fish and Game (IDF&G) staff with the information needed to understand patterns of beaver dam capacity, potential risks to human infrastructure, as well as constraints and opportunities for using dam building beaver in restoration and conservation. This information helps with both statewide planning efforts and individual watershed scale planning as well as design and on- the-ground implementation of conservation and restoration activities.
+
+
 
 ### Project Extent by Administrative Region
 
