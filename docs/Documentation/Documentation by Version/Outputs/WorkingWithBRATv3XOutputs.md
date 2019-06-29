@@ -20,7 +20,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`)** identifies areas where beaver cannot build dams now, and also differentiates stream segments into anthropogenically and naturally limited areas. The following color scheme is used to illustrate these distinctions:
 
-  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.png){: width="300" height="300"}
+  ![Legend_BRAT_Management_Unsuitable_or_Limited_Beaver_Dam_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.png){: width="300" height="300"}
 
   The field oPBRC_UD is calculated based on the following criteria:
 
@@ -33,7 +33,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Potential Risk Areas (`oPBRC_UI`)** identifies riverscapes that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is divided into: "Considerable Risk", "Some Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
 
-  ![Legend BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
+  ![Legend_BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
 
   The field `oPBRC_UI` is calculated based on the following criteria:
 
@@ -46,7 +46,7 @@ The **management output** layers include outputs that describe the limiting fact
   and restoration. This management output consists of the following categories: i) ‘easiest - low
   hanging fruit’ has capacity, just needs beaver if beaver are not there yet, ii) ‘straight forward - quick return’ is currently occasional capacity but historically was higher capacity, iii) ‘strategic’ is currently degraded condition with historically higher capacity. These areas typically need long-term riparian recovery before beaver can be introduced (e.g. grazing management), and 4) ‘other’ is for streams that do not fall into the above categories. Such areas are primarily streams classified as “Considerable Risk” or “Some Risk” in `oPBRC_UI` though there are exceptions to that. The following color scheme is used to illustrate these distinctions:
 
-  ![Legend BRAT Management Restoration or Conservation Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_ConsRest.png){: width="300" height="300"}
+  ![Legend_BRAT_Management_Restoration_or_Conservation_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_ConsRest.png){: width="300" height="300"}
 
   The field `oPCRC_CR` is calculated based on the following criteria:
 
@@ -59,7 +59,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Current Beaver Dam Management Strategies (`ConsVRest`)** gives specific management strategies based on the restoration or conservation categories and surveyed dam density. "Low Hanging Fruit" areas are identified as "Immediate - Beaver Conservation" if surveyed dam density is at least 25% of predicted existing capacity and "Immediate - Potential Beaver Translocation" if surveyed dam density is less than 25% of predicted capacity, "Quick Return" areas are identified as "Mid Term - Process-based Riparian Vegetation Restoration", "Long-Term Investment" areas are identified as "Long Term - Riparian Vegetation Reestablishment", and "Other" areas are identified as "Low Capacity Habitat".
 
-![Legend BRAT Current Beaver Dam Management Strategies]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_CurrentBeaverDamManagement.PNG){: width="300" height="300"}
+![Legend_BRAT_Current_Beaver_Dam_Management_Strategies]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_CurrentBeaverDamManagement.PNG){: width="300" height="300"}
 
 - **Percent of Historic Dam Capacity Remaining (`mCC_EXvHPE`)** is calculated by dividing the existing dam building capacity by the historic dam building capacity.
 
