@@ -63,11 +63,11 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Percent of Historic Dam Capacity Remaining (`mCC_EXvHPE`)** is calculated by dividing the existing dam building capacity by the historic dam building capacity.
 
-![Legend_BRAT_Percent_of_Historic_Dam_Capacity_Remaining]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_HistoricRemaining.PNG){: width="300" height="300"}
+![Legend_BRAT_Percent_of_Historic_Dam_Capacity_Remaining]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_HistoricRemaining.PNG){: width="300" height="300"}
 
 - **Predicted Dam Density vs. Surveyed Dam Density (`BRATvSurv`)** is calculated by dividing the predicted existing capacity dam count by the surveyed dam capacity dam count. Dam counts were used rather than density to account for short segment lengths which could lead to overpredicted surveyed dam density. 
 
-![Legend_BRAT_Predicted_vs_Surveyed_Dam_Density]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_PredictedvsSurveyed.PNG){: width="300" height="300"}
+![Legend_BRAT_Predicted_vs_Surveyed_Dam_Density]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_PredictedvsSurveyed.PNG){: width="300" height="300"}
 
 ## Attribute Field Descriptions
 
