@@ -20,7 +20,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`)** identifies areas where beaver cannot build dams now, and also differentiates stream segments into anthropogenically and naturally limited areas. The following color scheme is used to illustrate these distinctions:
 
-  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.PNG){: width="300" height="300"}
+  ![Legend BRAT Management Unsuitable or Limited Beaver Dam Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.png){: width="300" height="300"}
 
   The field oPBRC_UD is calculated based on the following criteria:
 
@@ -46,7 +46,7 @@ The **management output** layers include outputs that describe the limiting fact
   and restoration. This management output consists of the following categories: i) ‘easiest - low
   hanging fruit’ has capacity, just needs beaver if beaver are not there yet, ii) ‘straight forward - quick return’ is currently occasional capacity but historically was higher capacity, iii) ‘strategic’ is currently degraded condition with historically higher capacity. These areas typically need long-term riparian recovery before beaver can be introduced (e.g. grazing management), and 4) ‘other’ is for streams that do not fall into the above categories. Such areas are primarily streams classified as “Considerable Risk” or “Some Risk” in `oPBRC_UI` though there are exceptions to that. The following color scheme is used to illustrate these distinctions:
 
-  ![Legend BRAT Management Restoration or Conservation Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_ConsRest.PNG){: width="300" height="300"}
+  ![Legend BRAT Management Restoration or Conservation Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_ConsRest.png){: width="300" height="300"}
 
   The field `oPCRC_CR` is calculated based on the following criteria:
 
