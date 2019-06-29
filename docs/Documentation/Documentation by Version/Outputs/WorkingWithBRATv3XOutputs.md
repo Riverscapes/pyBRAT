@@ -67,7 +67,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Predicted Dam Density vs. Surveyed Dam Density (`BRATvSurv`)** is calculated by dividing the predicted existing capacity dam count by the surveyed dam capacity dam count. Dam counts were used rather than density to account for short segment lengths which could lead to overpredicted surveyed dam density. 
 
-![Legend_BRAT_Predicted_vs._Surveyed_Dam_Density]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_PredictedvsSurveyed.PNG){: width="300" height="300"}
+![Legend_BRAT_Predicted_vs_Surveyed_Dam_Density]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_PredictedvsSurveyed.PNG){: width="300" height="300"}
 
 ## Attribute Field Descriptions
 
