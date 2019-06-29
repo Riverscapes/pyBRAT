@@ -33,7 +33,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Potential Risk Areas (`oPBRC_UI`)** identifies riverscapes that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is divided into: "Considerable Risk", "Some Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
 
-  ![Legend_BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.PNG){: width="300" height="300"}
+  ![Legend_BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
 
   The field `oPBRC_UI` is calculated based on the following criteria:
 
@@ -46,7 +46,7 @@ The **management output** layers include outputs that describe the limiting fact
   and restoration. This management output consists of the following categories: i) ‘easiest - low
   hanging fruit’ has capacity, just needs beaver if beaver are not there yet, ii) ‘straight forward - quick return’ is currently occasional capacity but historically was higher capacity, iii) ‘strategic’ is currently degraded condition with historically higher capacity. These areas typically need long-term riparian recovery before beaver can be introduced (e.g. grazing management), and 4) ‘other’ is for streams that do not fall into the above categories. Such areas are primarily streams classified as “Considerable Risk” or “Some Risk” in `oPBRC_UI` though there are exceptions to that. The following color scheme is used to illustrate these distinctions:
 
-  ![Legend_BRAT_Management_Restoration_or_Conservation_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_ConsRest.png){: width="300" height="300"}
+  ![Legend_BRAT_Management_Restoration_or_Conservation_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_ConsRest.PNG){: width="300" height="300"}
 
   The field `oPCRC_CR` is calculated based on the following criteria:
 
