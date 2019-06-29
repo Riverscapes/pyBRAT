@@ -20,7 +20,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`)** identifies areas where beaver cannot build dams now, and also differentiates stream segments into anthropogenically and naturally limited areas. The following color scheme is used to illustrate these distinctions:
 
-   ![Legend_BRAT_Management_Unsuitable_or_Limited_Beaver_Dam_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.PNG){: width="300" height="300"}
+   ![Legend_BRAT_Management_Unsuitable_or_Limited_Beaver_Dam_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.PNG){: width="350" height="350"}
 
   The field oPBRC_UD is calculated based on the following criteria:
 
@@ -59,7 +59,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Current Beaver Dam Management Strategies (`ConsVRest`)** gives specific management strategies based on the restoration or conservation categories and surveyed dam density. "Low Hanging Fruit" areas are identified as "Immediate - Beaver Conservation" if surveyed dam density is at least 25% of predicted existing capacity and "Immediate - Potential Beaver Translocation" if surveyed dam density is less than 25% of predicted capacity, "Quick Return" areas are identified as "Mid Term - Process-based Riparian Vegetation Restoration", "Long-Term Investment" areas are identified as "Long Term - Riparian Vegetation Reestablishment", and "Other" areas are identified as "Low Capacity Habitat".
 
-![Legend_BRAT_Current_Beaver_Dam_Management_Strategies]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_CurrentBeaverDamManagement.PNG){: width="300" height="300"}
+![Legend_BRAT_Current_Beaver_Dam_Management_Strategies]({{ site.baseurl }}/assets/images/BRAT_Legend_06_2019_CurrentBeaverDamManagement.PNG){: width="350" height="350"}
 
 - **Percent of Historic Dam Capacity Remaining (`mCC_EXvHPE`)** is calculated by dividing the existing dam building capacity by the historic dam building capacity.
 
@@ -67,7 +67,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Predicted Dam Density vs. Surveyed Dam Density (`BRATvSurv`)** is calculated by dividing the predicted existing capacity dam count by the surveyed dam capacity dam count. Dam counts were used rather than density to account for short segment lengths which could lead to overpredicted surveyed dam density. 
 
-![Legend_BRAT_Predicted_vs_Surveyed_Dam_Density]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_PredictedvsSurveyed.PNG){: width="300" height="300"}
+![Legend_BRAT_Predicted_vs_Surveyed_Dam_Density]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_PredictedvsSurveyed.PNG){: width="400" height="400"}
 
 ## Attribute Field Descriptions
 
