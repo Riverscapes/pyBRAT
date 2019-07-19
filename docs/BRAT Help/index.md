@@ -4,11 +4,9 @@ weight: 2
 ---
 ## Free Support
 
-The BRAT is reasonably well documented. See links below for help on understanding [Tutorials]({{ site.baseurl }}/Documentation/Tutorials) on how to use specific BRAT features, and documentation on [BRAT Command References]({{ site.baseurl }}/Documentation/Commands).
-<div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Concepts"><i class="fa fa-lightbulb-o"></i>  BRAT Concepts</a>  
+The BRAT is reasonably well documented. See link below for help on understanding on how to use specific features of the BRAT model.   
     <a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials"><i class="fa fa-youtube"></i>  BRAT Tutorials</a>  
-     <a class="hollow button" href="{{ site.baseurl }}/Documentation/Commands"><i class="fa fa-terminal"></i>  BRAT Command References</a>  
+    
 
 </div>
 
