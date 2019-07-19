@@ -3,9 +3,7 @@ title: BRAT Documentation
 weight: 2
 ---
 
-Thank you for your interest in BRAT. **As of Fall, 2018, the BRAT model and documentation is undergoing a major overhaul (anticipated updates by Winter 2019). Thank you for your patience in navigating these pages while we clean up our documentation.** 
-
-Please note that while  BRAT is freely available and reasonably thoroughly documented, that doesn't necessarily mean you'll find everything you need to make it work for you or that what we have meets your needs. We try to provide as many resources as possible for free to help you 'do it yourself'.
+Thank you for your interest in BRAT. While we try to provide as many resources as possible, for free, to help you 'do it yourself', that does not necessarily mean that you will find everything you need to make it meet your needs. If BRAT is not meeting your needs, when you run it yourself, reach out to us for help and it some causes we will be able to provide very low cost assistence and in other cases it may require significant modifications to the code and be more costly. 
 
 
 
