@@ -15,10 +15,10 @@ We have been fortunate to secure financial support for BRAT from a variety of st
 
 | Sponsor   | | Geography   | Year(s)   | Status      |
 | ---------------------------------------- | - | -------------------- | -------------- | ------------- |
-| **[US Forest Service](https://www.fs.fed.us)** |[![USFSTransparentBG]({{ site.baseurl }}\assets\images\logos\USFSTransparentBG.png)](https://www.fs.fed.us)| [Greater Yellowstone Ecosystem](https://www.nps.gov/yell/learn/nature/greater-yellowstone-ecosystem.htm) (Idaho, Wyoming & Montana) | 2018-2019 | Awarded     |
-| **[Idaho Department of Fish & Game](https://idfg.idaho.gov/)** | [![Logo_IdahoFG]({{ site.baseurl }}\assets\images\logos\Logo_IdahoFG.png)](https://idfg.idaho.gov/)| State of Idaho                           | 2018-2019 | In Progress |
-| **[The Nature Conservancy](https://www.nature.org/ourinitiatives/regions/northamerica/unitedstates/california/index.htm)** | [![nature_conservacy_logo]({{ site.baseurl }}\assets\images\logos\nature_conservacy_logo.png)](https://www.nature.org/ourinitiatives/regions/northamerica/unitedstates/california/index.htm)  | Sierra Nevada, Northern Coast Range, Desert Terminal Lakes Watersheds (California & Nevada) | 2018-2019 | In Progress |
-| **[North Fork Johnd Day Watershed Council](http://nfjdwc.org/)** | [![NFJDWC-LOGO-2011]({{ site.baseurl }}\assets\images\logos\NFJDWC-LOGO-2011.gif)](http://nfjdwc.org/) | John Day Watershed (Oregon)              | 2018-2019 | In Progress   |
+| **[US Forest Service](https://www.fs.fed.us)** |[![USFSTransparentBG]({{ site.baseurl }}\assets\images\logos\USFSTransparentBG.png)](https://www.fs.fed.us)| [Greater Yellowstone Ecosystem](https://www.nps.gov/yell/learn/nature/greater-yellowstone-ecosystem.htm) (Idaho, Wyoming & Montana) | 2018-2019 | In progress     |
+| **[Idaho Department of Fish & Game](https://idfg.idaho.gov/)** | [![Logo_IdahoFG]({{ site.baseurl }}\assets\images\logos\Logo_IdahoFG.png)](https://idfg.idaho.gov/)| State of Idaho                           | 2018-2019 | [Complete]({{ site.baseurl }}/BRATData/USA/IDFG_Idaho/) |
+| **[The Nature Conservancy](https://www.nature.org/ourinitiatives/regions/northamerica/unitedstates/california/index.htm)** | [![nature_conservacy_logo]({{ site.baseurl }}\assets\images\logos\nature_conservacy_logo.png)](https://www.nature.org/ourinitiatives/regions/northamerica/unitedstates/california/index.htm)  | Sierra Nevada, Northern Coast Range, Desert Terminal Lakes Watersheds (California & Nevada) | 2018-2019 | [Complete]({{ site.baseurl }}/BRATData/USA/TNC_SierraNevada/) |
+| **[North Fork Johnd Day Watershed Council](http://nfjdwc.org/)** | [![NFJDWC-LOGO-2011]({{ site.baseurl }}\assets\images\logos\NFJDWC-LOGO-2011.gif)](http://nfjdwc.org/) | John Day Watershed (Oregon)              | 2018-2019 | [Complete]({{ site.baseurl }}/BRATData/USA/NFJDWC_JohnDay/)   |
 | **[Powder River Watershed Council](http://www.powderbasinwatershedcouncil.org/)** | [![PowderBasinWatershedCouncil]({{ site.baseurl }}\assets\images\logos\PowderBasinWatershedCouncil.png)](http://www.powderbasinwatershedcouncil.org/)| Burnt River Watershed (Oregon)           | 2018-2019 | [Complete]({{ site.baseurl }}/BRATData/USA/PBWC_Burnt/) |
 | **[Yakama Nations Fisheries](http://yakamafish-nsn.gov/)** | [![YakamaNationFisheries]({{ site.baseurl }}\assets\images\logos\YakamaNationFisheries.png)](http://yakamafish-nsn.gov/)| Yakima and Klikitat Watersheds (Washington) | 2017-2018   | [Complete]({{ site.baseurl}}/BRATData/USA/Yakama_Nation/) |
 | **[Wyoming Game and Fish Department](https://wgfd.wyo.gov/)** | [![wyominggfd]({{ site.baseurl }}\assets\images\logos\wyominggfd.png)](https://wgfd.wyo.gov/) | Upper Green River Watershed              | 2016-2017   | Complete     |
@@ -26,7 +26,7 @@ We have been fortunate to secure financial support for BRAT from a variety of st
 | **[Grand Canyon Trust](http://www.grandcanyontrust.org/)** | [![GCT]({{ site.baseurl }}\assets\images\logos\GCT.jpg)](http://www.grandcanyontrust.org/)| Escalante River Watershed                | 2011-2012   | [Complete]({{ site.baseurl }}http://etal.joewheaton.org/gct-pilot-study-testing-the-beaver-restoration-assessment-tool-brat.html) |
 
 
-Updated: February 2019
+Updated: July 2019
 
 ------
 
