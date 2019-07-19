@@ -2,7 +2,7 @@
 title: BRAT Data
 ---
 
-BRAT has been run by [ETAL](http://etal.joewheaton.org/) for all of [Utah]({{ site.baseurl }}/BRATData/USA/UDWR_Utah/ ) and Idaho, most of California, and Wyoming, some of Arizona, Colorado, New Mexico, New York, Oregon and Washington, and by others in Montana, New Mexico, Colorado, United Kingdom, and Canada. 
+BRAT has been run by [ETAL](http://etal.joewheaton.org/) for all of [Utah]({{ site.baseurl }}/BRATData/USA/UDWR_Utah/ ) and [Idaho]({{ site.baseurl }}/BRATData/USA/IDFG_Idaho ), most of [California]({{ site.baseurl }}/BRATData/USA/TNC_SierraNevada/ ), and Wyoming, some of Arizona, Colorado, New Mexico, Nevada, New York, [Oregon]({{ site.baseurl }}/BRATData/USA/NFJDWC_JohnDay / ) and  [Washington]({{ site.baseurl }}/BRATData/USA/Yakama_Nation / ), and by others in Montana, New Mexico, Colorado, United Kingdom, and Canada. 
 
 ------
 <div align="center">
