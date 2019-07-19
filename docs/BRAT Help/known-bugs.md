@@ -24,7 +24,7 @@ Before logging a suspected bug, please search [known open bugs](https://github.c
 
 If you find a bug, or simply want to report an issue with the software, please log a GitHub Issue. <a class="button" href="https://github.com/Riverscapes/pyBRAT/issues"><i class="fa fa-github"/> Github Issues</a> 
 
-Anyone in the BRAT community and a member of GitHub  can respond, and the development team will recieve a notification. Please be patient in your response. We don't have any budget for supporting users, but we do try and respond to most issues when we can. Just bare in mind that the development team all have  jobs and any support we do of BRAT users is usually on donated time. 
+Anyone in the BRAT community and a member of GitHub  can respond, and the development team will recieve a notification. Please be patient for a response. We do not have any budget for supporting users, but we do try and respond to issues when we can. 
 
 This video shows you how to post an issue (for [GCD](http://gcd.riverscapes.xyz), but process is similar) and some helpful things to include:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/EFAQgvZQY0s?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
@@ -66,8 +66,8 @@ The issue posting in GitHub uses [markdown syntax](https://guides.github.com/fea
 
 ### Optional Information:
 
-- If you don't wan't to provide a link to the complete copy of the BRAT project, just sharing a copy of the `*project.rs.xml` project file and changing the file extension to text and uploading it to your post can help a lot
-- Record a video of what is going wrong (we recommend [FastStone Capture](http://etal.joewheaton.org/faststone-capture.html), post it to YouTube or Vimeo, and share the link (DO NOT SEND VIDEOS as attachments! No one wants to download your video, just stream it). Videos can be really helpful for helping us understand what you're doing and what is going wrong.
+- If you do not want to provide a link to the complete copy of the BRAT project, just sharing a copy of the `*project.rs.xml` project file and changing the file extension to text and uploading it to your post can help a lot
+- Record a video of what is going wrong (we recommend [FastStone Capture](http://etal.joewheaton.org/faststone-capture.html), post it to YouTube or Vimeo, and share the link (DO NOT SEND VIDEOS as attachments! just stream it). Videos can be really helpful for understanding what you are doing and what is going wrong.
 
 ------
 <div align="center">
