@@ -3,8 +3,7 @@ title: Running pyBRAT
 ---
 ## Documentation
 
-This documentation provides detailed instructions 
-- [Step by step instructions]({{ site.baseurl }}/Tutorials/StepByStep/1-InputData/) on running pyBRAT:
+This documentation provides detailed [Step by step instructions]({{ site.baseurl }}/Tutorials/StepByStep/1-InputData/) on running pyBRAT:
 
 If you need help in installing pyBRAT, see:
 
