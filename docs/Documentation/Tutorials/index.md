@@ -3,7 +3,7 @@ title: Tutorials
 weight: 3
 ---
 
-Tutorials of [Running pyBRAT](/Documentation/Tutorials/StepByStep/) from start to finish has been provided to help BRAT users with a detailed description of the inputs and the intermediate steps needed to run the BRAT tool successfully. 
+Tutorials of [Running pyBRAT](/Documentation/Tutorials/StepByStep/) from start to finish has been provided to help BRAT users run the BRAT tool successfully. 
 
 
 
