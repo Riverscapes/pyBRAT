@@ -24,7 +24,3 @@ BRAT data for that state of Utah can be downloaded from [Utah AGRC](http://gis.u
 
 [![BRAT_DataBasin]({{ site.baseurl }}/assets/images/BRAT_DataBasin.png)](https://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f)
 
-Note: if you do download data and want some context layers, these might be helpful:
-- APFO NAIP Imagery - Instructions; ArcGIS Server: [http://gis.apfo.usda.gov/arcgis/services](http://gis.apfo.usda.gov/arcgis/services)
-- NWI (National Wetlands Inventory); WMS Server: [http://107.20.228.18/ArcGIS/services/Wetlands/MapServer/WMSServer?](http://107.20.228.18/ArcGIS/services/Wetlands/MapServer/WMSServer?)
-- Utah AGRC Basemaps [ArcGIS Server](http://gis.utah.gov/data/sgid-base-map-services-arcmap/) 
