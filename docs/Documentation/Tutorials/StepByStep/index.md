@@ -1,7 +1,7 @@
 ---
 title: Running pyBRAT
 ---
-## Topics Covered
+## Documentation
 
 This documentation provides detailed instructions 
 - [step by step instructions]({{ site.baseurl }}/Tutorials/StepByStep/1-InputData) on running pyBRAT:
