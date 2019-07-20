@@ -3,11 +3,8 @@ title: Running pyBRAT
 ---
 ## Topics Covered
 
-This documentation provides detailed instructions on running pyBRAT:
-
-- [Where to get input data]({{ site.baseurl }}/Tutorials/StepByStep/1-InputData)
-- Preprocessing input data
-- Running the BRAT Arc Toolbox scripts
+This documentation provides detailed instructions 
+- [step by step instructions]({{ site.baseurl }}/Tutorials/StepByStep/1-InputData) on running pyBRAT:
 
 If you need help in installing pyBRAT, see:
 
