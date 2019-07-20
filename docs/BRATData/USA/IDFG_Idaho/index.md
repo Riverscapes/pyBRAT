@@ -4,9 +4,6 @@ weight: 5
 ---
 # Idaho BRAT
 
-## Prepared For Idaho Fish and Game
-
-### Executive Summary
 
 This website presents an application of the Beaver Restoration Assessment Tool 3.0.20 (BRAT;
 http://brat.riverscapes.xyz/) a tool for building realistic expectations for partnering with beaver in conservation and
