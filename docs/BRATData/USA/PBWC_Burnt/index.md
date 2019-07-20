@@ -34,7 +34,9 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
 <iframe src="https://www.google.com/maps/d/embed?mid=1bWK0YGTGXAQmjLbL2qcERbdHskS913_T" width="640" height="480"></iframe>
 
-### BRAT Deliverable Data Products include:
+### BRAT Deliverable Data Products:
+
+[Here](https://usu.box.com/s/ldptbyilj618n8yf0tnr7c2yroevc8v3) is a link to all the spatial data.
 
 - KMZ files of the four primary BRAT outputs (existing dam capacity, historic dam capacity, human-beaver potential conflict and beaver conservation and restoration zones) [here](https://usu.box.com/s/q0gihed72y43zu19das4vf0929tf3x5i)
 - Shapefiles and Geodatabases for the four primary outputs and standard inputs [here](https://usu.box.com/s/ezkkrtbp3o2kb4alcn6x399maqddbxmv)
