@@ -290,48 +290,62 @@ class BRAT_table_tool(object):
             direction="Input")
 
         param11 = arcpy.Parameter(
+			displayName="Input land ownership feature class",
+            name="ownership",
+            datatype="DERasterDataset",
+            parameterType="Optional",
+            direction="Input")
+
+        param12 = arcpy.Parameter(
             displayName="Perennial stream network",
             name="perennial_network",
             datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
 
-        param12 = arcpy.Parameter(
+        param13 = arcpy.Parameter(
             displayName="Name BRAT table output feature class",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
 
-        param13 = arcpy.Parameter(
+        param14 = arcpy.Parameter(
             displayName="Short description for run - less than 100 characters",
             name="description",
             datatype="GPString",
             parameterType="Optional",
             direction="Input")
  
-        param14 = arcpy.Parameter(
+        param15 = arcpy.Parameter(
             displayName="Find Clusters",
             name="find_clusters",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
-        param15 = arcpy.Parameter(
+        param16 = arcpy.Parameter(
             displayName="Segment Network by Roads",
             name="should_segment_network",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
+			
+        param17 = arcpy.Parameter(
+            displayName="Segment Network by Land Ownership",
+            name="segment_by_ownership",
+            datatype="GPBoolean",
+            parameterType="Optional",
+            direction="Input")
 
-        param16 = arcpy.Parameter(
+        param18 = arcpy.Parameter(
             displayName="Run Verbose",
             name="is_verbose",
             datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
        
-        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16]
+        return [param0, param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16, param17, param18]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -367,7 +381,9 @@ class BRAT_table_tool(object):
                         p[13].valueAsText,
                         p[14].valueAsText,
                         p[15].valueAsText,
-                        p[16].valueAsText)
+                        p[16].valueAsText,
+						p[17].valueAsText,
+						p[18].valueAsText)
         return
 
 
@@ -839,8 +855,16 @@ class Collect_Summary_Products_tool(object):
             parameterType="Optional",
 			multiValue=True,
             direction="Input")
+		
+        param5 = arcpy.Parameter(
+            displayName="Output folder",
+            name="output_folder",
+            datatype="DEFolder",
+            parameterType="Optional",
+			multiValue=False,
+            direction="Input")
 			
-        return [param0, param1, param2, param3, param4]
+        return [param0, param1, param2, param3, param4, param5]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -864,5 +888,6 @@ class Collect_Summary_Products_tool(object):
                                        p[1].valueAsText,
                                        p[2].valueAsText,
                                        p[3].valueAsText,
-									   p[4].valueAsText)
+									   p[4].valueAsText,
+									   p[5].valueAsText)
         return

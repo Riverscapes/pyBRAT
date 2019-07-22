@@ -244,7 +244,7 @@ def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
     add_reach_dist(seg_network, seg_network_copy, is_verbose)
 
 
-def segment_by_ownership(seg_network_copy, ownership, is_verbose):
+def segment_network_by_ownership(seg_network_copy, ownership, is_verbose):
     """
     Segments the seg_network by ownership, and puts segmented network at seg_network_copy
     :param seg_network: Path to the seg_network that we want to segment further
@@ -601,7 +601,8 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
         find_distance_from_feature(out_network, canal, valley_bottom, temp_dir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
         # find points of diversion (intersection between perennial stream and canals
         if is_verbose:
-            arcpy.AddMessage("Finding points of diversion...")diversion_points = canal_folder + "\\points_of_diversion.shp"
+            arcpy.AddMessage("Finding points of diversion...")
+        diversion_points = canal_folder + "\\points_of_diversion.shp"
         canal_dissolve = temp_dir + "\\canals_dissolved.shp"
         arcpy.Dissolve_management(canal, canal_dissolve, '', '', 'SINGLE_PART', 'UNSPLIT_LINES')# dissolve canals into single feature
         if perennial_network:
@@ -614,7 +615,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
             arcpy.CopyFeatures_management(temp_network_no_canals_lyr, temp_network_no_canals_shp)
             arcpy.Intersect_analysis([temp_network_no_canals_shp, canal_dissolve], diversion_points, "", 12, "POINT")
         # calculate distance from points of diversion
-        find_distance_from_feature(out_network, diversion_points, valley_bottom, temp_dir, buf_30m, "diversion", "iPC_DivPts", scratch, is_verbose, clip_feature = False)find_distance_from_feature(out_network, canal, valley_bottom, temp_dir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
+        find_distance_from_feature(out_network, diversion_points, valley_bottom, temp_dir, buf_30m, "diversion", "iPC_DivPts", scratch, is_verbose, clip_feature = False)
 
     # assign land ownership agency to each reach
     if ownership is not None:
@@ -1176,4 +1177,6 @@ if __name__ == '__main__':
         sys.argv[14],
         sys.argv[15],
         sys.argv[16],
-        sys.argv[17])
+        sys.argv[17],
+        sys.argv[18],
+        sys.argv[19])
