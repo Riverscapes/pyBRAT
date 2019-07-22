@@ -249,30 +249,34 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     # important: will need to update the array (x) and MF values (mfx) if the
     #            density 'none' values are changed in the model
     x = np.arange(0, 45, 0.01)
-    mfx = fuzz.trimf(x, [0, 0, 0.1])
-    defuzz_centroid = round(fuzz.defuzz(x, mfx, 'centroid'), 6)
+    mfx_none = fuzz.trimf(x, [0, 0, 0.1])
+    defuzz_none = round(fuzz.defuzz(x, mfx, 'centroid'), 6)
+    mfx_pervasive = fuzz.trapmf(x, [12, 25, 45, 45])
+    defuzz_pervasive = round(fuzz.defuzz(x, mfx_pervasive, 'centroid'))
 
     # update combined capacity (occ_*) values in stream network
     # correct for occ_* greater than ovc_* as vegetation is most limiting factor in model
     # (i.e., combined fis value should not be greater than the vegetation capacity)
     # set occ_* to 0 if the drainage area is greater than the user defined threshold
     # this enforces a stream size threshold above which beaver dams won't persist and/or won't be built
-    # set occ_* to 0 if output falls fully in 'none' category
+    # set occ_* to 0 if output falls fully in 'none' category and to 40 if falls fully in 'pervasive' category
 
     with arcpy.da.UpdateCursor(in_network, [out_field, veg_field, 'iGeo_DA', 'iGeo_Slope']) as cursor:
         for row in cursor:
+            if round(row[0], 6) == defuzz_none:
+                row[0] = 0.0
+            if round(row[0]) >= defuzz_pervasive:
+                row[0] = 40.0
             if row[0] > row[1]:
                 row[0] = row[1]
             if row[2] >= float(max_DA_thresh):
-                row[0] = 0.0
-            if round(row[0], 6) == defuzz_centroid:
                 row[0] = 0.0
             cursor.updateRow(row)
 
     # delete temporary tables and arrays
     arcpy.Delete_management(out_table)
     arcpy.Delete_management(occ_table)
-    items = [columns, out, x, mfx, defuzz_centroid]
+    items = [columns, out, x, mfx_none, defuzz_none]
     for item in items:
         del item
 
