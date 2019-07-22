@@ -16,26 +16,34 @@ import xlsxwriter
 import arcpy
 
 
-def main(project_folder, stream_network, watershed_name, excel_file_name=None, dams_shapefile=None):
+def main(project_folder, stream_network, watershed_name, excel_file_name=None, dams_shapefile=None, output_folder=None):
     """
     Our main function
     :param project_folder: The BRAT Project that we want to collect the summary products for
-    :return:
+    :param: stream_network: The BRAT output on which calculations will be based
+    :param: watershed_name: Name of watershed data is based off
+    :param: excel_file_name: Output file name
+    :param: dams_shapefile: Shapefile of dam points corresponding with stream network provided
+    :param: output_folder: Optional folder to save output table to
+    :return: Excel workbook with sheets summarizing major BRAT outputs
     """
     if excel_file_name is None:
         excel_file_name = "BRAT_Summary_Tables"
     if not excel_file_name.endswith(".xlsx"):
         excel_file_name += ".xlsx"
 
-    summary_prods_folder = os.path.join(project_folder, "SummaryProducts")
-    table_folder = make_folder(summary_prods_folder, "SummaryTables")
-
+    summary_prods_folder = os.path.join(project_folder, "Summary_Products")
     create_folder_structure(project_folder, summary_prods_folder)
+    if output_folder:
+        output_folder = output_folder
+    else:
+        output_folder = make_folder(summary_prods_folder, "SummaryTables")
 
     if (stream_network.count(';') > 0):
         stream_network = merge_networks(summary_prods_folder, stream_network)
-    if (dams_shapefile.count(';') > 0):
-        dams_shapefile = merge_dams(summary_prods_folder, dams_shapefile)
+    if dams is not None:
+        if (dams_shapefile.count(';') > 0):
+            dams_shapefile = merge_dams(summary_prods_folder, dams_shapefile)
 
     fields = [f.name for f in arcpy.ListFields(stream_network)]
     create_excel_file(excel_file_name, stream_network, table_folder, watershed_name, fields, dams_shapefile)
@@ -422,9 +430,10 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
     row += 1
     worksheet.write(row, col, "Total Length (Km) Observed > 80% Predicted")
     row += 1
-    worksheet.write(row, col, "Number Dams Snapped")
-    row += 1
-    worksheet.write(row, col, "Total Dam Count")
+    if dams is not None:
+        worksheet.write(row, col, "Number Dams Snapped")
+        row += 1
+        worksheet.write(row, col, "Total Dam Count")
 
     row = 6
     col = 3
@@ -2119,11 +2128,13 @@ def write_header(worksheet, watershed_name):
 
 
 def create_folder_structure(project_folder, summary_prods_folder):
-    ai_folder = make_folder(summary_prods_folder, "AI")
-    png_folder = make_folder(summary_prods_folder, "PNG")
-    pdf_folder = make_folder(summary_prods_folder, "PDF")
-    kmz_folder = make_folder(summary_prods_folder, "KMZ")
-    lpk_folder = make_folder(summary_prods_folder, "LPK")
+    make_folder(summary_prods_folder)
+    
+    ai_folder = os.path.join(summary_prods_folder, "AI")
+    png_folder = os.path.join(summary_prods_folder, "PNG")
+    pdf_folder = os.path.join(summary_prods_folder, "PDF")
+    kmz_folder = os.path.join(summary_prods_folder, "KMZ")
+    lpk_folder = os.path.join(summary_prods_folder, "LPK")
 
     ai_files = []
     png_files = []
@@ -2148,6 +2159,7 @@ def create_folder_structure(project_folder, summary_prods_folder):
             elif file.endswith(".lpk"):
                 lpk_files.append(file_path)
 
+    
     copy_all_files(ai_folder, ai_files)
     copy_all_files(kmz_folder, kmz_files)
     copy_all_files(lpk_folder, lpk_files)
@@ -2178,6 +2190,9 @@ def copy_to_input_output_structure(folder_base, files):
 
 
 def copy_all_files(folder, files):
+    # only make these folders if specific outputs need to be copied in
+    if len(files)>0:
+        make_folder(folder)
     for file in files:
         shutil.copy(file, folder)
 
@@ -2188,4 +2203,5 @@ if __name__ == "__main__":
         sys.argv[2],
         sys.argv[3],
         sys.argv[4],
-        sys.argv[5])
+        sys.argv[5],
+        sys.argv[6])
