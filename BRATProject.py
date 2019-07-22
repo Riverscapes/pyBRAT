@@ -387,17 +387,6 @@ def add_metadata(new_xml_file, huc_ID, watershed_name):
     new_xml_file.add_sub_element(metadata_element, "Meta", huc_ID, [("name","HUCID")])
     new_xml_file.add_sub_element(metadata_element, "Meta", watershed_name, [("name","Watershed")])
 
-
-def add_to_summary_folder(summary_folder, sub_folder_name):
-    """
-    Builds folder structure for each output type within SummaryProducts directory
-    :param summary_folder: path to summary products folder for project
-    :param sub_folder_name: name of folder to be created in SummaryProducts directory
-    """
-    sub_folder = make_folder(summary_folder, sub_folder_name)
-    make_folder(sub_folder, "Inputs")
-    make_folder(sub_folder, "Intermediates")
-    make_folder(sub_folder, "Outputs")
     
 
 if __name__ == '__main__':
