@@ -2,19 +2,11 @@
 title: BRAT Help
 weight: 2
 ---
-
-Thank you for your interest in BRAT. **As of fall, 2018, the BRAT model and documentaton is undergoing a major overhaul (anticipated updates by Winter 2019). Thank you for your patience in navigating these pages while we clean up our documentation.** 
-
-Please note that while  BRAT is freely available and reasonably thoroughly documented, that doesn't necessarily mean you will find everything you need to make it work for you or that what we have meets your needs. We try to provide as many resources as possible for free to help you 'do it yourself'. However, if you need more help, it is available by using the documentation or by contacting the right organizations and individuals listed below.    
-
-
 ## Free Support
 
-The BRAT is reasonably well documented. See links below for help on understanding [BRAT Concepts]({{ site.baseurl }}/Documentation/Concepts), [Tutorials]({{ site.baseurl }}/Documentation/Tutorials) on how to use specific BRAT features, and documentation on [BRAT Command References]({{ site.baseurl }}/Documentation/Commands).
-<div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Concepts"><i class="fa fa-lightbulb-o"></i>  BRAT Concepts</a>  
+The BRAT is reasonably well documented. See link below for help on understanding on how to use specific features of the BRAT model.   
     <a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials"><i class="fa fa-youtube"></i>  BRAT Tutorials</a>  
-     <a class="hollow button" href="{{ site.baseurl }}/Documentation/Commands"><i class="fa fa-terminal"></i>  BRAT Command References</a>  
+    
 
 </div>
 
@@ -64,9 +56,9 @@ For the projects that we have performed for clients, we provide the [BRAT datase
 
 # Paid Support
 
-While the pyBRAT scripts are free, open-source and reasonably well documented, it is not perfect, and you get what you pay for.  Unlike our more mature models (e.g. [GCD](http://gcd.riverscapes.xyz)) that have full GUIs and ArcGIS Add-Ins, pyBRAT is a highly finicky series of ArcPy Toolboxes and scripts, that are very version sensitive (to both version of ArcGIS and Python), and with rather narrow workflows that have been tailored to how we typically run BRAT in the [ETAL lab](http://etal.joewheaton.org). If you are someone that has funded the development of BRAT, thank you! If you have [sponsored the development]({{ site.baseurl }}/acknowledgements) of specific features or hired us to carry out specific research, we make sure you get exactly what you need. If you've downloaded the free scripts and are using it to do something, and you [find a bug and report it]({{ site.baseurl }}/Documentation/known-bugs#bugs), we try to fix it to the extent we can and we have funding support to do so. The dirty secret about open-source software, very few users take the time to contribute back to the cause by contributing their improvements to the code (though we like the idea), and someone paid for this.  If you're interested in seeing new features added to BRAT or having our development team build custom features or apps to meet your needs, get in touch. 
+While the pyBRAT scripts are free, open-source and reasonably well documented, it is not perfect, and you get what you pay for.  Unlike our more mature models (e.g. [GCD](http://gcd.riverscapes.xyz)) that have full GUIs and ArcGIS Add-Ins, pyBRAT is a series of ArcPy Toolboxes and scripts, that are version sensitive (to both version of ArcGIS and Python), and with rather narrow workflows that have been tailored to how we typically run BRAT in the [ETAL lab](http://etal.joewheaton.org). If you are someone that has funded the development of BRAT, thank you! If you have [sponsored the development]({{ site.baseurl }}/acknowledgements) of specific features or hired us to carry out specific research, we make sure you get exactly what you need. If you have downloaded the free scripts and are using it to do something, and you [find a bug and report it]({{ site.baseurl }}/Documentation/known-bugs#bugs), we try to fix it to the extent we can and with the support fundings we have. The dirty secret about open-source software, very few users take the time to contribute back to the cause by contributing their improvements to the code (though we like the idea), and someone paid for this.  If you are interested in seeing new features added to BRAT or having our development team build custom features or apps to meet your needs then pleas get in touch with us. 
 
-None of the BRAT development or support happens without someone paying for it (contrary to popular belief, we get no support from our University employers for supporting this effort and capable students don't work for free). Everything  is on our personal time and personal dime.  We try to help out users where we can, but our  development and support team is in high demand on our paying contracts.  If you want to ensure you get the help you need when you need it, you can  hire an [USU ETAL](http://etal.joewheaton.org)  analyst to help you with your BRAT analysis, designing monitoring campaigns or helping you with your research. 
+None of the BRAT development or support happens without someone paying for it (contrary to popular belief, we get no support from our University for supporting this effort and capable students do not work for free).  We try to help out users where we can, but our  development and support team is in high demand on our paying contracts.  If you want to ensure you get the help you need, when you need it, you can hire an [USU ETAL](http://etal.joewheaton.org) analyst to help you with your BRAT analysis, designing monitoring campaigns or helping you with your research. 
 
 [![NAR]({{ site.baseurl }}/assets/images/logos/NA_Logo_150pxTall.png)](http://northarrowresearch.com/)
 [![USU]({{ site.baseurl }}/assets/images/logos/etal.png)](http://etal.joewheaton.org)

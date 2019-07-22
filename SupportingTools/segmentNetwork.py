@@ -36,6 +36,7 @@ def main(nhd_flowline_path, outpath):
     arcpy.env.workspace = 'in_memory' # set workspace to temporary workspace
     arcpy.env.overwriteOutput = True  # set to overwrite output
     sr = arcpy.Describe(nhd_flowline_path).spatialReference
+    arcpy.env.outputZFlag = "Disabled"
 
     #  select lines from original nhd that are not coded as pipeline (fcdoe 428**)
     arcpy.MakeFeatureLayer_management(nhd_flowline_path, 'nhd_flowline_lyr')

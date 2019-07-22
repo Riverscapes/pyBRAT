@@ -1,14 +1,12 @@
 ---
-title: Glossary
+title: BRAT Attribute Table
 ---
-# Glossary
+# Naming Limitations using Shapefiles
 
 Because field names in ArcGIS are limited to ten characters, there is a limit to how descriptive those names can be. This page is meant to be a reference for what each field in the stream network produced by BRAT is meant to represent.
 
 ## Current pyBRAT Values
 These are values that are presently generated and used by the latest version of pyBRAT (3.0.20 at the time of writing). They are sorted by what stage they are created in, not alphabetically.
-
-*For values for other versions of pyBRAT by version please refer to the lookup tables in the [pyBRAT Outputs](http://brat.riverscapes.xyz/Documentation/Outputs/) under the particular version #*
 
 **FID -** This attribute is automatically assigned to every segment in a stream network. Each segment should have a unique FID value.
 
@@ -71,11 +69,11 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "DOUBLE"
 - Generation Method: BRAT Table Tool
 
-**iVeg_100HPE -** The average VEG_CODE value on the historic vegetation raster within a 100m buffer of the reach.
+**iVeg_100Hpe -** The average VEG_CODE value on the historic vegetation raster within a 100m buffer of the reach.
 - Field Type: "DOUBLE"
 - Generation Method: BRAT Table Tool
 
-**iVeg_30HPE -** The average VEG_CODE value on the historic vegetation raster within a 30m buffer of the reach.
+**iVeg_30Hpe -** The average VEG_CODE value on the historic vegetation raster within a 30m buffer of the reach.
 - Field Type: "DOUBLE"
 - Generation Method: BRAT Table Tool
 
@@ -205,13 +203,56 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "String"
 - Generation Method: Conservation and Restoration tool
 
+**e_DamCT-** Number of surveyed beaver dams snapped to a reach.
+
+- Field Type: "Double"
+- Generation Method: Data Capture Validation tool
+
+**e_DamDens-** Density of surveyed beaver dams ("e_DamCT"/"iGeo_Len").
+
+- Field Type: "Double"
+- "Generation Method: Data Capture Validation tool
+
+**e_DamPcC-** Percent of predicted existing capacity occupied by surveyed dams ("e_DamDens"/"oCC_EX").
+
+- Field Type: "Double"
+- Generation Method: Data Capture Validation tool
+
+**ConsVRest-** Current beaver dam management strategies based on intrinsic restoration/conservatio opportunities and surveyed beaver dam capacity. Reaches with at least 25% of predicted capacity already occupied by dams are classified as "Immediate - Beaver Conservation" areas whereas those with less than 25% of capacity occupied are classified as "Immediate - Beaver Translocation".
+
+- Field Type: "String"
+- Generation Method: Data Capture Validation tool
+
+**BRATvSurv-** Predicted existing capacity vs. surveyed dam capacity ("mCC_EX_CT"/"e_DamCt"). Reaches with no surveyed dams are assigned a value of -1.
+
+- Field Type: "Float"
+- Generation Method: Data Capture Validation tool
+
+**ExCategor-** Categorization of existing dam building capacity, inclding Pervasive (>15 - 40 dams/km), Frequent (>5 - 15 dams/km), Occasional (>1 - 5 dams/km), Rare (>0 - 1 dams/km) and None (0 dams/km).
+
+- Field Type: "String"
+- Generation Method: Data Capture Validation tool
+
+**HpeCategor-** Categorization of historic dam building capacity, inclding Pervasive (>15 - 40 dams/km), Frequent (>5 - 15 dams/km), Occasional (>1 - 5 dams/km), Rare (>0 - 1 dams/km) and None (0 dams/km).
+
+- Field Type: "String"
+- Generation Method: Data Capture Validation tool
+
+**mCC_EXvHPE-** Proportion of historic capacity remaining ("oCC_EX"/"oCC_HPE").
+
+- Field Type: "Float"
+- Generation Method: Data Capture Validation tool
+
 ## Depreciated pyBRAT Values
 These are values that were once used by pyBRAT, but were discontinued for one reason or another.
 
-**SegID -** Was renamed to ReachID. Served the same purpose.
-**SegLength - ** Was renamed to ReachLen. Served the same purpose.
-**IsBraided -** Was renamed to "IsMultiThr" for accuracy reasons. Served the same purpose.
-**IsMainstem -** Was renamed to "IsMainCh" for clarity reasons. Served the same purpose.
+**SegID-** Was renamed to ReachID. Served the same purpose.
+
+**SegLength-** Was renamed to ReachLen. Served the same purpose.
+
+**IsBraided-** Was renamed to "IsMultiThr" for accuracy reasons. Served the same purpose.
+
+**IsMainstem-** Was renamed to "IsMainCh" for clarity reasons. Served the same purpose.
 
 
 

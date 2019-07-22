@@ -4,11 +4,9 @@ weight: 5
 ---
 # North Fork Burnt River BRAT 
 
-## Client: Powder Basin Watershed Council
 
-### Executive Summary 
 
-This report presents an application of the Beaver Restoration Assessment Tool [3.0.20](https://github.com/Riverscapes/pyBRAT/releases/tag/3.0.20) (BRAT; [http://brat.riverscapes.xyz/](http://brat.riverscapes.xyz/)), a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams within the Burnt River watershed (8-digit USGS Hydrologic Unit Code (HUC 8)). The primary focus of this analysis as on the North Fork Burnt River watershed (HUC 10) which is the spatial extent of this project and contract.
+This website presents an application of the Beaver Restoration Assessment Tool [3.0.20](https://github.com/Riverscapes/pyBRAT/releases/tag/3.0.20) (BRAT; [http://brat.riverscapes.xyz/](http://brat.riverscapes.xyz/)), a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams within the Burnt River watershed (8-digit USGS Hydrologic Unit Code (HUC 8)). The primary focus of this analysis as on the North Fork Burnt River watershed (HUC 10) which is the spatial extent of this project and contract.
 
  
 
@@ -34,7 +32,9 @@ The spatially explicit outputs from this application of BRAT provides stakeholde
 
 <iframe src="https://www.google.com/maps/d/embed?mid=1bWK0YGTGXAQmjLbL2qcERbdHskS913_T" width="640" height="480"></iframe>
 
-### BRAT Deliverable Data Products include:
+### BRAT Deliverable Data Products:
+
+[Here](https://usu.box.com/s/ldptbyilj618n8yf0tnr7c2yroevc8v3) is a link to all the spatial data
 
 - KMZ files of the four primary BRAT outputs (existing dam capacity, historic dam capacity, human-beaver potential conflict and beaver conservation and restoration zones) [here](https://usu.box.com/s/q0gihed72y43zu19das4vf0929tf3x5i)
 - Shapefiles and Geodatabases for the four primary outputs and standard inputs [here](https://usu.box.com/s/ezkkrtbp3o2kb4alcn6x399maqddbxmv)

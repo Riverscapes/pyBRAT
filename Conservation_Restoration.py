@@ -22,9 +22,8 @@ XMLBuilder = XMLBuilder.XMLBuilder
 def main(projPath, in_network, out_name):
     arcpy.env.overwriteOutput = True
 
-    # out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
-    # arcpy.CopyFeatures_management(in_network, out_network)
-    out_network = in_network
+    out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
+    arcpy.CopyFeatures_management(in_network, out_network)
 
     # check for oPBRC fields and delete if exists
     fields = [f.name for f in arcpy.ListFields(out_network)]

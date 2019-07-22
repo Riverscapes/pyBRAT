@@ -811,7 +811,7 @@ class Collect_Summary_Products_tool(object):
             direction="Input")
 
         param1 = arcpy.Parameter(
-            displayName="Stream Network (for creating the Excel file)",
+            displayName="Stream Network(s)",
             name="clipping_network",
             datatype="DEFeatureClass",
             parameterType="Required",
@@ -819,7 +819,7 @@ class Collect_Summary_Products_tool(object):
             multiValue=True)
 
         param2 = arcpy.Parameter(
-            displayName="Watershed Name",
+            displayName="Watershed/Area Name",
             name="watershed_name",
             datatype="GPString",
             parameterType="Required",
@@ -832,7 +832,15 @@ class Collect_Summary_Products_tool(object):
             parameterType="Optional",
             direction="Input")
 
-        return [param0, param1, param2, param3]
+        param4 = arcpy.Parameter(
+            displayName="Dams Shapefile(s)",
+            name="dams_shapefile",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+			multiValue=True,
+            direction="Input")
+			
+        return [param0, param1, param2, param3, param4]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -855,5 +863,6 @@ class Collect_Summary_Products_tool(object):
         Collect_Summary_Products.main(p[0].valueAsText,
                                        p[1].valueAsText,
                                        p[2].valueAsText,
-                                       p[3].valueAsText)
+                                       p[3].valueAsText,
+									   p[4].valueAsText)
         return
