@@ -348,10 +348,10 @@ def make_layers(out_network):
 
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    existingCapacityLayer = os.path.join(symbologyFolder, "Existing_Capacity.lyr")
-    historicCapacityLayer = os.path.join(symbologyFolder, "Historic_Capacity.lyr")
-    existingCapacityCountLayer = os.path.join(symbologyFolder, "Existing_Capacity_Count.lyr")
-    historicCapacityCountLayer = os.path.join(symbologyFolder, "Historic_Capacity_Count.lyr")
+    existingCapacityLayer = os.path.join(symbologyFolder, "ExistingDamBuildingCapacity.lyr")
+    historicCapacityLayer = os.path.join(symbologyFolder, "HistoricDamBuildingCapacity.lyr")
+    existingCapacityCountLayer = os.path.join(symbologyFolder, "ExistingDamComplexSize.lyr")
+    historicCapacityCountLayer = os.path.join(symbologyFolder, "HistoricDamComplexSize.lyr")
 
     make_layer(existing_folder, out_network, "Existing Dam Building Capacity", existingCapacityLayer, is_raster=False)
     make_layer(historic_folder, out_network, "Historic Dam Building Capacity", historicCapacityLayer, is_raster=False)

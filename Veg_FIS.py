@@ -200,8 +200,8 @@ def makeLayers(inputNetwork):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
-    existingVegSymbology = os.path.join(symbologyFolder, "Existing_Veg_Capacity.lyr")
-    historicVegSymbology = os.path.join(symbologyFolder, "Historic_Veg_Capacity.lyr")
+    existingVegSymbology = os.path.join(symbologyFolder, "ExistingVegDamBuildingCapacity.lyr")
+    historicVegSymbology = os.path.join(symbologyFolder, "HistoricVegDamBuildingCapacity.lyr")
 
     make_layer(veg_folder, inputNetwork, "Existing Veg Dam Building Capacity", existingVegSymbology, is_raster=False)
     make_layer(veg_folder, inputNetwork, "Historic Veg Dam Building Capacity", historicVegSymbology, is_raster=False)

@@ -183,8 +183,8 @@ def makeLayers(inputNetwork):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
-    highflowSymbology = os.path.join(symbologyFolder, "Highflow_StreamPower.lyr")
-    baseflowSymbology = os.path.join(symbologyFolder, "Baseflow_StreamPower.lyr")
+    highflowSymbology = os.path.join(symbologyFolder, "HighflowStreamPower.lyr")
+    baseflowSymbology = os.path.join(symbologyFolder, "BaseflowStreamPower.lyr")
 
     make_layer(hydrology_folder, inputNetwork, "Highflow Stream Power", highflowSymbology, is_raster=False)
     make_layer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, is_raster=False)

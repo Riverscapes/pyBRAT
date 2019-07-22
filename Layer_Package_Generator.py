@@ -88,25 +88,25 @@ def check_intermediates(intermediates_folder, symbologyFolder):
 
     check_buffer_layers(intermediates_folder, symbologyFolder)
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Drainage_Area_Feature_Class.lyr", brat_table_file, "TopographicMetrics", "Drainage Area", "iGeo_DA")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Slope_Feature_Class.lyr", brat_table_file, "TopographicMetrics", "Reach Slope", "iGeo_Slope")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "UpstreamDrainageArea.lyr", brat_table_file, "TopographicMetrics", "Upstream Drainage Area", "iGeo_DA")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "ReachSlope.lyr", brat_table_file, "TopographicMetrics", "Reach Slope", "iGeo_Slope")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Land_Use_Intensity.lyr", brat_table_file, "AnthropogenicMetrics", "Land Use Intensity", "iPC_LU")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Canal", "iPC_Canal")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Closest Infrastructure", "oPC_Dist")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad", "iPC_Rail")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road Crossing", "iPC_RoadX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road", "iPC_Road")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Distance_To_Infrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road in Valley Bottom", "iPC_RoadVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "LandUseIntensity.lyr", brat_table_file, "AnthropogenicMetrics", "Land Use Intensity", "iPC_LU")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Canals & Ditches", "iPC_Canal")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Closest Infrastructure", "oPC_Dist")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad", "iPC_Rail")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road Crossing", "iPC_RoadX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road", "iPC_Road")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road in Valley Bottom", "iPC_RoadVB")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Mainstems.lyr", brat_table_file, "AnabranchHandler", "Anabranch Types", "IsMainCh")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "AnabranchTypes.lyr", brat_table_file, "AnabranchHandler", "Anabranch Types", "IsMainCh")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Highflow_StreamPower.lyr", brat_table_file, "Hydrology", "Highflow Stream Power", "iHyd_SP2")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Baseflow_StreamPower.lyr", brat_table_file, "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "HighflowStreamPower.lyr", brat_table_file, "Hydrology", "Highflow Stream Power", "iHyd_SP2")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "BaseflowStreamPower.lyr", brat_table_file, "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Existing_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Building Capacity", "oVC_EX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "Historic_Veg_Capacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Building Capacity", "oVC_HPE")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "ExistingVegDamBuildingCapacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Building Capacity", "oVC_EX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "HistoricVegDamBuildingCapacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Building Capacity", "oVC_HPE")
 
 
 def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
@@ -206,14 +206,14 @@ def check_analyses(analyses_folder, symbology_folder):
     existing_capacity_folder = find_folder(capacity_folder, "ExistingCapacity")
     management_folder = find_folder(analyses_folder, "Management")
 
-    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Building Capacity", symbology_folder, "Existing_Capacity.lyr", "oCC_EX")
-    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder, "Historic_Capacity.lyr", "oCC_HPE")
-    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "Existing_Capacity_Count.lyr", "mCC_EX_Ct")
-    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "Historic_Capacity_Count.lyr", "mCC_HPE_Ct")
+    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Building Capacity", symbology_folder, "ExistingDamBuildingCapacity.lyr", "oCC_EX")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder, "HistoricDamBuildingCapacity.lyr", "oCC_HPE")
+    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "ExistingDamComplexSize.lyr", "mCC_EX_Ct")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "HistoricDamComplexSize.lyr", "mCC_HPE_Ct")
 
-    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Opportunities", symbology_folder, "Unsuitable_Limited_Dam_Building_Opportunities.lyr", "pPBRC_UD")
-    check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams", symbology_folder, "Areas_Beavers_Can_Build_Dams_but_could_be_Undesirable.lyr", "pPBRC_UI")
-    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "Possible_Beaver_Dam_Conservation_Restoration_Opportunities.lyr", "pPBRC_CR")
+    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Dam Building Opportunities", symbology_folder, "UnsuitableorLimitedDamBuildingOpportunities.lyr", "pPBRC_UD")
+    check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams", symbology_folder, "RiskofUndesirableDams.lyr", "pPBRC_UI")
+    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "RestorationorConservationOpportunities.lyr", "pPBRC_CR")
 
 
 def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
@@ -287,7 +287,7 @@ def check_inputs(inputs_folder, symbology_folder):
     ex_veg_riparian_symbology = os.path.join(symbology_folder, "Existing_Veg_Riparian.lyr")
     ex_veg_evt_type_symbology = os.path.join(symbology_folder, "Existing_Veg_EVT_Type.lyr")
     ex_veg_evt_class_symbology = os.path.join(symbology_folder, "Existing_Veg_EVT_Class.lyr")
-    ex_veg_class_name_symbology = os.path.join(symbology_folder, "Existing_Veg_ClassName.lyr")
+    ex_veg_class_name_symbology = os.path.join(symbology_folder, "Existing_Veg_EVT_Name.lyr")
 
     hist_veg_group_symbology = os.path.join(symbology_folder, "Historic_Veg_BPS_Type.lyr")
     hist_veg_BPS_name_symbology = os.path.join(symbology_folder, "Historic_Veg_BPS_Name.lyr")
@@ -300,16 +300,16 @@ def check_inputs(inputs_folder, symbology_folder):
     canals_symbology = os.path.join(symbology_folder, "Canals.lyr")
     roads_symbology = os.path.join(symbology_folder, "Roads.lyr")
     railroads_symbology = os.path.join(symbology_folder, "Railroads.lyr")
-    valley_bottom_symbology = os.path.join(symbology_folder, "ValleyBottom.lyr")
+    valley_bottom_symbology = os.path.join(symbology_folder, "ValleyBottom_Fill.lyr")
     valley_bottom_outline_symbology = os.path.join(symbology_folder, "ValleyBottom_Outline.lyr")
-    flow_direction_symbology = os.path.join(symbology_folder, "Network_FlowDirection.lyr")
+    flow_direction_symbology = os.path.join(symbology_folder, "FlowDirection.lyr")
 
     ex_veg_destinations = find_destinations(ex_veg_folder)
     make_input_layers(ex_veg_destinations, "Existing Vegetation Suitability for Beaver Dam Building", symbology_layer=ex_veg_suitability_symbology, is_raster=True, file_name="ExVegSuitability")
     make_input_layers(ex_veg_destinations, "Existing Riparian", symbology_layer=ex_veg_riparian_symbology, is_raster=True)
     make_input_layers(ex_veg_destinations, "Veg Type - EVT Type", symbology_layer=ex_veg_evt_type_symbology, is_raster=True)
     make_input_layers(ex_veg_destinations, "Veg Type - EVT Class", symbology_layer=ex_veg_evt_class_symbology, is_raster=True)
-    make_input_layers(ex_veg_destinations, "Veg Type - ClassName", symbology_layer=ex_veg_class_name_symbology, is_raster=True)
+    make_input_layers(ex_veg_destinations, "Veg Type - EVT Name", symbology_layer=ex_veg_class_name_symbology, is_raster=True)
 
     hist_veg_destinations = find_destinations(hist_veg_folder)
     make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name = "HistVegSuitability")

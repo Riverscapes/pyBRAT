@@ -335,7 +335,7 @@ def make_layers(input_network):
     trib_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
-    mainstem_symbology = os.path.join(symbology_folder, "Mainstems.lyr")
+    mainstem_symbology = os.path.join(symbology_folder, "AnabranchTypes.lyr")
 
     make_layer(braid_folder, input_network, "Anabranch Types", mainstem_symbology, is_raster=False)
 
