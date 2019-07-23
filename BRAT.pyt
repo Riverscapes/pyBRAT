@@ -675,7 +675,7 @@ class Data_Capture_Validation_tool(object):
             displayName="Select beaver dam shape file",
             name="dams",
             datatype="DEFeatureClass",
-            parameterType="Required",
+            parameterType="Optional",
             direction="Input")
 
         param2 = arcpy.Parameter(
@@ -685,7 +685,14 @@ class Data_Capture_Validation_tool(object):
             parameterType="Required",
             direction="Input")
 
-        return [param0, param1, param2]
+        param3 = arcpy.Parameter(
+            displayName="Maximum DA threshold (in square kilometers)",
+            name="DA_threshold",
+            datatype="GPDouble",
+            parameterType="Optional",
+            direction="Input")
+
+        return [param0, param1, param2, param3]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -707,7 +714,8 @@ class Data_Capture_Validation_tool(object):
         reload(Data_Capture_Validation)
         Data_Capture_Validation.main(p[0].valueAsText,
                                      p[1].valueAsText,
-                                     p[2].valueAsText)
+                                     p[2].valueAsText,
+									 p[3].valueAsText)
 
 
 class Drainage_Area_Check_tool(object):
