@@ -672,17 +672,17 @@ class Data_Capture_Validation_tool(object):
         param0.filter.list = ["Polyline"]
 
         param1 = arcpy.Parameter(
-            displayName="Select beaver dam shape file",
-            name="dams",
-            datatype="DEFeatureClass",
-            parameterType="Optional",
-            direction="Input")
-
-        param2 = arcpy.Parameter(
             displayName="Name the data validation output",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
+            direction="Input")
+
+        param2 = arcpy.Parameter(
+            displayName="Select beaver dam shape file",
+            name="dams",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
             direction="Input")
 
         param3 = arcpy.Parameter(

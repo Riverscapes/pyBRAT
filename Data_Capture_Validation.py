@@ -20,7 +20,7 @@ reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, make_folder, find_available_num_suffix, find_available_num_prefix, make_layer
 
-def main(in_network, dams, output_name, DA_threshold):
+def main(in_network, output_name, dams=None, DA_threshold=None):
     """
     The main function
     :param in_network: The output of BRAT (a polyline shapefile)
