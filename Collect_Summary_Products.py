@@ -32,21 +32,21 @@ def main(project_folder, stream_network, watershed_name, excel_file_name=None, d
     if not excel_file_name.endswith(".xlsx"):
         excel_file_name += ".xlsx"
 
-    summary_prods_folder = os.path.join(project_folder, "Summary_Products")
-    create_folder_structure(project_folder, summary_prods_folder)
     if output_folder:
         output_folder = output_folder
     else:
+        summary_prods_folder = os.path.join(project_folder, "Summary_Products")
+        create_folder_structure(project_folder, summary_prods_folder)
         output_folder = make_folder(summary_prods_folder, "SummaryTables")
 
     if (stream_network.count(';') > 0):
         stream_network = merge_networks(summary_prods_folder, stream_network)
-    if dams is not None:
+    if dams_shapefile is not None:
         if (dams_shapefile.count(';') > 0):
             dams_shapefile = merge_dams(summary_prods_folder, dams_shapefile)
 
     fields = [f.name for f in arcpy.ListFields(stream_network)]
-    create_excel_file(excel_file_name, stream_network, table_folder, watershed_name, fields, dams_shapefile)
+    create_excel_file(excel_file_name, stream_network, output_folder, watershed_name, fields, dams_shapefile)
 
 
 def split_multi_inputs(multi_input_parameter):
@@ -138,6 +138,9 @@ def write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams
         write_strategies_worksheet(strategies_worksheet, stream_network, watershed_name, workbook)
     else:
         arcpy.AddWarning("Strategies worksheet could not be built because ConsVRest not in fields")
+    if 'mCC_EXvHPE' in fields:
+        historic_remaining_worksheet = workbook.add_worksheet("% Historic Capacity Remaining")
+        write_historic_remaining_worksheet(historic_remaining_worksheet, stream_network, watershed_name, workbook)
     if 'BRATvSurv' in fields:
         validation_worksheet = workbook.add_worksheet("Predicted vs. Surveyed")
         write_validation_worksheet(validation_worksheet, stream_network, watershed_name, workbook)
@@ -1837,6 +1840,132 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
     worksheet.write(row, col, "=SUM(D7,D12,D17)", cell_format1)
 
 
+def write_historic_remaining_worksheet(worksheet, stream_network, watershed_name, workbook):
+    column_sizeA = worksheet.set_column('A:A', column_calc(40, watershed_name))
+    column_sizeB = worksheet.set_column('B:B', 18)
+    column_sizeC = worksheet.set_column('C:C', 20)
+    column_sizeD = worksheet.set_column('D:D', 20)
+    column_sizeE = worksheet.set_column('E:E', 15)
+    header_format = workbook.add_format()
+    header_format.set_align('center')
+    header_format.set_bold()
+    worksheet.set_row(0, None, header_format)
+    worksheet.set_row(1, None, header_format)
+    percent_format = workbook.add_format({'num_format': '0.00%'})
+    percent = worksheet.set_column('D:D', 20, percent_format)
+    color = workbook.add_format()
+    color.set_bg_color('#C0C0C0')
+    cell_format1 = workbook.add_format()
+    cell_format1.set_num_format(0x01)
+    cell_format1.set_align('right')
+
+    row = 0
+    col = 0
+    worksheet.write(row, col, watershed_name, column_sizeA)
+    row += 1
+    worksheet.write(row, col, "mCC_EXvHPE")
+
+    col = 0
+    row = 1
+
+    worksheet.write(row, col, "Percent Historic Capacity Remaining")
+    col+=1
+    worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    col += 1
+    worksheet.write(row, col, "Stream Length (mi)", column_sizeC)
+    col += 1
+    worksheet.write(row, col, "Percent Length", column_sizeD)
+
+    # categories
+    row = 2
+    col = 0
+    worksheet.write(row, col, "0 - 25%")
+    row += 1
+    worksheet.write(row, col, "25 - 50%")
+    row += 1
+    worksheet.write(row, col, "50 - 75%")
+    row += 1
+    worksheet.write(row, col, "75 - 100%")
+    row += 1
+    worksheet.write(row, col, "> 100%")
+    row += 1
+    worksheet.write(row, col, "Total")
+
+    # calculate km to mi
+    row = 2
+    col = 2
+    worksheet.write(row, col, "=B3*0.62137", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B4*0.62137", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B5*0.62137", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B6*0.62137", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B7*0.62137", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=SUM(C3:C7)", cell_format1)
+
+    # calculate percents
+    row = 2
+    col = 3
+    worksheet.write(row, col, "=B3/$B$8", percent)
+    row += 1
+    worksheet.write(row, col, "=B4/$B$8", percent)
+    row += 1
+    worksheet.write(row, col, "=B5/$B$8", percent)
+    row += 1
+    worksheet.write(row, col, "=B6/$B$8", percent)
+    row += 1
+    worksheet.write(row, col, "=B7/$B$8", percent)
+    row += 1
+    worksheet.write(row, col, "=SUM(D3:D7)", percent)
+
+
+
+    # calculate fields
+    zero_25 = 0
+    twentyfive_50 = 0
+    fifty_75 = 0
+    seventyfive_100 = 0
+    hundred_plus = 0
+    split_input = stream_network.split(";")
+    for streams in split_input:
+        with arcpy.da.SearchCursor(streams, ['SHAPE@Length', 'mCC_EXvHPE']) as cursor:
+            for length, percent in cursor:
+                if percent <= 0.25:
+                    zero_25 += length
+                elif percent <= 0.50:
+                    twentyfive_50 += length
+                elif percent <= 0.75:
+                    fifty_75 += length
+                elif percent <= 1.0:
+                    seventyfive_100 += length
+                else:
+                    hundred_plus += length
+        
+    zero_25 /= 1000
+    twentyfive_50 /= 1000
+    fifty_75 /= 1000
+    seventyfive_100 /= 1000
+    hundred_plus /= 1000
+
+    # length in km per category
+    row = 2
+    col = 1
+    worksheet.write(row, col, zero_25, cell_format1)
+    row += 1
+    worksheet.write(row, col, twentyfive_50, cell_format1)
+    row += 1
+    worksheet.write(row, col, fifty_75, cell_format1)
+    row += 1
+    worksheet.write(row, col, seventyfive_100, cell_format1)
+    row += 1
+    worksheet.write(row, col, hundred_plus, cell_format1)
+    row += 1
+    worksheet.write(row, col, "=SUM(B3:B7)")
+
+
 def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbook):
     # Formatting
 
@@ -2128,7 +2257,7 @@ def write_header(worksheet, watershed_name):
 
 
 def create_folder_structure(project_folder, summary_prods_folder):
-    make_folder(summary_prods_folder)
+    make_folder(project_folder, summary_prods_folder)
     
     ai_folder = os.path.join(summary_prods_folder, "AI")
     png_folder = os.path.join(summary_prods_folder, "PNG")
@@ -2160,11 +2289,11 @@ def create_folder_structure(project_folder, summary_prods_folder):
                 lpk_files.append(file_path)
 
     
-    copy_all_files(ai_folder, ai_files)
-    copy_all_files(kmz_folder, kmz_files)
-    copy_all_files(lpk_folder, lpk_files)
-    copy_to_input_output_structure(png_folder, png_files)
-    copy_to_input_output_structure(pdf_folder, pdf_files)
+    copy_all_files(summary_prods_folder, ai_folder, ai_files)
+    copy_all_files(summary_prods_folder, kmz_folder, kmz_files)
+    copy_all_files(summary_prods_folder, lpk_folder, lpk_files)
+    copy_to_input_output_structure(summary_prods_folder, png_folder, png_files)
+    copy_to_input_output_structure(summary_prods_folder, pdf_folder, pdf_files)
 
 
 def copy_to_input_output_structure(folder_base, files):
@@ -2189,12 +2318,12 @@ def copy_to_input_output_structure(folder_base, files):
             shutil.copy(file, folder_base)
 
 
-def copy_all_files(folder, files):
+def copy_all_files(summary_folder, new_folder, files):
     # only make these folders if specific outputs need to be copied in
     if len(files)>0:
-        make_folder(folder)
+        make_folder(summary_folder, new_folder)
     for file in files:
-        shutil.copy(file, folder)
+        shutil.copy(file, new_folder)
 
 
 if __name__ == "__main__":
