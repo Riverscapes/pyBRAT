@@ -3,8 +3,7 @@ title: BRAT Documentation
 weight: 2
 ---
 
-Thank you for your interest in BRAT. While we try to provide as many resources as possible, for free, to help you 'do it yourself', that does not necessarily mean that you will find everything you need to make it meet your needs. If BRAT is not meeting your needs, when you run it yourself, reach out to us for help and it some causes we will be able to provide very low cost assistence and in other cases it may require significant modifications to the code and be more costly. 
-
+Thank you for your interest in BRAT. Most BRAT users only interact with the output GIS layers.  As such, pyBRAT is not a polished tool, with an easy-to-use GUI interface or Add-In to ArcGIS. Instead, PyBRAT a compilation of scripts housed in an Arc Toolbox designed to make it easier for our own analysts to run the model. Nevertheless, we do provide [step-by-step instructions](http://brat.riverscapes.xyz/Documentation/Tutorials/StepByStep/1-InputData.html) to allow those with good geoprocessing skills to successfully run BRAT on their own. 
 
 
 ------
