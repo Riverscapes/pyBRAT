@@ -5,8 +5,8 @@ weight: 5
 # Idaho BRAT
 
 
-In this application of the [Beaver Restoration Assessment Tool 3.0.20 (BRAT];
-http://brat.riverscapes.xyz/) (Macfarlane et al., 2017) we analyzed all the perennial rivers and streams within the
+In this application of the [Beaver Restoration Assessment Tool 3.0.20 (BRAT)](http://brat.riverscapes.xyz/
+)(Macfarlane et al., 2017) we analyzed all the perennial rivers and streams within the
 state of Idaho.
 
 The backbone to BRAT is a capacity model developed to assess the upper limits of riverscapes to support beaver dam-
