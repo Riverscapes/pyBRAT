@@ -31,8 +31,8 @@ Layers are created with these symbologies in the folder `01_Capacity`, which is 
 [![output]({{ site.baseurl }}/assets/images/output.PNG)]({{ site.baseurl }}/assets/images/hr/output.PNG)
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-DataValidation"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 6 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/8-ConservationRestoration"><i class="fa fa-arrow-circle-right"></i> Continue to Step 8 </a>
 </div>	
 
 ------

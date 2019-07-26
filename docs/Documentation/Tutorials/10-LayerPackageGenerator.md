@@ -1,4 +1,4 @@
----
+﻿---
 title: Step 10 - Layer Package Generator (Optional)
 weight: 12
 ---
@@ -33,12 +33,12 @@ Because the layers are grouped and referred to by name in the Table of Contents,
 The LPG works by looking for layers in the folder structure. If the folders are not in the standard folder structure, created by the latest version of BRAT, the LPG will not work. If you are using data from an old run of BRAT, it may be worthwhile to just run it again all the way through. 
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-SummaryProduct"><i class="fa fa-arrow-circle-left"></i> Back to Step 9 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/9-DataValidation"><i class="fa fa-arrow-circle-left"></i> Back to Step 9 </a>
 
 
 
 
-​	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/10-BDWS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 10</a>
+​	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/11-SummaryProduct"><i class="fa fa-arrow-circle-right"></i> Continue to Step 11</a>
 
 </div>	
 

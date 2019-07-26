@@ -43,8 +43,8 @@ Click OK to run the tool. If the project folder you gave does not contain an `Ou
 The tool will also create several folders in the `01_Intermediates` folder. The first created will be a folder with the buffers used to bring the data into the BRAT Table. The folder will be named `##_Buffers`. This folder will contain a 30m buffer and a 100m buffer, as well as a layer for each. The next folder will be called `##_TopographicMetrics`, and will contain layers symbolizing data about the slope and drainage area of the BRAT Table. The third will be named `##_AnthropogenicMetrics`, and will contain layers symbolizing data about the distance to canals, roads, road crossings, roads in the valley bottom, railroads, and land use intensity. This folder will not be created if no conflict inputs are given. The fourth will be named `##_Perennial`, and contains a layer showing what streams have been marked as perennial and which ones are non-perennial.
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATProjectBuilder"><i class="fa fa-arrow-circle-left"></i> Back to Step 3 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4.1-DrainageAreaCheck"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4.1 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/3-BRATProjectBuilder"><i class="fa fa-arrow-circle-left"></i> Back to Step 3 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/4.1-DrainageAreaCheck"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4.1 </a>
 </div>	
 ------
 <div align="center">

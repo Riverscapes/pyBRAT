@@ -31,8 +31,8 @@ The first step that involves actually running a BRAT tool is the BRAT Project Bu
 - **Input Land Use Raster** - Add all land use rasters that you want to use in your BRAT runs, making sure that the "LU_CODE" and "LUI_CLASS" fields have been added and populated.
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/2-Preprocessing"><i class="fa fa-arrow-circle-left"></i> Back to Step 2 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4-BRATTableTool"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/2-Preprocessing"><i class="fa fa-arrow-circle-left"></i> Back to Step 2 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/4-BRATTableTool"><i class="fa fa-arrow-circle-right"></i> Continue to Step 4 </a>
 </div>	
 ------
 <div align="center">

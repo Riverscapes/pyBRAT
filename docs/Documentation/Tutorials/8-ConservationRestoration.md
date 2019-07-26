@@ -1,19 +1,21 @@
 ---
-title: Step 8 - Data Validation (Optional)
+title: Conservation Restoration Model
+weight: 3
+---
+
 weight: 10
 ---
 
-# Using the Data Validation tool (Optional)
+# Using the Conservation Restoration tool (Optional)
 
-After running the BRAT tool, it can sometimes be useful calculate additional metrics on the output. The Data Validation tool adds and calculates a number of fields that further contextualize the results of a BRAT run.
+After running the BRAT tool to model capacity, the conservation restoration tool can be run to identify reasons why capacity is limited, areas where beaver dams could damage human infrastructure, and strategies for conserving and restoring beaver dams on the landscape.
 
 ## Running the Tool
 
 Running the tool is fairly simple. The tool takes three inputs:
-* The Conservation Restoration Model output network
+* The Combined Capacity Model output network
 * An optional shapefile containing points that correspond to observed beaver dams
 * The name of the output
-  If not given a beaver dam shapefile, the tool will not produce the fields that rely on dams data. Be warned, the tool will snap the points of the beaver dam shapefile to the nearest reach, which will change the file given to it. If you want to retain the original position of the beaver dams, give the tool a copy of your shapefile.
 
 ## Output of the Tool
 The tool produces eight new fields. Three of these fields are reliant on the dams input. The fields are as follows:
@@ -49,8 +51,8 @@ To remedy this BRAT has integrated multichannel line segments from the original 
 ![Multichannel/Anabranch incorporated into the model]({{ site.baseurl }}/assets/images/Summary_Report_Caveat2.png)
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/9-SummaryProduct"><i class="fa fa-arrow-circle-right"></i> Continue to Step 9 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/9-DataValidation"><i class="fa fa-arrow-circle-right"></i> Continue to Step 9 </a>
 </div>	
 
 ------

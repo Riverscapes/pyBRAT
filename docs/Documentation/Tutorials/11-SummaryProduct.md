@@ -1,4 +1,4 @@
----
+﻿---
 title: Step 9 - Collect Summary Products (Optional)
 weight: 11
 ---
@@ -9,11 +9,11 @@ The Collect Summary Products tool will do two tasks: find Adobe Illustrator file
 This is a small tool, meant to automate a task common in our lab. There are many use cases where this tool is not necessary.
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-DataValidation"><i class="fa fa-arrow-circle-left"></i> Back to Step 8 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/10-LayerPackageGenerator"><i class="fa fa-arrow-circle-left"></i> Back to Step 10 </a>
 
 
 
-​		<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/10-LayerPackageGenerator"><i class="fa fa-arrow-circle-right"></i> Continue to Step 10 </a>
+​		<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/12-BDWS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 12 </a>
 
 </div>	
 

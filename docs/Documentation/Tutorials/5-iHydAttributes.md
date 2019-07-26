@@ -1,4 +1,4 @@
----
+﻿---
 title: Step 5 - iHyd Attributes
 weight: 7
 ---
@@ -11,7 +11,7 @@ The "iHyd" tool basically helps you prepare the hydrologic inputs to BRAT (namel
 
 ## What you need
 
-To populate the "iHyd" or hydrologic attributes to the input table you created in the [previous step]({{ site.baseurl }}/Documentation/Tutorials/StepByStep/3-BRATTableTool.html), regressions for predicting stream flow must first be developed or obtained for your model watershed, and then added to the model.  For example, these regional curves are what drives  [USGS's StreamStats Tool](https://streamstats.usgs.gov/ss/).  Note, you can maually develop your own regional curves for areas they are not defined based on analyzing avialable gage data
+To populate the "iHyd" or hydrologic attributes to the input table you created in the [previous step]({{ site.baseurl }}/Documentation/Tutorials/4-BRATTableTool.html), regressions for predicting stream flow must first be developed or obtained for your model watershed, and then added to the model.  For example, these regional curves are what drives  [USGS's StreamStats Tool](https://streamstats.usgs.gov/ss/).  Note, you can maually develop your own regional curves for areas they are not defined based on analyzing avialable gage data
 
 <div align="center">
 	<a class="button secondary" href="https://streamstats.usgs.gov/ss/"><img src= "{{ site.baseurl }}/assets/images/logos/USGS_logo_White_50w.png"> StreamStats </a>
@@ -82,8 +82,8 @@ After running, in addition to creating and calculating the iHyd fields, it will 
 
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/4.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 4.2 </a>
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 6 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/4.2-BRATBraidHandler"><i class="fa fa-arrow-circle-left"></i> Back to Step 4.2 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/6-BRATVegetationFIS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 6 </a>
 </div>	
 ------
 <div align="center">

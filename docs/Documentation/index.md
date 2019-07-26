@@ -3,7 +3,7 @@ title: BRAT Documentation
 weight: 2
 ---
 
-Thank you for your interest in BRAT. Most BRAT users only interact with the output GIS layers.  As such, pyBRAT is not a polished tool, with an easy-to-use GUI interface or Add-In to ArcGIS. Instead, PyBRAT a compilation of scripts housed in an Arc Toolbox designed to make it easier for our own analysts to run the model. Nevertheless, we do provide [step-by-step instructions](http://brat.riverscapes.xyz/Documentation/Tutorials/StepByStep/1-InputData.html) to allow those with good geoprocessing skills to successfully run BRAT on their own. 
+Thank you for your interest in BRAT. Most BRAT users only interact with the output GIS layers.  As such, pyBRAT is not a polished tool, with an easy-to-use GUI interface or Add-In to ArcGIS. Instead, PyBRAT a compilation of scripts housed in an Arc Toolbox designed to make it easier for our own analysts to run the model. Nevertheless, we do provide [step-by-step instructions](http://brat.riverscapes.xyz/Documentation/Tutorials) to allow those with good geoprocessing skills to successfully run BRAT on their own. 
 
 
 ------
