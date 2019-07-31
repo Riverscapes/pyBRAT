@@ -337,6 +337,7 @@ def makeLayers(output_network, dams):
     historic_remaining_symbology = os.path.join(symbology_folder, "PercentofHistoricDamCapacityRemaining.lyr")
     pred_v_surv_symbology = os.path.join(symbology_folder, "PredictedDamCountvs.SurveyedDamCount.lyr")
     management_strategies_symbology = os.path.join(symbology_folder, "CurrentBeaverDamManagementStrategies.lyr")
+    occupancy_symbology = os.path.join(symbology_folder, "OccupancyRateofSurveyedBeaverDams.lyr")
 
     make_layer(validation_folder, output_network, "Percent of Historic Dam Capacity Remaining", historic_remaining_symbology, is_raster=False, symbology_field="mCC_EXvHPE")
 
@@ -344,6 +345,7 @@ def makeLayers(output_network, dams):
         make_layer(os.path.dirname(dams), dams, "Surveyed Beaver Dam Locations", dam_symbology, is_raster=False, symbology_field="Snapped")
         make_layer(validation_folder, output_network, "Predicted Dam Count vs. Surveyed Dam Count", pred_v_surv_symbology, is_raster=False, symbology_field="BRATvSurv")
         make_layer(validation_folder, output_network, "Current Beaver Dam Management Strategies", management_strategies_symbology, is_raster=False, symbology_field="ConsVRest")
+        make_layer(validation_folder, output_network, "Occupancy Rate of Surveyed Beaver Dams", occupancy_symbology, is_raster=False, symbology_field="e_DamPcC")
 
         
 def make_electivity_table(output_network):
