@@ -250,7 +250,7 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     #            density 'none' values are changed in the model
     x = np.arange(0, 45, 0.01)
     mfx_none = fuzz.trimf(x, [0, 0, 0.1])
-    defuzz_none = round(fuzz.defuzz(x, mfx, 'centroid'), 6)
+    defuzz_none = round(fuzz.defuzz(x, mfx_none, 'centroid'), 6)
     mfx_pervasive = fuzz.trapmf(x, [12, 25, 45, 45])
     defuzz_pervasive = round(fuzz.defuzz(x, mfx_pervasive, 'centroid'))
 
