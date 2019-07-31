@@ -14,7 +14,7 @@ Inputs and Parameters:
 - **Maximum DA Threshold** - this is a drainage area value above which it is assumed that the stream is too large for beaver to build dams on.  This varies from region to region and should be adjusted according to the hydrologic characteristics of the study area.
 - **Save Output Network** - choose a location and name to save the output
 
-The output network will be placed in a new folder in `Output_##` called `02_Analyses`. The output network will have the new fields `oCC_HPE` (historic combined dam capacity) and `oCC_EX` (existing combined dam capacity).  
+The output network will be placed in a new folder in `Output_##` called `02_Analyses`. The output network will have the new fields `oCC_HPE` (historic dam capacity density), `oCC_EX` (existing dam capacity density), `mCC_EX_Ct` (existing dam capacity count), and `mCC_HPE_Ct` (historic dam capacity count).
 
 The fields `oCC_HPE` and `oCC_EX` are split into the following categories for our symbology:
 

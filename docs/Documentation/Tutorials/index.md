@@ -41,8 +41,9 @@ Step-by-step tutorials of running pyBRAT from start to finish are provided to he
 If you need help in installing pyBRAT, see:
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Download/ComputerSetup"><i class="fa fa-puzzle-piece"></i> Computer Setup & Installation </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Download/ComputerSetup.html"><i class="fa fa-puzzle-piece"></i> Computer Setup & Installation </a>
 </div>
+
 
 
 If you are looking for more information on BRAT outputs, see:

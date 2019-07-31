@@ -26,25 +26,31 @@ The tool produces eight new fields. Three of these fields are reliant on the dam
   * If 1 < `oCC_EX` <= 5, `Ex_Categor` = "Occasional"
   * If 5 < `oCC_EX` <= 15, `Ex_Categor` = "Frequent"
   * If 15 < `oCC_EX`, `Ex_Categor` = "Pervasive"
-* `Hpe_Catego`r: The category of the calculated historic capacity. It is determined based on the `oCC_HPE` (the calculated historic capacity), as follows:
+* `Hpe_Categor`: The category of the calculated historic capacity. It is determined based on the `oCC_HPE` (the calculated historic capacity), as follows:
   * If oCC_HPE = 0, Hpe_Categor = "None"
   * If 0 < oCC_HPE <= 1, Hpe_Categor = "Rare"
   * If 1 < oCC_HPE <= 5, Hpe_Categor = "Occasional"
   * If 5 < oCC_HPE <= 15, Hpe_Categor = "Frequent"
   * If 15 < oCC_HPE, Hpe_Categor = "Pervasive"
-* `mCC_EX_Ct`: The existing capacity density. Calculated by dividing `oCC_EX` by the segment length.
-* `mCC_HPE_Ct`: The historic capacity density. Calculated by dividing `oCC_HPE` by the segment length.
-* `mCC_EXtoHPE`: The ration between existing and historic capacity. Calculated by dividing `oCC_EX` by `oCC_HPE`.
+* `
+* `mCC_EXtoHPE`: The ratio between existing and historic capacity. Calculated by dividing `oCC_EX` by `oCC_HPE`.
+* `ConsVRest`: A reclassification of the `oPBCR_CR` field from the [conservation restoration model](/Documentation/Tutorials/8-ConservationRestoration.html) based on surveyed dam locations, with categories including:
+  * *Immediate: Beaver conservation* - reaches classified as "easiest -low-hanging fruit" with at least 25% of existing dam capacity already occupied by surveyed dams
+  * *Immediate: Potential Beaver Translocation* - reaches classified as "easiest - low-hanging fruit" with less than 25% of existing dam capacity occupied by surveyed dams
+  * *Mid Term: Process-based Riparian Vegetation Restoration* - reaches classified as "Straight Forward - Quick Return"
+  * *Long Term: Riparian Vegetation Reestablishment* - reaches classified as "Strategic - Long-Term Investment"
+  * *Low Capacity Habitat* - reaches classified as "NA"
+* `BRATvSurv`: The ratio between the estimated existing capacity count and the surveyed dam capacity count
 
-In addition 
+Additionally, the tool adds a field named `Snapped` to the input beaver dams which designates whether each dam location was "snapped" to the network and therefore used in the validation or not. 
 
 ### Caveats 
 
-Currently the Data Validation tool is limited by the distance and relation that dam capture events to the NHD line. This can result in short reaches being assigned multiple dams and having overestimated dam densities due to the small reach length. While larger reaches adjacent to the short reach which might have been assigned some of the dams are not and have low dam densities. 
+Currently the Data Validation tool is limited by the distance and relationship of dam survey locations to the NHD line. The NHD network is a rough approximation of a stream network, and often the true stream does not directly correspond with the location of the NHD line due to meandering and side channels that are not represented in the NHD. Because dams are snapped to the nearest segment of the NHD network, short reaches can be assigned multiple dams while longer adjacent reaches are assigned fewer. This causes surveyed dam densities to be overestimated on the short reaches and underestimated on the long reaches. 
 
 ![Original validation issue]({{ site.baseurl }}/assets/images/Summary_Report_Caveat1.png)
 
-To remedy this BRAT has integrated multichannel line segments from the original nhd file that warrent the classification of a perennial network. BRAT was previously not able to handle multichannel features. This has not fixed all these cases but many of them, because these slower flows in multichannel clusters can result in refuge from high streampower which can results in blown out or breached dams.
+To remedy this BRAT has integrated multichannel line segments from the original NHD file that warrant the classification of a perennial network. BRAT was previously not able to handle multichannel features. This has not fixed all these cases but many of them, because these slower flows in multichannel clusters can result in refuge from high streampower which can results in blown out or breached dams.
 
 ![Multichannel/Anabranch incorporated into the model]({{ site.baseurl }}/assets/images/Summary_Report_Caveat2.png)
 

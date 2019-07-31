@@ -58,15 +58,17 @@ The tool produces seven new fields. Three of these fields come from the optional
 * `ConsEase` - Binary field designating "Yes" if the reach occurs within a conservation easement and "No" otherwise
 * `ObsDam` - Binary field designating "Yes" if any surveyed beaver dams were observed along the reach and "No" if none were
 * `DamStrat`: **This field is a work in progress.** Beaver dam management strategies based on current beaver dam locations and protected areas, including:
-  * 1. Beaver conservation
-  * 2. Highest restoration potential - translocation
-  * 3. High restoration potential
-  *    3a. Vegetation restoration first-priority
-  * 4. Medium-low restoration potential
-  *    4a. Vegetation restoration first-priority
-  * 5. Restoration with infrastructure modification
-  * 6. Restoration with urban or agricultural modification
-  * Other
+  * *1. Beaver conservation* - A stream reach with beaver dam building or lodges observed 
+  * *2. Highest restoration potential* - A stream reach without recent beaver dam building that can likely
+    support the greatest number of dams (2 or more dams) and is on a protected area or conservation easement
+  * *3. High restoration potential* - A stream reach without recent beaver dam building that can likely support a high number of beaver dams (more than 2 dams per reach)
+  * *3a. Vegetation restoration first-priority* - A stream reach that had more suitable historic vegetation than is currently present and may need replanting or grazing management before beaver can build dams
+  * *4. Medium-low restoration potential* - A stream reach that can likely support between one and
+    two dams per reach
+  * *4a. Vegetation restoration first-priority* - A stream reach that had more suitable historic vegetation than is currently present and may need replanting or grazing management before beaver can build dams
+  * *5. Restoration with infrastructure modification* - A stream reach that can likely support one or more dams, but where infrastructure (roads, culverts, railroads) is close to the stream and may limit beaver dam building
+  * *6. Restoration with urban or agricultural modification* - A stream reach that can likely support one or more dams, but where urban or agricultural land uses may limit beaver dam building
+  * *Other* - Low capacity habitat that does not fit into any of the above categories
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
