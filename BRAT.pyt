@@ -292,7 +292,7 @@ class BRAT_table_tool(object):
         param11 = arcpy.Parameter(
 			displayName="Input land ownership feature class",
             name="ownership",
-            datatype="DERasterDataset",
+            datatype="DEFeatureClass",
             parameterType="Optional",
             direction="Input")
 
@@ -309,7 +309,9 @@ class BRAT_table_tool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-
+			
+        param13.value = "BRAT_Table"
+			
         param14 = arcpy.Parameter(
             displayName="Short description for run - less than 100 characters",
             name="description",
@@ -568,6 +570,8 @@ class Comb_FIS_tool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
+			
+        param3.value = "Combined_Capacity"
         # param3.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
 
         return [param0, param1, param2, param3]
@@ -627,6 +631,7 @@ class Conservation_Restoration_tool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
+        param2.value = "Conservation_Restoration"
 
         return [param0, param1, param2]
 
@@ -677,6 +682,7 @@ class Data_Capture_Validation_tool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
+        param2.value = "Data_Validation"
 
         param2 = arcpy.Parameter(
             displayName="Select beaver dam shape file",

@@ -337,7 +337,7 @@ def makeLayers(output_network, dams):
     historic_remaining_symbology = os.path.join(symbology_folder, "PercentofHistoricDamCapacityRemaining.lyr")
     pred_v_surv_symbology = os.path.join(symbology_folder, "PredictedDamCountvs.SurveyedDamCount.lyr")
     management_strategies_symbology = os.path.join(symbology_folder, "CurrentBeaverDamManagementStrategies.lyr")
-    occupancy_symbology = os.path.join(symbology_folder, "OccupancyRateofSurveyedBeaverDams.lyr")
+    occupancy_symbology = os.path.join(symbology_folder, "PercentofExistingCapacityOccupiedbySurveyedDams.lyr")
 
     make_layer(validation_folder, output_network, "Percent of Historic Dam Capacity Remaining", historic_remaining_symbology, is_raster=False, symbology_field="mCC_EXvHPE")
 
