@@ -13,42 +13,60 @@ After running the BRAT tool to model capacity, the conservation restoration tool
 ## Running the Tool
 
 Running the tool is fairly simple. The tool takes three inputs:
+* The path to the BRAT project folder
 * The Combined Capacity Model output network
-* An optional shapefile containing points that correspond to observed beaver dams
 * The name of the output
 
+The optional beaver dam management strategies map requires the following additional inputs:
+
+* A shapefile for surveyed beaver dam locations
+* A shapefile for conservation protection areas
+* A shapefile for conservation easements (optional)
+
 ## Output of the Tool
-The tool produces eight new fields. Three of these fields are reliant on the dams input. The fields are as follows:
-* `e_DamCt`: The observed number of dams per segment (based on the beaver dam shape file).
-* `e_DamDens`: The number of dams per kilometer. Calculated by dividing `e_DamCt` by the segment length.
-* `e_DamPcC`: The ratio between the observed dam count and the calculated existing capacity. Calculated by dividing `e_DamCt` by `oCC_EX`.
-* `Ex_Categor`: The category of the calculated existing capacity. It is determined based on the `oCC_EX` (the calculated existing capacity), as follows:
-  * If `oCC_EX` = 0, `Ex_Categor` = "None"
-  * If 0 < `oCC_EX` <= 1, `Ex_Categor` = "Rare"
-  * If 1 < `oCC_EX` <= 5, `Ex_Categor` = "Occasional"
-  * If 5 < `oCC_EX` <= 15, `Ex_Categor` = "Frequent"
-  * If 15 < `oCC_EX`, `Ex_Categor` = "Pervasive"
-* `Hpe_Catego`r: The category of the calculated historic capacity. It is determined based on the `oCC_HPE` (the calculated historic capacity), as follows:
-  * If oCC_HPE = 0, Hpe_Categor = "None"
-  * If 0 < oCC_HPE <= 1, Hpe_Categor = "Rare"
-  * If 1 < oCC_HPE <= 5, Hpe_Categor = "Occasional"
-  * If 5 < oCC_HPE <= 15, Hpe_Categor = "Frequent"
-  * If 15 < oCC_HPE, Hpe_Categor = "Pervasive"
-* `mCC_EX_Ct`: The existing capacity density. Calculated by dividing `oCC_EX` by the segment length.
-* `mCC_HPE_Ct`: The historic capacity density. Calculated by dividing `oCC_HPE` by the segment length.
-* `mCC_EXtoHPE`: The ration between existing and historic capacity. Calculated by dividing `oCC_EX` by `oCC_HPE`.
+The tool produces seven new fields. Three of these fields come from the optional beaver dam management strategies map. The fields are as follows:
+* `oPBRC_UI`: Areas beavers can build dams but could have undesirable impacts based on distance to infrastructure, land use intensity, and estimated beaver dam capacity. Categories include:
+  * *Negligible Risk* 
+    * Nearest infrastructure is at least 300 meters away
+    * Existing dam capacity is zero
+  * *Minor Risk* 
+    * Nearest infrastructure is at least 100 meters away and existing dam capacity is less than 5 dams/km 
+    * Nearest infrastructure is 100 - 300 meters away or landuse is agricultural, and existing dam capacity is not none
+  * *Considerable Risk*
+    * Nearest infrastructure is within 30 meters or landuse is high but existing dam capacity is less than 5 dams/km
+    * Nearest infrastructure is within 100 meters and existing dam capacity is at least 5 dams/km
+  * *Major Risk* 
+    * The reach is on a canal
+    * Nearest infrastructure is within 30 meters or land use intensity is high, and existing dam capacity is at least 5 dams/km
+* `oPBRC_UI`: Identifies reasons for unsuitable or limited-dam building opportunities, including:
+  * *Naturally Vegetation Limited* - historic and existing vegetation capacity are both zero
+  * *Slope Limited* - slope is greater than 23%
+  * *Anthropogenically Limited* - landuse is at least agricultural and no dams can be supported
+  * *Stream Power Limited* - baseflow stream power is at least 190 cfs or high flow stream power is at least 2400 cfs and no dams can be supported
+  * *Stream Size Limited* - areas where combined dam building capacity was set to zero because of the drainage area threshold set in the [Combined Capacity Model](/Documentation/Tutorials/7-BRATCombinedFIS)
+  * *Potential Reservoir or Landuse Conversion* - historic vegetation capacity is zero but existing vegetation capacity is greater than zero
+  * *Dam Building Possible* - existing capacity is not none
+* `oPBRC_CR`: Possible conservation restoration opportunities based on capacity, departure from historic capacity, and land use. The categories describe levels of effort required for establishing beaver dams on the landscape and include:
+  * *Easiest - Low-Hanging Fruit* - Reaches where beaver conservation or translocation can offer quick results with little risk of conflict based on high existing dam capacity, low departure from historic capacity, and low risk
+  * *Straight Forward - Quick Return* - Reaches where short-term riparian vegetation restoration can quickly increase capacity with little risk of conflict based on some existing dam capacity, low departure from historic, and low intensity land use
+  * *Strategic - Long-Term Investment* - Reaches where long-term riparian vegetation re-establishment is the only option based on low existing dam capacity, high historic dam capacity, and low land use
+  * *NA* - Any reaches that do not fit into the above categories due to high risk, no existing capacity, or high land use intensity
 
-In addition 
+**Strategies Map Fields**
 
-### Caveats 
-
-Currently the Data Validation tool is limited by the distance and relation that dam capture events to the NHD line. This can result in short reaches being assigned multiple dams and having overestimated dam densities due to the small reach length. While larger reaches adjacent to the short reach which might have been assigned some of the dams are not and have low dam densities. 
-
-![Original validation issue]({{ site.baseurl }}/assets/images/Summary_Report_Caveat1.png)
-
-To remedy this BRAT has integrated multichannel line segments from the original nhd file that warrent the classification of a perennial network. BRAT was previously not able to handle multichannel features. This has not fixed all these cases but many of them, because these slower flows in multichannel clusters can result in refuge from high streampower which can results in blown out or breached dams.
-
-![Multichannel/Anabranch incorporated into the model]({{ site.baseurl }}/assets/images/Summary_Report_Caveat2.png)
+* `ConsArea` - Binary field designating "Yes" if the reach occurs within a conservation/protection area and "No" otherwide
+* `ConsEase` - Binary field designating "Yes" if the reach occurs within a conservation easement and "No" otherwise
+* `ObsDam` - Binary field designating "Yes" if any surveyed beaver dams were observed along the reach and "No" if none were
+* `DamStrat`: **This field is a work in progress.** Beaver dam management strategies based on current beaver dam locations and protected areas, including:
+  * 1. Beaver conservation
+  * 2. Highest restoration potential - translocation
+  * 3. High restoration potential
+  *    3a. Vegetation restoration first-priority
+  * 4. Medium-low restoration potential
+  *    4a. Vegetation restoration first-priority
+  * 5. Restoration with infrastructure modification
+  * 6. Restoration with urban or agricultural modification
+  * Other
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>

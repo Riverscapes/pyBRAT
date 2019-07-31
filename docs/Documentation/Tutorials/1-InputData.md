@@ -26,10 +26,10 @@ You will need 2 separate vegetation rasters:
 - Historic vegetation raster
 
 We typically use  [Landfire](http://www.landfire.gov/) for the vegetation raster inputs.  If using Landfire, download:
-- 'us_140evt' (existing vegetation type) 
-- 'us_140bps' (historic vegetation type)
+- 'us_200evt' (existing vegetation type) 
+- 'us_200bps' (historic vegetation type)
 
-Note: If 'us_140' is not yet available for your study area you can use 'us_130'.
+Note: If 'us_200' is not yet available for your study area you can use 'us_140'.
 
 Note: The historic vegetation layer (biophysical settings, bps) represents the vegetation that may have been dominant on the landscape prior to Euro-American settlement and is based on both the current biophysical environment and an approximation of the historical disturbance regime.
 
@@ -63,7 +63,7 @@ The requisite inputs to the potential conflict model include:
 - Landuse raster
 
 ### Valley Bottom Layer
-The valley bottom is a polgon feature class. We use it to check if roads or railroads are in the valley bottom as they may have a higher probability of being flooded or impacted by nearby beaver dam building activity. The [Valley Bottom Extraction Tool (V-BET)](http://rcat.riverscapes.xyz/Documentation/Version_1.0/VBET.html) is what we typically use to derive this.
+The valley bottom is a polygon feature class. We use it to check if roads or railroads are in the valley bottom as they may have a higher probability of being flooded or impacted by nearby beaver dam building activity. The [Valley Bottom Extraction Tool (V-BET)](http://rcat.riverscapes.xyz/Documentation/Version_1.0/VBET.html) is what we typically use to derive this.
 
 ### Roads Layer
 
@@ -81,12 +81,33 @@ Canals can be extracted from the NHD Flowline layer (our recommended drainage ne
 
 If no accurate land use layer exits for you study are you can use the Landfire existing vegetation type raster (e.g., 'us_140evt').
 
+## Optional Strategy Mapping Inputs
 
+The requisite inputs for the optional beaver dam management strategy map include:
+
+* Conservation protection areas
+* Locations of surveyed beaver dams
+* Conservation easement areas (optional)
+
+### Conservation Protection Areas Layer
+
+The conservation protection areas layer is a polygon feature class representing areas that protect and conserve wildlife from harvest. For federal-level protected areas, see the [BLM NLCS dataset](<https://catalog.data.gov/dataset/blm-nlcs-national-monuments-national-conservation-areas-and-similar-designations-polygons>) and [NPS boundaries](<https://catalog.data.gov/dataset/national-parks>). Ideally, additional state and local data would also be used. 
+
+### Beaver Dams Layer
+
+The beaver dams layer is a points feature class holding locations of surveyed beaver dams. These could be based on ground surveys or remote surveys where trained technicians identify beaver dams and lodges from aerial imagery. 
+
+### Conservation Easements Layer (Optional)
+
+The conservation easements layer is a polygon feature class representing land protected under conservation easements. These areas will be treated as equivalent to protected areas in the strategies.
+
+## Optional Validation Inputs
+
+Surveyed beaver dam locations are required for the model validation. These data can be collected either via field data or surveys of aerial imagery.
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/2-Preprocessing"><i class="fa fa-arrow-circle-right"></i> Continue to Step 2 </a>
 </div>	
-
 ------
 <div align="center">
 

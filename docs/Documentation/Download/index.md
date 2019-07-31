@@ -46,6 +46,7 @@ BRAT uses as one of its inputs a Valley Bottom, which can be derived in a variet
 
 ------
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Download/ComputerSetup"><i class="fa fa-info-circle"></i> Setup Instructions </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Download/ComputerSetup"><i class="fa fa-info-circle"></i> Setup Instructions </a>
 	<a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>  
 </div>
+

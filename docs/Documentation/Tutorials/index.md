@@ -19,9 +19,9 @@ Step-by-step tutorials of running pyBRAT from start to finish are provided to he
 
 [5. iHyd Attributes tool](/Documentation/Tutorials/5-iHydAttributes.html)
 
-[6. Vegetation FIS tool](/Documentation/Tutorials/6-BRATVegetationFIS.html)
+[6. Vegetation Dam Capacity Model tool](/Documentation/Tutorials/6-BRATVegetationFIS.html)
 
-[7. Combined Capacity FIS tool](/Documentation/Tutorials/7-BRATCombinedFIS.html)
+[7. Combined Dam Capacity Model tool](/Documentation/Tutorials/7-BRATCombinedFIS.html)
 
 [8. Conservation Restoration tool (optional)](/Documentation/Tutorials/8-ConservationRestoration.html)
 
@@ -41,21 +41,23 @@ Step-by-step tutorials of running pyBRAT from start to finish are provided to he
 If you need help in installing pyBRAT, see:
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Download/ComputerSetup"><i class="fa fa-puzzle-piece"></i> Computer Setup & Installation </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Download/ComputerSetup"><i class="fa fa-puzzle-piece"></i> Computer Setup & Installation </a>
 </div>
+
 
 If you are looking for more information on BRAT outputs, see:
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Outputs"><i class="fa fa-puzzle-piece"></i> Computer Setup & Installation </a>
+	<a class="hollow button" href="{{ site.baseurl }}/BRATData/Outputs"><i class="fa fa-puzzle-piece"></i> BRAT Outputs </a>
 </div>
+
 
 If you are interested in running the older Matlab version of BRAT you can find the matBRAT documentation [here](https://riverscapes.github.io/matBRAT/).
 
 <div align="center">
 	<a class="hollow button" href="https://github.com/Riverscapes/matBRAT"> <i class="fa fa-github"></i>&nbsp;&nbsp; matBRAT  </a>
 </div>
-Running BRAT requires a good working knowledge of geoprocessing in ArcGIS.  See [here]({{ site.baseurl }}/Download/ComputerSetup.html#python-prerequisites) for system prerequistes. 
+Running BRAT requires a good working knowledge of geoprocessing in ArcGIS.  See [here](Documentation{{ site.baseurl }}/Documentation/Download/ComputerSetup.html#python-prerequisites) for system prerequistes. 
 
 ------
 <div align="center">

@@ -13,7 +13,7 @@ Inputs and Parameters:
 
 Click OK to run.
 
-After the tool has been run, the network should now include the attributes `oVC_HPE` (historic vegetation dam capacity based on historic vegetation) and `oVC_EX`  (existing vegetation dam capacity based on existing vegetation). It will also create a folder in `01_Intermediates` called `##_VegDamCapacity`, which will contain layers symbolizing existing and historic dam building capacity.
+After the tool has been run, the network should now include the attributes `oVC_HPE` (historic vegetation dam capacity based on historic vegetation) and `oVC_EX`  (existing vegetation dam capacity based on existing vegetation). It will also create a folder in `01_Intermediates` called `##_VegDamCapacity`, which will contain layers symbolizing existing and historic vegetation dam building capacity.
 
 [Continue to Step 8]({{ site.baseurl }}/Documentation/7-BRATCombinedFIS) ->
 
