@@ -20,27 +20,27 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Unsuitable or Limited Beaver Dam Opportunities (`oPBRC_UD`)** identifies areas where beaver cannot build dams now, and also differentiates stream segments into anthropogenically and naturally limited areas. The following color scheme is used to illustrate these distinctions:
 
-   ![Legend_BRAT_Management_Unsuitable_or_Limited_Beaver_Dam_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.PNG){: width="350" height="350"}
+  ![Legend_BRAT_Management_Unsuitable_or_Limited_Beaver_Dam_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legends_06_2019_Unsuitable.PNG){: width="350" height="350"}
 
   The field oPBRC_UD is calculated based on the following criteria:
 
-  - Dam Building Possible is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), and where the model currently predicts dams can exist (`oCC_EX` > 0).
-  - Anthropogenically Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), but where current vegetation is limiting beaver dam capacity (`oVC_EX` = `oCC_EX` = 0), presumably due to high levels of anthropogenic land use (`iPC_LU` > 0.3).
-  - Stream Power Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), where current vegetation is not a limiting factor (`oVC_EX` > 0), and where the model predicts that the stream cannot currently support beaver dams (`oCC_EX` = 0) because stream power is too low (`iHyd_SPLow` <= 190) to support beaver dams or too high (`iHyd_SP2` >= 2400) for dams to survive flooding.
-  - Slope Limited is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), but where slope is a limiting factor (`iGeo_Slope` >= 0.23).
-  - Naturally Vegetation Limited is for streams where both historic and existing vegetation are limiting factors (`oVC_HPE` = `oVC_EX` = 0).
-  - Potential Reservoir or Landuse Conversion is for the rare streams where historic vegetation is a limiting factor (`oVC_HPE` = 0), but existing vegetation is not (`oVC_EX`> 0).
+  - *Dam Building Possible* is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), and where the model currently predicts dams can exist (`oCC_EX` > 0).
+  - *Anthropogenically Limited* is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), but where current vegetation is limiting beaver dam capacity (`oVC_EX` = `oCC_EX` = 0), presumably due to high levels of anthropogenic land use (`iPC_LU` > 0.3).
+  - *Stream Power Limited* is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), where slope is not a limiting factor (`iGeo_Slope` < 0.23), where current vegetation is not a limiting factor (`oVC_EX` > 0), and where the model predicts that the stream cannot currently support beaver dams (`oCC_EX` = 0) because stream power is too low (`iHyd_SPLow` <= 190) to support beaver dams or too high (`iHyd_SP2` >= 2400) for dams to survive flooding.
+  - *Slope Limited* is for streams where historic vegetation is not a limiting factor (`oVC_HPE` > 0), but where slope is a limiting factor (`iGeo_Slope` >= 0.23).
+  - *Naturally Vegetation Limited* is for streams where both historic and existing vegetation are limiting factors (`oVC_HPE` = `oVC_EX` = 0).
+  - *Potential Reservoir or Landuse Conversion* is for the rare streams where historic vegetation is a limiting factor (`oVC_HPE` = 0), but existing vegetation is not (`oVC_EX`> 0).
 
-- **Potential Risk Areas (`oPBRC_UI`)** identifies riverscapes that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is divided into: "Considerable Risk", "Some Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
+- **Potential Risk Areas (`oPBRC_UI`)** identifies riverscapes that are close to human infrastructure or high land use intensity and where the capacity model estimates that beavers can build dams. The layer/map is called ‘areas beavers can build dams, but could be undesirable’ and is divided into: "Major Risk", "Considerable Risk", "Minor Risk", and "Negligible Risk". The following color scheme is used to illustrate these distinctions:
 
-  ![Legend_BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/Anthropogenic_Risk.png){: width="300" height="300"}
+  ![Legend_BRAT Management Areas Beavers Can Build Dams, but Could Be Undesirable]({{ site.baseurl }}/assets/images/BRAT_Legends_07_2019_Risk.png){: width="300" height="300"}
 
   The field `oPBRC_UI` is calculated based on the following criteria:
 
-  - Considerable Risk is for streams where the model estimates that beaver dams are Pervasive or Frequent  (`oCC_EX` >= 5), and yet the land is highly used (`iPC_LU` >= 0.66) or the stream is within  30 meters of some form of infrastructure, whether that is roads, canals, or railroads (`oPC_Dist` <= 30).
-  - Some Risk is for streams where the model estimates that beaver dams are Occasional or Rare (1 <= `oCC_EX` <= 5) but the land is highly used (`iPC_LU` >= 0.66) or the stream is within 30 meters of some form of infrastructure, whether that's roads, canals, or railroads (`oPC_Dist` <= 30); OR where the model estimates that beaver dams are Frequent or Pervasive (`'oCC_EX` >= 5) and the stream is within 100 meters of some form of infrastructure (30 < `oPC_Dist` <= 100).
-  - Minor Risk is for streams where the model estimates that beaver dam capacity is Occasional or Rare (1 <= `oCC_EX` <= 5) and the stream is within 100 meters of some form of infrastructure (roads, canals, or railroads, 30 < `oPC_Dist` <= 100); OR where the model predicts that the stream can support dams (`oCC_EX` > 0) and the land is moderately used (0.33 <= `iPC_LU` <= 0.66) or the stream is within 300 meters of some form of infrastructure (100 < `oPC_Dist` <= 300).
-  - Negligible Risk is for a stream where the model predicts that the stream cannot currently support beaver dams (`oCC_EX` = 0), or a stream where the model predicts that dams can currently exist (`oCC_EX` > 0) but does not fall into the above categories.
+  - *Major Risk* is for streams where the model estimates that beaver dams are Pervasive or Frequent  (`oCC_EX` >= 5), and yet the land is highly used (`iPC_LU` >= 0.66) or the stream is within  30 meters of some form of infrastructure, whether that is roads, canals, or railroads (`oPC_Dist` <= 30).
+  - *Considerable Risk* is for streams where the model estimates that beaver dams are Occasional or Rare (1 <= `oCC_EX` <= 5) but the land is highly used (`iPC_LU` >= 0.66) or the stream is within 30 meters of some form of infrastructure, whether that's roads, canals, or railroads (`oPC_Dist` <= 30); OR where the model estimates that beaver dams are Frequent or Pervasive (`'oCC_EX` >= 5) and the stream is within 100 meters of some form of infrastructure (30 < `oPC_Dist` <= 100).
+  - *Minor Risk* is for streams where the model estimates that beaver dam capacity is Occasional or Rare (1 <= `oCC_EX` <= 5) and the stream is within 100 meters of some form of infrastructure (roads, canals, or railroads, 30 < `oPC_Dist` <= 100); OR where the model predicts that the stream can support dams (`oCC_EX` > 0) and the land is moderately used (0.33 <= `iPC_LU` <= 0.66) or the stream is within 300 meters of some form of infrastructure (100 < `oPC_Dist` <= 300).
+  - *Negligible Risk* is for a stream where the model predicts that the stream cannot currently support beaver dams (`oCC_EX` = 0), or a stream where the model predicts that dams can currently exist (`oCC_EX` > 0) but does not fall into the above categories.
 
 - **Restoration or Conservation Opportunities (`oPCRC_CR`)** identifies opportunities where low-risk restoration and conservation opportunities exist for using beaver in stream conservation
   and restoration. This management output consists of the following categories: i) ‘easiest - low
@@ -50,10 +50,28 @@ The **management output** layers include outputs that describe the limiting fact
 
   The field `oPCRC_CR` is calculated based on the following criteria:
 
-  - Easiest - Low-Hanging Fruit is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, and where the model estimates dams are already at least Occasional (`oCC_EX` >= 5) and where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3).
-  - Straight Forward - Quick Return is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates more than None existing dams and more than Frequent historic dams (`oCC_EX` > 1 and `oCC_HPE` > 5), where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3), and where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
-  - Strategic - Long-term Investment is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates almost no existing beaver dams (0 < `oCC_EX` < 1) but at least Occasional historic dams (`oCC_HPE` >= 5), where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
-  - Other/NA is for streams that don't fall into the above categories. Such areas are primarily streams classified as "Considerable Risk" or "Some Risk" in `oPBRC_UI`, though there are exceptions to that.
+  - *Easiest - Low-Hanging Fruit* is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, and where the model estimates dams are already at least Occasional (`oCC_EX` >= 5) and where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3).
+  - *Straight Forward - Quick Return* is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates more than None existing dams and more than Frequent historic dams (`oCC_EX` > 1 and `oCC_HPE` > 5), where the departure from historic conditions is at most three dams (`mCC_HisDep` <= 3), and where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
+  - *Strategic - Long-term Investment* is for streams that have been classified as "Negligible Risk" or "Minor Risk" in `oPBRC_UI`, where the model estimates almost no existing beaver dams (0 < `oCC_EX` < 1) but at least Occasional historic dams (`oCC_HPE` >= 5), where land usage is suitably low for beavers to return (`iPC_VLowLU` > 75 and `iPC_HighLU` < 10).
+  - *Other/NA* is for streams that don't fall into the above categories. Such areas are primarily streams classified as "Considerable Risk" or "Some Risk" in `oPBRC_UI`, though there are exceptions to that.
+
+- **Strategies to Promote Dam Building (`DamStrat`)** is an optional output that identifies possible management strategies based on existing dam building capacity, conservation/protected areas and conservation easements, observed dam locations, and land use intensity. These categories are less restrictive than the restoration or conservation opportunities, but ***are still a work in progress***. The following color scheme is used to illustrate these distinctions:
+
+   ![Legend_BRAT_Management_Restoration_or_Conservation_Opportunities]({{ site.baseurl }}/assets/images/BRAT_Legend_07_2019_DamStrats.PNG){: width="300" height="300"}
+
+   The classification is based on the following criteria:
+
+   - *1. Beaver conservation* is for streams where beaver dam-building activity has already been observed and land use intensity is low (i.e., not urban or agriculture - `iPC_LU` = 0).
+   - *2. Highest restoration potential - translocation* is for streams within conservation/protected areas (`ConsArea` = 1) or conservation easements (`ConsEase` = 1) where existing dam building capacity is at least 20 dams/km (`oCC_EX` >= 20)
+   - *3. High restoration potential* is for streams where existing dam building capacity is at least frequent (`oCC_EX` >= 5), departure from historic vegetation dam building capacity is low (`oVC_HPE` - `oVC_EX` < 4), and land use is not urban (`iPC_LU` <= 0.66)
+   - *3a. Vegetation restoration first-priority* is for streams where existing dam building capacity is at least frequent (`oCC_EX` >= 5), departure from historic vegetation dam building capacity is high (`oVC_HPE` - `oVC_EX` >= 4), and land use is not urban (`iPC_LU` <= 0.66)
+   - *4. Medium-low restoration potential* is for streams where existing dam building capacity is occasional (1 <= `oCC_EX` <5), departure from historic vegetation dam building capacity is low (`oVC_HPE` - `oVC_EX` < 4), and land use is not urban (`iPC_LU` <= 0.66)
+   - *4a. Vegetation restoration first-priority* is for streams where existing dam building capacity is occasional (1 <= `oCC_EX` <5), departure from historic vegetation dam building capacity is high (`oVC_HPE` - `oVC_EX` >= 4), and land use is not urban (`iPC_LU` <= 0.66)
+   - *5. Restoration with infrastructure modification* is for streams where existing dam building capacity is at least occasional (`oCC_EX` >=1) and the nearest infrastructure is within 30 meters (`oPC_Dist` <= 30)
+   - *6. Restoration with urban or agricultural modification* is for streams where existing dam building capacity is at least occasional (`oCC_EX` >= 1) and land use is urban or agricultural (`iPC_LU` >= 0.33)
+   - *Other* is for any streams that do not fall into the above categories (i.e., existing dam building capacity is rare or none - `oCC_EX` < 1)
+
+   
 
 ### Validation Layers
 
