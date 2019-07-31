@@ -7,9 +7,9 @@ Using the navigation menu, pyBRAT outputs (by version) are listed here for refer
 
 ## Contents 
 
-1. [BRAT v2.0 Outputs](http://brat.riverscapes.xyz/BRATData/Outputs/pyBRAT%20Outputs/WorkingWithBRATOutputs.html)
-2. [BRAT v3X Outputs](http://brat.riverscapes.xyz/BRATData/Outputs/pyBRAT%20Outputs/WorkingWithBRATv3XOutputs.html)
-3. [BRAT Attribute Fields](http://brat.riverscapes.xyz/BRATData/Outputs/pyBRAT%20Outputs/Glossary.html)
+1. [BRAT v2.0 Outputs](/BRATData/Outputs/WorkingWithBRATOutputs.html)
+2. [BRAT v3X Outputs](/BRATData/Outputs/WorkingWithBRATv3XOutputs.html)
+3. [BRAT Attribute Fields](/BRATData/Outputs/Glossary.html)
 
 ------
 <div align="center">

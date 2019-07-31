@@ -5,10 +5,11 @@ weight: 2
 ## Free Support
 
 The BRAT is reasonably well documented. See link below for help on understanding on how to use specific features of the BRAT model.   
-    <a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials"><i class="fa fa-youtube"></i>  BRAT Tutorials</a>  
+
+​    <a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials"><i class="fa fa-youtube"></i>  BRAT Tutorials</a>  
     
 
-</div>
+
 
 
 ## Background Research & Literature
@@ -24,7 +25,7 @@ The BRAT is reasonably well documented. See link below for help on understanding
 
 ## BRAT Workshops & Courses
 
-We teach [BRAT workshops]({{ site.baseurl }}/Documentation/Workshops) on occasion and those materials are available for reference. There are no specific courses taught publicly on BRAT, but  [Joe Wheaton](http://joewheaton.org) does cover BRAT in courses at Utah State University:
+We teach [BRAT workshops]({{ site.baseurl }}/Workshops) on occasion and those materials are available for reference. There are no specific courses taught publicly on BRAT, but  [Joe Wheaton](http://joewheaton.org) does cover BRAT in courses at Utah State University:
 -  Design Capstone in Management and Restoration of Aquatic Ecosystems ([WATS 5340](https://restoration-usu.github.io/WATS-5340-5350/Course_Topics/WATS_5340/2_Assessing_Condition.html)) 
 - Partnering with Beaver in Restoration Design ([WATS 6860](http://beaver.joewheaton.org/2018---usu-wats-6860.html))
 
@@ -62,7 +63,6 @@ None of the BRAT development or support happens without someone paying for it (c
 
 [![NAR]({{ site.baseurl }}/assets/images/logos/NA_Logo_150pxTall.png)](http://northarrowresearch.com/)
 [![USU]({{ site.baseurl }}/assets/images/logos/etal.png)](http://etal.joewheaton.org)
-
 
 ------
 <div align="center">
