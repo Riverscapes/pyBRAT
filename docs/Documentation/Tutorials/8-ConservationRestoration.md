@@ -1,5 +1,5 @@
 ---
-title: Conservation Restoration Model
+title: Step 8 - Conservation Restoration Model
 weight: 3
 ---
 
@@ -54,7 +54,6 @@ To remedy this BRAT has integrated multichannel line segments from the original 
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/7-BRATCombinedFIS"><i class="fa fa-arrow-circle-left"></i> Back to Step 7 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/9-DataValidation"><i class="fa fa-arrow-circle-right"></i> Continue to Step 9 </a>
 </div>	
-
 ------
 <div align="center">
 

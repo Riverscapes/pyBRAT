@@ -1,5 +1,5 @@
 ---
-title: Step 8 - Data Validation (Optional)
+title: Step 9 - Data Validation (Optional)
 weight: 10
 ---
 
@@ -52,7 +52,6 @@ To remedy this BRAT has integrated multichannel line segments from the original 
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/8-ConservationRestoration"><i class="fa fa-arrow-circle-left"></i> Back to Step 8 </a>
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/10-SummaryProduct"><i class="fa fa-arrow-circle-right"></i> Continue to Step 10 </a>
 </div>	
-
 ------
 <div align="center">
 
