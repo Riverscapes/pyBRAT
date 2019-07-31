@@ -19,7 +19,7 @@ reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(projPath, in_network, out_name):
+def main(projPath, in_network, out_name, surveyed_dams = None, conservation_areas = None, conservation_easements = None):
     arcpy.env.overwriteOutput = True
 
     out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
@@ -65,22 +65,22 @@ def main(projPath, in_network, out_name):
                 row[0] = "Negligible Risk"
             elif ipc_canal <=20:
                 # if canals are within 20 meters (usually means canal is on the reach)
-                row[0] = "Considerable Risk"
+                row[0] = "Major Risk"
             else:
                 # if infrastructure within 30 m or land use is high
                 # if capacity is frequent or pervasive risk is considerable
                 # if capaicty is rare or ocassional risk is some
                 if opc_dist <= 30 or ipc_lu >= 0.66:
                     if occ_ex >= 5.0:
-                        row[0] = "Considerable Risk"
+                        row[0] = "Major Risk"
                     else:
-                        row[0] = "Some Risk"
+                        row[0] = "Considerable Risk"
                 # if infrastructure within 30 to 100 m
                 # if capacity is frequent or pervasive risk is some
-                # if capaicty is rare or ocassional risk is minor
+                # if capacity is rare or ocassional risk is minor
                 elif opc_dist <= 100:
                     if occ_ex >= 5.0:
-                        row[0] = "Some Risk"
+                        row[0] = "Considerable Risk"
                     else:
                         row[0] = "Minor Risk"
                 # if infrastructure within 100 to 300 m or land use is 0.33 to 0.66 risk is minor
@@ -121,7 +121,7 @@ def main(projPath, in_network, out_name):
                 elif splow >= 190 or sp2 >= 2400:
                     row[1] = "Stream Power Limited"
                 else:
-                    row[1] = "...TBD..."
+                    row[1] = "Stream Size Limited"
             else:
                 row[1] = 'Dam Building Possible'
 
@@ -161,6 +161,96 @@ def main(projPath, in_network, out_name):
                 row[2] = 'NA'
             cursor.updateRow(row)
 
+
+    if conservation_area is not None and surveyed_dams is not None:
+        # beaver dam management strategies (derived from TNC project)
+        with arcpy.da.UpdateCursor(out_network, ["ObsDam", "ConsArea", "ConsEase"]) as cursor:
+            for row in cursor:
+                row[0] = "No"
+                row[1] = "No"
+                row[2] = "No"
+                cursor.updateRow(row)
+
+        network_lyr = arcpy.MakeFeatureLayer_management(out_network, "network_lyr")
+
+        dams = os.path.join(projPath, 'tmp_snapped_dams.shp')
+        arcpy.CopyFeatures_management(surveyed_dams, dams)
+        arcpy.Snap_edit(dams, [[out_network, 'EDGE', '60 Meters']])
+        arcpy.SelectLayerByLocation_management(network_lyr, "INTERSECT", dams, '', "NEW_SELECTION")
+        with arcpy.da.UpdateCursor(network_lyr, ["ObsDam"]) as cursor:
+            for row in cursor:
+                row[0] = "Yes"
+                cursor.updateRow(row)
+
+        arcpy.SelectLayerByLocation_management(network_lyr, "INTERSECT", conservation_areas, '', "NEW_SELECTION")
+        with arcpy.da.UpdateCursor(network_lyr, ["ConsArea"]) as cursor:
+            for row in cursor:
+                row[0] = "Yes"
+                cursor.updateRow(row)
+
+        arcpy.SelectLayerByLocation_management(network_lyr, "INTERSECT", conservation_easements, '', "NEW_SELECTION")
+        with arcpy.da.UpdateCursor(network_lyr, ["ConsEase"]) as cursor:
+            for row in cursor:
+                row[0] = "Yes"
+                cursor.updateRow(row)
+
+        with arcpy.da.UpdateCursor(out_network, fields) as cursor:
+            for row in cursor:
+                # 'oPBRC_UI' Negligible Risk or Minor Risk
+                opbrc_ui = row[0]
+                hist_veg = row[3]
+                curr_veg = row[4]
+                curr_dams = row[6]
+                infrastructure_dist = row[11]
+                landuse = row[12]
+                obs_dams = row[18]
+                protected = row[19]
+                easement = row[20]
+
+                hist_veg_departure = hist_veg - curr_veg
+                urban = landuse > 0.66
+                ag = 0.33 < landuse <= 0.66
+                no_urban = not urban
+                no_ag = not ag
+
+                # default category is 'Other'
+                row[15] = 'Other'
+
+                if curr_dams >= 5:
+                    if no_urban:
+                        if hist_veg_departure >= 4:
+                            row[15] = "3a. Vegetation restoration first-priority"
+                        else:
+                            row[15] = "3. High restoration potential"
+
+                if curr_dams >= 20 and protected == 'Yes':
+                    row[15] = "2. Highest restoration potential - translocation"
+
+                if curr_dams >= 20 and easement == 'Yes':
+                    row[15] = "2. Highest restoration potential - translocation"
+
+                if 1 <= curr_dams < 5 and no_urban:
+                    if hist_veg_departure >= 4:
+                        row[15] = "4a. Vegetation restoration first-priority"
+                    else:
+                        row[15] = "4. Medium-low restoration potential"
+
+                if curr_dams >= 1 and infrastructure_dist <= 30:
+                    row[15] = "5. Restoration with infrastructure modification"
+
+                if curr_dams >= 1 and urban:
+                    row[15] = "6. Restoration with urban or agricultural modification"
+
+                if curr_dams >= 1 and ag:
+                    row[15] = "6. Restoration with urban or agricultural modification"
+
+                if obs_dams == 'Yes' and no_urban and no_ag:
+                    row[15] = "1. Beaver conservation"
+
+                cursor.updateRow(row)
+
+        arcpy.Delete_management(dams)
+        
     makeLayers(out_network)
 
     write_xml(in_network, out_network)
@@ -181,15 +271,20 @@ def makeLayers(out_network):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
     
-    #management_zones_symbology = os.path.join(symbologyFolder, "Beaver_Management_Zones_v2.lyr")
+    strategy_map_symbology = os.path.join(symbologyFolder, "StrategiestoPromoteDamBuilding.lyr")
     limitations_dams_symbology = os.path.join(symbologyFolder, "UnsuitableorLimitedDamBuildingOpportunities.lyr")
     undesirable_dams_symbology = os.path.join(symbologyFolder, "RiskofUndesirableDams.lyr")
     conservation_restoration_symbology = os.path.join(symbologyFolder, "RestorationorConservationOpportunities.lyr")
-
-    # make_layer(output_folder, out_network, "Beaver Management Zones", management_zones_symbology, is_raster=False)
+    
     make_layer(output_folder, out_network, "Unsuitable or Limited Dam Building Opportunities", limitations_dams_symbology, is_raster=False, symbology_field ='oPBRC_UD')
     make_layer(output_folder, out_network, "Risk of Undesirable Dams", undesirable_dams_symbology, is_raster=False, symbology_field ='oPBRC_UI')
     make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", conservation_restoration_symbology, is_raster=False, symbology_field ='oPBRC_CR')
+
+    # only try making strategies map layer if 'DamStrat' in fields
+    fields = [f.name for f in arcpy.ListFields(out_network)]
+    if 'DamStrat' in fields:
+        make_layer(output_folder, out_network, "Strategies to Promote Dam Building", strategy_map_symbology, is_raster=False, symbology_field='DamStrat')
+
 
 def write_xml(in_network, out_network):
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
