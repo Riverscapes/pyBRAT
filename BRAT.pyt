@@ -682,7 +682,7 @@ class Data_Capture_Validation_tool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        param2.value = "Data_Validation"
+        param1.value = "Data_Validation"
 
         param2 = arcpy.Parameter(
             displayName="Select beaver dam shape file",
