@@ -83,7 +83,7 @@ def main(in_network, output_name, dams=None, DA_threshold=None):
     #if dams:
     #    make_electivity_table(output_network, output_name)
 
-    write_xml(proj_path, in_network, output_network, plot_name)
+    write_xml(proj_path, in_network, output_network, None)
 
     makeLayers(output_network, dams)
 
@@ -333,7 +333,7 @@ def makeLayers(output_network, dams):
     tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(tribCodeFolder, 'BRATSymbology')
 
-    dam_symbology = os.path.join(symbologyFolder, "SurveyedBeaverDamLocations.lyr")
+    dam_symbology = os.path.join(symbology_folder, "SurveyedBeaverDamLocations.lyr")
     historic_remaining_symbology = os.path.join(symbology_folder, "PercentofHistoricDamCapacityRemaining.lyr")
     pred_v_surv_symbology = os.path.join(symbology_folder, "PredictedDamCountvs.SurveyedDamCount.lyr")
     management_strategies_symbology = os.path.join(symbology_folder, "CurrentBeaverDamManagementStrategies.lyr")
@@ -496,7 +496,7 @@ def write_xml(proj_path, in_network, out_network, plot_name):
     analysis_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
 
     write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Summary Report", out_network, proj_path)
-    write_xml_element_with_path(xml_file, analysis_element, "Plot", "Observed vs. Predicted Plot", plot_name, proj_path)
+    """write_xml_element_with_path(xml_file, analysis_element, "Plot", "Observed vs. Predicted Plot", plot_name, proj_path)"""
 
     xml_file.write()
 
