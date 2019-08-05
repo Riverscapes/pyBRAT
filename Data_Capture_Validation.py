@@ -20,6 +20,7 @@ reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, make_folder, find_available_num_suffix, find_available_num_prefix, make_layer
 
+
 def main(in_network, output_name, dams=None, DA_threshold=None):
     """
     The main function
@@ -495,7 +496,7 @@ def write_xml(proj_path, in_network, out_network, plot_name):
     path_element = xml_file.find_by_text(in_network_rel_path)
     analysis_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
 
-    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Summary Report", out_network, proj_path)
+    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Data Validation", out_network, proj_path)
     """write_xml_element_with_path(xml_file, analysis_element, "Plot", "Observed vs. Predicted Plot", plot_name, proj_path)"""
 
     xml_file.write()
