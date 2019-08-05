@@ -61,6 +61,8 @@ def main(
     scratch = 'in_memory'
     #arcpy.env.workspace = scratch
     arcpy.env.overwriteOutput = True
+    arcpy.env.outputZFlag= False
+    arcpy.env.outputMFlag = False
     arcpy.CheckOutExtension("Spatial")
 
     # --check input projections--
@@ -122,7 +124,7 @@ def main(
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
         arcpy.AddMessage('Adding "iPC" attributes to network...')
-        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose)
+        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose, perennial_network)
 
     if perennial_network is not None:
         find_is_perennial(seg_network_copy, perennial_network)
@@ -563,7 +565,7 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
 
 # conflict potential function
 # calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
-def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose):
+def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose,perennial_network):
     # create temp directory
     if is_verbose:
         arcpy.AddMessage("Deleting and remaking temp dir...")
@@ -1027,13 +1029,13 @@ def make_layers(out_network):
     symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
     dist_to_infrastructure_symbology = os.path.join(symbology_folder, "DistancetoClosestInfrastructure.lyr")
-    dist_to_road_in_valley_bottom_symbology = os.path.join(symbology_folder, "DistancetoRoadinValley_Bottom.lyr")
+    dist_to_road_in_valley_bottom_symbology = os.path.join(symbology_folder, "DistancetoRoadinValleyBottom.lyr")
     dist_to_road_crossing_symbology = os.path.join(symbology_folder, "DistancetoRoadCrossing.lyr")
     dist_to_road_symbology = os.path.join(symbology_folder, "DistancetoRoad.lyr")
     dist_to_railroad_in_valley_bottom_symbology = os.path.join(symbology_folder, "DistancetoRailroadinValleyBottom.lyr")
     dist_to_railroad_symbology = os.path.join(symbology_folder, "DistancetoRailroad.lyr")
     dist_to_canal_symbology = os.path.join(symbology_folder, "DistancetoCanal.lyr")
-    pts_diversion_symbology = os.path.join(symbology_folder, "PointsofDiversion.lyr")
+    #pts_diversion_symbology = os.path.join(symbology_folder, "PointsofDiversion.lyr")
     dist_to_pts_diversion_symbology = os.path.join(symbology_folder, "DistancetoPointsofDiversion.lyr")
     land_use_symbology = os.path.join(symbology_folder, "LandUseIntensity.lyr")
     land_ownership_per_reach_symbology = os.path.join(symbology_folder, "LandOwnershipperReach.lyr")
@@ -1047,11 +1049,11 @@ def make_layers(out_network):
     make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
     make_layer(topo_folder, out_network, "Reach Slope", slope_symbology, is_raster=False)
     make_layer(topo_folder, out_network, "Upstream Drainage Area", drain_area_symbology, is_raster=False)
-    if diversion_pts:
-        try:
-            make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
-        except Exception as err:
-            print err
+    #if diversion_pts:
+        #try:
+            #make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
+        #except Exception as err:
+            #print err
             
     fields = [f.name for f in arcpy.ListFields(out_network)]
     if 'iPC_LU' in fields:
@@ -1089,7 +1091,7 @@ def handle_braids(seg_network_copy, canal, proj_path, find_clusters, perennial_n
     temp_dir = os.path.join(proj_path, 'Temp')
     if not os.path.exists(temp_dir):
         os.mkdir(temp_dir)
-    FindBraidedNetwork.main(seg_network_copy, canal, temp_dir, perennial_network, is_verbose)
+    #FindBraidedNetwork.main(seg_network_copy, canal, temp_dir, perennial_network, is_verbose)
 
     if find_clusters:
         arcpy.AddMessage("Finding Clusters...")
