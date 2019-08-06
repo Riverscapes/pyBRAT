@@ -12,7 +12,7 @@ We have taught a variety of BRAT workshops <i class="fa fa-users"></i> for speci
 
 ![JohnDayWorkshopUsers]({{ site.baseurl }}/assets/images/JohnDayWorkshopUsers.png)
 
-_Participants of [John Day BRAT Workshop]({{ site.baseurl }}/Documentation/Workshops/2018/johnday) doing a field excercise to assess capacity._
+_Participants of [John Day BRAT Workshop]({{ site.baseurl }}/Workshops/2018/johnday) doing a field excercise to assess capacity._
 
 Browse the sub-menu (by year → Project) for a partial listing of past workshop materials.
 
