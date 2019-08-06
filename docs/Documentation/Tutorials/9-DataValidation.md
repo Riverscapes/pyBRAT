@@ -1,6 +1,6 @@
 ---
 title: Step 9 - Data Validation (Optional)
-weight: 10
+weight: 11
 ---
 
 # Using the Data Validation tool (Optional)
