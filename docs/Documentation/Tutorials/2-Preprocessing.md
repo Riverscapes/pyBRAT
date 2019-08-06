@@ -1,4 +1,4 @@
-﻿---
+---
 title: Step 2 - Preprocessing Input Data
 weight: 2
 ---
