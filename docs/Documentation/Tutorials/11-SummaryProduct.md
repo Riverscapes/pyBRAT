@@ -1,6 +1,6 @@
 ---
 title: Step 11 - Collect Summary Products (Optional)
-weight: 11
+weight: 13
 ---
 ## Purpose of the Collect Summary Products tool
 
