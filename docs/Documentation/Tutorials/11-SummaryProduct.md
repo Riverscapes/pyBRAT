@@ -38,11 +38,11 @@ The output Excel file will include a sheet for each of the following, given that
 * **Electivity Index**: Comparison between BRAT existing capacity and surveyed dam density, with the proportion of the stream network length classified as pervasive, frequent, occasional, rare, or none calculated for each. The ratio of these values represents an electivity index, a measure of selection where values greater than 1 represent areas that are "preferred" and values less than 1 represent areas that are "avoided". These values should increase from none to pervasive if the model is performing well.
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/10-LayerPackageGenerator"><i class="fa fa-arrow-circle-left"></i> Back to Step 10 </a>
+	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/10-LayerPackageGenerator"><i class="fa fa-arrow-circle-left"></i> Back to Step 10 </a>
 
 
 
-​		<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/StepByStep/12-BDWS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 12 </a>
+​		<a class="hollow button" href="{{ site.baseurl }}/Documentation/Tutorials/12-BDWS"><i class="fa fa-arrow-circle-right"></i> Continue to Step 12 </a>
 
 </div>	
 
