@@ -1,10 +1,6 @@
 ---
 title: Step 8 - Conservation Restoration Model
-weight: 3
----
-
 weight: 10
----
 
 # Using the Conservation Restoration tool (Optional)
 
