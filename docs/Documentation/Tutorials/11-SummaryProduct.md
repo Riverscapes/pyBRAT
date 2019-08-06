@@ -28,7 +28,6 @@ The output Excel file will include a sheet for each of the following, given that
 * **Historic Dam Building Capacity**: Overall stream length and proportion of reaches classified as pervasive, frequent, occasional, rare, or none based on the historic dam building capacity `oCC_HPE`.
 * **Historic Dam Complex Size**: Overall stream length and proportion of reaches classified as large complex, medium complex, small complex, single dam, or no dams based on the historic dam complex size `mCC_HPE_CT`.
 * **Existing vs. Historic Capacity**: A comparison of existing and historic dam capacity based on capacity category (e.g., pervasive, frequent, occasional, rare, none). Estimated existing dam capacity, historic dam capacity, and percent loss are calculated for each category.
-
 * **Conservation Restoration**: Overall stream length and proportion of reaches classified as into the conservation restoration categories based on the `oPBRC_CR` field from the conservation restoration tool.
 * **Unsuitable or Limited**: Overall stream length and proportion of reaches classified as into the unsuitable/limited opportunities categories based on the `oPBRC_UD` field from the conservation restoration tool.
 * **Undesirable Dams**: Overall stream length and proportion of reaches classified as into the risk of undesirable dams categories based on the `oPBRC_UI` field from the conservation restoration tool.
