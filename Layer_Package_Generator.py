@@ -10,11 +10,12 @@
 
 import arcpy
 import os
+import glob
 from SupportingFunctions import find_folder, find_available_num_prefix, make_folder, make_layer
 import re
 
 
-def main(output_folder, layer_package_name, clipping_network=None):
+def main(output_folder, layer_package_name, clipping_network):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
@@ -25,8 +26,14 @@ def main(output_folder, layer_package_name, clipping_network=None):
 
     arcpy.env.overwriteOutput = 'TRUE'
 
+    if clipping_network == "None":
+        clipping_network = None
+
     if layer_package_name == None:
-        layer_package_name = "LayerPackage"
+        if clipping_network is not None:
+            layer_package_name = "LayerPackage_Clipped"
+        else:
+            layer_package_name = "LayerPackage"
 
     validate_inputs(output_folder)
 
@@ -41,14 +48,136 @@ def main(output_folder, layer_package_name, clipping_network=None):
     try:
         check_for_layers(intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder)
     except Exception as err:
-        arcpy.AddMessage(
-            "Something went wrong while checking for layers. The process will package the layers that exist.")
+        arcpy.AddMessage("Something went wrong while checking for layers. The process will package the layers that exist.")
         arcpy.AddMessage("The error message thrown was the following:")
         arcpy.AddWarning(err)
 
-    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder,
-                       layer_package_name, clipping_network)
+    if clipping_network:
+        brat_table_clip, network_clip, cons_rest_clip, valid_clip = create_clipped_layers(output_folder, clipping_network, symbologyFolder)
 
+    make_layer_package(output_folder, intermediatesFolder, analysesFolder, inputsFolder, symbologyFolder, layer_package_name, clipping_network)
+
+
+def create_clipped_layers(output_folder, clipping_network, symbologyFolder):
+    """ Makes clipped layers of all BRAT outputs
+    param output_folder: folder where BRAT outputs will be found
+    param clipping_network: network which BRAT outputs will be clipped to (e.g. the perennial)
+    param symbologyFolder: folder where standardized BRAT layers are found
+    """
+    arcpy.AddMessage("Making clipped layers.....")
+    proj_path = os.path.dirname(os.path.dirname(output_folder))
+    intermediates_folder = find_folder(output_folder, 'Intermediates')
+    analyses_folder = find_folder(output_folder, 'Analyses')
+    buffer_folder = find_folder(intermediates_folder, "Buffers")
+    
+    # find relevant files
+    network = find_file(proj_path, 'Inputs/*[0-9]*_Network/Network_*[0-9]*/*.shp')
+    brat_table_file = find_BRAT_table_output(intermediates_folder)
+    conservation_restoration_file = find_shape_file_with_field(analyses_folder, "oPBRC_CR")
+    validation_file = find_shape_file_with_field(analyses_folder, "ExCategor")
+
+    # clip all files
+    network_clip = clip_file(network, clipping_network)
+    brat_table_clip = clip_file(brat_table_file, clipping_network)
+    cons_rest_clip = clip_file(conservation_restoration_file, clipping_network)
+    if validation_file is not None:
+        valid_clip = clip_file(validation_file, clipping_network)
+    else:
+        valid_clip = None
+
+    # make new network layer
+    make_clipped_layers(os.path.dirname(network), network_clip, clipping_network, symbologyFolder)
+
+    # make new buffers
+    buf_30_symbol = os.path.join(symbologyFolder, "buffer_30m.lyr")
+    buf_100_symbol = os.path.join(symbologyFolder, "buffer_100m.lyr")
+    buf_30m = os.path.join(buffer_folder, "buffer_30m_clipped.shp")
+    buf_100m = os.path.join(buffer_folder, "buffer_100m_clipped.shp")
+    arcpy.Buffer_analysis(network_clip, buf_100m, "100 Meters", "", "ROUND")
+    arcpy.Buffer_analysis(network_clip, buf_30m, "30 Meters", "", "ROUND")
+    make_layer(buffer_folder, buf_30m, "30 m Buffer", buf_30_symbol, file_name= "30mBuffer_clipped.lyr")
+    make_layer(buffer_folder, buf_100m, "100 m Buffer", buf_100_symbol, file_name= "100mBuffer_clipped.lyr")
+               
+    # make new intermediates layers
+    inter_folders = []
+    inter_folders = filter(lambda x: os.path.isdir(os.path.join(intermediates_folder, x)), os.listdir(intermediates_folder))
+    perennial_folder = find_folder(intermediates_folder, "Perennial")
+    if os.path.basename(buffer_folder) in inter_folders:
+        inter_folders.remove(os.path.basename(buffer_folder))
+    if os.path.basename(perennial_folder) in inter_folders:
+	inter_folders.remove(os.path.basename(perennial_folder))
+    if len(inter_folders) > 0:
+        for folder_name in inter_folders:
+            folder = os.path.join(intermediates_folder, folder_name)
+            make_clipped_layers(folder, brat_table_clip, clipping_network, symbologyFolder)
+
+    # make new analyses layers
+    capacity_folder = find_folder(analyses_folder, "Capacity")
+    historic_folder = find_folder(capacity_folder, "HistoricCapacity")
+    existing_folder = find_folder(capacity_folder, "ExistingCapacity")
+    management_folder = find_folder(analyses_folder, "Management")
+    validation_folder = find_folder(analyses_folder, "Validation")
+    analyses_folders = [capacity_folder, historic_folder, existing_folder, management_folder]
+    if len(analyses_folders) > 0:
+        for folder in analyses_folders:
+            make_clipped_layers(folder, cons_rest_clip, clipping_network, symbologyFolder)
+    if validation_file is not None:
+        make_clipped_layers(validation_folder, valid_clip, clipping_network, symbologyFolder)
+
+    return brat_table_clip, network_clip, cons_rest_clip, valid_clip
+        
+
+def clip_file(shapefile, clipping_network):
+    """ Clips BRAT outputs to clipping network with standardized name
+    param shapefile: BRAT output to be clipped
+    param clipping_network: polyline to clip BRAT outputs to
+    """
+    if os.path.exists(shapefile):
+        perennial_shapefile = shapefile.split('.')[0] + "_Perennial.shp"
+        if os.path.exists(perennial_shapefile):
+            arcpy.AddMessage('.........Using previously clipped ' + os.path.basename(perennial_shapefile))
+            return perennial_shapefile
+        elif shapefile.endswith('_Perennial.shp') or shapefile.endswith('_clipped.shp'):
+            arcpy.AddMessage('.........Using previously clipped ' + os.path.basename(shapefile))
+            return shapefile
+        else:
+            try:
+                out_name = shapefile.split('.')[0] + "_clipped.shp"
+                arcpy.Clip_analysis(shapefile, clipping_network, out_name)
+                return out_name
+            except Exception as err:
+                print err
+    else:
+        arcpy.AddMessage("WARNING: Could not find " + shapefile + " to make clipped layers")
+
+
+def make_clipped_layers(folder, shapefile, clipping_network, symbologyFolder):
+    """ Makes clipped layers for all layer in folder based on shapefile that has been clipped
+    param folder: folder where old layers will be found and new clipped layers stored
+    param shapefile: shapefile layers will be based off
+    param symbologyFolder: folder where base layers will be found
+    """
+    lyrs = find_layers_in_folder(folder, None)
+    for lyr in lyrs[:]:
+        if lyr.endswith('_clipped.lyr'):
+            lyrs.remove(lyr)
+        if os.path.basename(lyr) == 'SurveyedBeaverDamLocations.lyr':
+            lyrs.remove(lyr)
+    for lyr in lyrs:
+        name = os.path.basename(lyr)
+        symbology = os.path.join(symbologyFolder, name)
+        desc = arcpy.Describe(lyr)
+        out_name = str(desc.nameString)
+        out_file = name.split('.')[0]+'_clipped.lyr'
+        if os.path.exists(os.path.join(folder, out_file)):
+            arcpy.Delete_management(os.path.join(folder, out_file))
+        if os.path.exists(symbology):
+            try:
+                make_layer(folder, shapefile, new_layer_name=out_name, symbology_layer=symbology, is_raster=False, file_name=out_file)
+            except Exception as err:
+                arcpy.AddMessage("WARNING: Failed to make " + out_file +". Error thrown was:")
+                arcpy.AddMessage(err)
+        
 
 def validate_inputs(output_folder):
     """
@@ -90,41 +219,25 @@ def check_intermediates(intermediates_folder, symbologyFolder):
 
     check_buffer_layers(intermediates_folder, symbologyFolder)
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "UpstreamDrainageArea.lyr", brat_table_file,
-                             "TopographicMetrics", "Upstream Drainage Area", "iGeo_DA")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "ReachSlope.lyr", brat_table_file,
-                             "TopographicMetrics", "Reach Slope", "iGeo_Slope")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "UpstreamDrainageArea.lyr", brat_table_file, "TopographicMetrics", "Upstream Drainage Area", "iGeo_DA")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "ReachSlope.lyr", brat_table_file, "TopographicMetrics", "Reach Slope", "iGeo_Slope")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "LandUseIntensity.lyr", brat_table_file,
-                             "AnthropogenicMetrics", "Land Use Intensity", "iPC_LU")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr",
-                             brat_table_file, "AnthropogenicMetrics", "Distance to Canals & Ditches", "iPC_Canal")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr",
-                             brat_table_file, "AnthropogenicMetrics", "Distance to Closest Infrastructure", "oPC_Dist")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr",
-                             brat_table_file, "AnthropogenicMetrics", "Distance to Railroad", "iPC_Rail")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr",
-                             brat_table_file, "AnthropogenicMetrics", "Distance to Railroad in Valley Bottom",
-                             "iPC_RailVB")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr",
-                             brat_table_file, "AnthropogenicMetrics", "Distance to Road Crossing", "iPC_RoadX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr",
-                             brat_table_file, "AnthropogenicMetrics", "Distance to Road", "iPC_Road")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr",
-                             brat_table_file, "AnthropogenicMetrics", "Distance to Road in Valley Bottom", "iPC_RoadVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "LandUseIntensity.lyr", brat_table_file, "AnthropogenicMetrics", "Land Use Intensity", "iPC_LU")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Canals & Ditches", "iPC_Canal")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Closest Infrastructure", "oPC_Dist")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad", "iPC_Rail")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Railroad in Valley Bottom", "iPC_RailVB")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road Crossing", "iPC_RoadX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road", "iPC_Road")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "DistancetoClosestInfrastructure.lyr", brat_table_file, "AnthropogenicMetrics", "Distance to Road in Valley Bottom", "iPC_RoadVB")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "AnabranchTypes.lyr", brat_table_file,
-                             "AnabranchHandler", "Anabranch Types", "IsMainCh")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "AnabranchTypes.lyr", brat_table_file, "AnabranchHandler", "Anabranch Types", "IsMainCh")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "HighflowStreamPower.lyr", brat_table_file,
-                             "Hydrology", "Highflow Stream Power", "iHyd_SP2")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "BaseflowStreamPower.lyr", brat_table_file,
-                             "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "HighflowStreamPower.lyr", brat_table_file, "Hydrology", "Highflow Stream Power", "iHyd_SP2")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "BaseflowStreamPower.lyr", brat_table_file, "Hydrology", "Baseflow Stream Power", "iHyd_SPLow")
 
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "ExistingVegDamBuildingCapacity.lyr",
-                             brat_table_file, "VegDamCapacity", "Existing Veg Dam Building Capacity", "oVC_EX")
-    check_intermediate_layer(intermediates_folder, symbologyFolder, "HistoricVegDamBuildingCapacity.lyr",
-                             brat_table_file, "VegDamCapacity", "Historic Veg Dam Building Capacity", "oVC_HPE")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "ExistingVegDamBuildingCapacity.lyr", brat_table_file, "VegDamCapacity", "Existing Veg Dam Building Capacity", "oVC_EX")
+    check_intermediate_layer(intermediates_folder, symbologyFolder, "HistoricVegDamBuildingCapacity.lyr", brat_table_file, "VegDamCapacity", "Historic Veg Dam Building Capacity", "oVC_HPE")
 
 
 def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_layer_name, brat_table_file, folder_name,
@@ -142,7 +255,7 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
     :return:
     """
     fields = [f.name for f in arcpy.ListFields(brat_table_file)]
-    if field_for_layer not in fields:  # we don't want to create the layer if the field isn't in the BRAT table file
+    if field_for_layer not in fields: # we don't want to create the layer if the field isn't in the BRAT table file
         return
 
     if layer_file_name is None:
@@ -152,12 +265,12 @@ def check_intermediate_layer(intermediates_folder, symbology_folder, symbology_l
     layer_folder = find_folder(intermediates_folder, folder_name)
 
     if layer_folder is None:
-        layer_folder = make_folder(intermediates_folder,
-                                   find_available_num_prefix(intermediates_folder) + "_" + folder_name)
+        layer_folder = make_folder(intermediates_folder, find_available_num_prefix(intermediates_folder) + "_" + folder_name)
 
     layer_path = os.path.join(layer_folder, layer_file_name)
     if not layer_path.endswith(".lyr"):
         layer_path += '.lyr'
+
     if not os.path.exists(layer_path):
         make_layer(layer_folder, brat_table_file, layer_name, layer_symbology, file_name=layer_file_name)
 
@@ -204,12 +317,12 @@ def check_buffer_layers(intermediates_folder, symbology_folder):
     buffer_100m = os.path.join(buffer_folder, "buffer_100m.shp")
     buffer_100m_layer = os.path.join(buffer_folder, "100mBuffer.lyr")
     buffer_100m_symbology = os.path.join(symbology_folder, "buffer_100m.lyr")
-    check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology, is_raster=False, layer_name='100 m Buffer')
+    check_layer(buffer_100m_layer, buffer_100m, buffer_100m_symbology, is_raster= False, layer_name ='100 m Buffer')
 
     buffer_30m = os.path.join(buffer_folder, "buffer_30m.shp")
     buffer_30m_layer = os.path.join(buffer_folder, "30mBuffer.lyr")
     buffer_30m_symbology = os.path.join(symbology_folder, "buffer_30m.lyr")
-    check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology, is_raster=False, layer_name='30 m Buffer')
+    check_layer(buffer_30m_layer, buffer_30m, buffer_30m_symbology, is_raster= False, layer_name ='30 m Buffer')
 
 
 def check_analyses(analyses_folder, symbology_folder):
@@ -224,25 +337,17 @@ def check_analyses(analyses_folder, symbology_folder):
     existing_capacity_folder = find_folder(capacity_folder, "ExistingCapacity")
     management_folder = find_folder(analyses_folder, "Management")
 
-    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Building Capacity", symbology_folder,
-                         "ExistingDamBuildingCapacity.lyr", "oCC_EX")
-    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder,
-                         "HistoricDamBuildingCapacity.lyr", "oCC_HPE")
-    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder,
-                         "ExistingDamComplexSize.lyr", "mCC_EX_Ct")
-    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder,
-                         "HistoricDamComplexSize.lyr", "mCC_HPE_Ct")
+    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Building Capacity", symbology_folder, "ExistingDamBuildingCapacity.lyr", "oCC_EX")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Building Capacity", symbology_folder, "HistoricDamBuildingCapacity.lyr", "oCC_HPE")
+    check_analyses_layer(analyses_folder, existing_capacity_folder, "Existing Dam Complex Size", symbology_folder, "ExistingDamComplexSize.lyr", "mCC_EX_Ct")
+    check_analyses_layer(analyses_folder, historic_capacity_folder, "Historic Dam Complex Size", symbology_folder, "HistoricDamComplexSize.lyr", "mCC_HPE_Ct")
 
-    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Dam Building Opportunities",
-                         symbology_folder, "UnsuitableorLimitedDamBuildingOpportunities.lyr", "pPBRC_UD")
-    check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams", symbology_folder,
-                         "RiskofUndesirableDams.lyr", "pPBRC_UI")
-    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities",
-                         symbology_folder, "RestorationorConservationOpportunities.lyr", "pPBRC_CR")
+    check_analyses_layer(analyses_folder, management_folder, "Unsuitable or Limited Dam Building Opportunities", symbology_folder, "UnsuitableorLimitedDamBuildingOpportunities.lyr", "oPBRC_UD")
+    check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams", symbology_folder, "RiskofUndesirableDams.lyr", "oPBRC_UI")
+    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities", symbology_folder, "RestorationorConservationOpportunities.lyr", "oPBRC_CR")
 
 
-def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbology_folder, symbology_file_name,
-                         field_name, layer_file_name=None):
+def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbology_folder, symbology_file_name, field_name, layer_file_name=None):
     """
     Checks if an analyses layer exists. If it does not, it looks for a shape file that can create the proper symbology.
     If it finds a proper shape file, it creates the layer that was missing
@@ -258,7 +363,7 @@ def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbolo
         layer_file_name = layer_name.replace(" ", "") + ".lyr"
 
     layer_file = os.path.join(layer_base_folder, layer_file_name)
-    if os.path.exists(layer_file):  # if the layer already exists, we don't care, we can exit the function
+    if os.path.exists(layer_file): # if the layer already exists, we don't care, we can exit the function
         return
 
     shape_file = find_shape_file_with_field(analyses_folder, field_name)
@@ -268,6 +373,7 @@ def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbolo
     layer_symbology = os.path.join(symbology_folder, symbology_file_name)
 
     make_layer(layer_base_folder, shape_file, layer_name, symbology_layer=layer_symbology)
+
 
 
 def find_shape_file_with_field(folder, field_name):
@@ -322,7 +428,7 @@ def check_inputs(inputs_folder, symbology_folder):
     network_symbology = os.path.join(symbology_folder, "Network.lyr")
     landuse_symbology = os.path.join(symbology_folder, "Land_Use_Raster.lyr")
     land_ownership_symbology = os.path.join(symbology_folder, "SurfaceManagementAgency.lyr")
-    canals_symbology = os.path.join(symbology_folder, "CanalsDitches.lyr")
+    canals_symbology = os.path.join(symbology_folder, "Canals.lyr")
     roads_symbology = os.path.join(symbology_folder, "Roads.lyr")
     railroads_symbology = os.path.join(symbology_folder, "Railroads.lyr")
     valley_bottom_symbology = os.path.join(symbology_folder, "ValleyBottom_Fill.lyr")
@@ -330,26 +436,17 @@ def check_inputs(inputs_folder, symbology_folder):
     flow_direction_symbology = os.path.join(symbology_folder, "FlowDirection.lyr")
 
     ex_veg_destinations = find_destinations(ex_veg_folder)
-    make_input_layers(ex_veg_destinations, "Existing Vegetation Suitability for Beaver Dam Building",
-                      symbology_layer=ex_veg_suitability_symbology, is_raster=True, file_name="ExVegSuitability")
-    make_input_layers(ex_veg_destinations, "Existing Riparian", symbology_layer=ex_veg_riparian_symbology,
-                      is_raster=True)
-    make_input_layers(ex_veg_destinations, "Veg Type - EVT Type", symbology_layer=ex_veg_evt_type_symbology,
-                      is_raster=True)
-    make_input_layers(ex_veg_destinations, "Veg Type - EVT Class", symbology_layer=ex_veg_evt_class_symbology,
-                      is_raster=True)
-    make_input_layers(ex_veg_destinations, "Veg Type - EVT Name", symbology_layer=ex_veg_class_name_symbology,
-                      is_raster=True)
+    make_input_layers(ex_veg_destinations, "Existing Vegetation Suitability for Beaver Dam Building", symbology_layer=ex_veg_suitability_symbology, is_raster=True, file_name="ExVegSuitability")
+    make_input_layers(ex_veg_destinations, "Existing Riparian", symbology_layer=ex_veg_riparian_symbology, is_raster=True)
+    make_input_layers(ex_veg_destinations, "Veg Type - EVT Type", symbology_layer=ex_veg_evt_type_symbology, is_raster=True)
+    make_input_layers(ex_veg_destinations, "Veg Type - EVT Class", symbology_layer=ex_veg_evt_class_symbology, is_raster=True)
+    make_input_layers(ex_veg_destinations, "Veg Type - EVT Name", symbology_layer=ex_veg_class_name_symbology, is_raster=True)
 
     hist_veg_destinations = find_destinations(hist_veg_folder)
-    make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building",
-                      symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name="HistVegSuitability")
-    make_input_layers(hist_veg_destinations, "Veg Type - BPS Type", symbology_layer=hist_veg_group_symbology,
-                      is_raster=True, check_field="GROUPVEG")
-    make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_BPS_name_symbology,
-                      is_raster=True)
-    make_input_layers(hist_veg_destinations, "Historic Riparian", symbology_layer=hist_veg_riparian_symbology,
-                      is_raster=True, check_field="GROUPVEG")
+    make_input_layers(hist_veg_destinations, "Historic Vegetation Suitability for Beaver Dam Building", symbology_layer=hist_veg_suitability_symbology, is_raster=True, file_name = "HistVegSuitability")
+    make_input_layers(hist_veg_destinations, "Veg Type - BPS Type", symbology_layer=hist_veg_group_symbology, is_raster=True, check_field="GROUPVEG")
+    make_input_layers(hist_veg_destinations, "Veg Type - BPS Name", symbology_layer=hist_veg_BPS_name_symbology, is_raster=True)
+    make_input_layers(hist_veg_destinations, "Historic Riparian", symbology_layer=hist_veg_riparian_symbology, is_raster=True, check_field="GROUPVEG")
 
     network_destinations = find_destinations(network_folder)
     make_input_layers(network_destinations, "Network", symbology_layer=network_symbology, is_raster=False)
@@ -367,10 +464,8 @@ def check_inputs(inputs_folder, symbology_folder):
     vally_bottom_destinations = None
     if valley_bottom_folder is not None:
         vally_bottom_destinations = find_destinations(valley_bottom_folder)
-        make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology,
-                          is_raster=False)
-        make_input_layers(vally_bottom_destinations, "Valley Bottom Outline",
-                          symbology_layer=valley_bottom_outline_symbology, is_raster=False)
+        make_input_layers(vally_bottom_destinations, "Valley Bottom Fill", symbology_layer=valley_bottom_symbology, is_raster=False)
+        make_input_layers(vally_bottom_destinations, "Valley Bottom Outline", symbology_layer=valley_bottom_outline_symbology, is_raster=False)
 
     # add road layers to the project
     road_destinations = None
@@ -394,8 +489,7 @@ def check_inputs(inputs_folder, symbology_folder):
     ownership_destinations = None
     if land_ownership_folder is not None:
         ownership_destinations = find_destinations(land_ownership_folder)
-        make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology,
-                          is_raster=False)
+        make_input_layers(ownership_destinations, "Land Ownership", symbology_layer=land_ownership_symbology, is_raster=False)
 
 
 def make_topo_layers(topo_folder):
@@ -473,12 +567,10 @@ def make_input_layers(destinations, layer_name, is_raster, symbology_layer=None,
                 skip_loop = True
 
         if not skip_loop:
-            make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster,
-                       file_name=file_name)
+            make_layer(dest_dir_name, destination, layer_name, symbology_layer=symbology_layer, is_raster=is_raster, file_name=file_name)
 
 
-def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder,
-                       layer_package_name, clipping_network):
+def make_layer_package(output_folder, intermediates_folder, analyses_folder, inputs_folder, symbology_folder, layer_package_name, clipping_network):
     """
     Makes a layer package for the project
     :param output_folder: The folder that we want to base our layer package off of
@@ -491,10 +583,6 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     if not layer_package_name.endswith(".lpk"):
         layer_package_name += ".lpk"
 
-    new_source = None
-    if clipping_network is not None:
-        new_source = get_new_source(clipping_network, analyses_folder)
-
     arcpy.AddMessage("Assembling Layer Package...")
     empty_group_layer = os.path.join(symbology_folder, "EmptyGroupLayer.lyr")
 
@@ -504,84 +592,67 @@ def make_layer_package(output_folder, intermediates_folder, analyses_folder, inp
     for lyr in arcpy.mapping.ListLayers(mxd, "", df):
         arcpy.mapping.RemoveLayer(df, lyr)
 
-    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source)
-    inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd)
-    intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd)
+    analyses_layer = get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, clipping_network)
+    inputs_layer = get_inputs_layer(empty_group_layer, inputs_folder, df, mxd, clipping_network)
+    intermediates_layer = get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd, clipping_network)
     output_layer = group_layers(empty_group_layer, "Output", [intermediates_layer, analyses_layer], df, mxd)
-    output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd,
-                                remove_layer=False)
+    output_layer = group_layers(empty_group_layer, layer_package_name[:-4], [output_layer, inputs_layer], df, mxd, remove_layer=False)
 
     layer_package = os.path.join(output_folder, layer_package_name)
     arcpy.AddMessage("Saving Layer Package...")
     arcpy.PackageLayer_management(output_layer, layer_package)
 
 
-def get_new_source(clipping_network, analyses_folder):
+def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, clipping_network):
     """
-    Creates a temporary shape file that will be the source for the clipped regions
-    :param clipping_network: What we want to clip our source to
-    :param analyses_folder: The path to the analyses folder, where our existing source file should be
-    :return:
-    """
-    old_source = get_old_source(analyses_folder)
-    old_source_layer = "old_source_lyr"
-    if arcpy.Exists(old_source_layer):
-        arcpy.Delete_management(old_source_layer)
-    arcpy.MakeFeatureLayer_management(old_source, old_source_layer)
-
-    arcpy.SelectLayerByLocation_management(old_source_layer, "INTERSECT", clipping_network)
-
-    new_source = os.path.join(analyses_folder, "Temp.shp")
-    if os.path.exists(new_source):
-        arcpy.Delete_management(new_source)
-    arcpy.CopyFeatures_management(old_source_layer, new_source)
-    return new_source
-
-
-def get_old_source(analyses_folder):
-    """
-    Looks for the old source in the analyses folder.
-    Assumes that the only shape file in the analyses folder is the old source
-    :param analyses_folder: The path to the analyses folder
-    :return:
-    """
-    for file in os.listdir(analyses_folder):
-        if file.endswith(".shp"):
-            return os.path.join(analyses_folder, file)
-
-
-def get_analyses_layer(analyses_folder, empty_group_layer, df, mxd, new_source):
-    """
-    Returns the layers we want for the 'Output' section
-    :param analyses_folder:
+    Returns the layers we want for the 'BRAT Outputs' section
+    :param analyses_folder: folder holding capacity, conservation restoration, and validation outputs
+    :param empty_group_layer: empty group layer
+    :param df: data frame where layer package is being built
+    :param mxd: ArcMap document where layer package is being built
+    :param clipping_network: The network BRAT outputs will be clipped
     :return:
     """
     capacity_folder = find_folder(analyses_folder, "Capacity")
     existing_capacity_folder = find_folder(capacity_folder, "ExistingCapacity")
+    if clipping_network is None:
+        existing_density_lyr = find_file(existing_capacity_folder, 'ExistingDamBuildingCapacity.lyr')
+        existing_complex_lyr = find_file(existing_capacity_folder, 'ExistingDamComplexSize.lyr')
+    else:
+        existing_density_lyr = find_file(existing_capacity_folder, 'ExistingDamBuildingCapacity_clipped.lyr')
+        existing_complex_lyr = find_file(existing_capacity_folder, 'ExistingDamComplexSize_clipped.lyr')
     historic_capacity_folder = find_folder(capacity_folder, "HistoricCapacity")
+    if clipping_network is None:
+        historic_density_lyr = find_file(historic_capacity_folder, 'HistoricDamBuildingCapacity.lyr')
+        historic_complex_lyr = find_file(historic_capacity_folder, 'HistoricDamComplexSize.lyr')
+    else:
+        historic_density_lyr = find_file(historic_capacity_folder, 'HistoricDamBuildingCapacity_clipped.lyr')
+        historic_complex_lyr = find_file(historic_capacity_folder, 'HistoricDamComplexSize_clipped.lyr')
     management_folder = find_folder(analyses_folder, "Management")
     validation_folder = find_folder(analyses_folder, "Validation")
 
-    existing_capacity_layers = find_layers_in_folder(existing_capacity_folder)
-    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd,
-                                           new_source)
-    historic_capacity_layers = find_layers_in_folder(historic_capacity_folder)
-    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd,
-                                           new_source)
-    management_layers = find_layers_in_folder(management_folder)
-    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd, new_source)
-    validation_layers = find_layers_in_folder(validation_folder)
-    validation_layer = group_layers(empty_group_layer, "Beaver Dam Survey Data", validation_layers, df, mxd)
+    existing_density_group = group_layers(empty_group_layer, "Dam Density", [existing_density_lyr], df, mxd)
+    existing_complex_group = group_layers(empty_group_layer, "Size of Complex", [existing_complex_lyr], df, mxd)
+    existing_capacity_layers = [existing_complex_group, existing_density_group]
+    existing_capacity_layer = group_layers(empty_group_layer, "Existing Capacity", existing_capacity_layers, df, mxd)
 
-    capacity_layer = group_layers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df,
-                                  mxd)
-    output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT",
-                                [management_layer, capacity_layer, validation_layer], df, mxd)
+    historic_density_group = group_layers(empty_group_layer, "Dam Density", [historic_density_lyr], df, mxd)
+    historic_complex_group = group_layers(empty_group_layer, "Size of Complex", [historic_complex_lyr], df, mxd)
+    historic_capacity_layers = [historic_complex_group, historic_density_group]
+    historic_capacity_layer = group_layers(empty_group_layer, "Historic Capacity", historic_capacity_layers, df, mxd)
+
+    management_layers = find_layers_in_folder(management_folder, clipping_network)
+    management_layer = group_layers(empty_group_layer, "Management", management_layers, df, mxd)
+    validation_layers = find_layers_in_folder(validation_folder, clipping_network)
+    validation_layer = group_layers(empty_group_layer, "Validation", validation_layers, df, mxd)
+    
+    capacity_layer = group_layers(empty_group_layer, "Capacity", [historic_capacity_layer, existing_capacity_layer], df, mxd)
+    output_layer = group_layers(empty_group_layer, "Beaver Restoration Assessment Tool - BRAT", [management_layer, capacity_layer, validation_layer], df, mxd)
 
     return output_layer
 
 
-def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd):
+def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd, clipping_network):
     """
     Gets all the input layers, groups them properly, returns the layer
     :param empty_group_layer: The base to build the group layer with
@@ -605,40 +676,37 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd):
     canals_folder = find_folder(anthropogenic_folder, "Canals")
     land_use_folder = find_folder(anthropogenic_folder, "LandUse")
 
-    ex_veg_layers = find_instance_layers(ex_veg_folder)
+    ex_veg_layers = find_instance_layers(ex_veg_folder, None)
     ex_veg_layer = group_layers(empty_group_layer, "Existing Vegetation Dam Capacity", ex_veg_layers, df, mxd)
-    hist_veg_layers = find_instance_layers(hist_veg_folder)
+    hist_veg_layers = find_instance_layers(hist_veg_folder, None)
     hist_veg_layer = group_layers(empty_group_layer, "Historic Vegetation Dam Capacity", hist_veg_layers, df, mxd)
     veg_layer = group_layers(empty_group_layer, "Vegetation", [hist_veg_layer, ex_veg_layer], df, mxd)
 
-    network_layers = find_instance_layers(network_folder)
+    network_layers = find_instance_layers(network_folder, clipping_network)
     network_layer = group_layers(empty_group_layer, "Network", network_layers, df, mxd)
 
-    dem_layers = find_instance_layers(topo_folder)
+    dem_layers = find_instance_layers(topo_folder, None)
     hillshade_layers = find_dem_derivative(topo_folder, "Hillshade")
     slope_layers = find_dem_derivative(topo_folder, "Slope")
     flow_layers = find_dem_derivative(topo_folder, "Flow")
-    topo_layer = group_layers(empty_group_layer, "Topography",
-                              hillshade_layers + dem_layers + slope_layers + flow_layers, df, mxd)
+    topo_layer = group_layers(empty_group_layer, "Topography", hillshade_layers + dem_layers + slope_layers + flow_layers, df, mxd)
 
-    valley_layers = find_instance_layers(valley_folder)
+    valley_layers = find_instance_layers(valley_folder, None)
     valley_layer = group_layers(empty_group_layer, "Valley Bottom", valley_layers, df, mxd)
-    road_layers = find_instance_layers(roads_folder)
+    road_layers = find_instance_layers(roads_folder, None)
     road_layer = group_layers(empty_group_layer, "Roads", road_layers, df, mxd)
-    railroad_layers = find_instance_layers(railroads_folder)
+    railroad_layers = find_instance_layers(railroads_folder, None)
     railroad_layer = group_layers(empty_group_layer, "Railroads", railroad_layers, df, mxd)
-    canal_layers = find_instance_layers(canals_folder)
+    canal_layers = find_instance_layers(canals_folder, None)
     canal_layer = group_layers(empty_group_layer, "Canals", canal_layers, df, mxd)
-    land_use_layers = find_instance_layers(land_use_folder)
+    land_use_layers = find_instance_layers(land_use_folder, None)
     land_use_layer = group_layers(empty_group_layer, "Land Use", land_use_layers, df, mxd)
-    anthropogenic_layer = group_layers(empty_group_layer, "Anthropogenic Layers",
-                                       [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
+    anthropogenic_layer = group_layers(empty_group_layer, "Anthropogenic Layers", [valley_layer, road_layer, railroad_layer, canal_layer, land_use_layer], df, mxd)
 
-    return group_layers(empty_group_layer, "Inputs", [topo_layer, veg_layer, network_layer, anthropogenic_layer], df,
-                        mxd)
+    return group_layers(empty_group_layer, "Inputs", [topo_layer, veg_layer, network_layer, anthropogenic_layer], df, mxd)
 
 
-def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
+def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd, clipping_network):
     """
     Returns a group layer with all of the intermediates
     :param empty_group_layer: The base to build the group layer with
@@ -648,47 +716,56 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd):
     :return: Layer for intermediates
     """
     intermediate_layers = []
+    
+    # findAndGroupLayers(intermediate_layers, intermediatesFolder, "AnthropogenicIntermediates", "Anthropogenic Intermediates", emptyGroupLayer, df, mxd)
     anthropogenic_metrics_folder = find_folder(intermediates_folder, "AnthropogenicMetrics")
     if anthropogenic_metrics_folder:
         sorted_anthropogenic_layers = []
         wanted_anthropogenic_layers = []
         existing_anthropogenic_layers = find_layers_in_folder(anthropogenic_metrics_folder)
 
+    if clipping_network is not None:
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoCanal_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoPointsofDiversion_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroad_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroadinValleyBottom_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoad_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadCrossing_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadinValleyBottom_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoClosestInfrastructure_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "LandOwnershipperReach_clipped.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "PriorityBeaverTranslocationAreas_clipped.lyr"))            
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "LandUseIntensity_clipped.lyr"))
+    else:
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoCanal.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoPointsofDiversion.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroad.lyr"))
-        wanted_anthropogenic_layers.append(
-            os.path.join(anthropogenic_metrics_folder, "DistancetoRailroadinValleyBottom.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRailroadinValleyBottom.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoad.lyr"))
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadCrossing.lyr"))
-        wanted_anthropogenic_layers.append(
-            os.path.join(anthropogenic_metrics_folder, "DistancetoRoadinValleyBottom.lyr"))
-        wanted_anthropogenic_layers.append(
-            os.path.join(anthropogenic_metrics_folder, "DistancetoClosestInfrastructure.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoRoadinValleyBottom.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "DistancetoClosestInfrastructure.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "LandOwnershipperReach.lyr"))
+        wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "PriorityBeaverTranslocationAreas.lyr"))    
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder, "LandUseIntensity.lyr"))
 
-        for layer in wanted_anthropogenic_layers:
-            if layer in existing_anthropogenic_layers:
-                sorted_anthropogenic_layers.append(layer)
+    for layer in wanted_anthropogenic_layers:
+        if layer in existing_anthropogenic_layers:
+            sorted_anthropogenic_layers.append(layer)
 
-        intermediate_layers.append(
-            group_layers(empty_group_layer, "Anthropogenic Intermediates", sorted_anthropogenic_layers, df, mxd))
+    intermediate_layers.append(group_layers(empty_group_layer, "Anthropogenic Intermediates", sorted_anthropogenic_layers, df, mxd))
 
-    find_and_group_layers(intermediate_layers, intermediates_folder, "VegDamCapacity",
-                          "Overall Vegetation Dam Capacity", empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "Buffers", "Buffers", empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "Hydrology", "Hydrology", empty_group_layer, df,
-                          mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "AnabranchHandler", "Anabranch Handler",
-                          empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "TopographicMetrics", "Topographic Index",
-                          empty_group_layer, df, mxd)
-    find_and_group_layers(intermediate_layers, intermediates_folder, "Perennial", "Perennial", empty_group_layer, df,
-                          mxd)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "VegDamCapacity", "Overall Vegetation Dam Capacity", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "Buffers", "Buffers", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "Hydrology", "Hydrology", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "AnabranchHandler", "Anabranch Handler", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "TopographicMetrics", "Topographic Index", empty_group_layer, df, mxd, clipping_network)
+    find_and_group_layers(intermediate_layers, intermediates_folder, "Perennial", "Perennial", empty_group_layer, df, mxd, clipping_network)
 
     return group_layers(empty_group_layer, "Intermediates", intermediate_layers, df, mxd)
 
 
-def find_and_group_layers(layers_list, folder_base, folder_name, group_layer_name, empty_group_layer, df, mxd):
+def find_and_group_layers(layers_list, folder_base, folder_name, group_layer_name, empty_group_layer, df, mxd, clipping_network):
     """
     Looks for the folder that matches what we're looking for, then groups them together. Adds that grouped layer to the
     list of grouped layers that it was given
@@ -703,12 +780,12 @@ def find_and_group_layers(layers_list, folder_base, folder_name, group_layer_nam
     """
     folderPath = find_folder(folder_base, folder_name)
     if folderPath:
-        layers = find_layers_in_folder(folderPath)
+        layers = find_layers_in_folder(folderPath, clipping_network)
 
         layers_list.append(group_layers(empty_group_layer, group_layer_name, layers, df, mxd))
 
 
-def find_instance_layers(root_folder):
+def find_instance_layers(root_folder, clipping_network):
     """
     Finds every layer when buried beneath an additional layer of folders (ie, in DEM_1, DEM_2, DEM_3, etc)
     :param root_folder: The path to the folder root
@@ -720,7 +797,7 @@ def find_instance_layers(root_folder):
     layers = []
     for instance_folder in os.listdir(root_folder):
         instance_folder_path = os.path.join(root_folder, instance_folder)
-        layers += find_layers_in_folder(instance_folder_path)
+        layers += find_layers_in_folder(instance_folder_path, clipping_network)
     return layers
 
 
@@ -738,7 +815,7 @@ def find_dem_derivative(root_folder, dir_name):
     return layers
 
 
-def find_layers_in_folder(folder_root):
+def find_layers_in_folder(folder_root, clipping_network=None):
     """
     Returns a list of all layers in a folder
     :param folder_root: Where we want to look
@@ -748,12 +825,17 @@ def find_layers_in_folder(folder_root):
     if folder_root is None:
         return layers
     for instance_file in os.listdir(folder_root):
-        if instance_file.endswith(".lyr"):
+        if clipping_network is not None:
+            if instance_file.endswith("_clipped.lyr"):
+                layers.append(os.path.join(folder_root, instance_file))
+            elif os.path.basename(instance_file) == "SurveyedBeaverDamLocations.lyr":
+                layers.append(os.path.join(folder_root, instance_file))
+        elif instance_file.endswith(".lyr"):
             layers.append(os.path.join(folder_root, instance_file))
     return layers
 
 
-def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remove_layer=True):
+def group_layers(group_layer, group_name, layers, df, mxd, remove_layer=True):
     """
     Groups a bunch of layers together
     :param group_layer: The empty group layer we'll add stuff to
@@ -767,7 +849,7 @@ def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remo
     if layers == [] or layers is None:
         return None
 
-    layers = [x for x in layers if x is not None]  # remove none type from the layers
+    layers = [x for x in layers if x is not None] # remove none type from the layers
 
     group_layer = arcpy.mapping.Layer(group_layer)
     group_layer.name = group_name
@@ -781,14 +863,20 @@ def group_layers(group_layer, group_name, layers, df, mxd, new_source=None, remo
         else:
             layer_instance = arcpy.mapping.Layer(layer)
 
-        if new_source is not None and layer_instance.isFeatureLayer:
-            old_source = layer_instance.dataSource
-            # layer_instance.replaceDataSource(old_source, 'NONE', new_source, '')
-            layer_instance.replaceDataSource(new_source, 'SHAPEFILE_WORKSPACE', old_source, '')
-            layer_instance.save()
-
         arcpy.mapping.AddLayerToGroup(df, group_layer, layer_instance)
+    
     if remove_layer:
         arcpy.mapping.RemoveLayer(df, group_layer)
 
     return group_layer
+
+
+def find_file(proj_path, file_pattern):
+
+    search_path = os.path.join(proj_path, file_pattern)
+    if len(glob.glob(search_path)) > 0:
+        file_path = glob.glob(search_path)[0]
+    else:
+        file_path = None
+
+    return file_path
