@@ -25,6 +25,10 @@ import arcpy
 
 def main(fcStreamNetwork, canal, tempDir, perennial_network, is_verbose):
     # Polyline prep
+
+    arcpy.env.outputZFlag = "Disabled"
+    arcpy.env.outputMFlag = "Disabled"
+
     if is_verbose:
         arcpy.AddMessage("Checking input fields and if canals shapefile exists...")
     listFields = arcpy.ListFields(fcStreamNetwork,"IsMultiCh")
@@ -105,9 +109,9 @@ def findBraidedReaches(fcLines, perennial_network, is_verbose):
     # Find donut reaches
     donut_polygons = "in_memory/DonutPolygons"
     if perennial_network is not None:
-        arcpy.FeatureToPolygon_management(perennial_network,donut_polygons)
+        arcpy.FeatureToPolygon_management(perennial_network, donut_polygons)
     else:
-        arcpy.FeatureToPolygon_management(fcLines,donut_polygons)
+        arcpy.FeatureToPolygon_management(fcLines, donut_polygons)
 
     # delete extremely large donuts (< 0.5 sq km) since these are false positives for finding side channels
     with arcpy.da.UpdateCursor(donut_polygons, ['SHAPE@AREA']) as cursor:

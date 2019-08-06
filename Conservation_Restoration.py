@@ -26,12 +26,12 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # check for oPBRC fields and delete if exists
-    fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "oPBRC_UI" in fields:
+    old_fields = [f.name for f in arcpy.ListFields(out_network)]
+    if "oPBRC_UI" in old_fields:
         arcpy.DeleteField_management(out_network, "oPBRC_UI")
-    if "oPBRC_UD" in fields:
+    if "oPBRC_UD" in old_fields:
         arcpy.DeleteField_management(out_network, "oPBRC_UD")
-    if "oPBRC_CR" in fields:
+    if "oPBRC_CR" in old_fields:
         arcpy.DeleteField_management(out_network, "oPBRC_CR")
 
     arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 30)
@@ -39,12 +39,12 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
 
     # use old historic capacity field names if new ones not in combined capacity output
-    if 'oVC_PT' in fields:
+    if 'oVC_PT' in old_fields:
         ovc_hpe = 'oVC_PT'
     else:
         ovc_hpe = 'oVC_HPE'
 
-    if 'oCC_PT' in fields:
+    if 'oCC_PT' in old_fields:
         occ_hpe = 'oCC_PT'
     else:
         occ_hpe = 'oCC_HPE'
@@ -58,6 +58,10 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
        arcpy.CalculateField_management(out_network, 'iPC_Canal', """500000""", "PYTHON")
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
+    arcpy.AddMessage(fields)
+    fieldCheck = [f.name for f in arcpy.ListFields(out_network)]
+    arcpy.AddMessage("--------------------")
+    arcpy.AddMessage(fieldCheck)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
 
