@@ -57,7 +57,7 @@ The **management output** layers include outputs that describe the limiting fact
 
 - **Strategies to Promote Dam Building (`DamStrat`)** is an optional output that identifies possible management strategies based on existing dam building capacity, conservation/protected areas and conservation easements, observed dam locations, and land use intensity. These categories are less restrictive than the restoration or conservation opportunities, but ***are still a work in progress***. The following color scheme is used to illustrate these distinctions:
 
-   ![Legend_BRAT_Strategies_to_Promote_Dam_Building]({{ site.baseurl }}/assets/images/BRAT_Legends_07_2019_Strategies_Map.PNG){: width="300" height="300"}
+   ![Legend_BRAT_Strategies_to_Promote_Dam_Building]({{ site.baseurl }}/assets/images/BRAT_Legends_07_2019_Strategies_Map.PNG){: width="400" height="400"}
 
    The classification is based on the following criteria:
 
