@@ -122,6 +122,10 @@ def main(
     arcpy.AddMessage('Adding "iVeg" attributes to network...')
     iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, seg_network_copy, scratch, is_verbose)
 
+    # find points of diversion if canals are defined
+    if canal is not None:
+        diversion_pts = find_points_of_diversion(canal, seg_network_copy, is_verbose)
+    
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
         arcpy.AddMessage('Adding "iPC" attributes to network...')
@@ -141,7 +145,7 @@ def main(
     flow_accumulation_sym_layer = os.path.join(symbology_folder, "Flow_Accumulation.lyr")
     make_layer(os.path.dirname(DrAr), DrAr, "Flow Accumulation", symbology_layer=flow_accumulation_sym_layer, is_raster=True)
 
-    make_layers(seg_network_copy)
+    make_layers(seg_network_copy, diversion_pts)
     write_xml(new_output_folder, coded_veg, coded_hist, seg_network, in_DEM, valley_bottom, landuse, DrAr,
               road, railroad, canal, buf_30m, buf_100m, seg_network_copy, description)
 
@@ -408,6 +412,7 @@ def zonalStatsWithinBuffer(buffer, ras, stat_type, stat_field, out_fc, out_FC_fi
         if item is not None:
             arcpy.Delete_management(item)
 
+
 # geo attributes function
 # calculates min and max elevation, length, slope, and drainage area for each flowline segment
 def igeo_attributes(out_network, in_DEM, flow_acc, midpoint_buffer, scratch, is_verbose):
@@ -564,6 +569,28 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
         arcpy.Delete_management(item)
 
 
+def find_points_of_diversion(canal, network, is_verbose):
+    
+    # find points of diversion (intersection between perennial stream and canals
+    if is_verbose:
+        arcpy.AddMessage("Finding points of diversion...")
+    canal_folder = os.path.dirname(canal)
+    diversion_points = canal_folder + "\\points_of_diversion.shp"
+    if not os.path.exists(diversion_points):
+        canal_dissolve = temp_dir + "\\canals_dissolved.shp"
+        arcpy.Dissolve_management(canal, canal_dissolve, '', '', 'SINGLE_PART', 'UNSPLIT_LINES')# dissolve canals into single feature
+        if perennial_network:
+            arcpy.Intersect_analysis([perennial_network, canal_dissolve], diversion_points, "", 12, "POINT")
+        else:
+            temp_network_no_canals_shp = os.path.join(temp_dir, "network_no_canals.shp")
+            temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(out_network, 'temp_network_no_canals_lyr')
+            arcpy.SelectLayerByLocation_management(in_layer=temp_network_no_canals_lyr, overlap_type='HAVE_THEIR_CENTER_IN', select_features=canal_dissolve, search_distance=5, selection_type='NEW_SELECTION')
+            arcpy.SelectLayerByAttribute_management(temp_network_no_canals_lyr, 'SWITCH_SELECTION')
+            arcpy.CopyFeatures_management(temp_network_no_canals_lyr, temp_network_no_canals_shp)
+            arcpy.Intersect_analysis([temp_network_no_canals_shp, canal_dissolve], diversion_points, "", 12, "POINT")
+    return diversion_points
+
+        
 # conflict potential function
 # calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
 def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose,perennial_network):
@@ -660,6 +687,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
 
     # clear the environment extent setting
     arcpy.ClearEnvironment("extent")
+
 
 
 def add_min_distance(out_network):
@@ -1014,7 +1042,7 @@ def add_mainstem_attribute(out_network):
     arcpy.CalculateField_management(out_network,"IsMainCh",1,"PYTHON")
 
 
-def make_layers(out_network):
+def make_layers(out_network, diversion_pts):
     """
     Writes the layers
     :param out_network: The output network, which we want to make into a layer
@@ -1037,7 +1065,7 @@ def make_layers(out_network):
     dist_to_railroad_in_valley_bottom_symbology = os.path.join(symbology_folder, "DistancetoRailroadinValleyBottom.lyr")
     dist_to_railroad_symbology = os.path.join(symbology_folder, "DistancetoRailroad.lyr")
     dist_to_canal_symbology = os.path.join(symbology_folder, "DistancetoCanal.lyr")
-    #pts_diversion_symbology = os.path.join(symbology_folder, "PointsofDiversion.lyr")
+    pts_diversion_symbology = os.path.join(symbology_folder, "PointsofDiversion.lyr")
     dist_to_pts_diversion_symbology = os.path.join(symbology_folder, "DistancetoPointsofDiversion.lyr")
     land_use_symbology = os.path.join(symbology_folder, "LandUseIntensity.lyr")
     land_ownership_per_reach_symbology = os.path.join(symbology_folder, "LandOwnershipperReach.lyr")
@@ -1051,11 +1079,12 @@ def make_layers(out_network):
     make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
     make_layer(topo_folder, out_network, "Reach Slope", slope_symbology, is_raster=False)
     make_layer(topo_folder, out_network, "Upstream Drainage Area", drain_area_symbology, is_raster=False)
-    #if diversion_pts:
-        #try:
-            #make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
-        #except Exception as err:
-            #print err
+
+    if diversion_pts is not None:
+        try:
+            make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
+        except Exception as err:
+            print err
             
     fields = [f.name for f in arcpy.ListFields(out_network)]
     if 'iPC_LU' in fields:
