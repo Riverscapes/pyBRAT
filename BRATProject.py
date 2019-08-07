@@ -21,8 +21,44 @@ reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network, DEM, landuse, valley, road, rr, canal, ownership, beaver_dams, perennial_stream):
-    """Create a BRAT project and populate the inputs"""
+def main(proj_path,
+         proj_name,
+         huc_ID,
+         watershed_name,
+         ex_veg,
+         hist_veg,
+         network,
+         DEM,
+         landuse,
+         valley,
+         road,
+         rr,
+         canal,
+         ownership,
+         beaver_dams,
+         perennial_stream):
+
+    """
+    Gathers inputs and creates folder structure for a BRAT project.
+    :param proj_path: The path to a specific folder. This will be where the folder structure will be created.
+    :param proj_name: If you want the XML to have a project name, enter it here.
+    :param huc_ID: If you want your XML to include information on what HUC you're running BRAT on, enter it here.
+    :param watershed_name: If you want the name of your watershed to be recorded in the XML, enter it here.
+    :param ex_veg: Add all landfire EVT layers that you want to use.
+    :param hist_veg: Add all landfire BPS layers that you want to use.
+    :param network: Add all stream networks that you want to use in BRAT.
+    :param DEM: Add all DEMs that you want to use in BRAT.
+    :param landuse: Add all land use rasters that you want to use in your BRAT runs.
+    :param valley: Add all valley bottom polygons that you want to use in your BRAT runs.
+    :param road: Add all road shapefiles that you want to use in your BRAT runs.
+    :param rr: Add all railroad shapefiles that you want to use in your BRAT runs.
+    :param canal: Add all canal shapefiles that you want to use in your BRAT runs.
+    :param ownership: If you have land ownership shapefiles, add them here.
+    :param beaver_dams: If you want to compare BRAT results to beaver dam survey data, add those files here.
+    :param perennial_stream: If you want to use perennial streams for future tools, add them here.
+    :return:
+    """
+
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = proj_path
     if ownership == "None":
@@ -127,10 +163,24 @@ def main(proj_path, proj_name, huc_ID, watershed_name, ex_veg, hist_veg, network
             raise arcpy.ExecuteError(err)
 
 
-
 def make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations, topo_folder, landuse_destinations,
                 valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations,
                 ownership_destinations, perennial_stream_destinations):
+    """
+    Creates layers based off of existing symbology for every input
+    :param ex_veg_destinations: The folder location for all existing vegetation layers
+    :param hist_veg_destinations: The folder location for all historic vegetation layers
+    :param network_destinations: The folder location for all network layers
+    :param topo_folder: The folder location for all topography layers
+    :param landuse_destinations: The folder location for all land use layers
+    :param valley_bottom_destinations: The folder location for all valley bottom layers
+    :param road_destinations: The folder location for all road layers
+    :param rr_destinations: The folder location for all railroad layers
+    :param canal_destinations: The folder location for all canal layers
+    :param ownership_destinations: The folder location for land ownership layers
+    :param perennial_stream_destinations: The folder location for all perennial network layers
+    :return:
+    """
     source_code_folder = os.path.dirname(os.path.abspath(__file__))
     symbology_folder = os.path.join(source_code_folder, 'BRATSymbology')
 
@@ -195,6 +245,13 @@ def make_layers(ex_veg_destinations, hist_veg_destinations, network_destinations
 
 
 def make_optional_input_folder(input, file_path, folder_base_name):
+    """
+    Creates a folder with correct numbering for optional inputs
+    :param input: The shapefile to go into  the folder. If this doesn't exist, then this function will return None.
+    :param file_path: The filepath for the inputs folder where this folder will be created
+    :param folder_base_name: The name of the folder to be created
+    :return: A string that holds the complete file path for the created folder
+    """
     if input:
         new_folder = make_folder(file_path, find_available_num_prefix(file_path) + folder_base_name)
         return new_folder
@@ -210,7 +267,7 @@ def copy_multi_input_to_folder(folder_path, multi_input, sub_folder_name, is_ras
     :param multi_input: A string, with paths to the inputs seperated by semicolons
     :param sub_folder_name: The name for each subfolder (will have a number after it)
     :param is_raster: Tells us if the thing is a raster or not
-    :return:
+    :return: A list of destinations to every input
     """
     split_input = multi_input.split(";")
     i = 1
@@ -305,23 +362,23 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
               dem_destinations, landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations,
               canal_destinations, ownership_destinations, beaver_dams_destinations, perennial_stream_destinations):
     """
-
-    :param project_root:
-    :param proj_name:
-    :param huc_ID:
-    :param watershed_name:
-    :param ex_veg_destinations:
-    :param hist_veg_destinations:
-    :param network_destinations:
-    :param dem_destinations:
-    :param landuse_destinations:
-    :param valley_bottom_destinations:
-    :param road_destinations:
-    :param rr_destinations:
-    :param canal_destinations:
-    :param ownership_destinations:
-    :param beaver_dams_destinations:
-    :param perennial_stream_destinations:
+    Writes and populates the entire XML document for the project.
+    :param project_root: The folder for the whole project
+    :param proj_name: The name for the project given by the user
+    :param huc_ID: The HUC ID given by the user
+    :param watershed_name: The watershed name given by the user
+    :param ex_veg_destinations: A path to all existing vegetation files
+    :param hist_veg_destinations: A path to all historic vegetation files
+    :param network_destinations: A path to all network files
+    :param dem_destinations: A path to all DEM files
+    :param landuse_destinations: A path to all landuse files
+    :param valley_bottom_destinations: A path to all valley bottom files
+    :param road_destinations: A path to all road files
+    :param rr_destinations: A path to all rail road files
+    :param canal_destinations: A path to all canal files
+    :param ownership_destinations: A path to all land ownership files
+    :param beaver_dams_destinations: A path to all beaver dam files
+    :param perennial_stream_destinations: A path to all perennial network files
     :return:
     """
     xml_file = project_root + "\project.rs.xml"
@@ -347,6 +404,23 @@ def write_xml(project_root, proj_name, huc_ID, watershed_name, ex_veg_destinatio
 def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destinations, network_destinations, dem_destinations,
                landuse_destinations, valley_bottom_destinations, road_destinations, rr_destinations, canal_destinations,
                ownership_destinations, beaver_dams_destinations, perennial_stream_destinations):
+    """
+    Calls write_xml_for_destination for each input and creates a sub element for inputs
+    :param project_root: The folder for the whole project
+    :param new_xml_file: The new XML file created in write_xml
+    :param hist_veg_destinations: A path to all historic vegetation files
+    :param network_destinations: A path to all network files
+    :param dem_destinations: A path to all DEM files
+    :param landuse_destinations: A path to all landuse files
+    :param valley_bottom_destinations: A path to all valley bottom files
+    :param road_destinations: A path to all road files
+    :param rr_destinations: A path to all rail road files
+    :param canal_destinations: A path to all canal files
+    :param ownership_destinations: A path to all land ownership files
+    :param beaver_dams_destinations: A path to all beaver dam files
+    :param perennial_stream_destinations: A path to all perennial network files
+    :return:
+    """
     inputs_element = new_xml_file.add_sub_element(new_xml_file.root, "Inputs")
 
     write_xml_for_destination(ex_veg_destinations, new_xml_file, inputs_element, "Raster", "EXVEG", "Existing Vegetation", project_root)
@@ -365,6 +439,17 @@ def add_inputs(project_root, new_xml_file, ex_veg_destinations, hist_veg_destina
 
 def write_xml_for_destination(destination, new_xml_file, base_element, xml_element_name, xml_id_base, item_name,
                               project_root):
+    """
+    Adds all data for one destination into the XML doc
+    :param destination: The destination for all of the data to be added
+    :param new_xml_file: The new XML file created in write_xml
+    :param base_element: The element that all of the data will be put into
+    :param xml_element_name: The type of element, either "Vector" or "Raster"
+    :param xml_id_base: The unique ID base for each input
+    :param item_name: The item name for the input
+    :param project_root: The folder containing all BRAT data, provided by the user
+    :return:
+    """
     for i in range(len(destination)):
         str_i = str(i + 1)
         if i < 10:

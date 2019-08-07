@@ -1037,7 +1037,7 @@ def make_layers(out_network):
     dist_to_railroad_in_valley_bottom_symbology = os.path.join(symbology_folder, "DistancetoRailroadinValleyBottom.lyr")
     dist_to_railroad_symbology = os.path.join(symbology_folder, "DistancetoRailroad.lyr")
     dist_to_canal_symbology = os.path.join(symbology_folder, "DistancetoCanal.lyr")
-    #pts_diversion_symbology = os.path.join(symbology_folder, "PointsofDiversion.lyr")
+    pts_diversion_symbology = os.path.join(symbology_folder, "PointsofDiversion.lyr")
     dist_to_pts_diversion_symbology = os.path.join(symbology_folder, "DistancetoPointsofDiversion.lyr")
     land_use_symbology = os.path.join(symbology_folder, "LandUseIntensity.lyr")
     land_ownership_per_reach_symbology = os.path.join(symbology_folder, "LandOwnershipperReach.lyr")
@@ -1051,11 +1051,12 @@ def make_layers(out_network):
     make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology)
     make_layer(topo_folder, out_network, "Reach Slope", slope_symbology, is_raster=False)
     make_layer(topo_folder, out_network, "Upstream Drainage Area", drain_area_symbology, is_raster=False)
-    #if diversion_pts:
-        #try:
-            #make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
-        #except Exception as err:
-            #print err
+
+    if diversion_pts:
+        try:
+            make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
+        except Exception as err:
+            print err
             
     fields = [f.name for f in arcpy.ListFields(out_network)]
     if 'iPC_LU' in fields:
