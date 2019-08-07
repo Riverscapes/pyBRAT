@@ -56,6 +56,7 @@ def main(
 
     find_clusters = parse_input_bool(find_clusters)
     should_segment_network = parse_input_bool(should_segment_network)
+    segment_by_ownership = parse_input_bool(segment_by_ownership)
     is_verbose = parse_input_bool(is_verbose)
 
     scratch = 'in_memory'
