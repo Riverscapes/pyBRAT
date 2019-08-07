@@ -49,6 +49,30 @@ def main(
     segment_by_ownership,
     is_verbose):
 
+    """
+        Calculates, for each stream network segment, the attributes needed to trun the BRAT tools.
+        :param proj_path: Path to the BRAT project folder.
+        :param seg_network: The segmented (300m) network.
+        :param in_DEM: The DEM for the entire project.
+        :param flow_acc: The flow accumulation raster.
+        :param coded_veg: The landfire EVT layer
+        :param coded_hist: The landfire BPS layer
+        :param valley_bottom: The valley bottom polygon that is associated with the input stream network.
+        :param road: The shapefile containing all roads for the area
+        :param railroad: The shapefile containing all railroads for the area
+        :param canal: The shapefile containing all canals for the area
+        :param landuse: The raster containing all land use data for the area
+        :param ownership: The shapefile contating all land ownership data for the area
+        :param perennial_network: The perennial network of streams
+        :param out_name: The name for the output BRAT Table.
+        :param description: A short description of the run that will be added to the XML
+        :param find_clusters: If true, this option will create a ClusterID field and populate it
+        :param should_segment_network: If true, this option divides reaches based on the roads input.
+        :param segment_by_ownership: If true, this option divides reaches based on the land ownership input.
+        :param is_verbose:  If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+        :return:
+        """
+
     if flow_acc == "None":
         flow_acc = None
     if perennial_network == "None":
@@ -177,6 +201,12 @@ def find_is_perennial(seg_network_copy, perennial_network):
 
 
 def find_dr_ar(flow_acc, in_DEM):
+    """
+    Finds the path to the drainage area.
+    :param flow_acc: The flow accumulation raster. This may be empty
+    :param in_DEM: The DEM for the entire area
+    :return: The file path to the Drainage Area Raster
+    """
     if flow_acc is None:
         DrArea = os.path.join(os.path.join(os.path.dirname(in_DEM), "Flow", "DrainArea_sqkm.tif"))
     else:
@@ -185,6 +215,18 @@ def find_dr_ar(flow_acc, in_DEM):
 
 
 def build_output_folder(proj_path, out_name, seg_network, road, should_segment_network, ownership, segment_by_ownership, is_verbose):
+    """
+    Builds the outputs folder where everything will be put
+    :param proj_path: Path to the BRAT project folder.
+    :param out_name: The name for the output BRAT Table.
+    :param seg_network: The segmented (300m) network.
+    :param road: The shapefile containing all roads for the area
+    :param should_segment_network: If true, this option divides reaches based on the roads input.
+    :param ownership: The shapefile contating all land ownership data for the area
+    :param segment_by_ownership: The shapefile containing all land ownership data for the area
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return: The created output folder, the created intermediate folder, and the potentially segmented network
+    """
     if is_verbose:
         arcpy.AddMessage("Building folder structure...")
     master_outputs_folder = os.path.join(proj_path, "Outputs")
@@ -233,6 +275,7 @@ def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
     :param seg_network: Path to the seg_network that we want to segment further
     :param seg_network_copy: Path to where we want the new network to go
     :param roads: The shape file we use to segment
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
     :return:
     """
     arcpy.AddMessage("Segmenting network by roads...")
@@ -256,7 +299,7 @@ def segment_by_roads(seg_network, seg_network_copy, roads, is_verbose):
 def segment_network_by_ownership(seg_network_copy, ownership, is_verbose):
     """
     Segments the seg_network by ownership, and puts segmented network at seg_network_copy
-    :param seg_network: Path to the seg_network that we want to segment further
+    :param seg_network_copy: Path to the seg_network that we want to segment further
     :param ownership: The shape file we use to segment
     :param is_verbose: Specifies whether to provide messages
     :return:
@@ -282,6 +325,13 @@ def segment_network_by_ownership(seg_network_copy, ownership, is_verbose):
 
     
 def add_reach_dist(seg_network, seg_network_copy, is_verbose):
+    """
+    Adds reach distance field to the network
+    :param seg_network: The original segmented network
+    :param seg_network_copy: The copy of the segmented network created by build_output_folder
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return:
+    """
     if is_verbose:
         arcpy.AddMessage("Calculating ReachDist...")
 
@@ -329,9 +379,19 @@ def add_reach_dist(seg_network, seg_network_copy, is_verbose):
     arcpy.Delete_management('in_memory')
 
 
-# zonal statistics within buffer function
-# dictionary join field function
+
 def zonalStatsWithinBuffer(buffer, ras, stat_type, stat_field, out_fc, out_FC_field, scratch):
+    """
+    Calculate zonal statistics within buffer function
+    :param buffer: The buffer around the stream
+    :param ras: The DEM raster
+    :param stat_type: The type of statistic to be calculated (MAXIMUM, MINIMUM, etc.)
+    :param stat_field: The name of the field containing statistics to be calculated
+    :param out_fc: The feature class to output to.
+    :param out_FC_field: The field within the output feature class to output to.
+    :param scratch: The current workspace
+    :return:
+    """
     # get input raster stat value within each buffer
     # note: zonal stats as table does not support overlapping polygons so we will check which
     #       reach buffers output was produced for and which we need to run tool on again
@@ -415,9 +475,18 @@ def zonalStatsWithinBuffer(buffer, ras, stat_type, stat_field, out_fc, out_FC_fi
             arcpy.Delete_management(item)
 
 
-# geo attributes function
-# calculates min and max elevation, length, slope, and drainage area for each flowline segment
+
 def igeo_attributes(out_network, in_DEM, flow_acc, midpoint_buffer, scratch, is_verbose):
+    """
+    calculates min and max elevation, length, slope, and drainage area for each flowline segment
+    :param out_network: The output netwrok to add fields to.
+    :param in_DEM: The DEM raster.
+    :param flow_acc: Th eflow accumulation raster
+    :param midpoint_buffer: The buffer created from midpoints
+    :param scratch: The current workspace
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return: Drainage Area
+    """
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
     drop = ["iGeo_ElMax", "iGeo_ElMin", "iGeo_Len", "iGeo_Slope", "iGeo_DA"]
@@ -512,10 +581,18 @@ def igeo_attributes(out_network, in_DEM, flow_acc, midpoint_buffer, scratch, is_
     return DrArea
 
 
-# vegetation attributes function
-# calculates both existing and potential mean vegetation value within 30 m and 100 m buffer of each stream segment
 def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scratch, is_verbose):
-
+    """
+    Calculates both existing and potential mean vegetation value within 30 m and 100 m buffer of each stream segment
+    :param coded_veg: The coded existing vegetation raster
+    :param coded_hist: The coded historic vegetation raster
+    :param buf_100m: The 100m stream buffer
+    :param buf_30m: The 30m stream buffer
+    :param out_network: The output network that data will be added to.
+    :param scratch: The current workspace
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return:
+    """
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
     drop = ["iVeg_100EX", "iVeg_30EX", "iVeg100Hpe", "iVeg_30Hpe"]
@@ -605,7 +682,7 @@ def find_points_of_diversion(canal, network, perennial_network, proj_path, is_ve
         # else intersect canals with full network minus the canals
         else:
             # select reaches that do NOT overlap with canals and save to temp_network_no_canals_shp    
-            temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(out_network, 'temp_network_no_canals_lyr')
+            temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(network, 'temp_network_no_canals_lyr')
             arcpy.SelectLayerByLocation_management(in_layer=temp_network_no_canals_lyr, overlap_type='HAVE_THEIR_CENTER_IN', select_features=canal_dissolve, search_distance=5, selection_type='NEW_SELECTION')
             arcpy.SelectLayerByAttribute_management(temp_network_no_canals_lyr, 'SWITCH_SELECTION')
             # save temp network without canals to temp directory
@@ -618,9 +695,25 @@ def find_points_of_diversion(canal, network, perennial_network, proj_path, is_ve
     return diversion_points
 
         
-# conflict potential function
-# calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
+
 def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership, diversion_points, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose):
+    """
+    Calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
+    :param out_network: The output network where fields will be added
+    :param road: The roads shapefile for the entire area
+    :param railroad: The railroads shapefile for the entire area
+    :param canal: The canals shapefile for the entire area
+    :param valley_bottom: The valley bottom shapefile for the entire area
+    :param ownership: The land ownership shapefile for the entire area
+    :param buf_30m: The 30m stream buffer
+    :param buf_100m: The 100m stream buffer
+    :param landuse: The landuse raster
+    :param scratch: The current workspace
+    :param projPath: The file path to the project folder
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :param perennial_network: The perennial network shapefile
+    :return:
+    """
     # find temp directory, or make if not present
     temp_dir = os.path.join(proj_path, 'Temp')
     if not os.path.exists(temp_dir):
@@ -697,7 +790,12 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
 
 
 def make_temp_dir(projPath, is_verbose):
-    # create temp directory
+    """
+    Creates a temporary directory
+    :param projPath: The file path to the project folder
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return:
+    """
     if is_verbose:
         arcpy.AddMessage("Deleting and remaking temp dir...")
     from shutil import rmtree
@@ -708,6 +806,11 @@ def make_temp_dir(projPath, is_verbose):
 
     
 def add_min_distance(out_network):
+    """
+    Adds oPC_Dist field, and populated it with the minimum distance from multiple features
+    :param out_network: The output network where fields will be added
+    :return:
+    """
     arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
     fields = [f.name for f in arcpy.ListFields(out_network)]
     all_dist_fields = ["oPC_Dist", "iPC_RoadX", "iPC_RoadVB", "iPC_RailVB", "iPC_Canal", "iPC_DivPts"]
@@ -722,6 +825,15 @@ def add_min_distance(out_network):
 
 
 def add_landuse_to_table(out_network, landuse, buf_100m, scratch, is_verbose):
+    """
+    Adds landuse fields to the output network[iPC_LU, "iPC_VLowLU", "iPC_LowLU", "iPC_ModLU", "iPC_HighLU"]
+    :param out_network: Output network to add fields to.
+    :param landuse: The landuse raster.
+    :param buf_100m: The 100m stream buffer
+    :param scratch: Th current workspace
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return:
+    """
     if is_verbose:
         arcpy.AddMessage("Calculating iPC_LU values...")
     arcpy.AddField_management(out_network, "iPC_LU", "DOUBLE")
@@ -811,6 +923,20 @@ def check_and_add_zero_fields(table, fields, field_name):
 
 
 def find_distance_from_feature(out_network, feature, valley_bottom, temp_dir, buf, temp_name, new_field_name, scratch, is_verbose, clip_feature = False):
+    """
+    Finds the distance from a given feature to each stream segment and populates a new field
+    :param out_network: The output network where new fields will be added
+    :param feature: The feature that you want to calculate the distance from
+    :param valley_bottom: The valley bottom shapefile
+    :param temp_dir: The temporary folder directory
+    :param buf: The 30m stream buffer shapefile
+    :param temp_name: The name given to the temporary shapefile created
+    :param new_field_name: The name of the new field to be added to the output
+    :param scratch: The current workspace
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :param clip_feature: If true, the feature will be clipped to the valley bottom
+    :return:
+    """
     if is_verbose:
         arcpy.AddMessage("Calculating " + new_field_name + " values...")
     arcpy.AddField_management(out_network, new_field_name, "DOUBLE")
@@ -851,7 +977,12 @@ def find_distance_from_feature(out_network, feature, valley_bottom, temp_dir, bu
 
 # calculate drainage area function
 def calc_drain_area(DEM, input_DEM):
-
+    """
+    Calculate drainage area function
+    :param DEM: Smoothed DEM
+    :param input_DEM: The original input DEM
+    :return:
+    """
     #  define raster environment settings
     desc = arcpy.Describe(DEM)
     arcpy.env.extent = desc.Extent
@@ -867,7 +998,7 @@ def calc_drain_area(DEM, input_DEM):
     # note: draiange area calculation assumes input dem is in meters
     filled_DEM = Fill(DEM) # fill sinks in dem
     flow_direction = FlowDirection(filled_DEM) # calculate flow direction
-    flow_accumulation = FlowAccumulation(flow_direction) # calculate flow accumulattion
+    flow_accumulation = FlowAccumulation(flow_direction) # calculate flow accumulation
     drain_area = flow_accumulation * cell_area / 1000000 # calculate drainage area in square kilometers
 
     # save drainage area raster
@@ -881,7 +1012,25 @@ def calc_drain_area(DEM, input_DEM):
 
 def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_bottom, landuse,
               DrAr, road, railroad, canal, buf_30m, buf_100m, out_network, description):
-    """write the xml file for the project"""
+    """
+    Writes the xml file for the project
+    :param output_folder: The folder where everything will be output
+    :param coded_veg: The landfire EVT layer
+    :param coded_hist: The landfire BPS layer
+    :param seg_network: The segmented (300m) network
+    :param inDEM: The DEM for the entire project
+    :param valley_bottom: The valley bottom shapefile
+    :param landuse: The landuse raster
+    :param DrAr: The drainage area raster
+    :param road: The roads shapefile
+    :param railroad: The railroads shapefile
+    :param canal: The canals shapefile
+    :param buf_30m: The 30m buffer shapefile
+    :param buf_100m: The 100m buffer shapefile
+    :param out_network: The network that new data has been added to
+    :param description: A short description of the run that will be added to the XML
+    :return:
+    """
     proj_path = os.path.dirname(os.path.dirname(output_folder))
     output_folder_num = str(int(output_folder[-2:]))
     xml_file_path = proj_path + "/project.rs.xml"
@@ -918,6 +1067,13 @@ def write_xml(output_folder, coded_veg, coded_hist, seg_network, inDEM, valley_b
 
 
 def write_description(xml_file, meta_element, description):
+    """
+    Writes the description to the XML
+    :param xml_file: The XML file to write to.
+    :param meta_element: The current meta element
+    :param description: A short description of the run that will be added to the XML
+    :return:
+    """
     if description is None:
         xml_file.add_sub_element(meta_element, "Description")
     elif len(description) <= 100:
@@ -928,6 +1084,14 @@ def write_description(xml_file, meta_element, description):
 
 
 def write_intermediate_xml(xml_file, brat_element, proj_path, out_network):
+    """
+    Writes part of the XML file for all intermediate data.
+    :param xml_file: The XML file to write to.
+    :param brat_element: The XML element containing BRAT data.
+    :param proj_path: The file path to the project folder.
+    :param out_network: The output network that new data has been added to.
+    :return:
+    """
     intermediates_element = xml_file.add_sub_element(brat_element, "Intermediates")
     intermediate_element = xml_file.add_sub_element(intermediates_element, "Intermediate")
 
@@ -938,6 +1102,25 @@ def write_intermediate_xml(xml_file, brat_element, proj_path, out_network):
 
 def write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, landuse, valley_bottom, road, railroad,
                     canal, inDEM, DrAr, seg_network, buf_30m, buf_100m):
+    """
+    Writes part of the XML file for all input data.
+    :param xml_file: The XML file to write to.
+    :param brat_element: The XML element containing BRAT data.
+    :param proj_path: The file path to the project folder.
+    :param coded_veg: The landfire EVT layer
+    :param coded_hist: The landfire BPS layer
+    :param landuse: The landuse raster
+    :param valley_bottom: The valley bottom shapefile
+    :param road: The roads shapefile
+    :param railroad: The railroads shapefile
+    :param canal: The canals shapefile
+    :param inDEM: The DEM for the entire project
+    :param DrAr: The drainage area raster
+    :param seg_network: The segmented (300m) network
+    :param buf_30m: The 30m buffer shapefile
+    :param buf_100m: The 100m buffer shapefile
+    :return:
+    """
     inputs_element = xml_file.add_sub_element(brat_element, "Inputs")
 
     add_input_ref_element(xml_file, proj_path, inputs_element, coded_veg, "ExistingVegetation")
@@ -960,6 +1143,13 @@ def write_input_xml(xml_file, brat_element, proj_path, coded_veg, coded_hist, la
 
 
 def add_drain_area_to_inputs_xml(xml_file, drainage_area, proj_path):
+    """
+    Adds drainage area data to the input XML
+    :param xml_file: The XML file to write to.
+    :param drainage_area: The drainage area raster
+    :param proj_path: The file path to the project folder.
+    :return:
+    """
     element = xml_file.find_by_text(find_relative_path(drainage_area, proj_path))
 
     if element is not None: # if the flow acc is already in the xml file, we don't need to do anything
@@ -972,6 +1162,12 @@ def add_drain_area_to_inputs_xml(xml_file, drainage_area, proj_path):
 
 
 def find_next_available_id(xml_file, id_base):
+    """
+    Finds the next ID available in the current XML File
+    :param xml_file: The XML file to write to.
+    :param id_base: The ID to start with, then count up
+    :return: The next available ID
+    """
     i = 1
     element = xml_file.find_by_id(id_base + str(i))
     while element is not None:
@@ -981,6 +1177,14 @@ def find_next_available_id(xml_file, id_base):
 
 
 def add_input_ref_element(xml_file, proj_path, inputs_element, input_path, new_element_name):
+    """
+    :param xml_file: The XML file to write to.
+    :param proj_path: The file path to the project folder.
+    :param inputs_element: The element that holds Input data
+    :param input_path: The path to the specific Input data
+    :param new_element_name: The ame of the newly added input element.
+    :return:
+    """
     if input_path is None:
         return
     ref_id = find_element_id_with_path(xml_file, input_path, proj_path)
@@ -1063,6 +1267,7 @@ def make_layers(out_network, diversion_pts):
     """
     Writes the layers
     :param out_network: The output network, which we want to make into a layer
+    :param diversion_pts: The diversion points shapefile
     :return:
     """
     arcpy.AddMessage("Making layers...")
@@ -1131,6 +1336,16 @@ def make_layers(out_network, diversion_pts):
 
 
 def handle_braids(seg_network_copy, canal, proj_path, find_clusters, perennial_network, is_verbose):
+    """
+    Finds multi-threaded attributes in the network, and optionally finds clusters.
+    :param seg_network_copy: The network where data will be updated
+    :param canal: The canals shapefile
+    :param proj_path: The file path to the project folder.
+    :param find_clusters: If true, clusters will be found via the braid handler script
+    :param perennial_network: The perennial network shapefile
+    :param is_verbose: If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return:
+    """
     if is_verbose:
         arcpy.AddMessage("Finding multi-threaded attributes...")
     add_mainstem_attribute(seg_network_copy)
@@ -1170,6 +1385,11 @@ def make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbolo
 
 
 def parse_input_bool(given_input):
+    """
+    Takes an ArcMap bool input and coverts it to be usable in Python
+    :param given_input: The given ArcMap input
+    :return: Converted Bool
+    """
     if given_input == 'false' or given_input is None:
         return False
     else:
