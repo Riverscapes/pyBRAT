@@ -50,28 +50,28 @@ def main(
     is_verbose):
 
     """
-        Calculates, for each stream network segment, the attributes needed to trun the BRAT tools.
-        :param proj_path: Path to the BRAT project folder.
-        :param seg_network: The segmented (300m) network.
-        :param in_DEM: The DEM for the entire project.
-        :param flow_acc: The flow accumulation raster.
-        :param coded_veg: The landfire EVT layer
-        :param coded_hist: The landfire BPS layer
-        :param valley_bottom: The valley bottom polygon that is associated with the input stream network.
-        :param road: The shapefile containing all roads for the area
-        :param railroad: The shapefile containing all railroads for the area
-        :param canal: The shapefile containing all canals for the area
-        :param landuse: The raster containing all land use data for the area
-        :param ownership: The shapefile contating all land ownership data for the area
-        :param perennial_network: The perennial network of streams
-        :param out_name: The name for the output BRAT Table.
-        :param description: A short description of the run that will be added to the XML
-        :param find_clusters: If true, this option will create a ClusterID field and populate it
-        :param should_segment_network: If true, this option divides reaches based on the roads input.
-        :param segment_by_ownership: If true, this option divides reaches based on the land ownership input.
-        :param is_verbose:  If true, this option enables ArcMap to provide messages for each step conducted by the tool.
-        :return:
-        """
+    Calculates, for each stream network segment, the attributes needed to trun the BRAT tools.
+    :param proj_path: Path to the BRAT project folder.
+    :param seg_network: The segmented (300m) network.
+    :param in_DEM: The DEM for the entire project.
+    :param flow_acc: The flow accumulation raster.
+    :param coded_veg: The landfire EVT layer
+    :param coded_hist: The landfire BPS layer
+    :param valley_bottom: The valley bottom polygon that is associated with the input stream network.
+    :param road: The shapefile containing all roads for the area
+    :param railroad: The shapefile containing all railroads for the area
+    :param canal: The shapefile containing all canals for the area
+    :param landuse: The raster containing all land use data for the area
+    :param ownership: The shapefile contating all land ownership data for the area
+    :param perennial_network: The perennial network of streams
+    :param out_name: The name for the output BRAT Table.
+    :param description: A short description of the run that will be added to the XML
+    :param find_clusters: If true, this option will create a ClusterID field and populate it
+    :param should_segment_network: If true, this option divides reaches based on the roads input.
+    :param segment_by_ownership: If true, this option divides reaches based on the land ownership input.
+    :param is_verbose:  If true, this option enables ArcMap to provide messages for each step conducted by the tool.
+    :return:
+    """
 
     if flow_acc == "None":
         flow_acc = None
