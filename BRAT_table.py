@@ -124,12 +124,14 @@ def main(
 
     # find points of diversion if canals are defined
     if canal is not None:
-        diversion_pts = find_points_of_diversion(canal, seg_network_copy, is_verbose)
+        diversion_pts = find_points_of_diversion(canal, seg_network_copy, perennial_network, proj_path, is_verbose)
+    else:
+        diversion_pts = None
     
     # run ipc attributes function if conflict layers are defined by user
     if road is not None and valley_bottom is not None:
         arcpy.AddMessage('Adding "iPC" attributes to network...')
-        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose, perennial_network)
+        ipc_attributes(seg_network_copy, road, railroad, canal, valley_bottom, ownership, diversion_pts, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose)
 
     if perennial_network is not None:
         find_is_perennial(seg_network_copy, perennial_network)
@@ -569,40 +571,61 @@ def iveg_attributes(coded_veg, coded_hist, buf_100m, buf_30m, out_network, scrat
         arcpy.Delete_management(item)
 
 
-def find_points_of_diversion(canal, network, is_verbose):
-    
+def find_points_of_diversion(canal, network, perennial_network, proj_path, is_verbose):
+    """
+    Finds potential points where water is being diverted into canals from the stream network by finding intersections between the canal and network
+    :param: canal: input canals network
+    :param: network: input stream network
+    :param: perennial_network: input perennial stream network, will be used preferentially to the full network
+    :param: is verbose: True/False for whether to return messages in ArcMap
+    :return: points of diversion, the points where the canals and network intersect
+    """
+    # find temp directory, or make if not present
+    temp_dir = os.path.join(proj_path, 'Temp')
+    if not os.path.exists(temp_dir):
+        make_temp_dir(proj_path, is_verbose)
+        
     # find points of diversion (intersection between perennial stream and canals
     if is_verbose:
         arcpy.AddMessage("Finding points of diversion...")
+
+    # name output and place in canals folder
     canal_folder = os.path.dirname(canal)
     diversion_points = canal_folder + "\\points_of_diversion.shp"
+
     if not os.path.exists(diversion_points):
+        # dissolve canals into single feature
         canal_dissolve = temp_dir + "\\canals_dissolved.shp"
         arcpy.Dissolve_management(canal, canal_dissolve, '', '', 'SINGLE_PART', 'UNSPLIT_LINES')# dissolve canals into single feature
-        if perennial_network:
+
+        # intersect canals with perennial network if available
+        if perennial_network is not None:
             arcpy.Intersect_analysis([perennial_network, canal_dissolve], diversion_points, "", 12, "POINT")
+
+        # else intersect canals with full network minus the canals
         else:
-            temp_network_no_canals_shp = os.path.join(temp_dir, "network_no_canals.shp")
+            # select reaches that do NOT overlap with canals and save to temp_network_no_canals_shp    
             temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(out_network, 'temp_network_no_canals_lyr')
             arcpy.SelectLayerByLocation_management(in_layer=temp_network_no_canals_lyr, overlap_type='HAVE_THEIR_CENTER_IN', select_features=canal_dissolve, search_distance=5, selection_type='NEW_SELECTION')
             arcpy.SelectLayerByAttribute_management(temp_network_no_canals_lyr, 'SWITCH_SELECTION')
+            # save temp network without canals to temp directory
+            temp_network_no_canals_shp = os.path.join(temp_dir, "network_no_canals.shp")
             arcpy.CopyFeatures_management(temp_network_no_canals_lyr, temp_network_no_canals_shp)
+            # find intersection between network without canals and canals
             arcpy.Intersect_analysis([temp_network_no_canals_shp, canal_dissolve], diversion_points, "", 12, "POINT")
+
+    # return new diversion points shapefile
     return diversion_points
 
         
 # conflict potential function
 # calculates distances from road intersections, adjacent roads, railroads and canals for each flowline segment
-def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership, buf_30m, buf_100m, landuse, scratch, projPath, is_verbose,perennial_network):
-    # create temp directory
-    if is_verbose:
-        arcpy.AddMessage("Deleting and remaking temp dir...")
-    from shutil import rmtree
-    temp_dir = os.path.join(projPath, 'Temp')
-    if os.path.exists(temp_dir):
-        rmtree(temp_dir)
-    os.mkdir(temp_dir)
-
+def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership, diversion_points, buf_30m, buf_100m, landuse, scratch, proj_path, is_verbose):
+    # find temp directory, or make if not present
+    temp_dir = os.path.join(proj_path, 'Temp')
+    if not os.path.exists(temp_dir):
+        make_temp_dir(proj_path, is_verbose)
+        
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
     drop = ["iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal", "iPC_DivPts", "iPC_LU", "iPC_Privat", "ADMIN_AGEN"]
@@ -626,25 +649,9 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
         find_distance_from_feature(out_network, railroad, valley_bottom, temp_dir, buf_30m, "railroad", "iPC_Rail", scratch, is_verbose, clip_feature = False)
 
     if canal is not None:
-        canal_folder = os.path.dirname(canal)
         # find distance from canal
         find_distance_from_feature(out_network, canal, valley_bottom, temp_dir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
-        # find points of diversion (intersection between perennial stream and canals
-        if is_verbose:
-            arcpy.AddMessage("Finding points of diversion...")
-        diversion_points = canal_folder + "\\points_of_diversion.shp"
-        if not os.path.exists(diversion_points):
-            canal_dissolve = temp_dir + "\\canals_dissolved.shp"
-            arcpy.Dissolve_management(canal, canal_dissolve, '', '', 'SINGLE_PART', 'UNSPLIT_LINES')# dissolve canals into single feature
-            if perennial_network:
-                arcpy.Intersect_analysis([perennial_network, canal_dissolve], diversion_points, "", 12, "POINT")
-            else:
-                temp_network_no_canals_shp = os.path.join(temp_dir, "network_no_canals.shp")
-                temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(out_network, 'temp_network_no_canals_lyr')
-                arcpy.SelectLayerByLocation_management(in_layer=temp_network_no_canals_lyr, overlap_type='HAVE_THEIR_CENTER_IN', select_features=canal_dissolve, search_distance=5, selection_type='NEW_SELECTION')
-                arcpy.SelectLayerByAttribute_management(temp_network_no_canals_lyr, 'SWITCH_SELECTION')
-                arcpy.CopyFeatures_management(temp_network_no_canals_lyr, temp_network_no_canals_shp)
-                arcpy.Intersect_analysis([temp_network_no_canals_shp, canal_dissolve], diversion_points, "", 12, "POINT")
+    if diversion_points is not None:
         # calculate distance from points of diversion
         find_distance_from_feature(out_network, diversion_points, valley_bottom, temp_dir, buf_30m, "diversion", "iPC_DivPts", scratch, is_verbose, clip_feature = False)
 
@@ -689,7 +696,17 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
     arcpy.ClearEnvironment("extent")
 
 
+def make_temp_dir(projPath, is_verbose):
+    # create temp directory
+    if is_verbose:
+        arcpy.AddMessage("Deleting and remaking temp dir...")
+    from shutil import rmtree
+    temp_dir = os.path.join(projPath, 'Temp')
+    if os.path.exists(temp_dir):
+        rmtree(temp_dir)
+    os.mkdir(temp_dir)
 
+    
 def add_min_distance(out_network):
     arcpy.AddField_management(out_network, "oPC_Dist", 'DOUBLE')
     fields = [f.name for f in arcpy.ListFields(out_network)]
