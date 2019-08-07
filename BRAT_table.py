@@ -61,8 +61,8 @@ def main(
     scratch = 'in_memory'
     #arcpy.env.workspace = scratch
     arcpy.env.overwriteOutput = True
-    arcpy.env.outputZFlag= False
-    arcpy.env.outputMFlag = False
+    arcpy.env.outputZFlag= "Disabled"
+    arcpy.env.outputMFlag = "Disabled"
     arcpy.CheckOutExtension("Spatial")
 
     # --check input projections--
@@ -577,7 +577,7 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
 
     # if fields already exist, delete them
     fields = [f.name for f in arcpy.ListFields(out_network)]
-    drop = ["iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal", "iPC_LU"]
+    drop = ["iPC_RoadX", "iPC_Road", "iPC_RoadVB", "iPC_Rail", "iPC_RailVB", "iPC_Canal", "iPC_DivPts", "iPC_LU", "iPC_Privat", "ADMIN_AGEN"]
     for field in fields:
         if field in drop:
             arcpy.DeleteField_management(out_network, field)
@@ -598,24 +598,25 @@ def ipc_attributes(out_network, road, railroad, canal, valley_bottom, ownership,
         find_distance_from_feature(out_network, railroad, valley_bottom, temp_dir, buf_30m, "railroad", "iPC_Rail", scratch, is_verbose, clip_feature = False)
 
     if canal is not None:
-        canal_folder= os.path.dirname(canal)
+        canal_folder = os.path.dirname(canal)
         # find distance from canal
         find_distance_from_feature(out_network, canal, valley_bottom, temp_dir, buf_30m, "canal", "iPC_Canal", scratch, is_verbose, clip_feature=False)
         # find points of diversion (intersection between perennial stream and canals
         if is_verbose:
             arcpy.AddMessage("Finding points of diversion...")
         diversion_points = canal_folder + "\\points_of_diversion.shp"
-        canal_dissolve = temp_dir + "\\canals_dissolved.shp"
-        arcpy.Dissolve_management(canal, canal_dissolve, '', '', 'SINGLE_PART', 'UNSPLIT_LINES')# dissolve canals into single feature
-        if perennial_network:
-            arcpy.Intersect_analysis([perennial_network, canal_dissolve], diversion_points, "", 12, "POINT")
-        else:
-            temp_network_no_canals_shp = os.path.join(temp_dir, "network_no_canals.shp")
-            temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(out_network, 'temp_network_no_canals_lyr')
-            arcpy.SelectLayerByLocation_management(in_layer=temp_network_no_canals_lyr, overlap_type='HAVE_THEIR_CENTER_IN', select_features=canal_dissolve, search_distance=5, selection_type='NEW_SELECTION')
-            arcpy.SelectLayerByAttribute_management(temp_network_no_canals_lyr, 'SWITCH_SELECTION')
-            arcpy.CopyFeatures_management(temp_network_no_canals_lyr, temp_network_no_canals_shp)
-            arcpy.Intersect_analysis([temp_network_no_canals_shp, canal_dissolve], diversion_points, "", 12, "POINT")
+        if not os.path.exists(diversion_points):
+            canal_dissolve = temp_dir + "\\canals_dissolved.shp"
+            arcpy.Dissolve_management(canal, canal_dissolve, '', '', 'SINGLE_PART', 'UNSPLIT_LINES')# dissolve canals into single feature
+            if perennial_network:
+                arcpy.Intersect_analysis([perennial_network, canal_dissolve], diversion_points, "", 12, "POINT")
+            else:
+                temp_network_no_canals_shp = os.path.join(temp_dir, "network_no_canals.shp")
+                temp_network_no_canals_lyr = arcpy.MakeFeatureLayer_management(out_network, 'temp_network_no_canals_lyr')
+                arcpy.SelectLayerByLocation_management(in_layer=temp_network_no_canals_lyr, overlap_type='HAVE_THEIR_CENTER_IN', select_features=canal_dissolve, search_distance=5, selection_type='NEW_SELECTION')
+                arcpy.SelectLayerByAttribute_management(temp_network_no_canals_lyr, 'SWITCH_SELECTION')
+                arcpy.CopyFeatures_management(temp_network_no_canals_lyr, temp_network_no_canals_shp)
+                arcpy.Intersect_analysis([temp_network_no_canals_shp, canal_dissolve], diversion_points, "", 12, "POINT")
         # calculate distance from points of diversion
         find_distance_from_feature(out_network, diversion_points, valley_bottom, temp_dir, buf_30m, "diversion", "iPC_DivPts", scratch, is_verbose, clip_feature = False)
 
@@ -1087,11 +1088,10 @@ def handle_braids(seg_network_copy, canal, proj_path, find_clusters, perennial_n
         arcpy.AddMessage("Finding multi-threaded attributes...")
     add_mainstem_attribute(seg_network_copy)
     # find braided reaches
-
     temp_dir = os.path.join(proj_path, 'Temp')
     if not os.path.exists(temp_dir):
         os.mkdir(temp_dir)
-    #FindBraidedNetwork.main(seg_network_copy, canal, temp_dir, perennial_network, is_verbose)
+    FindBraidedNetwork.main(seg_network_copy, canal, temp_dir, perennial_network, is_verbose)
 
     if find_clusters:
         arcpy.AddMessage("Finding Clusters...")
