@@ -1459,11 +1459,11 @@ def write_unsuitable_worksheet(worksheet, stream_network, watershed_name, workbo
                     slope += length
                 elif category == "Stream Power Limited":
                     stream += length
-                elif category == "Potential Reservoir or Landuse Change":
+                elif category == "Potential Reservoir or Landuse":
                     reservoir += length
                 elif category == "Dam Building Possible":
                     dams += length
-                elif category == "...TBD...":
+                elif category == "Stream Size Limited":
                     tbd += length
                 else:
                     pass
@@ -1567,9 +1567,9 @@ def write_risk_worksheet(worksheet, stream_network, watershed_name, workbook):
     # categories
     row = 2
     col = 0
-    worksheet.write(row, col, "Considerable Risk")
+    worksheet.write(row, col, "Major Risk")
     row += 1
-    worksheet.write(row, col, "Some Risk")
+    worksheet.write(row, col, "Considerable Risk")
     row += 1
     worksheet.write(row, col, "Minor Risk")
     row += 1
@@ -1588,9 +1588,9 @@ def write_risk_worksheet(worksheet, stream_network, watershed_name, workbook):
         with arcpy.da.SearchCursor(streams, ['SHAPE@Length', 'oPBRC_UI']) as cursor:
             for length, category in cursor:
                 total += length
-                if category == "Considerable Risk":
+                if category == "Major Risk":
                     cons += length
-                elif category == "Some Risk":
+                elif category == "Considerable Risk":
                     some += length
                 elif category == "Minor Risk":
                     minr += length
