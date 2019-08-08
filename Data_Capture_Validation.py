@@ -7,31 +7,32 @@
 # Created:     05/2018
 # -------------------------------------------------------------------------------
 
+from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, \
+    make_folder, find_available_num_suffix, find_available_num_prefix, make_layer
 import os
 import arcpy
-#import matplotlib as mpl # for plot code
-#mpl.use('Agg')
-#import matplotlib.pyplot as plt
+# import matplotlib as mpl # for plot code
+# mpl.use('Agg')
+# import matplotlib.pyplot as plt
 import scipy.stats as stat
 import numpy as np
-import glob
+# import glob
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
-from SupportingFunctions import write_xml_element_with_path, find_relative_path, find_folder, make_folder, find_available_num_suffix, find_available_num_prefix, make_layer
 
 
-def main(in_network, output_name, dams=None, DA_threshold=None):
+def main(in_network, output_name, dams=None, da_threshold=None):
     """
     The main function
     :param in_network: The output of BRAT (a polyline shapefile)
     :param dams: A shapefile containing a point for each dam
     :param output_name: The name of the output shape file
-    :param DA_threshold: Drainage area at which stream is presumably too large for dam building
+    :param da_threshold: Drainage area at which stream is presumably too large for dam building
     :return:
     """
-    if DA_threshold == "None":
-        DA_threshold = None
+    if da_threshold == "None":
+        da_threshold = None
 
     arcpy.env.overwriteOutput = True
     arcpy.env.workspace = 'in_memory'
@@ -53,7 +54,7 @@ def main(in_network, output_name, dams=None, DA_threshold=None):
     else:
         occ_hpe = 'oCC_HPE'
         
-    #remove Join_Count if already present in conservation restoration output
+    # remove Join_Count if already present in conservation restoration output
     if 'Join_Count' in fields:
         arcpy.DeleteField_management(in_network, 'Join_Count')
         
@@ -65,7 +66,8 @@ def main(in_network, output_name, dams=None, DA_threshold=None):
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
-        set_dam_attributes(in_network, output_network, dams, dam_fields + ['Join_Count'] + input_fields, new_fields, DA_threshold)
+        set_dam_attributes(in_network, output_network, dams,
+                           dam_fields + ['Join_Count'] + input_fields, new_fields, da_threshold)
     else:
         arcpy.CopyFeatures_management(in_network, output_network)
         add_fields(output_network, other_fields)
@@ -77,16 +79,16 @@ def main(in_network, output_name, dams=None, DA_threshold=None):
         clean_up_fields(in_network, output_network, new_fields)
 
     # Makes observed vs. predicted plot. Use the R code on master branch instead.
-    #if dams:
+    # if dams:
     #    plot_name = observed_v_predicted_plot(output_network)
 
     # electivity table output moved to collect_summary_products tool
-    #if dams:
+    # if dams:
     #    make_electivity_table(output_network, output_name)
 
     write_xml(proj_path, in_network, output_network, None)
 
-    makeLayers(output_network, dams)
+    make_layers(output_network, dams)
 
 
 def copy_dams_to_inputs(proj_path, dams, in_network):
@@ -94,6 +96,7 @@ def copy_dams_to_inputs(proj_path, dams, in_network):
     If the given dams are not in the inputs,
     :param proj_path: The path to the project root
     :param dams: The path to the given dams
+    :param in_network: the input Conservation Restoration Network
     :return: Filepath to dams in inputs folder
     """
     if proj_path in dams:
@@ -103,7 +106,7 @@ def copy_dams_to_inputs(proj_path, dams, in_network):
     inputs_folder = find_folder(proj_path, "Inputs")
     beaver_dams_folder = find_folder(inputs_folder, "*[0-9]*_BeaverDams")
     if beaver_dams_folder is None:
-	beaver_dams_folder = make_folder(inputs_folder, find_available_num_prefix(inputs_folder) + "_BeaverDams")	
+        beaver_dams_folder = make_folder(inputs_folder, find_available_num_prefix(inputs_folder) + "_BeaverDams")
     new_dam_folder = make_folder(beaver_dams_folder, "Beaver_Dam_" + find_available_num_suffix(beaver_dams_folder))
     new_dam_path = os.path.join(new_dam_folder, os.path.basename(dams))
     coord_sys = arcpy.Describe(in_network).spatialReference
@@ -113,17 +116,19 @@ def copy_dams_to_inputs(proj_path, dams, in_network):
     return new_dam_path
 
 
-def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, DA_threshold):
+def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, da_threshold):
     """
     Sets all the dam info and updates the output file with that data
-    :param brat_output: The polyline we're basing our stuff off of
+    :param brat_output: The polyline we're basing everything on
     :param output_path: The polyline shapefile with BRAT output
     :param dams: The points shapefile of observed dams
-    :param damFields: The fields we want to update for dam attributes
-    :return:
+    :param req_fields: The fields needed to calculate new fields
+    :param new_fields: Fields to add to the network
+    :param da_threshold:
+    :return: Drainage area at which stream is presumably too large for dam building
     """
     # snap dams within 5 meters to network if above DA threshold, otherwise snap dams within 60 meters
-    if DA_threshold:
+    if da_threshold:
         temp_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(brat_output)))), 'Temp')
         tmp_above_threshold = arcpy.MakeFeatureLayer_management(brat_output, 'tmp_above_threshold')
         above_threshold_shp = os.path.join(temp_dir, 'tmp_above_da_threshold.shp')
@@ -141,12 +146,8 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, D
     else:
         arcpy.Snap_edit(dams, [[brat_output, 'EDGE', '60 Meters']])
     # should select all dams snapped to network
-    arcpy.SpatialJoin_analysis(brat_output,
-                                dams,
-                                output_path,
-                                join_operation='JOIN_ONE_TO_ONE',
-                                join_type='KEEP_ALL',
-                                match_option='INTERSECT')
+    arcpy.SpatialJoin_analysis(brat_output, dams, output_path,
+                               join_operation='JOIN_ONE_TO_ONE', join_type='KEEP_ALL', match_option='INTERSECT')
 
     # add new fields to network
     add_fields(output_path, new_fields)
@@ -159,6 +160,7 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, D
             if seg_length is None:
                 seg_length = 0
             occ_ex = row[-5]        # fifth to last attribute
+            # TODO Is it necessary to initialize these values?
             occ_hpe = row[-4]        # fourth to last attribute
             igeo_da = row[-3]       # third to last attribute
             cons_field = row[-2]     # second to last attribute
@@ -166,9 +168,9 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, D
 
             # eDam_Ct: set equal to join count from snapped dams
             row[0] = dam_num
-            row[1] = dam_num / seg_length * 1000 # calculate surveyed dam density
+            row[1] = dam_num / seg_length * 1000  # calculate surveyed dam density
 
-            # BRATvSurv: calculate predicted (BRAT) capacity count vs. oberved (surveyed) dam count
+            # BRATvSurv: calculate predicted (BRAT) capacity count vs. observed (surveyed) dam count
             if row[0] == 0:
                 row[4] = -1
             else:
@@ -187,7 +189,7 @@ def set_dam_attributes(brat_output, output_path, dams, req_fields, new_fields, D
                 else:
                     row[3] = "Immediate: Potential Beaver Translocation"
             elif row[-2] == "Straight Forward - Quick Return":
-                row [3] = "Mid Term: Process-based Riparian Vegetation Restoration"
+                row[3] = "Mid Term: Process-based Riparian Vegetation Restoration"
             elif row[-1] == "Strategic - Long-Term Investment":
                 row[3] = "Long Term: Riparian Vegetation Reestablishment"
             else:
@@ -207,12 +209,8 @@ def add_snapped_attribute(dams, brat_output):
     : return:
     """
     out_dams = os.path.join(os.path.dirname(dams), 'Dams_Snapped.shp')
-    arcpy.SpatialJoin_analysis(dams,
-                                brat_output,
-                                out_dams,
-                                join_operation='JOIN_ONE_TO_ONE',
-                                join_type='KEEP_ALL',
-                                match_option='INTERSECT')
+    arcpy.SpatialJoin_analysis(dams, brat_output, out_dams,
+                               join_operation='JOIN_ONE_TO_ONE', join_type='KEEP_ALL', match_option='INTERSECT')
     arcpy.AddField_management(out_dams, 'Snapped', 'TEXT')
     with arcpy.da.UpdateCursor(out_dams, ['Join_Count', 'Snapped']) as cursor:
         for row in cursor:
@@ -244,7 +242,7 @@ def add_fields(output_path, new_fields):
     for field in new_fields:
         if field in text_fields:
             arcpy.AddField_management(output_path, field, field_type="TEXT", field_length=50)
-        else: # we assume that the default is doubles
+        else:  # we assume that the default is doubles
             arcpy.AddField_management(output_path, field, field_type="DOUBLE", field_precision=0, field_scale=0)
 
 
@@ -257,42 +255,43 @@ def set_other_attributes(output_path, fields):
     """
     with arcpy.da.UpdateCursor(output_path, fields) as cursor:
         for row in cursor:
-            seg_length = row[-6] # sixth to last attribute
+            # TODO Does this need to be initialized?
+            seg_length = row[-6]  # sixth to last attribute
             if seg_length is None:
                 seg_length = 0
-            oCC_EX = row[-5] # fifth to last attribute
-            oCC_HPE = row[-4] # fourth to last attribute
+            occ_ex = row[-5]  # fifth to last attribute
+            occ_hpe = row[-4]  # fourth to last attribute
 
             # Handles Ex_Categor
-            row[0] = handle_category(oCC_EX)
+            row[0] = handle_category(occ_ex)
 
             # Handles Hpe_Categor
-            row[1] = handle_category(oCC_HPE)
+            row[1] = handle_category(occ_hpe)
 
             # Handles mCC_EXtoHPE
-            if oCC_HPE != 0:
-                row[2] = oCC_EX / oCC_HPE
+            if occ_hpe != 0:
+                row[2] = occ_ex / occ_hpe
             else:
                 row[2] = 0
 
             cursor.updateRow(row)
 
 
-def handle_category(oCC_variable):
+def handle_category(occ_variable):
     """
     Returns a string based on the oCC value given to it
-    :param oCC_variable: A number
-    :return: String
+    :param occ_variable: The oCC variable that needs to be parsed
+    :return: oCC category string
     """
-    if oCC_variable == 0:
+    if occ_variable == 0:
         return "None"
-    elif 0 < oCC_variable <= 1:
+    elif 0 < occ_variable <= 1:
         return "Rare"
-    elif 1 < oCC_variable <= 5:
+    elif 1 < occ_variable <= 5:
         return "Occasional"
-    elif 5 < oCC_variable <= 15:
+    elif 5 < occ_variable <= 15:
         return "Frequent"
-    elif 15 < oCC_variable <= 40:
+    elif 15 < occ_variable <= 40:
         return "Pervasive"
     else:
         return "UNDEFINED"
@@ -319,10 +318,10 @@ def clean_up_fields(brat_network, out_network, new_fields):
         arcpy.DeleteField_management(out_network, remove_fields)
 
 
-def makeLayers(output_network, dams):
+def make_layers(output_network, dams):
     """
     Makes the layers for the modified output
-    :param output network: The path to the network that we'll make a layer from
+    :param output_network: The path to the network that we'll make a layer from
     :param dams: Filepath to dams in the project folder
     :return:
     """
@@ -331,8 +330,8 @@ def makeLayers(output_network, dams):
     validation_folder_name = find_available_num_prefix(analysis_folder) + "_Validation"
     validation_folder = make_folder(analysis_folder, validation_folder_name)
 
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbology_folder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    trib_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
     dam_symbology = os.path.join(symbology_folder, "SurveyedBeaverDamLocations.lyr")
     historic_remaining_symbology = os.path.join(symbology_folder, "PercentofHistoricDamCapacityRemaining.lyr")
@@ -340,49 +339,66 @@ def makeLayers(output_network, dams):
     management_strategies_symbology = os.path.join(symbology_folder, "CurrentBeaverDamManagementStrategies.lyr")
     occupancy_symbology = os.path.join(symbology_folder, "PercentofExistingCapacityOccupiedbySurveyedDams.lyr")
 
-    make_layer(validation_folder, output_network, "Percent of Historic Dam Capacity Remaining", historic_remaining_symbology, is_raster=False, symbology_field="mCC_EXvHPE")
+    make_layer(validation_folder, output_network, "Percent of Historic Dam Capacity Remaining",
+               historic_remaining_symbology, is_raster=False, symbology_field="mCC_EXvHPE")
 
     if dams is not None:
-        make_layer(os.path.dirname(dams), dams, "Surveyed Beaver Dam Locations", dam_symbology, is_raster=False, symbology_field="Snapped")
-        make_layer(validation_folder, output_network, "Predicted Dam Count vs. Surveyed Dam Count", pred_v_surv_symbology, is_raster=False, symbology_field="BRATvSurv")
-        make_layer(validation_folder, output_network, "Current Beaver Dam Management Strategies", management_strategies_symbology, is_raster=False, symbology_field="ConsVRest")
-        make_layer(validation_folder, output_network, "Occupancy Rate of Surveyed Beaver Dams", occupancy_symbology, is_raster=False, symbology_field="e_DamPcC")
+        make_layer(os.path.dirname(dams), dams, "Surveyed Beaver Dam Locations",
+                   dam_symbology, is_raster=False, symbology_field="Snapped")
+        make_layer(validation_folder, output_network, "Predicted Dam Count vs. Surveyed Dam Count",
+                   pred_v_surv_symbology, is_raster=False, symbology_field="BRATvSurv")
+        make_layer(validation_folder, output_network, "Current Beaver Dam Management Strategies",
+                   management_strategies_symbology, is_raster=False, symbology_field="ConsVRest")
+        make_layer(validation_folder, output_network, "Occupancy Rate of Surveyed Beaver Dams",
+                   occupancy_symbology, is_raster=False, symbology_field="e_DamPcC")
 
         
 def make_electivity_table(output_network):
     """
-    Makes table with totals and electivity indices for modeled capacity categories (i.e., none, rare, occasional, frequent, pervasive)
+    Makes table with totals and electivity indices for modeled capacity categories
+    (i.e., none, rare, occasional, frequent, pervasive)
     :param output_network: The stream network output by the BRAT model with fields added from capacity tools
-    :return: CSV with electivity index for network
+    :return:
     """
     # convert network data to numpy table
-    brat_table = arcpy.da.TableToNumPyArray(output_network, ['iGeo_Len', 'e_DamCt', 'mCC_EX_CT', 'e_DamDens', 'oCC_EX', 'ExCategor'], skip_nulls=True)
+    brat_table = arcpy.da.TableToNumPyArray(output_network,
+                                            ['iGeo_Len', 'e_DamCt', 'mCC_EX_CT', 'e_DamDens', 'oCC_EX', 'ExCategor'],
+                                            skip_nulls=True)
     tot_length = brat_table['iGeo_Len'].sum()
     tot_surv_dams = brat_table['e_DamCt'].sum()
     tot_brat_cc = brat_table['mCC_EX_CT'].sum()
     avg_surv_dens = tot_surv_dams/(tot_length/1000)
     avg_brat_dens = tot_brat_cc/(tot_length/1000)
-    electivity_table = []
-    electivity_table.append(['', 'm', 'km', '%', '# of dams', '# of dams', 'dams/km', 'dams/km', '%', ''])
+    electivity_table = ['', 'm', 'km', '%', '# of dams', '# of dams', 'dams/km', 'dams/km', '%', '']
     add_electivity_category(brat_table, 'None', electivity_table, tot_length, tot_surv_dams)
     add_electivity_category(brat_table, 'Rare', electivity_table, tot_length, tot_surv_dams)
     add_electivity_category(brat_table, 'Occasional', electivity_table, tot_length, tot_surv_dams)
     add_electivity_category(brat_table, 'Frequent', electivity_table, tot_length, tot_surv_dams)
     add_electivity_category(brat_table, 'Pervasive', electivity_table, tot_length, tot_surv_dams)
-    electivity_table.append(['Total', tot_length, tot_length/1000, 'NA', tot_surv_dams, tot_brat_cc, avg_surv_dens, avg_brat_dens, tot_surv_dams/tot_brat_cc, 'NA'])
+    electivity_table.append(['Total', tot_length, tot_length/1000, 'NA', tot_surv_dams, tot_brat_cc,
+                             avg_surv_dens, avg_brat_dens, tot_surv_dams/tot_brat_cc, 'NA'])
 
     # set up proper folder structure and save CSV there
     project_folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(output_network))))
     summary_folder = make_folder(project_folder, "Summary_Products")
     tables_folder = make_folder(summary_folder, "SummaryTables")
     out_csv = os.path.join(tables_folder, 'Electivity_Index.csv')
-    np.savetxt(out_csv, electivity_table, fmt = '%s', delimiter=',',
-               header = "Segment Type, Stream Length, Stream Length, % of Drainage Network, Surveyed Dams, BRAT Estimated Capacity, Average Surveyed Dam Density, Average BRAT Predicted Density, % of Modeled Capacity, Electivity Index")
+    np.savetxt(out_csv, electivity_table, fmt='%s', delimiter=',',
+               header="Segment Type, Stream Length, Stream Length,"
+                      " % of Drainage Network, Surveyed Dams, BRAT Estimated Capacity,"
+                      " Average Surveyed Dam Density, Average BRAT Predicted Density,"
+                      " % of Modeled Capacity, Electivity Index")
 
 
 def add_electivity_category(brat_table, category, output_table, tot_length, tot_surv_dams):
     """
     Calculates values for each modeled capacity category and adds to output table
+    :param brat_table: The current BRAT Table
+    :param category: The oCC category to add
+    :param output_table: The table to output data to
+    :param tot_length: The total length of the network
+    :param tot_surv_dams: The total number of surveyed dams in the network
+    :return:
     """
     cat_tbl = brat_table[brat_table['ExCategor'] == category]
     length = cat_tbl['iGeo_Len'].sum()
@@ -394,18 +410,24 @@ def add_electivity_category(brat_table, category, output_table, tot_length, tot_
     brat_dens = brat_cc/length_km
     prop_mod_cap = 100*surv_dams/(brat_cc+0.000001)
     electivity = (surv_dams/tot_surv_dams)/(network_prop/100)
-    output_table.append([category, length, length_km, network_prop, surv_dams, brat_cc, surv_dens, brat_dens, prop_mod_cap, electivity])
+    output_table.append([category, length, length_km, network_prop, surv_dams,
+                         brat_cc, surv_dens, brat_dens, prop_mod_cap, electivity])
 
 
 def observed_v_predicted_plot(output_network):
+    """
+    Creates plot comparing observed vs predicted. [This is currently unused]
+    :param output_network: The Data Validation Network that was created
+    :return: The filepath to the plot
+    """
     x, y = clean_values(output_network)
     # set up plot
     fig = plt.figure()
     fig.add_axes()
     ax = fig.add_subplot(111)
     ax.set(title='Predicted vs. Observed Dam Counts (per reach)',
-               xlabel='Predicted Number of Dams',
-               ylabel='Observed Number of Dams')
+           xlabel='Predicted Number of Dams',
+           ylabel='Observed Number of Dams')
     # set axis range
     if max(x) > max(y):
         ax.set_xlim(0, round(max(x)+2), 1)
@@ -432,41 +454,60 @@ def observed_v_predicted_plot(output_network):
 
 
 def clean_values(output_network):
+    """
+    Removes unwanted values from the stream network
+    :param output_network: The Data Validation Network that was created
+    :return: Values for x and y
+    """
     # pull e_DamCt (observed) and oCC_EX (predicted) from output network
-    mCC_EX_CT = arcpy.da.FeatureClassToNumPyArray(output_network, ['mCC_EX_CT']).astype(np.float)
-    e_DamCt = arcpy.da.FeatureClassToNumPyArray(output_network, ['e_DamCt']).astype(np.float)
+    mcc_ex_ct = arcpy.da.FeatureClassToNumPyArray(output_network, ['mCC_EX_CT']).astype(np.float)
+    e_dam_ct = arcpy.da.FeatureClassToNumPyArray(output_network, ['e_DamCt']).astype(np.float)
     # pull out none values
-    x = mCC_EX_CT[np.isnan(e_DamCt)==False]
-    y = e_DamCt[np.isnan(e_DamCt)==False]
+    x = mcc_ex_ct[np.isnan(e_dam_ct) is False]
+    y = e_dam_ct[np.isnan(e_dam_ct) is False]
     # pull out observed values of zero
-    X1 = x[np.equal(y, 0)==False]
-    Y1 = y[np.equal(y, 0)==False]
-    return X1, Y1
+    x1 = x[np.equal(y, 0) is False]
+    y1 = y[np.equal(y, 0) is False]
+    return x1, y1
 
 
 def plot_points(x, y, axis):
+    """
+    Plots points based on their x and y values
+    :param x: X values for points
+    :param y: Y values for points
+    :param axis: Axis for current graph
+    :return:
+    """
     # generate some random jitter between 0 and 1
-    if len(x)>0 and x.std() != 0:
-	jitter = (np.random.rand(*x.shape)-0.5)/x.std()
+    if len(x) > 0 and x.std() != 0:
+        jitter = (np.random.rand(*x.shape)-0.5)/x.std()
     else:
         jitter = (np.random.rand(*x.shape)-0.5)/10
     # plot points with predicted dams < observed dams in red
-    red_x = x[np.greater(y, x)== True]
-    red_y = y[np.greater(y, x)== True]
-    jitter_red = jitter[np.greater(y, x)==True]
+    red_x = x[np.greater(y, x) is True]
+    red_y = y[np.greater(y, x) is True]
+    jitter_red = jitter[np.greater(y, x) is True]
     jitter_red_x = np.add(red_x, jitter_red)
     jitter_red_y = np.add(red_y, jitter_red)
-    axis.scatter(jitter_red_x, jitter_red_y, color="red", label = "BRAT Underestimate")
+    axis.scatter(jitter_red_x, jitter_red_y, color="red", label="BRAT Underestimate")
     # plot points with expected dams >= observed dams in blue
-    blue_x = x[np.greater_equal(x, y)== True]
-    blue_y = y[np.greater_equal(x, y)== True]
-    jitter_blue = jitter[np.greater_equal(x, y)==True]
+    blue_x = x[np.greater_equal(x, y) is True]
+    blue_y = y[np.greater_equal(x, y) is True]
+    jitter_blue = jitter[np.greater_equal(x, y) is True]
     jitter_blue_x = np.add(blue_x, jitter_blue)
     jitter_blue_y = np.add(blue_y, jitter_blue)
     axis.scatter(jitter_blue_x, jitter_blue_y, color="blue", label="BRAT Accurate")
 
 
 def plot_regression(x, y, axis):
+    """
+    Plots regression points based on their x and y values
+    :param x: X values for points
+    :param y: Y values for points
+    :param axis: Axis for current graph
+    :return:
+    """
     # calculate regression equation of e_DamCt ~ mCC_EX_CT and assign to variable
     regression = stat.linregress(x, y)
     model_x = np.arange(0.0, round(max(x))+2, 0.1)
@@ -476,14 +517,22 @@ def plot_regression(x, y, axis):
     # calculate prediction intervals and plot as shaded areas
     n = len(x)
     error = stat.t.ppf(1-0.025, n-2) * regression.stderr
-    upper_CI = model_y + error
-    lower_CI = model_y - error
-    axis.fill_between(model_x, y1=upper_CI, y2=lower_CI, facecolor='red', alpha=0.3, label = "95% Confidence Interval")
+    upper_ci = model_y + error
+    lower_ci = model_y - error
+    axis.fill_between(model_x, y1=upper_ci, y2=lower_ci, facecolor='red', alpha=0.3, label="95% Confidence Interval")
     # in-plot legend
     axis.legend(loc='best', frameon=False)
 
 
 def write_xml(proj_path, in_network, out_network, plot_name):
+    """
+    Writes relevant data into the XML
+    :param proj_path:  The file path to the BRAT project folder
+    :param in_network: The input Conservation Restoration network
+    :param out_network: The newly created Data Validation network
+    :param plot_name: The file path to the created plot
+    :return:
+    """
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
 
     if not os.path.exists(xml_file_path):
@@ -497,7 +546,7 @@ def write_xml(proj_path, in_network, out_network, plot_name):
     analysis_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
 
     write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Data Validation", out_network, proj_path)
-    """write_xml_element_with_path(xml_file, analysis_element, "Plot", "Observed vs. Predicted Plot", plot_name, proj_path)"""
+    # write_xml_element_with_path(xml_file, analysis_element, "Plot", "Obsrved vs Predicted Plot", plot_name, proj_path)
 
     xml_file.write()
 
