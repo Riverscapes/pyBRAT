@@ -19,7 +19,17 @@ reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
 
-def main(projPath, in_network, out_name, surveyed_dams = None, conservation_areas = None, conservation_easements = None):
+def main(proj_path, in_network, out_name, surveyed_dams=None, conservation_areas=None, conservation_easements=None):
+    """
+    For each stream segment, assigns a conservation and restoration class
+    :param proj_path: The file path to the BRAT project folder
+    :param in_network:  The input Combined Capacity Network
+    :param out_name: The output name for the Conservation Restoration Model
+    :param surveyed_dams: The dams shapefile
+    :param conservation_areas: The conservation areas shapefile
+    :param conservation_easements: The conservation easements shapefile
+    :return:
+    """
     arcpy.env.overwriteOutput = True
 
     out_network = os.path.dirname(in_network) + "/" + out_name + ".shp"
@@ -51,22 +61,21 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
         occ_hpe = 'oCC_PT'
     else:
         occ_hpe = 'oCC_HPE'
-    
 
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
-              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX',
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mcc_his_dep',
+              'ipc_vlow_lu', 'ipc_high_lu', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX',
               'iPC_Canal', 'ObsDam', 'ConsRest', 'ConsEase']
 
     # add arbitrarily large value to avoid error
     if 'iPC_Canal' not in old_fields:
-       arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
-       arcpy.CalculateField_management(out_network, 'iPC_Canal', """500000""", "PYTHON")
+        arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
+        arcpy.CalculateField_management(out_network, 'iPC_Canal', """500000""", "PYTHON")
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
     arcpy.AddMessage(fields)
-    fieldCheck = [f.name for f in arcpy.ListFields(out_network)]
+    field_check = [f.name for f in arcpy.ListFields(out_network)]
     arcpy.AddMessage("--------------------")
-    arcpy.AddMessage(fieldCheck)
+    arcpy.AddMessage(field_check)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
 
@@ -78,7 +87,7 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
             if occ_ex <= 0:
                 # if capacity is none risk is negligible
                 row[0] = "Negligible Risk"
-            elif ipc_canal <=20:
+            elif ipc_canal <= 20:
                 # if canals are within 20 meters (usually means canal is on the reach)
                 row[0] = "Major Risk"
             else:
@@ -128,7 +137,7 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
                     row[1] = 'Naturally Vegetation Limited'    
             # 'iGeo_Slope' > 23%
             elif slope > 0.23:
-               row[1] = 'Slope Limited'
+                row[1] = 'Slope Limited'
             # 'oCC_EX' None (Primary focus of this layer is the places that can't support dams now... so why?)
             elif occ_ex <= 0:
                 if landuse > 0.3:
@@ -149,33 +158,32 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
             opbrc_ui = row[0]
             occ_hpe = row[5]
             occ_ex = row[6]
-            mCC_HisDep = row[8]
-            iPC_VLowLU = row[9]
-            iPC_HighLU = row[10]
+            mcc_his_dep = row[8]
+            ipc_vlow_lu = row[9]
+            ipc_high_lu = row[10]
             if opbrc_ui == 'Negligible Risk' or opbrc_ui == 'Minor Risk':
                 # 'oCC_EX' Frequent or Pervasive
-                # 'mCC_HisDep' <= 3
-                if occ_ex >= 5 and mCC_HisDep <= 3:
+                # 'mcc_his_dep' <= 3
+                if occ_ex >= 5 and mcc_his_dep <= 3:
                     row[2] = 'Easiest - Low-Hanging Fruit'
                 # 'oCC_EX' Occasional, Frequent, or Pervasive
                 # 'oCC_HPE' Frequent or Pervasive
-                # 'mCC_HisDep' <= 3
-                # 'iPC_VLowLU'(i.e., Natural) > 75
-                # 'iPC_HighLU' (i.e., Developed) < 10
-                elif occ_ex > 1 and mCC_HisDep <= 3 and occ_hpe >= 5 and iPC_VLowLU > 75 and iPC_HighLU < 10:
+                # 'mcc_his_dep' <= 3
+                # 'ipc_vlow_lu'(i.e., Natural) > 75
+                # 'ipc_high_lu' (i.e., Developed) < 10
+                elif occ_ex > 1 and mcc_his_dep <= 3 and occ_hpe >= 5 and ipc_vlow_lu > 75 and ipc_high_lu < 10:
                     row[2] = 'Straight Forward - Quick Return'
                 # 'oCC_EX' Rare or Occasional
                 # 'oCC_HPE' Frequent or Pervasive
-                # 'iPC_VLowLU'(i.e., Natural) > 75
-                # 'iPC_HighLU' (i.e., Developed) < 10
-                elif occ_ex > 0 and occ_ex < 5 and occ_hpe >= 5 and iPC_VLowLU > 75 and iPC_HighLU < 10:
+                # 'ipc_vlow_lu'(i.e., Natural) > 75
+                # 'ipc_high_lu' (i.e., Developed) < 10
+                elif occ_hpe >= 5 > occ_ex > 0 and ipc_vlow_lu > 75 and ipc_high_lu < 10:
                     row[2] = 'Strategic - Long-Term Investment'
                 else:
                     row[2] = 'NA'
             else:
                 row[2] = 'NA'
             cursor.updateRow(row)
-
 
     if conservation_areas is not None and surveyed_dams is not None:
         # beaver dam management strategies (derived from TNC project)
@@ -188,7 +196,7 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
 
         network_lyr = arcpy.MakeFeatureLayer_management(out_network, "network_lyr")
 
-        dams = os.path.join(projPath, 'tmp_snapped_dams.shp')
+        dams = os.path.join(proj_path, 'tmp_snapped_dams.shp')
         arcpy.CopyFeatures_management(surveyed_dams, dams)
         arcpy.Snap_edit(dams, [[out_network, 'EDGE', '60 Meters']])
         arcpy.SelectLayerByLocation_management(network_lyr, "INTERSECT", dams, '', "NEW_SELECTION")
@@ -266,20 +274,20 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
 
         arcpy.Delete_management(dams)
 
-    else: # remove strategies map fields if not running this part of the model
+    else:  # remove strategies map fields if not running this part of the model
         arcpy.DeleteField_management(out_network, "DamStrat")
         arcpy.DeleteField_management(out_network, "ObsDam")
         arcpy.DeleteField_management(out_network, "ConsRest")
         arcpy.DeleteField_management(out_network, "ConsEase")
         
-    makeLayers(out_network)
+    make_layers(out_network)
 
     write_xml(in_network, out_network)
 
     return out_network
 
 
-def makeLayers(out_network):
+def make_layers(out_network):
     """
     Writes the layers
     :param out_network: The output network, which we want to make into a layer
@@ -289,25 +297,35 @@ def makeLayers(out_network):
     analyses_folder = os.path.dirname(out_network)
     output_folder = make_folder(analyses_folder, find_available_num_prefix(analyses_folder) + "_Management")
 
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    trib_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
     
-    strategy_map_symbology = os.path.join(symbologyFolder, "StrategiestoPromoteDamBuilding.lyr")
-    limitations_dams_symbology = os.path.join(symbologyFolder, "UnsuitableorLimitedDamBuildingOpportunities.lyr")
-    undesirable_dams_symbology = os.path.join(symbologyFolder, "RiskofUndesirableDams.lyr")
-    conservation_restoration_symbology = os.path.join(symbologyFolder, "RestorationorConservationOpportunities.lyr")
+    strategy_map_symbology = os.path.join(symbology_folder, "StrategiestoPromoteDamBuilding.lyr")
+    limitations_dams_symbology = os.path.join(symbology_folder, "UnsuitableorLimitedDamBuildingOpportunities.lyr")
+    undesirable_dams_symbology = os.path.join(symbology_folder, "RiskofUndesirableDams.lyr")
+    conservation_restoration_symbology = os.path.join(symbology_folder, "RestorationorConservationOpportunities.lyr")
     
-    make_layer(output_folder, out_network, "Unsuitable or Limited Dam Building Opportunities", limitations_dams_symbology, is_raster=False, symbology_field ='oPBRC_UD')
-    make_layer(output_folder, out_network, "Risk of Undesirable Dams", undesirable_dams_symbology, is_raster=False, symbology_field ='oPBRC_UI')
-    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities", conservation_restoration_symbology, is_raster=False, symbology_field ='oPBRC_CR')
+    make_layer(output_folder, out_network, "Unsuitable or Limited Dam Building Opportunities",
+               limitations_dams_symbology, is_raster=False, symbology_field='oPBRC_UD')
+    make_layer(output_folder, out_network, "Risk of Undesirable Dams",
+               undesirable_dams_symbology, is_raster=False, symbology_field='oPBRC_UI')
+    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities",
+               conservation_restoration_symbology, is_raster=False, symbology_field='oPBRC_CR')
 
     # only try making strategies map layer if 'DamStrat' in fields
     fields = [f.name for f in arcpy.ListFields(out_network)]
     if 'DamStrat' in fields:
-        make_layer(output_folder, out_network, "Strategies to Promote Dam Building", strategy_map_symbology, is_raster=False, symbology_field='DamStrat')
+        make_layer(output_folder, out_network, "Strategies to Promote Dam Building",
+                   strategy_map_symbology, is_raster=False, symbology_field='DamStrat')
 
 
 def write_xml(in_network, out_network):
+    """
+    Writes relevant data to the project's XML document
+    :param in_network: The input Combined Capacity Network
+    :param out_network: The new Conservation Restoration Network
+    :return:
+    """
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
 
     xml_file_path = os.path.join(proj_path, "project.rs.xml")
@@ -322,7 +340,8 @@ def write_xml(in_network, out_network):
     path_element = xml_file.find_by_text(in_network_rel_path)
     analysis_element = xml_file.find_element_parent(xml_file.find_element_parent(path_element))
 
-    write_xml_element_with_path(xml_file, analysis_element, "Vector", "BRAT Conservation and Restoration Output", out_network, proj_path)
+    write_xml_element_with_path(xml_file, analysis_element, "Vector",
+                                "BRAT Conservation and Restoration Output", out_network, proj_path)
 
     xml_file.write()
 
