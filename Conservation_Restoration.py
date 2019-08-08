@@ -27,30 +27,35 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
 
     # check for oPBRC fields and delete if exists
     old_fields = [f.name for f in arcpy.ListFields(out_network)]
-    if "oPBRC_UI" in old_fields:
-        arcpy.DeleteField_management(out_network, "oPBRC_UI")
-    if "oPBRC_UD" in old_fields:
-        arcpy.DeleteField_management(out_network, "oPBRC_UD")
-    if "oPBRC_CR" in old_fields:
-        arcpy.DeleteField_management(out_network, "oPBRC_CR")
+    cons_rest_fields = ["oPBRC_UI", "oPBRC_UD", "oPBRC_CR", "DamStrat", "ObsDam", "ConsRest", "ConsEase"]
+    for f in cons_rest_fields:
+        if f in old_fields:
+            arcpy.DeleteField_management(out_network, f)
 
+    # add all new fields
     arcpy.AddField_management(out_network, "oPBRC_UI", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_UD", "TEXT", "", "", 30)
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
+    arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 60)
+    arcpy.AddField_management(out_network, "ObsDam", "TEXT", "", "", 10)
+    arcpy.AddField_management(out_network, "ConsRest", "TEXT", "", "", 10)
+    arcpy.AddField_management(out_network, "ConsEase", "TEXT", "", "", 10)
 
     # use old historic capacity field names if new ones not in combined capacity output
     if 'oVC_PT' in old_fields:
         ovc_hpe = 'oVC_PT'
     else:
-        ovc_hpe = 'oVC_HPE'
+        ovc_hpe = 'oVC_Hpe'
 
     if 'oCC_PT' in old_fields:
         occ_hpe = 'oCC_PT'
     else:
         occ_hpe = 'oCC_HPE'
     
+
     fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
-              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX', 'iPC_Canal', 'ObsDam', 'ConsRest', 'ConsEase']
+              'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX',
+              'iPC_Canal', 'ObsDam', 'ConsRest', 'ConsEase']
 
     # add arbitrarily large value to avoid error
     if 'iPC_Canal' not in old_fields:
@@ -172,7 +177,7 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
             cursor.updateRow(row)
 
 
-    if conservation_area is not None and surveyed_dams is not None:
+    if conservation_areas is not None and surveyed_dams is not None:
         # beaver dam management strategies (derived from TNC project)
         with arcpy.da.UpdateCursor(out_network, ["ObsDam", "ConsArea", "ConsEase"]) as cursor:
             for row in cursor:
@@ -260,6 +265,12 @@ def main(projPath, in_network, out_name, surveyed_dams = None, conservation_area
                 cursor.updateRow(row)
 
         arcpy.Delete_management(dams)
+
+    else: # remove strategies map fields if not running this part of the model
+        arcpy.DeleteField_management(out_network, "DamStrat")
+        arcpy.DeleteField_management(out_network, "ObsDam")
+        arcpy.DeleteField_management(out_network, "ConsRest")
+        arcpy.DeleteField_management(out_network, "ConsEase")
         
     makeLayers(out_network)
 
