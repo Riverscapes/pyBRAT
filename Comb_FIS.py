@@ -15,16 +15,22 @@ from skfuzzy import control as ctrl
 import numpy as np
 import os
 import sys
-from SupportingFunctions import make_layer, make_folder, find_available_num_prefix, getUUID, find_relative_path, write_xml_element_with_path
+from SupportingFunctions import make_layer, make_folder, find_available_num_prefix, \
+                                find_relative_path, write_xml_element_with_path
 import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
-def main(
-    projPath,
-    in_network,
-    max_DA_thresh,
-    out_name):
+
+def main(proj_path, in_network, max_da_thresh, out_name):
+    """
+    The main function, runs the combined FIS for the BRAT input table
+    :param proj_path: The path to the project folder for this BRAT run
+    :param in_network: The input BRAT network
+    :param max_da_thresh: The drainage area value above which the stream is assumed to not support dam building
+    :param out_name: The output name for the Combined Capacity Network
+    :return:
+    """
 
     scratch = 'in_memory'
 
@@ -41,15 +47,23 @@ def main(
     arcpy.CopyFeatures_management(in_network, out_network)
 
     # run the combined fis function for both potential and existing
-    combFIS(out_network, 'hpe', scratch, max_DA_thresh)
-    combFIS(out_network, 'ex', scratch, max_DA_thresh)
+    comb_cap_fis(out_network, 'hpe', scratch, max_da_thresh)
+    comb_cap_fis(out_network, 'ex', scratch, max_da_thresh)
 
     make_layers(out_network)
 
     add_xml_output(in_network, out_network)
 
-# combined fis function
-def combFIS(in_network, model_run, scratch, max_DA_thresh):
+
+def comb_cap_fis(in_network, model_run, scratch, max_da_thresh):
+    """
+    The combined capacity FIS function
+    :param in_network: The input BRAT network
+    :param model_run: The model being run, either 'Hpe' or 'ex" (Potential or Existing)
+    :param scratch: The current workspace
+    :param max_da_thresh: The drainage area value above which the stream is assumed to not support dam building
+    :return:
+    """
     arcpy.env.overwriteOutput = True
 
     # get list of all fields in the flowline network
@@ -144,11 +158,13 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     rule10 = ctrl.Rule(ovc['rare'] & sp2['blowout'] & splow['can'] & ~slope['cannot'], density['none'])
     rule11 = ctrl.Rule(ovc['rare'] & sp2['blowout'] & splow['probably'] & ~slope['cannot'], density['none'])
     rule12 = ctrl.Rule(ovc['occasional'] & sp2['persists'] & splow['can'] & ~slope['cannot'], density['occasional'])
-    rule13 = ctrl.Rule(ovc['occasional'] & sp2['persists'] & splow['probably'] & ~slope['cannot'], density['occasional'])
+    rule13 = \
+        ctrl.Rule(ovc['occasional'] & sp2['persists'] & splow['probably'] & ~slope['cannot'], density['occasional'])
     rule14 = ctrl.Rule(ovc['occasional'] & sp2['breach'] & splow['can'] & ~slope['cannot'], density['occasional'])
     rule15 = ctrl.Rule(ovc['occasional'] & sp2['breach'] & splow['probably'] & ~slope['cannot'], density['occasional'])
     rule16 = ctrl.Rule(ovc['occasional'] & sp2['oblowout'] & splow['can'] & ~slope['cannot'], density['occasional'])
-    rule17 = ctrl.Rule(ovc['occasional'] & sp2['oblowout'] & splow['probably'] & ~slope['cannot'], density['occasional'])
+    rule17 = \
+        ctrl.Rule(ovc['occasional'] & sp2['oblowout'] & splow['probably'] & ~slope['cannot'], density['occasional'])
     rule18 = ctrl.Rule(ovc['occasional'] & sp2['blowout'] & splow['can'] & ~slope['cannot'], density['rare'])
     rule19 = ctrl.Rule(ovc['occasional'] & sp2['blowout'] & splow['probably'] & ~slope['cannot'], density['rare'])
     rule20 = ctrl.Rule(ovc['frequent'] & sp2['persists'] & splow['can'] & slope['flat'], density['occasional'])
@@ -192,7 +208,8 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     rule58 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['can'] & slope['probably'], density['frequent'])
     rule59 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['probably'] & slope['flat'], density['occasional'])
     rule60 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['probably'] & slope['can'], density['frequent'])
-    rule61 = ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['probably'] & slope['probably'], density['occasional'])
+    rule61 = \
+        ctrl.Rule(ovc['pervasive'] & sp2['oblowout'] & splow['probably'] & slope['probably'], density['occasional'])
     rule62 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['can'] & slope['flat'], density['occasional'])
     rule63 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['can'] & slope['can'], density['occasional'])
     rule64 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['can'] & slope['probably'], density['rare'])
@@ -200,16 +217,18 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
     rule66 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['probably'] & slope['can'], density['occasional'])
     rule67 = ctrl.Rule(ovc['pervasive'] & sp2['blowout'] & splow['probably'] & slope['probably'], density['rare'])
 
-    comb_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11, rule12,
-                                    rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20, rule21, rule22, rule23,
-                                    rule24, rule25, rule26, rule27, rule28, rule29, rule30, rule31, rule32, rule33, rule34,
-                                    rule35, rule36, rule37, rule38, rule39, rule40, rule41, rule42, rule43, rule44, rule45,
-                                    rule46, rule47, rule48, rule49, rule50, rule51, rule52, rule53, rule54, rule55, rule56,
-                                    rule57, rule58, rule59, rule60, rule61, rule62, rule63, rule64, rule65, rule66, rule67])
+    comb_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10,
+                                    rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20,
+                                    rule21, rule22, rule23, rule24, rule25, rule26, rule27, rule28, rule29, rule30,
+                                    rule31, rule32, rule33, rule34, rule35, rule36, rule37, rule38, rule39, rule40,
+                                    rule41, rule42, rule43, rule44, rule45, rule46, rule47, rule48, rule49, rule50,
+                                    rule51, rule52, rule53, rule54, rule55, rule56, rule57, rule58, rule59, rule60,
+                                    rule61, rule62, rule63, rule64, rule65, rule66, rule67])
     comb_fis = ctrl.ControlSystemSimulation(comb_ctrl)
 
     # run fuzzy inference system on inputs and defuzzify output
-    out = np.zeros(len(ovc_array)) # todo: test this using nas instead of zeros
+    # TODO Test this using nas instead of zeros
+    out = np.zeros(len(ovc_array))
     for i in range(len(out)):
         comb_fis.input['input1'] = ovc_array[i]
         comb_fis.input['input2'] = ihydsp2_array[i]
@@ -220,29 +239,31 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
 
     # save fuzzy inference system output as table
     columns = np.column_stack((segid_array, out))
-    out_table = os.path.dirname(in_network) + "/" + out_field + "_Table.txt"  # todo: see if possible to skip this step
-    np.savetxt(out_table, columns, delimiter = ",", header = "ReachID, " + out_field, comments = "")
+    out_table = os.path.dirname(in_network) + "/" + out_field + "_Table.txt"
+    # TODO See if possible to skip this step
+    np.savetxt(out_table, columns, delimiter=",", header="ReachID, " + out_field, comments="")
     occ_table = scratch + "/" + out_field + "Tbl"
     arcpy.CopyRows_management(out_table, occ_table)
 
     # join the fuzzy inference system output to the flowline network
     # create empty dictionary to hold input table field values
-    tblDict = {}
+    tbl_dict = {}
     # add values to dictionary
     with arcpy.da.SearchCursor(occ_table, ['ReachID', out_field]) as cursor:
         for row in cursor:
-            tblDict[row[0]] = row[1]
+            tbl_dict[row[0]] = row[1]
     # populate flowline network out field
     arcpy.AddField_management(in_network, out_field, 'DOUBLE')
     with arcpy.da.UpdateCursor(in_network, ['ReachID', out_field]) as cursor:
         for row in cursor:
             try:
-                aKey = row[0]
-                row[1] = tblDict[aKey]
+                a_key = row[0]
+                row[1] = tbl_dict[a_key]
                 cursor.updateRow(row)
+            # TODO There should be no bare excepts. What kind of error is this trying to catch?
             except:
                 pass
-    tblDict.clear()
+    tbl_dict.clear()
 
     # calculate defuzzified centroid value for density 'none' MF group
     # this will be used to re-classify output values that fall in this group
@@ -269,7 +290,7 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
                 row[0] = 40.0
             if row[0] > row[1]:
                 row[0] = row[1]
-            if row[2] >= float(max_DA_thresh):
+            if row[2] >= float(max_da_thresh):
                 row[0] = 0.0
             cursor.updateRow(row)
 
@@ -286,7 +307,7 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
         for row in cursor:
             len_km = row[2] / 1000
             raw_ct = row[1] * len_km
-            if raw_ct > 0 and raw_ct < 1:
+            if 1 > raw_ct > 0:
                 row[0] = 1
             else:
                 row[0] = round(raw_ct)
@@ -302,7 +323,13 @@ def combFIS(in_network, model_run, scratch, max_DA_thresh):
 
 
 def add_xml_output(in_network, out_network):
-    """add the capacity output to the project xml file"""
+    """
+    Add the capacity output to the project xml file
+    :param in_network: The input BRAT network
+    :param out_network: The new Capacity Network being created
+    :return:
+    """
+
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(out_network))))
 
     # xml file
@@ -325,7 +352,13 @@ def add_xml_output(in_network, out_network):
 
 
 def get_brat_element(xml_file, in_network, proj_path):
-    """Gets the BRAT XML element for this particular in_network"""
+    """
+    Gets the BRAT XML element for this particular in_network
+    :param xml_file: The project's XML file to add to
+    :param in_network: The input BRAT network
+    :param proj_path: The path to the project folder for this BRAT run
+    :return: The BRAT XML element
+    """
     relative_path = find_relative_path(in_network, proj_path)
 
     path_element = xml_file.find_by_text(relative_path)
@@ -335,7 +368,6 @@ def get_brat_element(xml_file, in_network, proj_path):
     brat_element = xml_file.find_element_parent(intermeds_element)
 
     return brat_element
-
 
 
 def make_layers(out_network):
@@ -350,17 +382,21 @@ def make_layers(out_network):
     historic_folder = make_folder(output_folder, find_available_num_prefix(output_folder) + "_HistoricCapacity")
     existing_folder = make_folder(output_folder, find_available_num_prefix(output_folder) + "_ExistingCapacity")
 
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
-    existingCapacityLayer = os.path.join(symbologyFolder, "ExistingDamBuildingCapacity.lyr")
-    historicCapacityLayer = os.path.join(symbologyFolder, "HistoricDamBuildingCapacity.lyr")
-    existingCapacityCountLayer = os.path.join(symbologyFolder, "ExistingDamComplexSize.lyr")
-    historicCapacityCountLayer = os.path.join(symbologyFolder, "HistoricDamComplexSize.lyr")
+    trib_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
+    existing_capacity_layer = os.path.join(symbology_folder, "ExistingDamBuildingCapacity.lyr")
+    historic_capacity_layer = os.path.join(symbology_folder, "HistoricDamBuildingCapacity.lyr")
+    existing_capacity_count_layer = os.path.join(symbology_folder, "ExistingDamComplexSize.lyr")
+    historic_capacity_count_layer = os.path.join(symbology_folder, "HistoricDamComplexSize.lyr")
 
-    make_layer(existing_folder, out_network, "Existing Dam Building Capacity", existingCapacityLayer, is_raster=False)
-    make_layer(historic_folder, out_network, "Historic Dam Building Capacity", historicCapacityLayer, is_raster=False)
-    make_layer(existing_folder, out_network, "Existing Dam Complex Size", existingCapacityCountLayer, is_raster=False)
-    make_layer(historic_folder, out_network, "Historic Dam Complex Size", historicCapacityCountLayer, is_raster=False)
+    make_layer(existing_folder, out_network, "Existing Dam Building Capacity",
+               existing_capacity_layer, is_raster=False)
+    make_layer(historic_folder, out_network, "Historic Dam Building Capacity",
+               historic_capacity_layer, is_raster=False)
+    make_layer(existing_folder, out_network, "Existing Dam Complex Size",
+               existing_capacity_count_layer, is_raster=False)
+    make_layer(historic_folder, out_network, "Historic Dam Complex Size",
+               historic_capacity_count_layer, is_raster=False)
 
 
 if __name__ == '__main__':
