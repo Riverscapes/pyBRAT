@@ -17,16 +17,15 @@ import arcpy
 
 
 def main(project_folder, stream_network, watershed_name, excel_file_name=None, dams_shapefile=None, output_folder=None):
-
     """
-    Our main function
-    :param project_folder: The BRAT Project that we want to collect the summary products for
-    :param: stream_network: The BRAT output on which calculations will be based
-    :param: watershed_name: Name of watershed data is based off
-    :param: excel_file_name: Output file name
-    :param: dams_shapefile: Shapefile of dam points corresponding with stream network provided
-    :param: output_folder: Optional folder to save output table to
-    :return: Excel workbook with sheets summarizing major BRAT outputs
+    The main function that creates and populates the excel file
+    :param project_folder: The BRAT Project Folder
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param excel_file_name: The name of the excel doc
+    :param dams_shapefile: Shapefile containing dams for the entire area
+    :param output_folder: Folder where the excel doc will be output
+    :return:
     """
 
     if excel_file_name is None:
@@ -61,7 +60,8 @@ def main(project_folder, stream_network, watershed_name, excel_file_name=None, d
 def split_multi_inputs(multi_input_parameter):
     """
     Splits an ArcMap Toolbox Multi-Value parameter into a Python list object.
-    ArcMap Multi-Value inputs are semi-colon delimited text strings.
+    :param multi_input_parameter: ArcMap Multi-Value inputs are semi-colon delimited text strings.
+    :return: The split list
     """
     try:
         # Remove single quotes
@@ -69,33 +69,65 @@ def split_multi_inputs(multi_input_parameter):
 
         # split input tables by semicolon ";"
         return multi_input_parameter.split(";")
+    # TODO There should be no bare exceptions
     except:
         raise Exception("Could not split multi-input")
 
 
 def merge_networks(summary_prods_folder, stream_network):
-    mergedFile = os.path.join(summary_prods_folder, "MergedNetwork.shp")
-    toMerge = split_multi_inputs(stream_network)
-    arcpy.CreateFeatureclass_management(summary_prods_folder, "MergedNetwork.shp", None, toMerge[0])
-    arcpy.Append_management(toMerge, mergedFile, "NO_TEST")
-    return mergedFile
+    """
+    Merges all network inputs into one shapefile
+    :param summary_prods_folder: The folder where all summary products are output
+    :param stream_network: The BRAT input network to be summarized
+    :return: File with all networks merged.
+    """
+    merged_file = os.path.join(summary_prods_folder, "MergedNetwork.shp")
+    to_merge = split_multi_inputs(stream_network)
+    arcpy.CreateFeatureclass_management(summary_prods_folder, "MergedNetwork.shp", None, to_merge[0])
+    arcpy.Append_management(to_merge, merged_file, "NO_TEST")
+    return merged_file
 
 
 def merge_dams(summary_prods_folder, dams_shapefiles):
-    mergedFile = os.path.join(summary_prods_folder, "MergedDams.shp")
-    toMerge = split_multi_inputs(dams_shapefiles)
-    arcpy.CreateFeatureclass_management(summary_prods_folder, "MergedDams.shp", None, toMerge[0])
-    arcpy.Append_management(toMerge, mergedFile, "NO_TEST")
-    return mergedFile
+    """
+    Merges all dam inputs into one shapefile
+    :param summary_prods_folder: The folder where all summary products are output
+    :param dams_shapefiles: All dams shapefiles
+    :return: File with all dams merged
+    """
+    merged_file = os.path.join(summary_prods_folder, "MergedDams.shp")
+    to_merge = split_multi_inputs(dams_shapefiles)
+    arcpy.CreateFeatureclass_management(summary_prods_folder, "MergedDams.shp", None, to_merge[0])
+    arcpy.Append_management(to_merge, merged_file, "NO_TEST")
+    return merged_file
 
 
 def create_excel_file(excel_file_name, stream_network, summary_prods_folder, watershed_name, fields, dams_shapefile):
+    """
+    Creates the excel file to be populate.
+    :param excel_file_name:  The name of the excel doc
+    :param stream_network: The BRAT input network to be summarized
+    :param summary_prods_folder: The folder where all summary products are output
+    :param watershed_name: The name of the watershed to be summarized
+    :param fields: A list of every field present in the network shapefile
+    :param dams_shapefile: Shapefile containing dams for the entire area
+    :return:
+    """
     workbook = xlsxwriter.Workbook(os.path.join(summary_prods_folder, excel_file_name))
-    write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams_shapefile)
+    write_excel_file(workbook, stream_network, watershed_name, fields, dams_shapefile)
     workbook.close()
 
 
-def write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams_shapefile):
+def write_excel_file(workbook, stream_network, watershed_name, fields, dams_shapefile):
+    """
+    Writes the entire Excel file
+    :param workbook: The current Excel Workbook
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param fields: A list of every field present in the network shapefile
+    :param dams_shapefile: Shapefile containing dams for the entire area
+    :return:
+    """
     summary_worksheet = workbook.add_worksheet("Watershed Summary")
     write_summary_worksheet(summary_worksheet, stream_network, watershed_name, workbook, fields, dams_shapefile)
     if 'DamStrat' in fields:
@@ -167,8 +199,13 @@ def write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams
         arcpy.AddWarning("Electivity index worksheet could not be built because e_DamCt not in fields")
 
 
-# Maggie's code
 def make_capacity_table(output_network, mcc_hpe):
+    """
+    Creates a table containing all capacity information [Currently unused]
+    :param output_network: The network being summarized
+    :param mcc_hpe: The mcc_hpe field
+    :return:
+    """
     brat_table = arcpy.da.TableToNumPyArray(output_network,
                                             ['iGeo_Len', 'mCC_EX_CT', 'oCC_EX', 'ExCategor', 'oCC_HPE', 'mCC_HPE_CT',
                                              'HpeCategor'], skip_nulls=True)
@@ -198,9 +235,16 @@ def make_capacity_table(output_network, mcc_hpe):
     hist_none = add_capacity_category(brat_table, 'Historic', 'None', tot_length)
 
 
-# Maggie's code
-def add_capacity_category(brat_table, type, category, tot_length):
-    if type == 'Existing':
+def add_capacity_category(brat_table, capacity_type, category, tot_length):
+    """
+    Adds capacity categories to a table [Currently unused]
+    :param brat_table: The BRAT table created in make_capacity_table
+    :param capacity_type: Capacity type (Exisiting or Historic)
+    :param category: Capacity Category
+    :param tot_length: Total length of network
+    :return: Network length, Network length (km), Proportion of network in category, estimated dams
+    """
+    if capacity_type == 'Existing':
         cat_tbl = brat_table[brat_table['ExCategor'] == category]
     else:
         cat_tbl = brat_table[brat_table['HpeCategor'] == category]
@@ -211,12 +255,17 @@ def add_capacity_category(brat_table, type, category, tot_length):
     return length, length_km, network_prop, est_dams
 
 
-# Writing the side headers for complex size
 def write_categories_complex(worksheet, watershed_name):
-    column_sizeA = worksheet.set_column('A:A', column_calc(30, watershed_name))
+    """
+    Writing the side headers for complex size
+    :param worksheet: The current Excel Worksheet
+    :param watershed_name: The name of the watershed to be summarized
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(30, watershed_name))
     row = 2
     col = 0
-    worksheet.write(row, col, "No Dams", column_sizeA)
+    worksheet.write(row, col, "No Dams", column_size_a)
     row += 1
     worksheet.write(row, col, "Single Dam")
     row += 1
@@ -229,12 +278,17 @@ def write_categories_complex(worksheet, watershed_name):
     worksheet.write(row, col, "Total")
 
 
-# Writing the side headers for build capacity
 def write_categories_build_cap(worksheet, watershed_name):
-    column_sizeA = worksheet.set_column('A:A', column_calc(30, watershed_name))
+    """
+    Writing the side headers for capacity
+    :param worksheet: The current Excel Worksheet
+    :param watershed_name: The name of the watershed to be summarized
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(30, watershed_name))
     row = 2
     col = 0
-    worksheet.write(row, col, "None: 0", column_sizeA)
+    worksheet.write(row, col, "None: 0", column_size_a)
     row += 1
     worksheet.write(row, col, "Rare: 0 - 1")
     row += 1
@@ -248,10 +302,16 @@ def write_categories_build_cap(worksheet, watershed_name):
 
 
 def write_categories_hist_vs_exist(worksheet, watershed_name):
-    column_sizeA = worksheet.set_column('A:A', column_calc(30, watershed_name))
+    """
+    Writing the side headers for historic vs existing
+    :param worksheet: The current Excel Worksheet
+    :param watershed_name: The name of the watershed to be summarized
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(30, watershed_name))
     row = 3
     col = 0
-    worksheet.write(row, col, "None: 0", column_sizeA)
+    worksheet.write(row, col, "None: 0", column_size_a)
     row += 1
     worksheet.write(row, col, "Rare: 0 - 1")
     row += 1
@@ -264,9 +324,20 @@ def write_categories_hist_vs_exist(worksheet, watershed_name):
     worksheet.write(row, col, "Total")
 
 
-# Writing the data into the worksheet
 def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workbook):
-    KM_TO_MILES_RATIO = 0.62137
+    """
+    Writes data into an excel sheet, as long as it fits the specific 5 category format
+    :param data1: Values for the first category
+    :param data2: Values for the second category
+    :param data3: Values for the third category
+    :param data4: Values for the fourth category
+    :param data5: Values for the fifth category
+    :param total_length: Total Stream Length
+    :param worksheet: The current Excel Worksheet
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    km_to_miles_ratio = 0.62137
     data1 = data1 / 1000
     data2 = data2 / 1000
     data3 = data3 / 1000
@@ -274,8 +345,8 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     data5 = data5 / 1000
 
     # Set the column size.
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 20)
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -293,7 +364,7 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     row = 2
     worksheet.write(row, col, data1, cell_format1)
     col += 1
-    worksheet.write(row, col, data1 * KM_TO_MILES_RATIO, cell_format1)
+    worksheet.write(row, col, data1 * km_to_miles_ratio, cell_format1)
     col += 1
     worksheet.write(row, col, data1 / total_length, percent)
 
@@ -301,7 +372,7 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     row = 3
     worksheet.write(row, col, data2, cell_format1)
     col += 1
-    worksheet.write(row, col, data2 * KM_TO_MILES_RATIO, cell_format1)
+    worksheet.write(row, col, data2 * km_to_miles_ratio, cell_format1)
     col += 1
     worksheet.write(row, col, data2 / total_length, percent)
 
@@ -309,7 +380,7 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     row = 4
     worksheet.write(row, col, data3, cell_format1)
     col += 1
-    worksheet.write(row, col, data3 * KM_TO_MILES_RATIO, cell_format1)
+    worksheet.write(row, col, data3 * km_to_miles_ratio, cell_format1)
     col += 1
     worksheet.write(row, col, data3 / total_length, percent)
 
@@ -317,7 +388,7 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     row = 5
     worksheet.write(row, col, data4, cell_format1)
     col += 1
-    worksheet.write(row, col, data4 * KM_TO_MILES_RATIO, cell_format1)
+    worksheet.write(row, col, data4 * km_to_miles_ratio, cell_format1)
     col += 1
     worksheet.write(row, col, data4 / total_length, percent)
 
@@ -325,7 +396,7 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     row = 6
     worksheet.write(row, col, data5, cell_format1)
     col += 1
-    worksheet.write(row, col, data5 * KM_TO_MILES_RATIO, cell_format1)
+    worksheet.write(row, col, data5 * km_to_miles_ratio, cell_format1)
     col += 1
     worksheet.write(row, col, data5 / total_length, percent)
 
@@ -337,9 +408,19 @@ def write_data(data1, data2, data3, data4, data5, total_length, worksheet, workb
     worksheet.write(7, 3, '=SUM(D3:D7)', percent)
 
 
-# Getting the data for Complex Size
-# loop through multiple streams
 def search_cursor(fields, data, total, stream_network, is_complex, is_capacity_total, worksheet, workbook):
+    """
+    Collects data for complex and capacity
+    :param fields: All fields in the network
+    :param data: A list containing five zeros to populate with data
+    :param total: A total that keeps track of total network length
+    :param stream_network: The BRAT input network to be summarized
+    :param is_complex: Bool that tells if this is going to calculate complex size stats
+    :param is_capacity_total: Bool that tells if this is going to calculate capacity total stats
+    :param worksheet: The current Excel Worksheet
+    :param workbook: The current Excel Workbook
+    :return: 5 data points, or prints them directly to the excel doc if calculating complex size stats
+    """
     split_input = stream_network.split(";")
     if is_capacity_total:
         fields.append("SHAPE@Length")
@@ -357,7 +438,6 @@ def search_cursor(fields, data, total, stream_network, is_complex, is_capacity_t
                     else:
                         data[4] += capacity * (length/1000)
         return data
-
 
     elif is_complex:
         for streams in split_input:
@@ -391,25 +471,40 @@ def search_cursor(fields, data, total, stream_network, is_complex, is_capacity_t
                         data[3] += length/1000
                     else:
                         data[4] += length/1000
-        total = total / 1000
         return data
 
 
 def column_calc(minimum, watershed):
+    """
+    Returns the size that a column should be, making sure it has enough room to fit the data and the watershed name
+    :param minimum: The minimum length needed to fit the data
+    :param watershed: The watershed name
+    :return: The length that the colun should be
+    """
     if minimum > (len(watershed) + 10):
         return minimum
     else:
-        return (len(watershed) + 10)
+        return len(watershed) + 10
 
 
 def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook, fields_list, dams):
+    """
+    Writes the entire summary worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :param fields_list: A list of every field present in the network shapefile
+    :param dams: Shapefile containing dams for the entire area
+    :return:
+    """
 
     # formatting
 
-    column_sizeA = worksheet.set_column('A:A', column_calc(40, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 10)
-    column_sizeC = worksheet.set_column('C:C', 5)
-    column_sizeD = worksheet.set_column('D:D', 65)
+    column_size_a = worksheet.set_column('A:A', column_calc(40, watershed_name))
+    worksheet.set_column('B:B', 10)
+    worksheet.set_column('C:C', 5)
+    worksheet.set_column('D:D', 65)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -428,7 +523,7 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
 
     row = 0
     col = 0
-    worksheet.write(row, col, watershed_name, column_sizeA)
+    worksheet.write(row, col, watershed_name, column_size_a)
     row += 2
     worksheet.write(row, col, "Total Stream Length (Km)")
     row += 1
@@ -445,8 +540,8 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
     worksheet.write(row, col, "Existing Vegetation Capacity")
     row += 1
     worksheet.write(row, col, "Historic Vegetation Capacity")
-    #row += 1
-    #worksheet.write(row, col, "Total Length (Km) Observed > 80% Predicted")
+    # row += 1
+    # worksheet.write(row, col, "Total Length (Km) Observed > 80% Predicted")
     row += 1
     worksheet.write(row, col, "Number Dams Snapped")
     row += 1
@@ -461,8 +556,8 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
     worksheet.write(row, col, "% Network \"Dam Building Possible\"")
     row += 1
     worksheet.write(row, col, "% Network \"Negligible Risk\"")
-    #row += 1
-    #worksheet.write(row, col, "% Observed > 80% Predicted")
+    # row += 1
+    # worksheet.write(row, col, "% Observed > 80% Predicted")
     row += 1
     worksheet.write(row, col, "% Total Dams Snapped to Network")
 
@@ -470,237 +565,231 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
 
     # total stream lengths
 
-    totalStreamLengthKm = 0.0
-    totalStreamLengthMi = 0.0
+    total_stream_length_km = 0.0
     fields = ['SHAPE@Length']
     for streams in split_input:
         with arcpy.da.SearchCursor(streams, fields) as cursor:
             for length, in cursor:
-                totalStreamLengthKm += length
+                total_stream_length_km += length
 
-    totalStreamLengthKm /= 1000
-    totalStreamLengthMi = totalStreamLengthKm / 1.609344
+    total_stream_length_km /= 1000
+    total_stream_length_mi = total_stream_length_km / 1.609344
 
     # total complex sizes
 
     fields = ['SHAPE@Length', "mCC_EX_CT"]
     if fields[1] in fields_list:
-        totalExistingComplex = 0.0
+        total_existing_complex = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, dam_complex_size in cursor:
-                    totalExistingComplex += dam_complex_size
+                    total_existing_complex += dam_complex_size
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        totalExistingComplex = "N/A"
+        total_existing_complex = "N/A"
 
     fields = ['SHAPE@Length', "mCC_HPE_CT"]
     if fields[1] in fields_list:
-        totalHistoricComplex = 0.0
+        total_historic_complex = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, dam_complex_size in cursor:
-                    totalHistoricComplex += dam_complex_size
+                    total_historic_complex += dam_complex_size
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        totalHistoricComplex = "N/A"
+        total_historic_complex = "N/A"
 
     # total vegetation capacity
 
     fields = ['SHAPE@Length', "oVC_EX"]
     if fields[1] in fields_list:
-        totalExistingVeg = 0.0
+        total_existing_veg = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, density in cursor:
-                    totalExistingVeg += ((length / 1000) * density)
+                    total_existing_veg += ((length / 1000) * density)
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        totalExistingVeg = "N/A"
+        total_existing_veg = "N/A"
 
     fields = ['SHAPE@Length', "oVC_Hpe"]
     if fields[1] in fields_list:
-        totalHistoricVeg = 0.0
+        total_historic_veg = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, density in cursor:
-                    totalHistoricVeg += ((length / 1000) * density)
+                    total_historic_veg += ((length / 1000) * density)
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        totalHistoricVeg = "N/A"
+        total_historic_veg = "N/A"
 
     # Existing Capacity
 
     fields = ['SHAPE@Length', "oCC_EX"]
     if fields[1] in fields_list:
-        totalExistingCapacity = 0.0
+        total_existing_capacity = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, density in cursor:
-                    totalExistingCapacity += ((length / 1000) * density)
+                    total_existing_capacity += ((length / 1000) * density)
 
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        totalExistingCapacity = "N/A"
+        total_existing_capacity = "N/A"
 
     # Historic Capacity
 
     fields = ['SHAPE@Length', "oCC_HPE"]
     if fields[1] in fields_list:
-        totalHistoricCapacity = 0.0
+        total_historic_capacity = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, density in cursor:
-                    totalHistoricCapacity += ((length / 1000) * density)
+                    total_historic_capacity += ((length / 1000) * density)
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        totalHistoricCapacity = "N/A"
+        total_historic_capacity = "N/A"
 
     # observed vs. predicted
 
     fields = ['SHAPE@Length', "e_DamDens", "oCC_EX"]
     if (fields[1] in fields_list) and (fields[2] in fields_list):
-        totalSurveyedGreaterLength = 0.0
-        totalSurveyedGreaterCount = 0.0
-        reachCount = 0.0
+        total_surveyed_greater_length = 0.0
+        total_surveyed_greater_count = 0.0
+        reach_count = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, surveyed, predicted in cursor:
-                    reachCount += 1
-                    if (surveyed > (predicted * .8)):
-                        totalSurveyedGreaterLength += (length / 1000)
-                        totalSurveyedGreaterCount += 1
+                    reach_count += 1
+                    if surveyed > (predicted * .8):
+                        total_surveyed_greater_length += (length / 1000)
+                        total_surveyed_greater_count += 1
                     else:
                         pass
-        totalSurveyedGreaterPercent = float(totalSurveyedGreaterCount) / float(reachCount)
+        # total_surveyed_greater_percent = float(total_surveyed_greater_count) / float(reach_count)
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        totalSurveyedGreaterPercent = "N/A"
-        totalSurveyedGreaterLength = "N/A"
+        # total_surveyed_greater_percent = "N/A"
+        # total_surveyed_greater_length = "N/A"
 
     # dams snapped
-    if not dams == None:
+    if dams is not None:
         dam_fields = [f.name for f in arcpy.ListFields(dams)]
         if "Snapped" in dam_fields:
-            totalSnapped = 0.0
-            notSnapped = 0.0
-            percentSnapped = 0.0
+            total_snapped = 0.0
+            not_snapped = 0.0
+            percent_snapped = 0.0
             with arcpy.da.SearchCursor(dams, "Snapped") as cursor:
                 for snapped in cursor:
                     if snapped[0] == "Not snapped to network":
-                        notSnapped += 1
+                        not_snapped += 1
                     elif snapped[0] == "Snapped to network":
-                        totalSnapped += 1
+                        total_snapped += 1
                     else:
                         pass
-            if float(totalSnapped) + float(notSnapped) > 0:
-                percentSnapped = float(totalSnapped) / (float(totalSnapped) + float(notSnapped))
+            if float(total_snapped) + float(not_snapped) > 0:
+                percent_snapped = float(total_snapped) / (float(total_snapped) + float(not_snapped))
         else:
             arcpy.AddWarning("Could not complete summary worksheet: \"Snapped\" field in Dams shapefile missing")
-            totalSnapped = "N/A"
-            percentSnapped = "N/A"
+            total_snapped = "N/A"
+            percent_snapped = "N/A"
     else:
         arcpy.AddWarning("Could not complete summary worksheet: Dams shapefile missing")
-        totalSnapped = "N/A"
-        percentSnapped = "N/A"
+        total_snapped = "N/A"
+        percent_snapped = "N/A"
 
     # dam census density and dams count
 
-    if not dams == None:
-        damCensusCount = 0.0
-        damCensusDensity = 0.0
+    if dams is not None:
+        dam_census_count = 0.0
+        dam_census_density = 0.0
         with arcpy.da.SearchCursor(dams, 'SHAPE@Length') as cursor:
             for length in cursor:
-                damCensusDensity += 1
-                damCensusCount += 1
-        damCensusDensity /= totalStreamLengthKm
+                dam_census_density += 1
+                dam_census_count += 1
+        # dam_census_density /= total_stream_length_km
 
     else:
         arcpy.AddWarning("Could not complete summary worksheet: Dams shapefile missing")
-        damCensusCount = "N/A"
-        damCensusDensity = "N/A"
+        dam_census_count = "N/A"
+        # dam_census_density = "N/A"
 
     # percent estimated correctly
 
-    estimateRight = 0
-    estimateWrong = 0
-    estimateWrongShort = 0
+    estimate_right = 0
+    estimate_wrong = 0
+    estimate_wrong_short = 0
 
     fields = ['SHAPE@Length', 'BRATvSurv', 'e_DamCt']
     if fields[1] in fields_list and fields[2] in fields_list:
-        percentCorrectEstimate = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, bratvsurv, damCount in cursor:
                     if damCount == 0:
                         pass
                     elif bratvsurv >= 1:
-                        estimateRight += 1
+                        estimate_right += 1
                     elif bratvsurv == -1:
-                        estimateRight += 1
-                    #elif damCount == 0:
-                        #estimateRight += 1
+                        estimate_right += 1
+                    # elif damCount == 0:
+                        # estimate_right += 1
                     else:
-                        estimateWrong += 1
+                        estimate_wrong += 1
                         if length < 150:
-                            estimateWrongShort += 1
-        if float(estimateWrong)+float(estimateRight) == 0:
-            percentCorrectEstimate = "N/A"
+                            estimate_wrong_short += 1
+        if float(estimate_wrong)+float(estimate_right) == 0:
+            percent_correct_estimate = "N/A"
         else:
-            percentCorrectEstimate = float(estimateRight) / (float(estimateWrong) + float(estimateRight))
+            percent_correct_estimate = float(estimate_right) / (float(estimate_wrong) + float(estimate_right))
 
-
-        if estimateWrong is not 0:
-            percentUnder = float(estimateWrongShort) / float(estimateWrong)
+        if estimate_wrong is not 0:
+            percent_under = float(estimate_wrong_short) / float(estimate_wrong)
         else:
-            percentUnder = "N/A"
+            percent_under = "N/A"
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        percentCorrectEstimate = "N/A"
-        percentUnder = "N/A"
+        percent_correct_estimate = "N/A"
+        percent_under = "N/A"
 
     # percent network "Easiest-Low Hanging Fruit"
 
     fields = ['SHAPE@Length', "oPBRC_CR"]
-    easiestLength = 0.0
+    easiest_length = 0.0
     if fields[1] in fields_list:
-        percentEasiest = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, category in cursor:
                     if category == "Easiest - Low-Hanging Fruit":
-                        easiestLength += length
+                        easiest_length += length
                     else:
                         pass
-        percentEasiest = easiestLength / (totalStreamLengthKm * 1000)
+        percent_easiest = easiest_length / (total_stream_length_km * 1000)
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        percentEasiest = "N/A"
+        percent_easiest = "N/A"
 
     # percent network "Dam Building Possible"
 
     fields = ['SHAPE@Length', "oPBRC_UD"]
-    possibleLength = 0.0
+    possible_length = 0.0
     if fields[1] in fields_list:
-        percentPossible = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, category in cursor:
                     if category == "Dam Building Possible":
-                        possibleLength += length
+                        possible_length += length
                     else:
                         pass
-        percentPossible = possibleLength / (totalStreamLengthKm * 1000)
+        percent_possible = possible_length / (total_stream_length_km * 1000)
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        percentPossible = "N/A"
+        percent_possible = "N/A"
 
     # percent network "Negligible Risk"
 
     fields = ['SHAPE@Length', "oPBRC_UI"]
     negligibleLength = 0.0
     if fields[1] in fields_list:
-        percentNegligible = 0.0
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, fields) as cursor:
                 for length, category in cursor:
@@ -709,59 +798,57 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
                     else:
                         pass
 
-        percentNegligible = negligibleLength / (totalStreamLengthKm * 1000)
+        percent_negligible = negligibleLength / (total_stream_length_km * 1000)
     else:
         arcpy.AddWarning("Could not complete summary worksheet: {0} not in fields.".format(fields[1]))
-        percentNegligible = "N/A"
-
+        percent_negligible = "N/A"
 
     # output all calculations
 
-
     row = 2
     col = 1
-    worksheet.write(row, col, totalStreamLengthKm, cell_format1)
+    worksheet.write(row, col, total_stream_length_km, cell_format1)
     row += 1
-    worksheet.write(row, col, totalStreamLengthMi, cell_format1)
+    worksheet.write(row, col, total_stream_length_mi, cell_format1)
     row += 1
-    worksheet.write(row, col, totalExistingComplex, cell_format1)
+    worksheet.write(row, col, total_existing_complex, cell_format1)
     row += 1
-    worksheet.write(row, col, totalHistoricComplex, cell_format1)
+    worksheet.write(row, col, total_historic_complex, cell_format1)
     row += 1
-    worksheet.write(row, col, totalExistingCapacity, cell_format1)
+    worksheet.write(row, col, total_existing_capacity, cell_format1)
     row += 1
-    worksheet.write(row, col, totalHistoricCapacity, cell_format1)
+    worksheet.write(row, col, total_historic_capacity, cell_format1)
     row += 1
-    worksheet.write(row, col, totalExistingVeg, cell_format1)
+    worksheet.write(row, col, total_existing_veg, cell_format1)
     row += 1
-    worksheet.write(row, col, totalHistoricVeg, cell_format1)
-    #row += 1
-    #worksheet.write(row, col, totalSurveyedGreaterLength, cell_format1)
+    worksheet.write(row, col, total_historic_veg, cell_format1)
+    # row += 1
+    # worksheet.write(row, col, totalSurveyedGreaterLength, cell_format1)
     row += 1
-    worksheet.write(row, col, totalSnapped, cell_format1)
+    worksheet.write(row, col, total_snapped, cell_format1)
     row += 1
-    worksheet.write(row, col, damCensusCount, cell_format1)
+    worksheet.write(row, col, dam_census_count, cell_format1)
     row = 6
     col = 4
-    worksheet.write(row, col, percentCorrectEstimate, percent1)
+    worksheet.write(row, col, percent_correct_estimate, percent1)
     row += 1
-    worksheet.write(row, col, percentEasiest, percent1)
+    worksheet.write(row, col, percent_easiest, percent1)
     row += 1
-    worksheet.write(row, col, percentPossible, percent1)
+    worksheet.write(row, col, percent_possible, percent1)
     row += 1
-    worksheet.write(row, col, percentNegligible, percent1)
-    #row += 1
-    #worksheet.write(row, col, totalSurveyedGreaterPercent, percent1)
+    worksheet.write(row, col, percent_negligible, percent1)
+    # row += 1
+    # worksheet.write(row, col, totalSurveyedGreaterPercent, percent1)
     row += 1
-    worksheet.write(row, col, percentSnapped, percent1)
+    worksheet.write(row, col, percent_snapped, percent1)
 
     row = 11
     col = 3
-    if estimateWrong > 0:
-        worksheet.write(row, col, (str(estimateWrongShort) + " / " + str(
-            estimateWrong) + " reaches above capacity estimate were less than 150m"))
+    if estimate_wrong > 0:
+        worksheet.write(row, col, (str(estimate_wrong_short) + " / " + str(
+            estimate_wrong) + " reaches above capacity estimate were less than 150m"))
         col += 1
-        worksheet.write(row, col, percentUnder, percent1)
+        worksheet.write(row, col, percent_under, percent1)
     else:
         worksheet.write(row, col, "No reaches were overestimated")
         col += 1
@@ -769,18 +856,26 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
 
 
 def write_strategy_map_worksheet(worksheet, stream_network, watershed_name, workbook):
+    """
+    Writes the entire Strategy Map worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
 
-    column_sizeA = worksheet.set_column('A:A', column_calc(50, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 20)
-    column_sizeD = worksheet.set_column('D:D', 15)
+    worksheet.set_column('A:A', column_calc(50, watershed_name))
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
+    worksheet.set_column('D:D', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
     worksheet.set_row(0, None, header_format)
     worksheet.set_row(1, None, header_format)
     percent_format = workbook.add_format({'num_format': '0.00%'})
-    percent = worksheet.set_column('D:D', 10, percent_format)
+    worksheet.set_column('D:D', 10, percent_format)
     color = workbook.add_format()
     color.set_bg_color('#C0C0C0')
     cell_format1 = workbook.add_format()
@@ -790,9 +885,9 @@ def write_strategy_map_worksheet(worksheet, stream_network, watershed_name, work
 
     row = 0
     col = 0
-    worksheet.write(row,col,watershed_name)
+    worksheet.write(row, col, watershed_name)
     row += 1
-    worksheet.write(row,col, "DamStrat")
+    worksheet.write(row, col, "DamStrat")
     col += 1
     worksheet.write(row, col, "Stream Length (Km)")
     col += 1
@@ -800,56 +895,55 @@ def write_strategy_map_worksheet(worksheet, stream_network, watershed_name, work
     col += 1
     worksheet.write(row, col, "Percent")
 
-    total=0
-    categoryList = ['1. Beaver conservation',
-                    '2. Highest restoration potential - translocation',
-                    '3. High restoration potential',
-                    '3a. Vegetation restoration first-priority',
-                    '4. Medium-low restoration potential',
-                    '4a. Vegetation restoration first-priority',
-                    '5. Restoration with infrastructure modification',
-                    '6. Restoration with urban or agricultural modification',
-                    'Other']
-    countList = [0,0,0,0,0,0,0,0,0]
+    total = 0
+    category_list = ['1. Beaver conservation',
+                     '2. Highest restoration potential - translocation',
+                     '3. High restoration potential',
+                     '3a. Vegetation restoration first-priority',
+                     '4. Medium-low restoration potential',
+                     '4a. Vegetation restoration first-priority',
+                     '5. Restoration with infrastructure modification',
+                     '6. Restoration with urban or agricultural modification',
+                     'Other']
+    count_list = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     for streams in split_input:
         with arcpy.da.SearchCursor(streams, ['SHAPE@Length', 'DamStrat']) as cursor:
             for length, category in cursor:
                 total += length
-                for counter, match in enumerate(categoryList):
+                for counter, match in enumerate(category_list):
                     if category == match:
-                        countList[counter]+=(length/1000)
-
+                        count_list[counter] += (length/1000)
 
     row = 2
     col = 0
-    for category in categoryList:
-        worksheet.write(row,col, category)
+    for category in category_list:
+        worksheet.write(row, col, category)
         row += 1
     col += 1
     row = 2
-    for kilometers in countList:
-        worksheet.write(row,col, kilometers, cell_format1)
+    for kilometers in count_list:
+        worksheet.write(row, col, kilometers, cell_format1)
         row += 1
     row = 2
     col += 1
-    for miles in countList:
+    for miles in count_list:
         miles *= 0.62137
-        worksheet.write(row,col, miles, cell_format1)
+        worksheet.write(row, col, miles, cell_format1)
         row += 1
     col += 1
 
     row = 2
 
-    for cellCount, percent in enumerate(countList):
-        worksheet.write(row,col, "=B{}/B12".format(cellCount+3), percent_format)
+    for cellCount, percent in enumerate(count_list):
+        worksheet.write(row, col, "=B{}/B12".format(cellCount+3), percent_format)
         row += 1
 
     col = 0
 
     worksheet.write(row, col, "Total")
     col += 1
-    worksheet.write(row, col, "=SUM(B{}:B{})".format(3,11), cell_format1)
+    worksheet.write(row, col, "=SUM(B{}:B{})".format(3, 11), cell_format1)
     col += 1
     worksheet.write(row, col, "=SUM(C{}:C{})".format(3, 11), cell_format1)
     col += 1
@@ -857,11 +951,19 @@ def write_strategy_map_worksheet(worksheet, stream_network, watershed_name, work
 
 
 def write_density_correlations_worksheet(worksheet, stream_network, watershed_name, workbook):
+    """
+    Writes the entire Density Correlations worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
     # formatting
 
-    column_sizeA = worksheet.set_column('A:A', column_calc(25, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 11)
+    worksheet.set_column('A:A', column_calc(25, watershed_name))
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 11)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -869,8 +971,6 @@ def write_density_correlations_worksheet(worksheet, stream_network, watershed_na
     cell_format1.set_num_format(0x04)
     cell_format1.set_align('right')
     split_input = stream_network.split(";")
-
-
 
     # These lists hold all of the data that needs to be printed
 
@@ -883,43 +983,43 @@ def write_density_correlations_worksheet(worksheet, stream_network, watershed_na
     for field, category in zip(fields, categories):
         column0.append(category)
         column1.append("Mean Dam Density")
-        dataList = []
-        densityList = []
+        data_list = []
+        density_list = []
 
         for streams in split_input:
             with arcpy.da.SearchCursor(streams, [field, 'oCC_EX']) as cursor:
                 for data, density in cursor:
-                    dataList.append(data)
-                    densityList.append(density)
+                    data_list.append(data)
+                    density_list.append(density)
 
-        dataList, densityList = zip(*sorted(zip(dataList, densityList)))
-        totalLength = len(dataList)
-        bin1 = totalLength/3
-        bin2 = (totalLength/3) + (totalLength/3)
-        bin3 = totalLength
+        data_list, density_list = zip(*sorted(zip(data_list, density_list)))
+        total_length = len(data_list)
+        bin1 = total_length/3
+        bin2 = (total_length/3) + (total_length/3)
+        bin3 = total_length
 
-        roundedTemp1 = str(round(dataList[bin1], 2))
-        column0.append('0 to ' + roundedTemp1)
-        roundedTemp1 = str(round(dataList[bin1 + 1], 2))
-        roundedTemp2 = str(round(dataList[bin2], 2))
-        column0.append(roundedTemp1 + ' to ' + roundedTemp2)
-        roundedTemp1 = str(round(dataList[bin2 + 1], 2))
-        roundedTemp2 = str(round(dataList[bin3 - 1], 2))
-        column0.append(roundedTemp1 + ' to ' + roundedTemp2)
+        rounded_temp1 = str(round(data_list[bin1], 2))
+        column0.append('0 to ' + rounded_temp1)
+        rounded_temp1 = str(round(data_list[bin1 + 1], 2))
+        rounded_temp2 = str(round(data_list[bin2], 2))
+        column0.append(rounded_temp1 + ' to ' + rounded_temp2)
+        rounded_temp1 = str(round(data_list[bin2 + 1], 2))
+        rounded_temp2 = str(round(data_list[bin3 - 1], 2))
+        column0.append(rounded_temp1 + ' to ' + rounded_temp2)
 
-        n=totalLength/3
-        splitList = [densityList[i * n:(i + 1) * n] for i in range((len(densityList) + n - 1) // n )]
+        n = total_length/3
+        split_list = [density_list[i * n:(i + 1) * n] for i in range((len(density_list) + n - 1) // n)]
 
-        for bin in splitList:
-            meanForBin = mean(bin)
-            if meanForBin > 0:
-                column1.append(meanForBin)
+        for density_bin in split_list:
+            mean_for_bin = mean(density_bin)
+            if mean_for_bin > 0:
+                column1.append(mean_for_bin)
             else:
                 pass
 
-    columnList = [column0, column1, column2]
+    column_list = [column0, column1, column2]
 
-    for columnNumber, column in enumerate(columnList):
+    for columnNumber, column in enumerate(column_list):
         for rowNumber, row in enumerate(column):
             worksheet.set_row(rowNumber, None, cell_format1)
             worksheet.write(rowNumber, columnNumber, row)
@@ -933,6 +1033,14 @@ def write_density_correlations_worksheet(worksheet, stream_network, watershed_na
 
 
 def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, watershed_name, workbook):
+    """
+    Writes the entire Existing Complex worksheet
+    :param exist_complex_worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
     is_complex = True
 
     write_header(exist_complex_worksheet, watershed_name)
@@ -953,6 +1061,14 @@ def write_exist_complex_worksheet(exist_complex_worksheet, stream_network, water
 
 
 def write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, watershed_name, workbook):
+    """
+    Writes the entire Exisiting Capacity worksheet
+    :param exist_build_cap_worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
     is_complex = False
     write_header(exist_build_cap_worksheet, watershed_name)
 
@@ -964,12 +1080,21 @@ def write_exist_build_cap_worksheet(exist_build_cap_worksheet, stream_network, w
 
     exist_build_cap_worksheet.write(1, 0, fields[1])
 
-    values = search_cursor(fields, values, total_length, stream_network, is_complex, False, exist_build_cap_worksheet, workbook)
+    values = search_cursor(fields, values, total_length, stream_network,
+                           is_complex, False, exist_build_cap_worksheet, workbook)
 
     write_capacity_values(values, exist_build_cap_worksheet, workbook)
 
 
 def write_hist_complex_worksheet(hist_complex_worksheet, stream_network, watershed_name, workbook):
+    """
+    Writes the entire Historic Complex worksheet
+    :param hist_complex_worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
     is_complex = True
     write_header(hist_complex_worksheet, watershed_name)
     write_categories_complex(hist_complex_worksheet, watershed_name)
@@ -989,6 +1114,14 @@ def write_hist_complex_worksheet(hist_complex_worksheet, stream_network, watersh
 
 
 def write_hist_build_cap_worksheet(hist_build_cap_worksheet, stream_network, watershed_name, workbook):
+    """
+    Writes the entire Historic Capacity worksheet
+    :param hist_build_cap_worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
     is_complex = False
     write_header(hist_build_cap_worksheet, watershed_name)
     write_categories_build_cap(hist_build_cap_worksheet, watershed_name)
@@ -999,16 +1132,23 @@ def write_hist_build_cap_worksheet(hist_build_cap_worksheet, stream_network, wat
 
     hist_build_cap_worksheet.write(1, 0, fields[1])
 
-    values = search_cursor(fields, values, total_length, stream_network, is_complex, False, hist_build_cap_worksheet, workbook)
+    values = search_cursor(fields, values, total_length, stream_network, is_complex,
+                           False, hist_build_cap_worksheet, workbook)
 
     write_capacity_values(values, hist_build_cap_worksheet, workbook)
 
 
-def write_capacity_values (values, worksheet, workbook):
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 20)
-    column_sizeD = worksheet.set_column('D:D', 15)
-
+def write_capacity_values(values, worksheet, workbook):
+    """
+    Writes the entire Capacity Values worksheet
+    :param values: The list of 5 values computed by search_cursor
+    :param worksheet: The current Excel Worksheet
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
+    worksheet.set_column('D:D', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1063,21 +1203,29 @@ def write_capacity_values (values, worksheet, workbook):
 
 
 def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = hist_vs_exist_worksheet.set_column('A:A', column_calc(25, watershed_name))
-    column_sizeB = hist_vs_exist_worksheet.set_column('B:B', 20)
-    column_sizeC = hist_vs_exist_worksheet.set_column('C:C', 20)
-    column_sizeD = hist_vs_exist_worksheet.set_column('D:D', 25)
-    column_sizeE = hist_vs_exist_worksheet.set_column('E:E', 2)
-    column_sizeF = hist_vs_exist_worksheet.set_column('F:F', 20)
-    column_sizeG = hist_vs_exist_worksheet.set_column('G:G', 20)
-    column_sizeH = hist_vs_exist_worksheet.set_column('H:H', 25)
-    column_sizeI = hist_vs_exist_worksheet.set_column('I:I', 2)
-    column_sizeJ = hist_vs_exist_worksheet.set_column('J:J', 20)
-    column_sizeK = hist_vs_exist_worksheet.set_column('K:K', 5)
-    column_sizeL = hist_vs_exist_worksheet.set_column('L:L', 30)
-    column_sizeM = hist_vs_exist_worksheet.set_column('M:M', 30)
-    column_sizeN = hist_vs_exist_worksheet.set_column('N:N', 5)
-    column_sizeO = hist_vs_exist_worksheet.set_column('O:O', 15)
+    """
+    Writes the entire History vs. Existing worksheet
+    :param hist_vs_exist_worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    column_size_a = hist_vs_exist_worksheet.set_column('A:A', column_calc(25, watershed_name))
+    column_size_b = hist_vs_exist_worksheet.set_column('B:B', 20)
+    column_size_c = hist_vs_exist_worksheet.set_column('C:C', 20)
+    column_size_d = hist_vs_exist_worksheet.set_column('D:D', 25)
+    column_size_e = hist_vs_exist_worksheet.set_column('E:E', 2)
+    column_size_f = hist_vs_exist_worksheet.set_column('F:F', 20)
+    column_size_g = hist_vs_exist_worksheet.set_column('G:G', 20)
+    column_size_h = hist_vs_exist_worksheet.set_column('H:H', 25)
+    column_size_i = hist_vs_exist_worksheet.set_column('I:I', 2)
+    column_size_j = hist_vs_exist_worksheet.set_column('J:J', 20)
+    column_size_k = hist_vs_exist_worksheet.set_column('K:K', 5)
+    column_size_l = hist_vs_exist_worksheet.set_column('L:L', 30)
+    column_size_m = hist_vs_exist_worksheet.set_column('M:M', 30)
+    column_size_n = hist_vs_exist_worksheet.set_column('N:N', 5)
+    column_size_o = hist_vs_exist_worksheet.set_column('O:O', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1086,7 +1234,7 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     hist_vs_exist_worksheet.set_row(2, None, header_format)
     percent_format = workbook.add_format({'num_format': '0.00%'})
     percent1 = hist_vs_exist_worksheet.set_column('C:C', 20, percent_format)
-    percent2 = hist_vs_exist_worksheet.set_column('G:G', 20, percent_format)
+    hist_vs_exist_worksheet.set_column('G:G', 20, percent_format)
     percent3 = hist_vs_exist_worksheet.set_column('O:O', 8, percent_format)
     percent4 = hist_vs_exist_worksheet.set_column('J:J', 20, percent_format)
     color = workbook.add_format()
@@ -1100,7 +1248,7 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     # Headers
     row = 0
     col = 0
-    hist_vs_exist_worksheet.write(row, col, watershed_name, column_sizeA)
+    hist_vs_exist_worksheet.write(row, col, watershed_name, column_size_a)
     row += 1
     col += 2
     hist_vs_exist_worksheet.write(row, col, "Existing Capacity")
@@ -1110,35 +1258,35 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     col = 0
     hist_vs_exist_worksheet.write(row, col, "Category")
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_size_b)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_sizeC)
+    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_size_c)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_sizeD)
+    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_size_d)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "", column_sizeE)
+    hist_vs_exist_worksheet.write(row, col, "", column_size_e)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_sizeF)
+    hist_vs_exist_worksheet.write(row, col, "Stream Length (km)", column_size_f)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_sizeG)
+    hist_vs_exist_worksheet.write(row, col, "% of Stream Network", column_size_g)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_sizeH)
+    hist_vs_exist_worksheet.write(row, col, "Estimated Dam Capacity", column_size_h)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "", column_sizeI)
+    hist_vs_exist_worksheet.write(row, col, "", column_size_i)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "% Capacity of Historic", column_sizeJ)
+    hist_vs_exist_worksheet.write(row, col, "% Capacity of Historic", column_size_j)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "", column_sizeK)
+    hist_vs_exist_worksheet.write(row, col, "", column_size_k)
     col += 1
     row = 2
     col = 11
-    hist_vs_exist_worksheet.write(row, col, "Estimated Existing Dams/km total", column_sizeL)
+    hist_vs_exist_worksheet.write(row, col, "Estimated Existing Dams/km total", column_size_l)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "Estimated Historic Dams/km total", column_sizeM)
+    hist_vs_exist_worksheet.write(row, col, "Estimated Historic Dams/km total", column_size_m)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "", column_sizeN)
+    hist_vs_exist_worksheet.write(row, col, "", column_size_n)
     col += 1
-    hist_vs_exist_worksheet.write(row, col, "%loss", column_sizeO)
+    hist_vs_exist_worksheet.write(row, col, "%loss", column_size_o)
 
     # Categories:
     write_categories_hist_vs_exist(hist_vs_exist_worksheet, watershed_name)
@@ -1177,7 +1325,8 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     fields = ["oCC_EX", "mCC_EX_CT"]
     total_capacity = 0
     values = [0, 0, 0, 0, 0]
-    values = search_cursor(fields, values, total_capacity, stream_network, False, True, hist_vs_exist_worksheet, workbook)
+    values = search_cursor(fields, values, total_capacity, stream_network,
+                           False, True, hist_vs_exist_worksheet, workbook)
     row = 3
     col = 3
     hist_vs_exist_worksheet.write(row, col, values[0], cell_format1)
@@ -1226,7 +1375,8 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
     fields = ["oCC_HPE", "mCC_HPE_CT"]
     total_capacity = 0
     values = [0, 0, 0, 0, 0]
-    values= search_cursor(fields, values, total_capacity, stream_network, False, True, hist_vs_exist_worksheet, workbook)
+    values = search_cursor(fields, values, total_capacity, stream_network,
+                           False, True, hist_vs_exist_worksheet, workbook)
     row = 3
     col = 7
     hist_vs_exist_worksheet.write(row, col, values[0], cell_format1)
@@ -1279,10 +1429,18 @@ def write_hist_vs_exist_worksheet(hist_vs_exist_worksheet, stream_network, water
 
 
 def write_conservation_restoration(worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = worksheet.set_column('A:A', column_calc(30, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 20)
-    column_sizeD = worksheet.set_column('D:D', 15)
+    """
+    Writes the entire Conservation Restoration worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(30, watershed_name))
+    column_size_b = worksheet.set_column('B:B', 20)
+    column_size_c = worksheet.set_column('C:C', 20)
+    column_size_d = worksheet.set_column('D:D', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1299,15 +1457,15 @@ def write_conservation_restoration(worksheet, stream_network, watershed_name, wo
     # headers
     row = 0
     col = 0
-    worksheet.write(row, col, watershed_name, column_sizeA)
+    worksheet.write(row, col, watershed_name, column_size_a)
     row += 1
     worksheet.write(row, col, "oPBRC_CR")
     col += 1
-    worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    worksheet.write(row, col, "Stream Length (km)", column_size_b)
     col += 1
-    worksheet.write(row, col, "Stream Length (mi)", column_sizeC)
+    worksheet.write(row, col, "Stream Length (mi)", column_size_c)
     col += 1
-    worksheet.write(row, col, "Percent", column_sizeD)
+    worksheet.write(row, col, "Percent", column_size_d)
 
     # categories
     row = 2
@@ -1388,10 +1546,18 @@ def write_conservation_restoration(worksheet, stream_network, watershed_name, wo
 
 
 def write_unsuitable_worksheet(worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = worksheet.set_column('A:A', column_calc(36, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 20)
-    column_sizeD = worksheet.set_column('D:D', 15)
+    """
+    Writes the entire Unsuitable worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(36, watershed_name))
+    column_size_b = worksheet.set_column('B:B', 20)
+    column_size_c = worksheet.set_column('C:C', 20)
+    column_size_d = worksheet.set_column('D:D', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1408,15 +1574,15 @@ def write_unsuitable_worksheet(worksheet, stream_network, watershed_name, workbo
     # headers
     row = 0
     col = 0
-    worksheet.write(row, col, watershed_name, column_sizeA)
+    worksheet.write(row, col, watershed_name, column_size_a)
     row += 1
     worksheet.write(row, col, "oPBRC_UD")
     col += 1
-    worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    worksheet.write(row, col, "Stream Length (km)", column_size_b)
     col += 1
-    worksheet.write(row, col, "Stream Length (mi)", column_sizeC)
+    worksheet.write(row, col, "Stream Length (mi)", column_size_c)
     col += 1
-    worksheet.write(row, col, "Percent", column_sizeD)
+    worksheet.write(row, col, "Percent", column_size_d)
 
     # categories
     row = 2
@@ -1534,10 +1700,18 @@ def write_unsuitable_worksheet(worksheet, stream_network, watershed_name, workbo
 
 
 def write_risk_worksheet(worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = worksheet.set_column('A:A', column_calc(25, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 20)
-    column_sizeD = worksheet.set_column('D:D', 15)
+    """
+    Writes the entire Risk worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(25, watershed_name))
+    column_size_b = worksheet.set_column('B:B', 20)
+    column_size_c = worksheet.set_column('C:C', 20)
+    column_size_d = worksheet.set_column('D:D', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1554,15 +1728,15 @@ def write_risk_worksheet(worksheet, stream_network, watershed_name, workbook):
     # headers
     row = 0
     col = 0
-    worksheet.write(row, col, watershed_name, column_sizeA)
+    worksheet.write(row, col, watershed_name, column_size_a)
     row += 1
     worksheet.write(row, col, "oPBRC_UI")
     col += 1
-    worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    worksheet.write(row, col, "Stream Length (km)", column_size_b)
     col += 1
-    worksheet.write(row, col, "Stream Length (mi)", column_sizeC)
+    worksheet.write(row, col, "Stream Length (mi)", column_size_c)
     col += 1
-    worksheet.write(row, col, "Percent", column_sizeD)
+    worksheet.write(row, col, "Percent", column_size_d)
 
     # categories
     row = 2
@@ -1645,10 +1819,18 @@ def write_risk_worksheet(worksheet, stream_network, watershed_name, workbook):
 
 
 def write_strategies_worksheet(worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = worksheet.set_column('A:A', column_calc(40, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 20)
-    column_sizeC = worksheet.set_column('C:C', 20)
-    column_sizeD = worksheet.set_column('D:D', 15)
+    """
+    Writes the entire Strategies worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(40, watershed_name))
+    column_size_b = worksheet.set_column('B:B', 20)
+    column_size_c = worksheet.set_column('C:C', 20)
+    column_size_d = worksheet.set_column('D:D', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1665,15 +1847,15 @@ def write_strategies_worksheet(worksheet, stream_network, watershed_name, workbo
     # headers
     row = 0
     col = 0
-    worksheet.write(row, col, watershed_name, column_sizeA)
+    worksheet.write(row, col, watershed_name, column_size_a)
     row += 1
     worksheet.write(row, col, "ConsVRest")
     col += 1
-    worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    worksheet.write(row, col, "Stream Length (km)", column_size_b)
     col += 1
-    worksheet.write(row, col, "Stream Length (mi)", column_sizeC)
+    worksheet.write(row, col, "Stream Length (mi)", column_size_c)
     col += 1
-    worksheet.write(row, col, "Percent", column_sizeD)
+    worksheet.write(row, col, "Percent", column_size_d)
 
     # categories
     row = 2
@@ -1769,12 +1951,20 @@ def write_strategies_worksheet(worksheet, stream_network, watershed_name, workbo
 
 
 def write_validation_worksheet(worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = worksheet.set_column('A:A', column_calc(40, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 18)
-    column_sizeC = worksheet.set_column('C:C', 15)
-    column_sizeD = worksheet.set_column('D:D', 20)
-    column_sizeE = worksheet.set_column('E:E', 20)
-    column_sizeF = worksheet.set_column('F:F', 15)
+    """
+    Writes the entire Validation worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(40, watershed_name))
+    column_size_b = worksheet.set_column('B:B', 18)
+    column_size_c = worksheet.set_column('C:C', 15)
+    column_size_d = worksheet.set_column('D:D', 20)
+    column_size_e = worksheet.set_column('E:E', 20)
+    column_size_f = worksheet.set_column('F:F', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1794,27 +1984,27 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
 
     row = 0
     col = 0
-    worksheet.write(row, col, watershed_name, column_sizeA)
+    worksheet.write(row, col, watershed_name, column_size_a)
     row += 1
     worksheet.write(row, col, "BRATvSurv")
 
-    landUseCategories = ["Urban", "Undeveloped", "Agriculture or Mixed Use"]
-    for counter, category in enumerate(landUseCategories):
+    land_use_categories = ["Urban", "Undeveloped", "Agriculture or Mixed Use"]
+    for counter, category in enumerate(land_use_categories):
 
         col = 0
         row = 2 + (5*counter)
 
         worksheet.write(row, col, category)
-        col+=1
-        worksheet.write(row, col, "Number of Reaches", column_sizeB)
         col += 1
-        worksheet.write(row, col, "Percent of Reaches", column_sizeC)
+        worksheet.write(row, col, "Number of Reaches", column_size_b)
         col += 1
-        worksheet.write(row, col, "Stream Length (km)", column_sizeD)
+        worksheet.write(row, col, "Percent of Reaches", column_size_c)
         col += 1
-        worksheet.write(row, col, "Stream Length (mi)", column_sizeE)
+        worksheet.write(row, col, "Stream Length (km)", column_size_d)
         col += 1
-        worksheet.write(row, col, "Percent Length", column_sizeF)
+        worksheet.write(row, col, "Stream Length (mi)", column_size_e)
+        col += 1
+        worksheet.write(row, col, "Percent Length", column_size_f)
 
         # categories
         row = 3 + (5 * counter)
@@ -1828,16 +2018,16 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
         worksheet.write(row, col, "Total")
 
         # percent of reaches
-        totalRow = 7 + (5 * counter)
+        total_row = 7 + (5 * counter)
         row = 3 + (5 * counter)
         col = 2
-        worksheet.write(row, col, "=B{}/B{}".format(row + 1, totalRow), percent)
+        worksheet.write(row, col, "=B{}/B{}".format(row + 1, total_row), percent)
         row += 1
-        worksheet.write(row, col, "=B{}/B{}".format(row + 1, totalRow), percent)
+        worksheet.write(row, col, "=B{}/B{}".format(row + 1, total_row), percent)
         row += 1
-        worksheet.write(row, col, "=B{}/B{}".format(row + 1, totalRow), percent)
+        worksheet.write(row, col, "=B{}/B{}".format(row + 1, total_row), percent)
         row += 1
-        worksheet.write(row, col, "=SUM(C{}:C{})".format(totalRow-3, totalRow-1), percent)
+        worksheet.write(row, col, "=SUM(C{}:C{})".format(total_row-3, total_row-1), percent)
 
         # calculate km to mi
         row = 3 + (5 * counter)
@@ -1848,20 +2038,18 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
         row += 1
         worksheet.write(row, col, "=D{}*0.62137".format(row + 1), cell_format1)
         row += 1
-        worksheet.write(row, col, "=SUM(E{}:E{})".format(totalRow - 3, totalRow - 1), cell_format1)
+        worksheet.write(row, col, "=SUM(E{}:E{})".format(total_row - 3, total_row - 1), cell_format1)
 
         # calculate percents
         row = 3 + (5 * counter)
         col = 5
-        worksheet.write(row, col, "=D{}/D{}".format(row + 1, totalRow), percent2)
+        worksheet.write(row, col, "=D{}/D{}".format(row + 1, total_row), percent2)
         row += 1
-        worksheet.write(row, col, "=D{}/D{}".format(row + 1, totalRow), percent2)
+        worksheet.write(row, col, "=D{}/D{}".format(row + 1, total_row), percent2)
         row += 1
-        worksheet.write(row, col, "=D{}/D{}".format(row + 1, totalRow), percent2)
+        worksheet.write(row, col, "=D{}/D{}".format(row + 1, total_row), percent2)
         row += 1
-        worksheet.write(row, col, "=D{}/D{}".format(row + 1, totalRow), percent2)
-
-
+        worksheet.write(row, col, "=D{}/D{}".format(row + 1, total_row), percent2)
 
         # calculate fields
         few_km = 0
@@ -1890,7 +2078,12 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
                         else:
                             pass
             elif category == "Undeveloped":
-                with arcpy.da.SearchCursor(streams, ['SHAPE@Length', 'BRATvSurv', 'iPC_HighLU', 'iPC_VLowLU', 'e_DamCt']) as cursor:
+                with arcpy.da.SearchCursor(streams,
+                                           ['SHAPE@Length',
+                                            'BRATvSurv',
+                                            'iPC_HighLU',
+                                            'iPC_VLowLU',
+                                            'e_DamCt']) as cursor:
                     for length, valid, landHigh, landLow, damCount in cursor:
                         if (not landHigh > 20) and (landLow > 90):
                             if valid == -1:
@@ -1907,7 +2100,12 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
                         else:
                             pass
             else:
-                with arcpy.da.SearchCursor(streams, ['SHAPE@Length', 'BRATvSurv', 'iPC_HighLU', 'iPC_VLowLU', 'e_DamCt']) as cursor:
+                with arcpy.da.SearchCursor(streams,
+                                           ['SHAPE@Length',
+                                            'BRATvSurv',
+                                            'iPC_HighLU',
+                                            'iPC_VLowLU',
+                                            'e_DamCt']) as cursor:
                     for length, valid, landHigh, landLow, damCount in cursor:
                         if (not landHigh > 20) and (not landLow > 90):
                             if valid == -1:
@@ -1928,7 +2126,7 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
         none_km /= 1000
 
         # raw number of reaches
-        totalRow = 7 + (5 * counter)
+        total_row = 7 + (5 * counter)
         row = 3 + (5 * counter)
         col = 1
         worksheet.write(row, col, few, cell_format1)
@@ -1937,7 +2135,7 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
         row += 1
         worksheet.write(row, col, none, cell_format1)
         row += 1
-        worksheet.write(row, col, "=SUM(B{}:B{})".format(totalRow - 3, totalRow - 1), cell_format1)
+        worksheet.write(row, col, "=SUM(B{}:B{})".format(total_row - 3, total_row - 1), cell_format1)
 
         # length per category
         row = 3 + (5 * counter)
@@ -1948,23 +2146,31 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
         row += 1
         worksheet.write(row, col, none_km, cell_format1)
         row += 1
-        worksheet.write(row, col, "=SUM(D{}:D{})".format(totalRow - 3, totalRow - 1), cell_format1)
+        worksheet.write(row, col, "=SUM(D{}:D{})".format(total_row - 3, total_row - 1), cell_format1)
 
     row = 18
     col = 0
     worksheet.write(row, col, "Total")
-    col+= 1
+    col += 1
     worksheet.write(row, col, "=SUM(B7,B12,B17)", cell_format1)
     col += 2
     worksheet.write(row, col, "=SUM(D7,D12,D17)", cell_format1)
 
 
 def write_historic_remaining_worksheet(worksheet, stream_network, watershed_name, workbook):
-    column_sizeA = worksheet.set_column('A:A', column_calc(40, watershed_name))
-    column_sizeB = worksheet.set_column('B:B', 18)
-    column_sizeC = worksheet.set_column('C:C', 20)
-    column_sizeD = worksheet.set_column('D:D', 20)
-    column_sizeE = worksheet.set_column('E:E', 15)
+    """
+    Writes the entire Historic Remaining worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
+    column_size_a = worksheet.set_column('A:A', column_calc(40, watershed_name))
+    column_size_b = worksheet.set_column('B:B', 18)
+    column_size_c = worksheet.set_column('C:C', 20)
+    column_size_d = worksheet.set_column('D:D', 20)
+    worksheet.set_column('E:E', 15)
     header_format = workbook.add_format()
     header_format.set_align('center')
     header_format.set_bold()
@@ -1980,7 +2186,7 @@ def write_historic_remaining_worksheet(worksheet, stream_network, watershed_name
 
     row = 0
     col = 0
-    worksheet.write(row, col, watershed_name, column_sizeA)
+    worksheet.write(row, col, watershed_name, column_size_a)
     row += 1
     worksheet.write(row, col, "mCC_EXvHPE")
 
@@ -1989,11 +2195,11 @@ def write_historic_remaining_worksheet(worksheet, stream_network, watershed_name
 
     worksheet.write(row, col, "Percent Historic Capacity Remaining")
     col += 1
-    worksheet.write(row, col, "Stream Length (km)", column_sizeB)
+    worksheet.write(row, col, "Stream Length (km)", column_size_b)
     col += 1
-    worksheet.write(row, col, "Stream Length (mi)", column_sizeC)
+    worksheet.write(row, col, "Stream Length (mi)", column_size_c)
     col += 1
-    worksheet.write(row, col, "Percent Length", column_sizeD)
+    worksheet.write(row, col, "Percent Length", column_size_d)
 
     # categories
     row = 2
@@ -2084,6 +2290,14 @@ def write_historic_remaining_worksheet(worksheet, stream_network, watershed_name
 
 
 def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbook):
+    """
+    Writes the entire Electivity worksheet
+    :param worksheet: The current Excel Worksheet
+    :param stream_network: The BRAT input network to be summarized
+    :param watershed_name: The name of the watershed to be summarized
+    :param workbook: The current Excel Workbook
+    :return:
+    """
     # Formatting
 
     worksheet.set_column('A:A', column_calc(20, watershed_name))
@@ -2173,7 +2387,8 @@ def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbo
     row += 1
     worksheet.write(row, col, "=C8*1000", cell_format1)
 
-    # Column C (Stream Length Kilometers) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    # Column C (Stream Length Kilometers)
+    # These values have already been calculated, so I'm just pulling them from the other Worksheet
 
     row = 2
     col = 2
@@ -2189,7 +2404,8 @@ def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbo
     row += 1
     worksheet.write(row, col, "=='Existing Dam Building Capacity'!B8", cell_format1)
 
-    # Column D (Stream Length Miles) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    # Column D (Stream Length Miles)
+    # These values have already been calculated, so I'm just pulling them from the other Worksheet
 
     row = 2
     col = 3
@@ -2205,7 +2421,8 @@ def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbo
     row += 1
     worksheet.write(row, col, "=='Existing Dam Building Capacity'!C8", cell_format1)
 
-    # Column E (Percent of Drainage Network) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    # Column E (Percent of Drainage Network)
+    # These values have already been calculated, so I'm just pulling them from the other Worksheet
 
     row = 2
     col = 4
@@ -2361,6 +2578,12 @@ def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbo
 
 
 def write_header(worksheet, watershed_name):
+    """
+    Writes Watershed name, stream length, and proportion headers on a given sheet
+    :param worksheet: The current Excel Worksheet
+    :param watershed_name: The name of the watershed to be summarized
+    :return:
+    """
     row = 0
     col = 0
     worksheet.write(row, col, watershed_name)
@@ -2374,11 +2597,17 @@ def write_header(worksheet, watershed_name):
 
 
 def create_folder_structure(project_folder, summary_prods_folder):
+    """
+    Creates summary products folder structure
+    :param project_folder: The BRAT project folder
+    :param summary_prods_folder: The created summary products folder
+    :return:
+    """
     make_folder(project_folder, summary_prods_folder)
 
     ai_folder = os.path.join(summary_prods_folder, "AI")
-    png_folder = os.path.join(summary_prods_folder, "PNG")
-    pdf_folder = os.path.join(summary_prods_folder, "PDF")
+    # png_folder = os.path.join(summary_prods_folder, "PNG")
+    # pdf_folder = os.path.join(summary_prods_folder, "PDF")
     kmz_folder = os.path.join(summary_prods_folder, "KMZ")
     lpk_folder = os.path.join(summary_prods_folder, "LPK")
 
@@ -2389,20 +2618,20 @@ def create_folder_structure(project_folder, summary_prods_folder):
     lpk_files = []
 
     for root, dirs, files in os.walk(project_folder):
-        for file in files:
-            file_path = os.path.join(root, file)
+        for add_file in files:
+            file_path = os.path.join(root, add_file)
             if "\\SummaryProducts\\" in root:
                 # We don't want to add anything that's already in our summary product area
                 pass
-            elif file.endswith(".ai"):
+            elif add_file.endswith(".ai"):
                 ai_files.append(file_path)
-            elif file.endswith(".png"):
+            elif add_file.endswith(".png"):
                 png_files.append(file_path)
-            elif file.endswith(".pdf"):
+            elif add_file.endswith(".pdf"):
                 pdf_files.append(file_path)
-            elif file.endswith(".kmz"):
+            elif add_file.endswith(".kmz"):
                 kmz_files.append(file_path)
-            elif file.endswith(".lpk"):
+            elif add_file.endswith(".lpk"):
                 lpk_files.append(file_path)
 
     copy_all_files(summary_prods_folder, ai_folder, ai_files)
@@ -2423,23 +2652,30 @@ def copy_to_input_output_structure(folder_base, files):
     inputs_folder = make_folder(folder_base, "Inputs")
     intermed_folder = make_folder(folder_base, "Intermediates")
 
-    for file in files:
-        if "\\Inputs\\" in file:
-            shutil.copy(file, inputs_folder)
-        elif "\\01_Intermediates\\" in file:
-            shutil.copy(file, intermed_folder)
-        elif "\\02_Analyses\\" in file:
-            shutil.copy(file, output_folder)
+    for copy_file in files:
+        if "\\Inputs\\" in copy_file:
+            shutil.copy(copy_file, inputs_folder)
+        elif "\\01_Intermediates\\" in copy_file:
+            shutil.copy(copy_file, intermed_folder)
+        elif "\\02_Analyses\\" in copy_file:
+            shutil.copy(copy_file, output_folder)
         else:
-            shutil.copy(file, folder_base)
+            shutil.copy(copy_file, folder_base)
 
 
 def copy_all_files(summary_folder, new_folder, files):
+    """
+    Copies all files to a new folder
+    :param summary_folder: The created summary products folder
+    :param new_folder: The new folder to copy files into
+    :param files: A list of files to copy
+    :return:
+    """
     # only make these folders if specific outputs need to be copied in
-    if len(files)>0:
+    if len(files) > 0:
         make_folder(summary_folder, new_folder)
-    for file in files:
-        shutil.copy(file, new_folder)
+    for copy_file in files:
+        shutil.copy(copy_file, new_folder)
 
 
 if __name__ == "__main__":
