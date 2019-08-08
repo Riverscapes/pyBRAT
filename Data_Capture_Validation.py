@@ -65,7 +65,7 @@ def main(in_network, output_name, dams=None, DA_threshold=None):
 
     if dams:
         arcpy.AddMessage("Adding fields that need dam input...")
-        set_dam_attributes(in_network, output_network, dams, dam_fields + ['Join_Count'] + input_fields, new_fields)
+        set_dam_attributes(in_network, output_network, dams, dam_fields + ['Join_Count'] + input_fields, new_fields, DA_threshold)
     else:
         arcpy.CopyFeatures_management(in_network, output_network)
         add_fields(output_network, other_fields)
