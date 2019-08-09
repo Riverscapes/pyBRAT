@@ -62,8 +62,8 @@ def main(proj_path, in_network, out_name, surveyed_dams=None, conservation_areas
     else:
         occ_hpe = 'oCC_HPE'
 
-    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mcc_his_dep',
-              'ipc_vlow_lu', 'ipc_high_lu', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX',
+    fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
+              'iPC_VlowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX',
               'iPC_Canal', 'ObsDam', 'ConsRest', 'ConsEase']
 
     # add arbitrarily large value to avoid error
@@ -72,10 +72,10 @@ def main(proj_path, in_network, out_name, surveyed_dams=None, conservation_areas
         arcpy.CalculateField_management(out_network, 'iPC_Canal', """500000""", "PYTHON")
 
     # 'oPBRC_UI' (Areas beavers can build dams, but could be undesireable impacts)
-    arcpy.AddMessage(fields)
-    field_check = [f.name for f in arcpy.ListFields(out_network)]
-    arcpy.AddMessage("--------------------")
-    arcpy.AddMessage(field_check)
+    # arcpy.AddMessage(fields)
+    # field_check = [f.name for f in arcpy.ListFields(out_network)]
+    # arcpy.AddMessage("--------------------")
+    # arcpy.AddMessage(field_check)
     with arcpy.da.UpdateCursor(out_network, fields) as cursor:
         for row in cursor:
 
