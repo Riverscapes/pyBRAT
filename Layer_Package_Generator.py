@@ -677,9 +677,9 @@ def get_inputs_layer(empty_group_layer, inputs_folder, df, mxd, clipping_network
     land_use_folder = find_folder(anthropogenic_folder, "LandUse")
 
     ex_veg_layers = find_instance_layers(ex_veg_folder, None)
-    ex_veg_layer = group_layers(empty_group_layer, "Existing Vegetation Dam Capacity", ex_veg_layers, df, mxd)
+    ex_veg_layer = group_layers(empty_group_layer, "Existing Vegetation", ex_veg_layers, df, mxd)
     hist_veg_layers = find_instance_layers(hist_veg_folder, None)
-    hist_veg_layer = group_layers(empty_group_layer, "Historic Vegetation Dam Capacity", hist_veg_layers, df, mxd)
+    hist_veg_layer = group_layers(empty_group_layer, "Historic Vegetation", hist_veg_layers, df, mxd)
     veg_layer = group_layers(empty_group_layer, "Vegetation", [hist_veg_layer, ex_veg_layer], df, mxd)
 
     network_layers = find_instance_layers(network_folder, clipping_network)
