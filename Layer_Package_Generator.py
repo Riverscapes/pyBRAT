@@ -15,7 +15,7 @@ from SupportingFunctions import find_folder, find_available_num_prefix, make_fol
 import re
 
 
-def main(output_folder, layer_package_name, clipping_network):
+def main(output_folder, layer_package_name=None, clipping_network=None):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
@@ -475,7 +475,7 @@ def check_inputs(inputs_folder, symbology_folder):
     network_symbology = os.path.join(symbology_folder, "Network.lyr")
     landuse_symbology = os.path.join(symbology_folder, "Land_Use_Raster.lyr")
     land_ownership_symbology = os.path.join(symbology_folder, "SurfaceManagementAgency.lyr")
-    canals_symbology = os.path.join(symbology_folder, "Canals.lyr")
+    canals_symbology = os.path.join(symbology_folder, "CanalsDitches.lyr")
     roads_symbology = os.path.join(symbology_folder, "Roads.lyr")
     railroads_symbology = os.path.join(symbology_folder, "Railroads.lyr")
     valley_bottom_symbology = os.path.join(symbology_folder, "ValleyBottom_Fill.lyr")
@@ -993,3 +993,9 @@ def find_file(proj_path, file_pattern):
         file_path = None
 
     return file_path
+
+if __name__ == "__main__":
+    main(
+        sys.argv[1],
+        sys.argv[2],
+        sys.argv[3])
