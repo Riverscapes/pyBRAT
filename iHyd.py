@@ -53,8 +53,8 @@ def main(in_network, region, q_low_eqtn, q2_eqtn):
     # note: this assumes that streamflow equations are in US customary units (e.g., inches, feet)
 
     # TODO Why do these get need to be initialized? Is it necessary to set them to zero first?
-    da_sqm = np.zeros_like(da)
-    da_sqm = da * 0.3861021585424458
+    DAsqm = np.zeros_like(da)
+    DAsqm = da * 0.3861021585424458
 
     # create Qlow and Q2
     q_low = np.zeros_like(da)
@@ -67,24 +67,24 @@ def main(in_network, region, q_low_eqtn, q2_eqtn):
     if q_low_eqtn is not None:
         q_low = eval(q_low_eqtn)
     elif region == 101:  # example 1 (box elder county)
-        q_low = 0.019875 * (da_sqm ** 0.6634) * (10 ** (0.6068 * 2.04))
+        q_low = 0.019875 * (DAsqm ** 0.6634) * (10 ** (0.6068 * 2.04))
     elif region == 102:  # example 2 (upper green generic)
-        q_low = 4.2758 * (da_sqm ** 0.299)
+        q_low = 4.2758 * (DAsqm ** 0.299)
     elif region == 24:  # oregon region 5
-        q_low = 0.000133 * (da_sqm ** 1.05) * (15.3 ** 2.1)
+        q_low = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
     else:
-        q_low = (da_sqm ** 0.2098) + 1
+        q_low = (DAsqm ** 0.2098) + 1
 
     if q2_eqtn is not None:
         q2 = eval(q2_eqtn)
     elif region == 101:  # example 1 (box elder county)
-        q2 = 14.5 * da_sqm ** 0.328
+        q2 = 14.5 * DAsqm ** 0.328
     elif region == 102:  # example 2 (upper green generic)
-        q2 = 22.2 * (da_sqm ** 0.608) * ((42 - 40) ** 0.1)
+        q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
     elif region == 24:  # oregon region 5
-        q2 = 0.000258 * (da_sqm ** 0.893) * (15.3 ** 3.15)
+        q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
     else:
-        q2 = 14.7 * (da_sqm ** 0.815)
+        q2 = 14.7 * (DAsqm ** 0.815)
 
     # save segid, Qlow, Q2 as single table
     columns = np.column_stack((segid, q_low, q2))
