@@ -19,11 +19,20 @@ from SupportingFunctions import make_folder, make_layer, find_available_num_pref
 
 
 def main(in_network):
-
+    """
+    Runs the vegetation FIS for the BRAT input table
+    :param in_network: The input BRAT network
+    :return:
+    """
     scratch = 'in_memory'
 
-    # vegetation capacity fis function
-    def vegFIS(model_run):
+    # TODO Does this have to be nested? It seems more consistent if it is just defined below.
+    def veg_cap_fis(model_run):
+        """
+        Vegetation capacity fis function
+        :param model_run: The model being run, either 'Hpe' or 'ex"
+        :return:
+        """
 
         arcpy.env.overwriteOutput = True
 
@@ -96,7 +105,8 @@ def main(in_network):
         rule4 = ctrl.Rule(riparian['suitable'] & streamside['unsuitable'], density['occasional'])
         rule5 = ctrl.Rule(riparian['preferred'] & streamside['unsuitable'], density['occasional'])
         rule6 = ctrl.Rule(riparian['unsuitable'] & streamside['barely'], density['rare'])
-        rule7 = ctrl.Rule(riparian['barely'] & streamside['barely'], density['rare']) # matBRAT has consequnt as 'occasional'
+        # matBRAT has consequent as 'occasional'
+        rule7 = ctrl.Rule(riparian['barely'] & streamside['barely'], density['rare'])
         rule8 = ctrl.Rule(riparian['moderately'] & streamside['barely'], density['occasional'])
         rule9 = ctrl.Rule(riparian['suitable'] & streamside['barely'], density['occasional'])
         rule10 = ctrl.Rule(riparian['preferred'] & streamside['barely'], density['occasional'])
@@ -117,8 +127,11 @@ def main(in_network):
         rule25 = ctrl.Rule(riparian['preferred'] & streamside['preferred'], density['pervasive'])
 
         # FIS
-        veg_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11,
-                                       rule12, rule13, rule14, rule15, rule16, rule17, rule18, rule19, rule20, rule21, rule22, rule23, rule24, rule25])
+        veg_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5,
+                                       rule6, rule7, rule8, rule9, rule10,
+                                       rule11, rule12, rule13, rule14, rule15,
+                                       rule16, rule17, rule18, rule19, rule20,
+                                       rule21, rule22, rule23, rule24, rule25])
         veg_fis = ctrl.ControlSystemSimulation(veg_ctrl)
 
         # run fuzzy inference system on inputs and defuzzify output
@@ -131,29 +144,31 @@ def main(in_network):
 
         # save fuzzy inference system output as table
         columns = np.column_stack((segid_array, out))
-        out_table = os.path.dirname(in_network) + "/" + out_field + "_Table.txt"  # todo: see if possible to skip this step
-        np.savetxt(out_table, columns, delimiter = ",", header = "ReachID, " + out_field, comments = "")
+        # TODO See if possible to skip this step
+        out_table = os.path.dirname(in_network) + "/" + out_field + "_Table.txt"
+        np.savetxt(out_table, columns, delimiter=",", header="ReachID, " + out_field, comments="")
         ovc_table = scratch + "/" + out_field + "Tbl"
         arcpy.CopyRows_management(out_table, ovc_table)
 
         # join the fuzzy inference system output to the flowline network
         # create empty dictionary to hold input table field values
-        tblDict = {}
+        tbl_dict = {}
         # add values to dictionary
         with arcpy.da.SearchCursor(ovc_table, ['ReachID', out_field]) as cursor:
             for row in cursor:
-                tblDict[row[0]] = row[1]
+                tbl_dict[row[0]] = row[1]
         # populate flowline network out field
         arcpy.AddField_management(in_network, out_field, 'DOUBLE')
         with arcpy.da.UpdateCursor(in_network, ['ReachID', out_field]) as cursor:
             for row in cursor:
                 try:
-                    aKey = row[0]
-                    row[1] = tblDict[aKey]
+                    a_key = row[0]
+                    row[1] = tbl_dict[a_key]
                     cursor.updateRow(row)
+                # TODO There should be no blank exception statements. What error is this catching?
                 except:
                     pass
-        tblDict.clear()
+        tbl_dict.clear()
 
         # calculate defuzzified centroid value for density 'none' MF group
         # this will be used to re-classify output values that fall in this group
@@ -184,31 +199,31 @@ def main(in_network):
             del item
 
     # run the combined fis function for both potential and existing
-    vegFIS('Hpe')
-    vegFIS('ex')
+    veg_cap_fis('Hpe')
+    veg_cap_fis('ex')
 
-    makeLayers(in_network)
+    make_layers(in_network)
 
 
-def makeLayers(inputNetwork):
+def make_layers(input_network):
     """
     Makes the layers for the modified output
-    :param inputNetwork: The path to the network that we'll make a layer from
+    :param input_network: The path to the network that we'll make a layer from
     :return:
     """
     arcpy.AddMessage("Making layers...")
-    intermediates_folder = os.path.dirname(inputNetwork)
+    intermediates_folder = os.path.dirname(input_network)
     veg_folder_name = find_available_num_prefix(intermediates_folder) + "_VegDamCapacity"
     veg_folder = make_folder(intermediates_folder, veg_folder_name)
 
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    trib_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
-    existingVegSymbology = os.path.join(symbologyFolder, "ExistingVegDamBuildingCapacity.lyr")
-    historicVegSymbology = os.path.join(symbologyFolder, "HistoricVegDamBuildingCapacity.lyr")
+    existing_veg_symbology = os.path.join(symbology_folder, "ExistingVegDamBuildingCapacity.lyr")
+    historic_veg_symbology = os.path.join(symbology_folder, "HistoricVegDamBuildingCapacity.lyr")
 
-    make_layer(veg_folder, inputNetwork, "Existing Veg Dam Building Capacity", existingVegSymbology, is_raster=False)
-    make_layer(veg_folder, inputNetwork, "Historic Veg Dam Building Capacity", historicVegSymbology, is_raster=False)
+    make_layer(veg_folder, input_network, "Existing Veg Dam Building Capacity", existing_veg_symbology, is_raster=False)
+    make_layer(veg_folder, input_network, "Historic Veg Dam Building Capacity", historic_veg_symbology, is_raster=False)
 
 
 if __name__ == '__main__':

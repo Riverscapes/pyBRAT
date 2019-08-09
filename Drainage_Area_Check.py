@@ -20,10 +20,10 @@ def main(stream_network):
     :return:
     """
     stream_heaps = find_streams(stream_network)
-    #check_heap(stream_network, stream_heaps)
+    # check_heap(stream_network, stream_heaps)
 
     problem_streams = find_problem_streams(stream_heaps)
-    #check_problem_streams(stream_network, problem_streams)
+    # check_problem_streams(stream_network, problem_streams)
 
     fix_problem_streams(stream_network, problem_streams)
 
@@ -32,7 +32,7 @@ def find_streams(stream_network):
     """
     Creates a list of heaps, sorted by distance from the stream head
     :param stream_network: The stream network to be used
-    :return:
+    :return: Sorted heap list
     """
     arcpy.AddMessage("Finding Streams...")
     stream_heaps = []
@@ -51,9 +51,15 @@ def find_streams(stream_network):
 
 
 def check_heap(stream_network, stream_heaps):
-    with open(os.path.join(os.path.dirname(stream_network), "streams.txt"), 'w') as file:
+    """
+    A simple function that's meant to write the data to a text file and raise errors if something seems wrong
+    :param stream_network: The stream network to be used
+    :param stream_heaps: List of stream heaps
+    :return:
+    """
+    with open(os.path.join(os.path.dirname(stream_network), "streams.txt"), 'w') as checkFile:
         for stream_heap in stream_heaps:
-            file.write(str(stream_heap) + '\n')
+            checkFile.write(str(stream_heap) + '\n')
     for stream_heap in stream_heaps:
         streams = stream_heap.streams
         for k in range(len(streams)):
@@ -66,7 +72,6 @@ def check_heap(stream_network, stream_heaps):
             except IndexError:
                 pass
     arcpy.AddMessage("Stream Heaps passed check")
-
 
 
 def find_new_stream_heap_index(stream_id, stream_heaps):
@@ -82,12 +87,11 @@ def find_new_stream_heap_index(stream_id, stream_heaps):
     return None
 
 
-
 def find_problem_streams(stream_heaps):
     """
     Looks through the stream heaps, identifies streams that need to be fixed, and puts them in a list
     :param stream_heaps: A list of stream heaps
-    :return:
+    :return: A list of problem streams
     """
     arcpy.AddMessage("Identifying problem streams...")
     problem_streams = []
@@ -100,7 +104,10 @@ def find_problem_streams(stream_heaps):
                     max_upstream_drainage_area = stream.drainage_area
 
             if downstream_reach.drainage_area < max_upstream_drainage_area:
-                new_problem_stream = ProblemStream(downstream_reach.reach_id, downstream_reach.stream_id, downstream_reach.drainage_area, max_upstream_drainage_area)
+                new_problem_stream = ProblemStream(downstream_reach.reach_id,
+                                                   downstream_reach.stream_id,
+                                                   downstream_reach.drainage_area,
+                                                   max_upstream_drainage_area)
                 problem_streams.append(new_problem_stream)
 
     return problem_streams
@@ -108,30 +115,33 @@ def find_problem_streams(stream_heaps):
 
 def check_problem_streams(stream_network, problem_streams):
     """
-    A simple function that's mean to write the data to a text file and raise errors if something seems wrong
+    A simple function that's meant to write the data to a text file and raise errors if something seems wrong
+    :param stream_network: The stream network to be used
+    :param problem_streams: The list of problem streams created by find_problem_streams
+    :return:
     """
-    max_orig_DA = 0
-    max_orig_DA_id = -1
-    with open(os.path.join(os.path.dirname(stream_network), "problemStreams.txt"), 'w') as file:
+    max_orig_da = 0
+    max_orig_da_id = -1
+    with open(os.path.join(os.path.dirname(stream_network), "problemStreams.txt"), 'w') as checkFile:
         for problem_stream in problem_streams:
-            file.write(str(problem_stream) + '\n')
+            checkFile.write(str(problem_stream) + '\n')
             if problem_stream.orig_drainage_area > 50:
                 arcpy.AddWarning("Reach " + str(problem_stream.reach_id) + " may not be a problem stream")
-            if problem_stream.orig_drainage_area > max_orig_DA:
-                max_orig_DA = problem_stream.orig_drainage_area
-                max_orig_DA_id = problem_stream.reach_id
+            if problem_stream.orig_drainage_area > max_orig_da:
+                max_orig_da = problem_stream.orig_drainage_area
+                max_orig_da_id = problem_stream.reach_id
             if problem_stream.orig_drainage_area > problem_stream.fixed_drainage_area:
                 raise Exception("Something weird with the following reach:\n" + str(problem_stream))
     arcpy.AddMessage("Problem Streams passed check")
-    arcpy.AddMessage("Max problem DA: " + str(max_orig_DA))
-    arcpy.AddMessage("Max problem DA ID: " + str(max_orig_DA_id))
+    arcpy.AddMessage("Max problem DA: " + str(max_orig_da))
+    arcpy.AddMessage("Max problem DA ID: " + str(max_orig_da_id))
 
 
 def fix_problem_streams(stream_network, problem_streams):
     """
     Goes through the stream network and fixes problem streams
-    :param stream_network: The stream network to fix
-    :param problem_streams: A list of problem streams
+    :param stream_network: The stream network to be used
+    :param problem_streams: The list of problem streams created by find_problem_streams
     :return:
     """
     arcpy.AddMessage("Fixing Streams...")
@@ -152,17 +162,25 @@ def fix_problem_streams(stream_network, problem_streams):
 
 
 def write_problem_streams(stream_network, problem_streams):
-    with open(os.path.join(os.path.dirname(stream_network), "ProblemStreamsList.txt"), 'w') as file:
-        file.write("This is a list of all streams that were changed by the Drainage Area Check\n")
-        file.write("Number of streams edited: " + str(len(problem_streams)) + '\n\n')
+    """
+    Writes the list of problem streams to a file
+    :param stream_network: The stream network to be used
+    :param problem_streams: The list of problem streams created by find_problem_streams
+    :return:
+    """
+    with open(os.path.join(os.path.dirname(stream_network), "ProblemStreamsList.txt"), 'w') as writeFile:
+        writeFile.write("This is a list of all streams that were changed by the Drainage Area Check\n")
+        writeFile.write("Number of streams edited: " + str(len(problem_streams)) + '\n\n')
         for problem_stream in problem_streams:
-            file.write("Altered Reach #" + str(problem_stream.reach_id) + '\n')
+            writeFile.write("Altered Reach #" + str(problem_stream.reach_id) + '\n')
 
 
 def find_problem_stream(reach_id, problem_streams):
     """
-    Returns the problem stream that goes with the reach id. If the reach ID is not in the list of problem streams,
-    returns None
+    Returns the problem stream that goes with the reach ID.
+    :param reach_id: The reach ID to check for.
+    :param problem_streams: The list of problem streams created by find_problem_streams.
+    :return: If the reach ID is present, returns the problem stream. Otherwise, is returns None.
     """
     for problem_stream in problem_streams:
         if problem_stream.reach_id == reach_id:

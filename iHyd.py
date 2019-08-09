@@ -18,20 +18,24 @@ import XMLBuilder
 reload(XMLBuilder)
 XMLBuilder = XMLBuilder.XMLBuilder
 
-def main(
-    in_network,
-    region,
-    Qlow_eqtn,
-    Q2_eqtn):
 
+def main(in_network, region, q_low_eqtn, q2_eqtn):
+    """
+    The main function, adds all hydrologic attributes to the BRAT table
+    :param in_network: The input BRAT table to add hydrologic values to
+    :param region: The optional region code to identify an already existing equation
+    :param q_low_eqtn: The Qlow equation to be calculated
+    :param q2_eqtn: The Q2 equation to be calculated
+    :return:
+    """
     if region is None or region == "None":
         region = 0
     else:
         region = int(region)
-    if Qlow_eqtn == "None":
-        Qlow_eqtn = None
-    if Q2_eqtn == "None":
-        Q2_eqtn = None
+    if q_low_eqtn == "None":
+        q_low_eqtn = None
+    if q2_eqtn == "None":
+        q2_eqtn = None
 
     scratch = 'in_memory'
 
@@ -42,59 +46,60 @@ def main(
     segid = np.asarray(segid_np, np.int64)
 
     # create array for input network drainage area ("iGeo_DA")
-    DA_array = arcpy.da.FeatureClassToNumPyArray(in_network, "iGeo_DA")
-    DA = np.asarray(DA_array, np.float32)
+    da_array = arcpy.da.FeatureClassToNumPyArray(in_network, "iGeo_DA")
+    da = np.asarray(da_array, np.float32)
 
     # convert drainage area (in square kilometers) to square miles
     # note: this assumes that streamflow equations are in US customary units (e.g., inches, feet)
-    DAsqm = np.zeros_like(DA)
-    DAsqm = DA * 0.3861021585424458
+
+    # TODO Why do these get need to be initialized? Is it necessary to set them to zero first?
+    da_sqm = np.zeros_like(da)
+    da_sqm = da * 0.3861021585424458
 
     # create Qlow and Q2
-    Qlow = np.zeros_like(DA)
-    Q2 = np.zeros_like(DA)
+    q_low = np.zeros_like(da)
+    q2 = np.zeros_like(da)
 
     arcpy.AddMessage("Adding Qlow and Q2 to network...")
 
-
     # --regional curve equations for Qlow (baseflow) and Q2 (annual peak streamflow)--
     # # # Add in regional curve equations here # # #
-    if Qlow_eqtn is not None:
-        Qlow = eval(Qlow_eqtn)
+    if q_low_eqtn is not None:
+        q_low = eval(q_low_eqtn)
     elif region == 101:  # example 1 (box elder county)
-        Qlow = 0.019875 * (DAsqm ** 0.6634) * (10 ** (0.6068 * 2.04))
+        q_low = 0.019875 * (da_sqm ** 0.6634) * (10 ** (0.6068 * 2.04))
     elif region == 102:  # example 2 (upper green generic)
-        Qlow = 4.2758 * (DAsqm ** 0.299)
+        q_low = 4.2758 * (da_sqm ** 0.299)
     elif region == 24:  # oregon region 5
-        Qlow = 0.000133 * (DAsqm ** 1.05) * (15.3 ** 2.1)
+        q_low = 0.000133 * (da_sqm ** 1.05) * (15.3 ** 2.1)
     else:
-        Qlow = (DAsqm ** 0.2098) + 1
+        q_low = (da_sqm ** 0.2098) + 1
 
-    if Q2_eqtn is not None:
-        Q2 = eval(Q2_eqtn)
+    if q2_eqtn is not None:
+        q2 = eval(q2_eqtn)
     elif region == 101:  # example 1 (box elder county)
-        Q2 = 14.5 * DAsqm ** 0.328
+        q2 = 14.5 * da_sqm ** 0.328
     elif region == 102:  # example 2 (upper green generic)
-        Q2 = 22.2 * (DAsqm ** 0.608) * ((42 - 40) ** 0.1)
+        q2 = 22.2 * (da_sqm ** 0.608) * ((42 - 40) ** 0.1)
     elif region == 24:  # oregon region 5
-        Q2 = 0.000258 * (DAsqm ** 0.893) * (15.3 ** 3.15)
+        q2 = 0.000258 * (da_sqm ** 0.893) * (15.3 ** 3.15)
     else:
-        Q2 = 14.7 * (DAsqm ** 0.815)
+        q2 = 14.7 * (da_sqm ** 0.815)
 
     # save segid, Qlow, Q2 as single table
-    columns = np.column_stack((segid, Qlow, Q2))
+    columns = np.column_stack((segid, q_low, q2))
     tmp_table = os.path.dirname(in_network) + "/ihyd_Q_Table.txt"
-    np.savetxt(tmp_table, columns, delimiter = ",", header = "ReachID, iHyd_QLow, iHyd_Q2", comments = "")
+    np.savetxt(tmp_table, columns, delimiter=",", header="ReachID, iHyd_QLow, iHyd_Q2", comments="")
     ihyd_table = scratch + "/ihyd_table"
     arcpy.CopyRows_management(tmp_table, ihyd_table)
 
     # join Qlow and Q2 output to the flowline network
     # create empty dictionary to hold input table field values
-    tblDict = {}
+    tbl_dict = {}
     # add values to dictionary
     with arcpy.da.SearchCursor(ihyd_table, ['ReachID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
         for row in cursor:
-            tblDict[row[0]] = [row[1], row[2]]
+            tbl_dict[row[0]] = [row[1], row[2]]
     # check for and delete if output fields already included in flowline network
     remove_existing_output(in_network)
     # populate flowline network out field
@@ -103,13 +108,14 @@ def main(
     with arcpy.da.UpdateCursor(in_network, ['ReachID', "iHyd_QLow", "iHyd_Q2"]) as cursor:
         for row in cursor:
             try:
-                aKey = row[0]
-                row[1] = tblDict[aKey][0]
-                row[2] = tblDict[aKey][1]
+                a_key = row[0]
+                row[1] = tbl_dict[a_key][0]
+                row[2] = tbl_dict[a_key][1]
                 cursor.updateRow(row)
+            # TODO There should not be any blank exceptions. What error is this supposed to throw?
             except:
                 pass
-    tblDict.clear()
+    tbl_dict.clear()
 
     # delete temporary table
     arcpy.Delete_management(tmp_table)
@@ -127,9 +133,13 @@ def main(
     arcpy.AddMessage("Adding stream power to network...")
 
     # calculate Qlow and Q2 stream power
-    # where stream power = density of water (1000 kg/m3) * acceleration due to gravity (9.80665 m/s2) * discharge (m3/s) * channel slope
-    # note: we assume that discharge ("iHyd_QLow", "iHyd_Q2") was calculated in cubic feet per second and handle conversion to cubic
-    #       meters per second (e.g., "iHyd_QLow" * 0.028316846592
+
+    # where stream power =
+    # density of water (1000 kg/m3) * acceleration due to gravity (9.80665 m/s2) * discharge (m3/s) * channel slope
+
+    # note: we assume that discharge ("iHyd_QLow", "iHyd_Q2") was calculated in cubic feet per second
+    # and handle conversion to cubic meters per second (e.g., "iHyd_QLow" * 0.028316846592
+
     arcpy.AddField_management(in_network, "iHyd_SPLow", "DOUBLE")
     arcpy.AddField_management(in_network, "iHyd_SP2", "DOUBLE")
     with arcpy.da.UpdateCursor(in_network, ["iGeo_Slope", "iHyd_QLow", "iHyd_SPLow", "iHyd_Q2", "iHyd_SP2"]) as cursor:
@@ -142,48 +152,59 @@ def main(
             row[4] = (1000 * 9.80665) * slope * (row[3] * 0.028316846592)
             cursor.updateRow(row)
 
-    makeLayers(in_network)
+    make_layers(in_network)
 
     # add equations to XML
-    #if Qlow_eqtn is not None and Q2_eqtn is not None and region is not None:
-    #    xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn)
-
+    # if q_low_eqtn is not None and q2_eqtn is not None and region is not None:
+    #    xml_add_equations(in_network, region, q_low_eqtn, q2_eqtn)
 
 
 def remove_existing_output(in_network):
+    """
+    Checks if the hydrologic fields already exist, and if they do, deletes them for a clean slate
+    :param in_network: The input BRAT table network
+    :return:
+    """
     if "iHyd_QLow" in [field.name for field in arcpy.ListFields(in_network)]:    
         arcpy.DeleteField_management(in_network, "iHyd_Qlow")
     if "iHyd_Q2" in [field.name for field in arcpy.ListFields(in_network)]:
         arcpy.DeleteField_management(in_network, "iHyd_Q2")
     if "iHyd_SPLow" in [field.name for field in arcpy.ListFields(in_network)]:
         arcpy.DeleteField_management(in_network, "iHyd_SPLow")
-    if "iHyd_SP2" in [field.name for fields in arcpy.ListFields(in_network)]:
+    if "iHyd_SP2" in [field.name for field in arcpy.ListFields(in_network)]:
         arcpy.DeleteField_management(in_network, "iHyd_SP2")
 
 
-
-def makeLayers(inputNetwork):
+def make_layers(input_network):
     """
     Makes the layers for the modified output
-    :param inputNetwork: The path to the network that we'll make a layer from
+    :param input_network: The path to the network that we'll make a layer from
     :return:
     """
     arcpy.AddMessage("Making layers...")
-    intermediates_folder = os.path.dirname(inputNetwork)
+    intermediates_folder = os.path.dirname(input_network)
     hydrology_folder_name = find_available_num_prefix(intermediates_folder) + "_Hydrology"
     hydrology_folder = make_folder(intermediates_folder, hydrology_folder_name)
 
-    tribCodeFolder = os.path.dirname(os.path.abspath(__file__))
-    symbologyFolder = os.path.join(tribCodeFolder, 'BRATSymbology')
+    trib_code_folder = os.path.dirname(os.path.abspath(__file__))
+    symbology_folder = os.path.join(trib_code_folder, 'BRATSymbology')
 
-    highflowSymbology = os.path.join(symbologyFolder, "HighflowStreamPower.lyr")
-    baseflowSymbology = os.path.join(symbologyFolder, "BaseflowStreamPower.lyr")
+    highflow_symbology = os.path.join(symbology_folder, "HighflowStreamPower.lyr")
+    baseflow_symbology = os.path.join(symbology_folder, "BaseflowStreamPower.lyr")
 
-    make_layer(hydrology_folder, inputNetwork, "Highflow Stream Power", highflowSymbology, is_raster=False)
-    make_layer(hydrology_folder, inputNetwork, "Baseflow Stream Power", baseflowSymbology, is_raster=False)
+    make_layer(hydrology_folder, input_network, "Highflow Stream Power", highflow_symbology, is_raster=False)
+    make_layer(hydrology_folder, input_network, "Baseflow Stream Power", baseflow_symbology, is_raster=False)
 
 
-def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
+def xml_add_equations(in_network, region, q_low_eqtn, q2_eqtn):
+    """
+    Adds the equation strings into the project's XML document
+    :param in_network: The input BRAT table to add hydrologic values to
+    :param region: The optional region code to identify an already existing equation
+    :param q_low_eqtn: The Qlow equation to be calculated
+    :param q2_eqtn: The Q2 equation to be calculated
+    :return:
+    """
     # get project folder path from input network
     proj_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(in_network))))
 
@@ -203,27 +224,29 @@ def xml_add_equations(in_network, region, Qlow_eqtn, Q2_eqtn):
         raise Exception("Equations could not be added because parent element 'Intermediates' not found in XML.")
 
     # add regional curves element within intermediates
-    ihyd_element = xml_file.add_sub_element(intermediates_element, name = "Regional Curves", text= "Equations for estimating streamflow")   
+    ihyd_element = xml_file.add_sub_element(intermediates_element,
+                                            name="Regional Curves",
+                                            text="Equations for estimating streamflow")
 
     # add region element to XML if specified
     if region is not 0:
         xml_file.add_sub_element(ihyd_element, "Hydrological region", str(region))
 
     # add base flow equation to XML if specified or using generic
-    if Qlow_eqtn is None and region is 0:
-        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = "(DAsqm ** 0.2098) + 1")
-    elif Q2_eqtn is None and region is not 0:
-        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = "Not specified - see iHyd code.")
+    if q_low_eqtn is None and region is 0:
+        xml_file.add_sub_element(ihyd_element, name="Baseflow equation", text="(DAsqm ** 0.2098) + 1")
+    elif q2_eqtn is None and region is not 0:
+        xml_file.add_sub_element(ihyd_element, name="Baseflow equation", text="Not specified - see iHyd code.")
     else:
-        xml_file.add_sub_element(ihyd_element, name = "Baseflow equation", text = str(Qlow_eqtn))
+        xml_file.add_sub_element(ihyd_element, name="Baseflow equation", text=str(q_low_eqtn))
 
     # add high flow equation to XML if specified or using generic
-    if Q2_eqtn is None and region is 0:
-        xml_file.add_sub_element(ihyd_element, name = "Highflow equation", text = "14.7 * (DAsqm ** 0.815)")
-    elif Q2_eqtn is None and region is not 0:
-        xml_file.add_sub_element(ihyd_element, name = "Highflow equation", text = "Not specified - see iHyd code.")
+    if q2_eqtn is None and region is 0:
+        xml_file.add_sub_element(ihyd_element, name="Highflow equation", text="14.7 * (DAsqm ** 0.815)")
+    elif q2_eqtn is None and region is not 0:
+        xml_file.add_sub_element(ihyd_element, name="Highflow equation", text="Not specified - see iHyd code.")
     else:
-        xml_file.add_sub_element(ihyd_element,name = "Highflow equation", text = str(Q2_eqtn))
+        xml_file.add_sub_element(ihyd_element, name="Highflow equation", text=str(q2_eqtn))
     
     xml_file.write()
 

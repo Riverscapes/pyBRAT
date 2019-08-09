@@ -16,7 +16,8 @@ import os
 from StreamObjects import Cluster, BraidStream
 from SupportingFunctions import make_layer, make_folder, find_available_num_prefix
 
-cluster_id = 0 # Provides a consistent way to refer to clusters, that give more information that a UUID
+# Provides a consistent way to refer to clusters, that give more information that a UUID
+cluster_id = 0
 CLUSTER_FIELD_NAME = "ClusterID"
 
 
@@ -59,7 +60,6 @@ def main(input_network):
 def check_input(input_network):
     """
     Checks that the input given has the fields needed for the program
-
     Primarily updates field names to comply with 3.0.18 name standards. This makes sure that networks produced with old
     pyBRAT can still be given as input
     :param input_network: The network given
@@ -83,7 +83,9 @@ def rename_field(input_network, fields, old_name, new_name):
         if old_name in fields:
             arcpy.AlterField_management(input_network, old_name, new_field_name=new_name)
         else:
-            raise Exception("Field " + new_name + " is a required field in the input network to run the BRAT Braid Handler")
+            raise Exception("Field " +
+                            new_name +
+                            " is a required field in the input network to run the BRAT Braid Handler")
 
 
 def get_clusters_from_ids(input_network):
@@ -97,27 +99,28 @@ def get_clusters_from_ids(input_network):
     with arcpy.da.SearchCursor(input_network, fields) as cursor:
         for polyline, stream_cluster_id, drainage_area, seg_id, is_braided in cursor:
             if stream_cluster_id != -1 and is_braided == 1:
-                newStream = BraidStream(polyline, seg_id, drainage_area)
-                add_stream_to_clusters_with_id(newStream, stream_cluster_id, clusters)
+                new_stream = BraidStream(polyline, seg_id, drainage_area)
+                add_stream_to_clusters_with_id(new_stream, stream_cluster_id, clusters)
 
     return clusters
 
 
-def add_stream_to_clusters_with_id(new_stream, cluster_id, clusters):
+def add_stream_to_clusters_with_id(new_stream, new_cluster_id, clusters):
     """
     Adds clusters to the stream based on the
     :param new_stream: The stream we want to add
-    :param cluster_id: The cluster we want to add it to
+    :param new_cluster_id: The cluster we want to add it to
     :param clusters: The clusters we've already made
     :return: None
     """
     for cluster in clusters:
-        if cluster.id == cluster_id:
+        if cluster.id == new_cluster_id:
             cluster.add_stream(new_stream)
-            return #if we found the stream, we end now
+            # if we found the stream, we end now
+            return
 
     # If the for loop didn't return, add a new cluster with the new stream as the first stream
-    new_cluster = Cluster(cluster_id)
+    new_cluster = Cluster(new_cluster_id)
     new_cluster.add_stream(new_stream)
     clusters.append(new_cluster)
 
@@ -164,23 +167,27 @@ def add_stream_to_clusters(clusters, polyline, stream_id, drainage_area):
     Adds the stream to the list of clusters that we have
     :param clusters: A list of clusters
     :param polyline: The geoprocessing object that contains a bunch of points we need
-    :param stream_id: The stream's ID, which we'll use to compare against the original stream when it comes time to update it
+    :param stream_id: The stream's ID, which we'll use to compare against the original stream when we update it
     :param drainage_area: The stream's drainage area
     :return: None
     """
     new_stream = BraidStream(polyline, stream_id, drainage_area)
     connected_clusters = find_connected_clusters(clusters, new_stream)
 
-    if len(connected_clusters) == 0:  # If there's no connecting cluster, make a new cluster
-        global cluster_id # Allows us to modify cluster_id, so it always keeps count properly
+    # If there's no connecting cluster, make a new cluster
+    if len(connected_clusters) == 0:
+        # Allows us to modify cluster_id, so it always keeps count properly
+        global cluster_id
         new_cluster = Cluster(cluster_id)
         cluster_id += 1
         new_cluster.add_stream(new_stream)
         clusters.append(new_cluster)
-    elif len(connected_clusters) == 1: # if there's only one cluster that touches our stream, add the stream to that cluster
+    # if there's only one cluster that touches our stream, add the stream to that cluster
+    elif len(connected_clusters) == 1:
         i = connected_clusters[0]
         clusters[i].add_stream(new_stream)
-    elif len(connected_clusters) == 2: # If there are two clusters that we touch, we merge those two clusters, while also adding our new stream
+    # If there are two clusters that we touch, we merge those two clusters, while also adding our new stream
+    elif len(connected_clusters) == 2:
         cluster_one = clusters[connected_clusters[0]]
         cluster_two = clusters[connected_clusters[1]]
         new_cluster = merge_clusters(cluster_one, cluster_two, new_stream)
@@ -188,7 +195,6 @@ def add_stream_to_clusters(clusters, polyline, stream_id, drainage_area):
         clusters.remove(cluster_one)
         clusters.remove(cluster_two)
         clusters.append(new_cluster)
-
 
 
 def find_connected_clusters(clusters, new_stream):
@@ -249,7 +255,6 @@ def merge_clusters(cluster_one, cluster_two, new_stream):
     return new_cluster
 
 
-
 def handle_clusters(input_network, clusters):
     """
     Takes the clusters and applies the drainage area that we want to it
@@ -280,7 +285,8 @@ def add_cluster_id(input_network, clusters):
 
     with arcpy.da.UpdateCursor(input_network, ['ReachID', CLUSTER_FIELD_NAME, 'IsMultiCh']) as cursor:
         for row in cursor:
-            if row[2] == 1: # If the stream is braided. If it isn't, we don't care about its cluster id
+            # If the stream is braided. If it isn't, we don't care about its cluster id
+            if row[2] == 1:
                 for cluster in clusters:
                     if cluster.containsStream(row[0]):
                         row[1] = cluster.id
@@ -313,8 +319,10 @@ def update_stream_drainage_value(clusters, row, cursor):
 
     for cluster in clusters:
         if cluster.containsStream(row[0]):
-            if row[1] == 0: # if it's a side channel
-                row[2] = min(cluster.maxDA, sidechannel_da_value) # set the side channels DA to the placeholder value, or the highest value in the cluster (whichever is lower)
+            # if it's a side channel
+            if row[1] == 0:
+                # Set the side channels DA to the placeholder value, or the highest cluster value (whichever is lower)
+                row[2] = min(cluster.maxDA, sidechannel_da_value)
             else:
                 row[2] = cluster.maxDA
 
@@ -340,7 +348,7 @@ def make_layers(input_network):
     make_layer(braid_folder, input_network, "Anabranch Types", mainstem_symbology, is_raster=False)
 
 
-def update_multiCh(input_network):
+def update_multi_ch(input_network):
     """
     Updates fields if there are no named reaches in the cluster
     :param input_network: The path to the network that we'll make a layer from
@@ -350,9 +358,9 @@ def update_multiCh(input_network):
     ids.remove(-1)
     arcpy.MakeFeatureLayer_management(input_network, "network_lyr")
 
-    for id in ids:
+    for clusterId in ids:
 
-        query = """ "ClusterID" = %s """ %id
+        query = """ "ClusterID" = %s """ % clusterId
         arcpy.SelectLayerByAttribute_management("network_lyr", "NEW_SELECTION", query)
         count = arcpy.GetCount_management("network_lyr")
         ct = int(count.getOutput(0))
