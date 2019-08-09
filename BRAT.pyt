@@ -791,15 +791,15 @@ class Layer_Package_Generator_tool(object):
             parameterType="Optional",
             direction="Input")
 
-        #param2 = arcpy.Parameter(
-        #    displayName="Give a stream network to clip the layer package networks to",
-        #    name="clipping_network",
-        #    datatype="DEFeatureClass",
-        #    parameterType="Optional",
-        #    direction="Input")
-        #param2.filter.list = ["Polyline"]
+        param2 = arcpy.Parameter(
+            displayName="Give a stream network to clip the layer package networks to",
+            name="clipping_network",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input")
+        param2.filter.list = ["Polyline"]
 
-        return [param0, param1]#, param2]
+        return [param0, param1, param2]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
