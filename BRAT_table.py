@@ -86,7 +86,7 @@ def main(
     scratch = 'in_memory'
     #arcpy.env.workspace = scratch
     arcpy.env.overwriteOutput = True
-    arcpy.env.outputZFlag= "Disabled"
+    arcpy.env.outputZFlag = "Disabled"
     arcpy.env.outputMFlag = "Disabled"
     arcpy.CheckOutExtension("Spatial")
 
@@ -1362,7 +1362,7 @@ def handle_braids(seg_network_copy, canal, proj_path, find_clusters, perennial_n
         # if 'StreamName' is field then run the update_multiCh function
         fields = [f.name for f in arcpy.ListFields(seg_network_copy)]
         if 'StreamName' in fields:
-            BRAT_Braid_Handler.update_multiCh(seg_network_copy)
+            BRAT_Braid_Handler.update_multi_ch(seg_network_copy)
 
 
 def make_buffer_layers(buffers_folder, buffer_30m_symbology, buffer_100m_symbology):
