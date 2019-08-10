@@ -537,7 +537,7 @@ def check_inputs(inputs_folder, symbology_folder):
 
     if canals_folder is not None:
         canal_destinations = find_destinations(canals_folder)
-        make_input_layers(canal_destinations, "Canals", symbology_layer=canals_symbology, is_raster=False)
+        make_input_layers(canal_destinations, "Canals & Ditches", symbology_layer=canals_symbology, is_raster=False)
 
     # add land ownership layers to the project
     if land_ownership_folder is not None:
