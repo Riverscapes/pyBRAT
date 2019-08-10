@@ -2606,8 +2606,8 @@ def create_folder_structure(project_folder, summary_prods_folder):
     make_folder(project_folder, summary_prods_folder)
 
     ai_folder = os.path.join(summary_prods_folder, "AI")
-    # png_folder = os.path.join(summary_prods_folder, "PNG")
-    # pdf_folder = os.path.join(summary_prods_folder, "PDF")
+    #png_folder = os.path.join(summary_prods_folder, "PNG")
+    #pdf_folder = os.path.join(summary_prods_folder, "PDF")
     kmz_folder = os.path.join(summary_prods_folder, "KMZ")
     lpk_folder = os.path.join(summary_prods_folder, "LPK")
 
@@ -2648,19 +2648,27 @@ def copy_to_input_output_structure(folder_base, files):
     :param files: A list of files that we want to copy
     :return:
     """
-    output_folder = make_folder(folder_base, "Outputs")
-    inputs_folder = make_folder(folder_base, "Inputs")
-    intermed_folder = make_folder(folder_base, "Intermediates")
+    output_folder = os.path.join(folder_base, "Outputs")
+    inputs_folder = os.path.join(folder_base, "Inputs")
+    intermed_folder = os.path.join(folder_base, "Intermediates")
 
+    input_files  = []
+    intermediate_files = []
+    output_files = []
+    
     for copy_file in files:
         if "\\Inputs\\" in copy_file:
-            shutil.copy(copy_file, inputs_folder)
+            input_files.append(copy_file)
         elif "\\01_Intermediates\\" in copy_file:
-            shutil.copy(copy_file, intermed_folder)
+            intermediate_files.append(copy_file)
         elif "\\02_Analyses\\" in copy_file:
-            shutil.copy(copy_file, output_folder)
+            output_files.append(copy_file)
         else:
             shutil.copy(copy_file, folder_base)
+
+    copy_all_files(folder_base, inputs_folder, input_files)
+    copy_all_files(folder_base, intermed_folder, intermediate_files)
+    copy_all_files(folder_base, output_folder, output_files)
 
 
 def copy_all_files(summary_folder, new_folder, files):
