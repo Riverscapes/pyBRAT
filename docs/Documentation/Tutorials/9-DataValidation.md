@@ -9,11 +9,21 @@ After running the BRAT tool, it can sometimes be useful calculate additional met
 
 ## Running the Tool
 
-Running the tool is fairly simple. The tool takes three inputs:
-* The Conservation Restoration Model output network
-* An optional shapefile containing points that correspond to observed beaver dams
-* The name of the output
-  If not given a beaver dam shapefile, the tool will not produce the fields that rely on dams data. Be warned, the tool will snap the points of the beaver dam shapefile to the nearest reach, which will change the file given to it. If you want to retain the original position of the beaver dams, give the tool a copy of your shapefile.
+![BRAT Data Capture Validation tool]({{ site.baseurl }}/assets/images/BRAT_3X_Data_Capture_Validation.PNG)
+
+Figure 1: BRAT Data Capture Validation tool interface.
+
+The tool takes three inputs:
+
+- The Conservation Restoration Model output network
+- The name of the output
+- An optional shapefile containing points that correspond to observed beaver dams
+- An optional maximum drainage area threshold. 
+- If provided, this will limit snapping of dams along large streams to points within 5 meters of the network. The reason behind this is that we have found some of these dams to be located on side channels which are not represented in the NHD network. Limiting snapping on streams above the drainage threshold helps to minimize the chance that dams will be snapped to a reach where they do not actually occur.
+
+If not given a beaver dam shapefile, the tool will not produce the fields that rely on dams data. Be warned, the tool will snap the points of the beaver dam shapefile to the nearest reach, which will change the file given to it. If you want to retain the original position of the beaver dams, give the tool a copy of your shapefile.
+
+If a drainage area threshold is provided, snapping of dams along large streams (i.e., streams with drainage area above the given threshold) will be limited to points within 5 meters of the network (as opposed to 60 meters otherwise). The reason behind this is that we have found some of these dams to be located on side channels which are not represented in the NHD network. Limiting snapping on streams above the drainage threshold thus helps to minimize the chance that dams will be snapped to a reach where they do not actually occur.
 
 ## Output of the Tool
 The tool produces eight new fields. Three of these fields are reliant on the dams input. The fields are as follows:

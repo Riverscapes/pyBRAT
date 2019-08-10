@@ -10,6 +10,11 @@ After running the BRAT tool to model capacity, the conservation restoration tool
 ## Running the Tool
 
 Running the tool is fairly simple. The tool takes three inputs:
+
+![BRAT Conservation Restoration tool]({{ site.baseurl }}/assets/images/BRAT_3X_ConservationRestoration.PNG)
+
+Figure 1: BRAT Conservation Restoration tool interface.
+
 * The path to the BRAT project folder
 * The Combined Capacity Model output network
 * The name of the output

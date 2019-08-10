@@ -5,7 +5,9 @@ weight: 9
 
 After running the Vegetation Dam Capacity Model, you can run the Combined Dam Capacity Model tool.  This fuzzy inference system model predicts the maximum number of dams each reach could support based on 4 inputs: 1) the output of the vegetation dam capacity model 2) the low (base) flow stream power, 3) the high flow (Q2) stream power, and 4) the slope of the reach.  The model predicts dam capacity separately for historic vegetation dam capacity and existing vegetation dam capacity.
 
-![comb_fis]({{ site.baseurl }}/assets/images/comb_fis.PNG)
+![BRAT Combined Capacity FIS]({{ site.baseurl }}/assets/images/BRAT_3X_Comb_FIS.PNG)
+
+Figure 1: BRAT Combined Capacity Model tool interface.
 
 Inputs and Parameters:
 

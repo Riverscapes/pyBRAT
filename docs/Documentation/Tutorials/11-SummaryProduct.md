@@ -8,6 +8,10 @@ The Collect Summary Products tool is meant to be run after all other tools in th
 
 ## Running the Collect Summary Products tool
 
+ ![BRAT Collect Summary Products]({{site.baseurl}}/assets/images/BRAT_3X_SummaryProducts.PNG)
+
+Figure 1: BRAT Collect Summary Products tool interface.
+
 The required inputs for the Collect Summary Products tool include:
 
 * **Project Folder**: The BRAT project folder.

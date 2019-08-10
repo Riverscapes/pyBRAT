@@ -5,7 +5,9 @@ weight: 8
 
 The vegetation dam capacity model estimates the maximum number of dams each reach could support based solely on the streamside and riparian vegetation.  The model predicts dam capacity for both the historic vegetation and existing vegetation.
 
-![veg_fis]({{ site.baseurl }}/assets/images/veg_fis.PNG)
+![BRAT Vegetation FIS]({{ site.baseurl }}/assets/images/BRAT_3X_Veg_FIS.PNG)
+
+Figure 1: BRAT Vegetation Dam Capacity Model tool interface.
 
 Inputs and Parameters:
 

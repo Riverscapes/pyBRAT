@@ -12,6 +12,10 @@ Fortunately, layer packages do not share this weakness. They include the data so
 
 The LPG has two primary inputs: the output folder that the layer package should be based on and the name of the output layer package. An optional input is a clipping network. 
 
+![BRAT Layer Package Generator]({{ site.baseurl }}/assets/images/BRAT_3X_LPG.PNG)
+
+Figure 1: BRAT Layer Package Generator tool interface.
+
 #### Inputs
 
 * **Output folder**: BRAT automatically creates output folders, labelled "Output_01", "Output_02", etc. Layer Packages are meant to contain the outputs of only one run of BRAT. Choose which set of outputs you want to base your layer package off.

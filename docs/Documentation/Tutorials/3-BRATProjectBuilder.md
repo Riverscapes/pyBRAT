@@ -5,6 +5,14 @@ weight: 3
 
 The first step that involves actually running a BRAT tool is the BRAT Project Builder. This tool is meant to take all the inputs that the user wants to use and copies them into a folder structure for future use, as well as creating an XML file that will be updated in future tools.
 
+![BRAT Project Builder 1]({{ site.baseurl }}/assets/images/BRAT_3X_ProjectBuilder_1.PNG)
+
+![BRAT Project Builder 2]({{ site.baseurl }}/assets/images/BRAT_3X_ProjectBuilder_2.PNG)
+
+![BRAT Project Builder 3]({{ site.baseurl }}/assets/images/BRAT_3X_ProjectBuilder_2.PNG)
+
+Figure 1: BRAT Project Builder Interface.
+
 ### Required Inputs:
 
 - **Select Project Folder** - The path to a folder. This will be where the folder structure will be created.
