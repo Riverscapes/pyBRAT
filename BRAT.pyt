@@ -571,7 +571,7 @@ class Comb_FIS_tool(object):
             parameterType="Required",
             direction="Input")
 			
-        param3.value = "Combined_Capacity"
+        param3.value = "Combined_Capacity_Model"
         # param3.symbology = os.path.join(os.path.dirname(__file__), "Capacity.lyr")
 
         return [param0, param1, param2, param3]
@@ -631,7 +631,7 @@ class Conservation_Restoration_tool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        param2.value = "Conservation_Restoration"
+        param2.value = "Conservation_Restoration_Model"
 
         return [param0, param1, param2]
 
@@ -682,7 +682,7 @@ class Data_Capture_Validation_tool(object):
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        param1.value = "Data_Validation"
+        param1.value = "Data_Capture_Validation"
 
         param2 = arcpy.Parameter(
             displayName="Select beaver dam shape file",

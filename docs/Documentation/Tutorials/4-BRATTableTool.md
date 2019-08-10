@@ -5,10 +5,6 @@ weight: 4
 
 The BRAT Table tool will generate the attributes needed to run the other tools in the toolbox.
 
-![table_tool]({{ site.baseurl }}/assets/images/table_tool_new.PNG)
-
-Figure 1. The BRAT Table tool interface
-
 ### Required Inputs:
 
 - **Select Project Folder** - path to the BRAT project folder
