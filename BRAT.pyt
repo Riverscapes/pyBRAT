@@ -845,7 +845,7 @@ class Layer_Package_Generator_tool(object):
     def execute(self, p, messages):
         """The source code of the tool."""
         reload(Layer_Package_Generator)
-        Layer_Package_Generator.main(p[0].valueAsText, p[1].valueAsText,)#, p[2].valueAsText)
+        Layer_Package_Generator.main(p[0].valueAsText, p[1].valueAsText, p[2].valueAsText)
         return
 
 

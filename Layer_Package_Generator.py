@@ -15,7 +15,7 @@ from SupportingFunctions import find_folder, find_available_num_prefix, make_fol
 import re
 
 
-def main(output_folder, layer_package_name=None, clipping_network=None):
+def main(output_folder, layer_package_name, clipping_network):
     """
     Generates a layer package from a BRAT project
     :param output_folder: What output folder we want to use for our layer package
@@ -26,9 +26,11 @@ def main(output_folder, layer_package_name=None, clipping_network=None):
 
     arcpy.env.overwriteOutput = 'TRUE'
 
+    if layer_package_name == "None":
+	layer_package_name = None
     if clipping_network == "None":
-        clipping_network = None
-
+	clipping_network = None
+        
     if layer_package_name is None:
         if clipping_network is not None:
             layer_package_name = "LayerPackage_Clipped"
@@ -53,10 +55,10 @@ def main(output_folder, layer_package_name=None, clipping_network=None):
         arcpy.AddMessage("The error message thrown was the following:")
         arcpy.AddWarning(err)
 
-    if clipping_network:
+    if clipping_network is not None:
         brat_table_clip, network_clip, cons_rest_clip, valid_clip = \
             create_clipped_layers(output_folder, clipping_network, symbology_folder)
-        # create_clipped_layers(output_folder, clipping_network, symbology_folder)
+    
     make_layer_package(output_folder, intermediates_folder, analyses_folder,
                        inputs_folder, symbology_folder, layer_package_name, clipping_network)
 
@@ -789,7 +791,7 @@ def get_intermediates_layers(empty_group_layer, intermediates_folder, df, mxd, c
     if anthropogenic_metrics_folder:
         sorted_anthropogenic_layers = []
         wanted_anthropogenic_layers = []
-        existing_anthropogenic_layers = find_layers_in_folder(anthropogenic_metrics_folder)
+        existing_anthropogenic_layers = find_layers_in_folder(anthropogenic_metrics_folder, clipping_network)
 
     if clipping_network is not None:
         wanted_anthropogenic_layers.append(os.path.join(anthropogenic_metrics_folder,
@@ -907,7 +909,7 @@ def find_instance_layers(root_folder, clipping_network):
     return layers
 
 
-def find_dem_derivative(root_folder, dir_name):
+def find_dem_derivative(root_folder, dir_name, clipping_network=None):
     """
     Designed to look specifically for flow, slope, and hillshade layers
     :param root_folder: Where we look
@@ -917,11 +919,11 @@ def find_dem_derivative(root_folder, dir_name):
     layers = []
     for instance_folder in os.listdir(root_folder):
         instance_folder_path = os.path.join(os.path.join(root_folder, instance_folder), dir_name)
-        layers += find_layers_in_folder(instance_folder_path)
+        layers += find_layers_in_folder(instance_folder_path, clipping_network)
     return layers
 
 
-def find_layers_in_folder(folder_root, clipping_network=None):
+def find_layers_in_folder(folder_root, clipping_network):
     """
     Returns a list of all layers in a folder
     :param folder_root: Where we want to look
