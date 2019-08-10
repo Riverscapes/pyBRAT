@@ -633,7 +633,30 @@ class Conservation_Restoration_tool(object):
             direction="Input")
         param2.value = "Conservation_Restoration_Model"
 
-        return [param0, param1, param2]
+        param3 = arcpy.Parameter(
+            displayName="Surveyed beaver dams",
+            name="surveyed_dams",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input")
+
+        param4 = arcpy.Parameter(
+            displayName="Conservation areas shapefile",
+            name="conservation_areas",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input")
+        param4.filter.list = ["Polygon"]
+
+        param5 = arcpy.Parameter(
+            displayName="Conservation easements shapefile",
+            name="conservation_easements",
+            datatype="DEFeatureClass",
+            parameterType="Optional",
+            direction="Input")
+        param5.filter.list = ["Polygon"]
+
+        return [param0, param1, param2, param3, param4, param5]
 
     def isLicensed(self):
         """Set whether the tool is licensed to execute."""
@@ -655,7 +678,10 @@ class Conservation_Restoration_tool(object):
         reload(Conservation_Restoration)
         Conservation_Restoration.main(p[0].valueAsText,
                                       p[1].valueAsText,
-                                      p[2].valueAsText)
+                                      p[2].valueAsText,
+									  p[3].valueAsText,
+									  p[4].valueAsText,
+									  p[5].valueAsText)
         return
 
 class Data_Capture_Validation_tool(object):
