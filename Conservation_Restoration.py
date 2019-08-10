@@ -48,7 +48,7 @@ def main(proj_path, in_network, out_name, surveyed_dams=None, conservation_areas
     arcpy.AddField_management(out_network, "oPBRC_CR", "TEXT", "", "", 40)
     arcpy.AddField_management(out_network, "DamStrat", "TEXT", "", "", 60)
     arcpy.AddField_management(out_network, "ObsDam", "TEXT", "", "", 10)
-    arcpy.AddField_management(out_network, "ConsRest", "TEXT", "", "", 10)
+    arcpy.AddField_management(out_network, "ConsArea", "TEXT", "", "", 10)
     arcpy.AddField_management(out_network, "ConsEase", "TEXT", "", "", 10)
 
     # use old historic capacity field names if new ones not in combined capacity output
@@ -64,7 +64,7 @@ def main(proj_path, in_network, out_name, surveyed_dams=None, conservation_areas
 
     fields = ['oPBRC_UI', 'oPBRC_UD', 'oPBRC_CR', ovc_hpe, 'oVC_EX', occ_hpe, 'oCC_EX', 'iGeo_Slope', 'mCC_HisDep',
               'iPC_VlowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX',
-              'iPC_Canal', 'ObsDam', 'ConsRest', 'ConsEase']
+              'iPC_Canal', 'ObsDam', 'ConsArea', 'ConsEase']
 
     # add arbitrarily large value to avoid error
     if 'iPC_Canal' not in old_fields:
