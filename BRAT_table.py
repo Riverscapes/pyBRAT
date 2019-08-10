@@ -1304,7 +1304,7 @@ def make_layers(out_network, diversion_pts):
 
     if diversion_pts is not None:
         try:
-            make_layer(canal_folder, diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
+            make_layer(os.path.dirname(diversion_pts), diversion_pts, "Provisional Points of Diversion", pts_diversion_symbology, is_raster=False)
         except Exception as err:
             print err
             
