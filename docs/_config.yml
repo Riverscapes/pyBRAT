@@ -30,10 +30,11 @@ exclude:
   - LICENSE
   - README.md
   - _config.yml
+  - Gemfile*
 
-# Where our layouts and templates are stored
-layouts_dir:  src/_layouts
-includes_dir: src/_includes
+remote_theme: Riverscapes/riverscapes-jekyll-theme
+plugins:
+  - jekyll-remote-theme
 
 # These are theme settings that will be used to turn features on and off
 # They are not part of Jekyll, they are entirely custom.
