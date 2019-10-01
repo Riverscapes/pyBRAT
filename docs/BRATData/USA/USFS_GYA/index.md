@@ -5,7 +5,7 @@ weight: 5
 # Greater Yellowstone Area BRAT
 
 
-This report presents an application of the [Beaver Restoration Assessment Tool 3.1.00](https://github.com/Riverscapes/pyBRAT/releases/tag/3.1.00)  (BRAT; http://brat.riverscapes.xyz/) a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams of the Greater Yellowstone Area (GYA) outside of Montana. The Montana portion is currently being run by Montana Natural Heritage Program with Bureau of Land Management funding.
+This report presents an application of the [Beaver Restoration Assessment Tool 3.1.00](https://github.com/Riverscapes/pyBRAT/releases/tag/3.1.00)  (BRAT; [brat.riverscapes.xyz](http://brat.riverscapes.xyz/)) a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams of the Greater Yellowstone Area (GYA) outside of Montana. The Montana portion is currently being run by Montana Natural Heritage Program with Bureau of Land Management funding.
 
 The backbone of BRAT is a capacity model developed to assess the upper limits of riverscapes (e.g., stream networks) to support beaver dam-building activities. The capacity model produces both an estimate of dam density (i.e. dams per length of stream) and an approximate count of how many dams the conditions in and surrounding a reach could support. Both existing and historic capacity were estimated using freely available spatial datasets to evaluate seven lines of evidence: 
 * a reliable water source,
