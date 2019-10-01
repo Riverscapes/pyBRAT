@@ -26,7 +26,7 @@ Ultimately, we hope the data and model results provided through this project wil
 
 
 
-### Project Extent by Administrative Region
+### Project Extent
 
 <iframe src="https://www.google.com/maps/d/embed?mid=1LSfus_FgcgOK8wfUh1ci2QeCt_GhvSYP" width="640" height="480"></iframe>
 
