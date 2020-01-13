@@ -3,7 +3,7 @@ title: Computer Setup & Installation
 weight: 2
 ---
 ## Python Prerequisites
-In order to use the [Beaver Restoration Assessment Tool (BRAT) Toolbox v 3](https://github.com/Riverscapes/pyBRAT/releases/latest), your computer needs to have ArcGIS version 10.4 or later with the Spatial Analyst Extension as well as the scikit-fuzzy python module. Don't panic, even if you've never used a command line, you can follow these instructions. The video will show you how to install a few dependencies ( [NumPy_mkl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy) and  [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy)) that BRAT uses. The video below provides detailed instructions on installing the [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy) python module.
+In order to use the [Beaver Restoration Assessment Tool (BRAT) Toolbox v 3](https://github.com/Riverscapes/pyBRAT/releases/latest), your computer needs to have ArcGIS version 10.4 or later with the Spatial Analyst Extension as well as the scikit-fuzzy python module and xlsxwriter python module. Don't panic, even if you've never used a command line, you can follow these instructions. The video will show you how to install a few dependencies ( [NumPy_mkl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy) and  [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy)) that BRAT uses. The video below provides detailed instructions on installing the [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy) python module. The same procedure as scikit-fuzzy can be followed for installing the required [xlsxwriter](https://xlsxwriter.readthedocs.io/index.html) module.
 
 **NOTE: The following video contains some information that is out of date. NumPy_mkl is no longer required to run BRAT**
 
@@ -12,6 +12,7 @@ In order to use the [Beaver Restoration Assessment Tool (BRAT) Toolbox v 3](http
 You can download the software menitoned in the video from these links:
 - [PipInstall](https://pip.pypa.io/en/stable/installing/) - only if you don't have it (usually installs with ArcGIS 10.4 or later)
 - To install the [scikit-fuzzy module](https://pypi.python.org/pypi/scikit-fuzzy), navigate in a command prompt to where Pip is located (e.g.  `c:\Python27\ArcGIS10.4\Scripts\`) and at command prompt type: `pip install scikit-fuzzy`. Note, the beauty of pip (Python Install Package) is that you don't have to go download these files, you just run ip and it downloads and installs them for you. 
+- To install the [xlsxwriter module](https://xlsxwriter.readthedocs.io/index.html), navigate in a command prompt to where Pip is located (e.g.  `c:\Python27\ArcGIS10.4\Scripts\`) and at command prompt type: `pip install xlsxwriter`. 
 
 ## Installing BRAT
 You can download the latest version of BRAT [here](https://github.com/Riverscapes/pyBRAT/releases/latest). The video below walks you through the install process.
