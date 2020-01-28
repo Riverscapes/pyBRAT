@@ -12,7 +12,7 @@ BRAT has been run by [ETAL](http://etal.joewheaton.org/) for all of [Utah]({{ si
 As of 2019, these are the areas where BRAT has been run by the [ETAL group](http://etal.joewheaton.org) or collaborators: 
 
 <div align="center">
-	<a href=" {{ site.baseurl }}/assets/images/BRATrun_600.png"><img src=" {{ site.baseurl }}/assets/images/BRATrun.png"></a>
+	<a href=" {{ site.baseurl }}/assets/images/BRATrun.png"><img src=" {{ site.baseurl }}/assets/images/BRATrun_600.png"></a>
 </div>
 ------
 <div align="center">
