@@ -9,6 +9,11 @@ BRAT has been run by [ETAL](http://etal.joewheaton.org/) for all of [Utah]({{ si
 [Oregon BRAT Data](https://usu.box.com/s/qee873uj2tnt1yzxqxdzn1fuf8gmi5ur), and
 [Washington BRAT Data](https://usu.box.com/v/Yakama-Nation-BRAT-Deliverable)
 
+As of 2019, these are the areas where BRAT has been run by the [ETAL group](http://etal.joewheaton.org) or collaborators: 
+
+<div align="center">
+	<a href=" {{ site.baseurl }}/assets/images/BRATrun_600.png"><img src=" {{ site.baseurl }}/assets/images/BRATrun.png"></a>
+</div>
 ------
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/assets/images/favicons/favicon-16x16.png">  Back to BRAT Home </a>  
