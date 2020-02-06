@@ -55,7 +55,7 @@ If you need base and high flow estimations for your stream network, regional reg
 
 ## Optional Constraints and Opportunities Model Inputs
 
-The requisite inputs to the constraints and opportunities model include:
+The requisite inputs to the Constraints and Opportunities Model include:
 - Approximation of the valley bottom
 - Detailed roads layer
 - Railroads layer
