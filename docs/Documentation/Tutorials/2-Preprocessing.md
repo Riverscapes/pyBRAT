@@ -39,7 +39,7 @@ Table 1. Suitability of LANDFIRE Land Cover as Dam-building Material
 
 ## Land Use Raster
 
-**Optional and only necessary if running the conflict and management models** 
+**Optional and only necessary if running the constraints and opportunities model** 
 
 If using the Landfire existing vegetation type raster (e.g., 'us_140evt) to represent land use this pre-processing step can either be carried out manually or by running the 'LANDFIRE_LUCode.py' script which can found in the pyBRAT 'SupportingTools' folder
 
