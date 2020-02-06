@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------------------
-# Name:        Conservation Restoration
-# Purpose:     Adds the conservation and restoration model to the BRAT capacity output
+# Name:        Constraints and Opportunities Model
+# Purpose:     Adds the constraints and opportunities model to the BRAT capacity output
 #
 # Author:      Sara Bangen
 #
