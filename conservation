@@ -5,7 +5,7 @@ import BRAT_table
 import iHyd
 import Veg_FIS
 import Comb_FIS
-import Conservation_Restoration
+import Constraints_Opportunities
 import BRAT_Braid_Handler
 import Data_Capture_Validation
 import Drainage_Area_Check
@@ -22,7 +22,6 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-                        Conservation_Restoration_tool, Data_Capture_Validation_tool, Drainage_Area_Check_tool,
                         Layer_Package_Generator_tool, Collect_Summary_Products_tool]
 
 class BRAT_project_tool(object):
@@ -601,11 +600,11 @@ class Comb_FIS_tool(object):
         return
 
 
-class Conservation_Restoration_tool(object):
+class Constraints_Opportunities_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 6. BRAT Conservation and Restoration Model"
-        self.description = "For each stream segment, assigns a conservation and restoration class based on existing dam capacity, historic dam capacity, and human-beaver conflict potential score"
+        self.label = "Step 6. BRAT Constraints and Opportunities Model"
+        self.description = "For each stream segment, assigns limiting factors to dam building potential, risk of beaver damage to infrastructure and dam building beaver restoration opportunities based on capacity, departure from historic capacity, risk of beaver damage and land use intensity scores."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
@@ -626,12 +625,12 @@ class Conservation_Restoration_tool(object):
         param1.filter.list = ["Polyline"]
 
         param2 = arcpy.Parameter(
-            displayName="Name the conservation restoration output",
+            displayName="Name the constraints and opportunities output",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        param2.value = "Conservation_Restoration_Model"
+        param2.value = "Constraints_Opportunities_Model"
 
         param3 = arcpy.Parameter(
             displayName="Surveyed beaver dams",
@@ -675,8 +674,8 @@ class Conservation_Restoration_tool(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        reload(Conservation_Restoration)
-        Conservation_Restoration.main(p[0].valueAsText,
+        reload(Constraints_Opportunities)
+        Constraints_Opportunities.main(p[0].valueAsText,
                                       p[1].valueAsText,
                                       p[2].valueAsText,
 									  p[3].valueAsText,
@@ -695,7 +694,7 @@ class Data_Capture_Validation_tool(object):
         """Define parameter definitions"""
 
         param0 = arcpy.Parameter(
-            displayName="Select conservation restoration model output network",
+            displayName="Select constraints and opportunities model output network",
             name="in_network",
             datatype="DEFeatureClass",
             parameterType="Required",
