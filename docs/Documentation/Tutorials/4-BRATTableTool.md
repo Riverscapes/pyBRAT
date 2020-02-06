@@ -25,7 +25,7 @@ Figure 1: The BRAT Table tool interface.
 - **Perennial Network** - A perennial network can be given to populate the `IsPeren` field. If a stream network is given here, only perennial streams are used to find multichannel sections of the stream network. This may make it easier to edit the output for the [Braid Handler](/Documentation/Tutorials/4.2-BRATBraidHandler).
 - **Short Description for Run** - Write a short (less than 100 characters, including spaces) description for the BRAT run to be included in the project XML file. 
 
-**The following inputs are optional but required to run the conflict potential and management models**
+**The following inputs are optional but required to run the Constraints and Opportunities Model**
 
 - **Input Valley Bottom Polygon** - select a valley bottom polygon that is associated with the input stream network
 - **Input Road Layer Feature Class** - select a feature class representing all roads within the study area
