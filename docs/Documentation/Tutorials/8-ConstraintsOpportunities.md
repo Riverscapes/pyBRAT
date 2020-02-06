@@ -32,17 +32,17 @@ The optional **beaver dam management strategies map** requires the following add
 The tool produces seven new fields. Three of these fields come from the optional beaver dam management strategies map. The fields are as follows:
 * **Risk of beaver damage to infrastructure** (`oPBRC_UI`): Areas beavers can build dams but could have undesirable impacts based on distance to infrastructure, land use intensity, and estimated beaver dam capacity. Categories include:
   * *No/Negligible Risk* 
-    * Nearest infrastructure is at least 300 meters away
+    * Nearest infrastructure is more than 300 meters away
     * Existing dam capacity is zero
   * *Minor Risk* 
-    * Nearest infrastructure is at least 100 meters away and existing dam capacity is less than 5 dams/km 
-    * Nearest infrastructure is 100 - 300 meters away or landuse is agricultural or urban, and existing dam capacity is not none
+    * Nearest infrastructure is within 100 meters and existing dam capacity is more than zero but less than 5 dams/km 
+    * Nearest infrastructure is 100 - 300 meters away or landuse is agricultural, and existing dam capacity is greater than 0 dams/km
   * *Considerable Risk*
-    * Nearest infrastructure is within 30 meters or landuse is high but existing dam capacity is less than 5 dams/km
+    * Nearest infrastructure is within 30 meters or land use is urban, and existing dam capacity is more than 0 but less than 5 dams/km
     * Nearest infrastructure is within 100 meters and existing dam capacity is at least 5 dams/km
   * *Major Risk* 
     * The reach is on a canal
-    * Nearest infrastructure is within 30 meters or land use intensity is high, and existing dam capacity is at least 5 dams/km
+    * Nearest infrastructure is within 30 meters or land use is urban, and existing dam capacity is at least 5 dams/km
 * **Limiting factors to dam building potential** (`oPBRC_UI`): Identifies reasons for unsuitable or limited-dam building opportunities, including:
   * *Naturally Vegetation Limited* - historic and existing vegetation capacity are both zero
   * *Slope Limited* - slope is greater than 23%
