@@ -53,9 +53,9 @@ If you need base and high flow estimations for your stream network, regional reg
 - Baseflow regional regression equations (e.g. PQ80 for month with lowest flows)
 - Highflow regional regression equations (e.g. Q2 - 2 year recurrence interval peak flow)
 
-## Potential Conflict Model Inputs
+## Optional Constraints and Opportunities Model Inputs
 
-The requisite inputs to the potential conflict model include:
+The requisite inputs to the constraints and opportunities model include:
 - Approximation of the valley bottom
 - Detailed roads layer
 - Railroads layer
