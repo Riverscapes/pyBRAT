@@ -30,7 +30,7 @@ Figure 1: BRAT Project Builder Interface.
 - **Perennial Streams** - If you want use perennial streams, add them here.
 - **Input Land Ownership Polygons (optional)** - If you want to know land ownership along your network and distance to private land, add all land ownership shapefiles here.
 
-**The following inputs are optional but required to run the conflict potential and management models**
+**The following inputs are optional but required to run the Constraints and Opportunities Model**
 
 - **Input Valley Bottom Polygon** - Add all valley bottom polygons that you want to use in your BRAT runs.
 - **Input Road Layer Feature Class** - Add all road shapefiles that you want to use in your BRAT runs.
