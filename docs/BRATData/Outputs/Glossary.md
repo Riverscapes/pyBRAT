@@ -194,37 +194,37 @@ These are values that are presently generated and used by the latest version of 
 **oPBRC_UI-**  Management output that outlines the unsuitable or limited beaver dam opportunities. Identifies the limiting factor that is limiting the reach from optimal beaver dam construction.
 
 - Field Type: "String"
-- Generation Method: Conservation and Restoration tool
+- Generation Method: Constraints and Opportunities tool
 
 **oPBRC_UD-**  Management output that outlines areas beavers can build dams, but proximity to anthropogenic infrastructure or high land use intensity could pose a threat to long-term persistence and tolerance of beaver dams.
 
 - Field Type: "String"
-- Generation Method: Conservation and Restoration tool
+- Generation Method: Constraints and Opportunities tool
 
-**oPBRC_CR-** Possible beaver dam conservation/restoration opportunities that can be used for concentration of efforts made by management. This is subset into those reaches that are defined as a "oPBC_UI" score of "Negligible Risk" and "Minor Risk" in order to further aid in possible reaches for management to focus their efforts on in order to get the most bang for their buck.
+**oPBRC_CR-** Dam-building beaver restoration opportunities with categories describe levels of effort required for establishing beaver dams on the landscape. This is subset into those reaches that are defined as a "oPBC_UI" score of "Negligible Risk" and "Minor Risk" in order to further aid in possible reaches for management to focus their efforts on in order to get the most bang for their buck.
 
 - Field Type: "String"
-- Generation Method: Conservation and Restoration tool
+- Generation Method: Constraints and Opportunities tool
 
 **ConsAreas-** Binary "yes" or "no" designating whether a reach occurs within a conservation or protected area.
 
 * Field Type: "String"
-* Generation Method: Conservation and Restoration tool
+* Generation Method: Constraints and Opportunities tool
 
 **ConsEase-** Binary "yes" or "no" designating whether a reach occurs within a conservation easement.
 
 - Field Type: "String"
-- Generation Method: Conservation and Restoration tool
+- Generation Method: Constraints and Opportunities tool
 
 **ObsDams-** Binary "yes" or "no" designating whether surveyed dams occurred along a reach. Dams within 60 meters of the NHD are snapped to the network for this field.
 
 - Field Type: "String"
-- Generation Method: Conservation and Restoration tool
+- Generation Method: Constraints and Opportunities tool
 
 **DamStrat-** Management strategies to promote dam building based primarily on locations of surveyed dams, conservation/protected areas and conservation easements, and existing dam building capacity. 
 
 * Field Type: "String"
-* Generation Method: Conservation and Restoration tool
+* Generation Method: Constraints and Opportunities tool
 
 **e_DamCT-** Number of surveyed beaver dams snapped to a reach.
 
@@ -241,7 +241,7 @@ These are values that are presently generated and used by the latest version of 
 - Field Type: "Double"
 - Generation Method: Data Capture Validation tool
 
-**ConsVRest-** Current beaver dam management strategies based on intrinsic restoration/conservatio opportunities and surveyed beaver dam capacity. Reaches with at least 25% of predicted capacity already occupied by dams are classified as "Immediate - Beaver Conservation" areas whereas those with less than 25% of capacity occupied are classified as "Immediate - Beaver Translocation".
+**ConsVRest-** Current beaver dam management strategies based on intrinsic restoration/conservation opportunities and surveyed beaver dam capacity. Reaches with at least 25% of predicted capacity already occupied by dams are classified as "Immediate - Beaver Conservation" areas whereas those with less than 25% of capacity occupied are classified as "Immediate - Beaver Translocation".
 
 - Field Type: "String"
 - Generation Method: Data Capture Validation tool
