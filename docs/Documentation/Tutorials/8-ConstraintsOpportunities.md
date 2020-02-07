@@ -7,9 +7,6 @@ weight: 10
 
 After running the BRAT tool to model capacity, the Constraints and Opportunities Model can be run to identify limiting factors to dam building potential, risk of beaver damage to infrastructure and dam building beaver restoration opportunities based on capacity, departure from historic capacity, risk of beaver damage and land use intensity scores.
 
-## Tool Description
-For each stream segment, assigns limiting factors to dam building potential, risk of beaver damage to infrastructure and dam building beaver restoration opportunities based on capacity, departure from historic capacity, risk of beaver damage and land use intensity scores.
-
 ## Running the Tool
 
 Running the tool is fairly simple. The tool takes three inputs:
