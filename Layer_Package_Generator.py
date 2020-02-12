@@ -391,8 +391,8 @@ def check_analyses(analyses_folder, symbology_folder):
                          symbology_folder, "UnsuitableorLimitedDamBuildingOpportunities.lyr", "oPBRC_UD")
     check_analyses_layer(analyses_folder, management_folder, "Risk of Undesirable Dams",
                          symbology_folder, "RiskofUndesirableDams.lyr", "oPBRC_UI")
-    check_analyses_layer(analyses_folder, management_folder, "Restoration or Conservation Opportunities",
-                         symbology_folder, "RestorationorConservationOpportunities.lyr", "oPBRC_CR")
+    check_analyses_layer(analyses_folder, management_folder, "Beaver Dam Constraints and Opportunities",
+                         symbology_folder, "BeaverDamConstraintsandOpportunities.lyr", "oPBRC_CR")
 
 
 def check_analyses_layer(analyses_folder, layer_base_folder, layer_name, symbology_folder,

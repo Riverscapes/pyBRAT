@@ -303,13 +303,13 @@ def make_layers(out_network):
     strategy_map_symbology = os.path.join(symbology_folder, "StrategiestoPromoteDamBuilding.lyr")
     limitations_dams_symbology = os.path.join(symbology_folder, "UnsuitableorLimitedDamBuildingOpportunities.lyr")
     undesirable_dams_symbology = os.path.join(symbology_folder, "RiskofUndesirableDams.lyr")
-    conservation_restoration_symbology = os.path.join(symbology_folder, "RestorationorConservationOpportunities.lyr")
+    conservation_restoration_symbology = os.path.join(symbology_folder, "BeaverDamConstraintsandOpportunities.lyr")
     
     make_layer(output_folder, out_network, "Unsuitable or Limited Dam Building Opportunities",
                limitations_dams_symbology, is_raster=False, symbology_field='oPBRC_UD')
     make_layer(output_folder, out_network, "Risk of Undesirable Dams",
                undesirable_dams_symbology, is_raster=False, symbology_field='oPBRC_UI')
-    make_layer(output_folder, out_network, "Restoration or Conservation Opportunities",
+    make_layer(output_folder, out_network, "Beaver Dam Constraints and Opportunities",
                conservation_restoration_symbology, is_raster=False, symbology_field='oPBRC_CR')
 
     # only try making strategies map layer if 'DamStrat' in fields
