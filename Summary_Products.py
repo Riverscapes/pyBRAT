@@ -162,6 +162,11 @@ def write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams
         write_electivity_worksheet(electivity_worksheet, stream_network, watershed_name, workbook)
     else:
         arcpy.AddWarning("Electivity index worksheet could not be built because e_DamCt not in fields")
+    if 'Conf_Ct' in fields:
+        risk_validation_worksheet = workbook.add_worksheet("Risk Validation")
+        write_risk_validation_worksheet(risk_validation_worksheet, stream_network, watershed_name, workbook)
+    else:
+        arcpy.AddMessage("Risk validation worksheet could bit be built because Conf_Ct not in fields")
 
 
 # Maggie's code
@@ -2229,6 +2234,193 @@ def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbo
     worksheet.write(row, col, "=(F6/$F$8) / E6", cell_format2)
     row += 1
     worksheet.write(row, col, "=(F7/$F$8) / E7", cell_format2)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format2)
+
+
+def write_risk_validation_worksheet(risk_validation_worksheet, stream_network, watershed_name, workbook)
+    # Formatting
+    worksheet.set_column('A:A', column_calc(20, watershed_name))
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
+    worksheet.set_column('D:D', 20)
+    worksheet.set_column('E:E', 22)
+    worksheet.set_column('F:F', 45)
+    worksheet.set_column('G:G', 40)
+    worksheet.set_column('H:H', 40)
+    worksheet.set_column('I:I', 15)
+    header_format = workbook.add_format()
+    header_format.set_align('center')
+    header_format.set_bold()
+    worksheet.set_row(0, None, header_format)
+    worksheet.set_row(1, None, header_format)
+    percent_format = workbook.add_format({'num_format': '0.00%'})
+    percent_format.set_align('right')
+    percent1 = worksheet.set_column('E:E', 22, percent_format)
+    percent2 = worksheet.set_column('H:H', 40, percent_format)
+    color = workbook.add_format()
+    color.set_bg_color('C0C0C0')
+    cell_format1 = workbook.add_format()
+    cell_format1.set_num_format(0x03)
+    cell_format1.set_align('right')
+    cell_format2 = workbook.add_format()
+    cell_format2.set_num_format('0.0000')
+    cell_format2.set_align('right')
+
+    # Create Column Labels
+    row = 0
+    col = 0
+    worksheet.write(row, col, watershed_name)
+    row += 1
+    worksheet.write(row, col, "Segment Type")
+    col += 1
+    worksheet.write(row, col, "Stream Length (m)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (km)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (mi)")
+    col += 1
+    worksheet.write(row, col, "% of Drainage Network")
+    col += 1
+    worksheet.write(row, col, "Known Human-Beaver Dam Conflict Incidents (#)")
+    col += 1
+    worksheet.write(row, col, "Average Density of Incidents (#/Km)")
+    col += 1
+    worksheet.write(row, col, "% Total Incidents")
+    col += 1
+    worksheet.write(row, col, "Electivity Index")
+
+    # Create Row Labels
+    row = 2
+    col = 0
+    worksheet.write(row, col, "Negligible Risk")
+    row += 1
+    worksheet.write(row, col, "Minor Risk")
+    row += 1
+    worksheet.write(row, col, "Considerable Risk")
+    row += 1
+    worksheet.write(row, col, "Major Risk")
+
+    # Column B (Stream Length Meters) 
+    row = 2
+    col = 1
+    worksheet.write(row, col, "=C3*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C4*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C5*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C6*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C7*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C8*1000", cell_format1)
+
+    # Column C (Stream Length Kilometers) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    row = 2
+    col = 2
+    worksheet.write(row, col, "='Undesirable Dams'!B3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!B4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!B5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!B6", cell_format1)
+
+
+    # Column D (Stream Length Miles) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    row = 2
+    col = 3
+    worksheet.write(row, col, "='Undesirable Dams'!C3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!C4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!C5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!C6", cell_format1)
+
+    # Column E (Percent of Drainage Network) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    row = 2
+    col = 4
+    worksheet.write(row, col, "='Undesirable Dams'!D3", percent1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!D4", percent1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!D5", percent1)
+    row += 1
+    worksheet.write(row, col, "='Undesirable Dams'!D6", percent1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
+
+    # Column F (Number of Known conflict Incidents)
+    negligible = 0.0
+    minor = 0.0
+    considerable = 0.0
+    major = 0.0
+
+    split_input = stream_network.split(";")
+    fields = ['oPBRC_UI', 'Conf_Ct']
+    for streams in split_input:
+        with arcpy.da.SearchCursor(streams, fields) as cursor:
+            for risk, conflicts in cursor:
+                if risk == "Negligible Risk":
+                    none += int(conflicts)
+                elif risk == "Minor Risk":
+                    minor += int(conflicts)
+                elif risk == "Considerable Risk":
+                    considerable += int(conflicts)
+                elif risk == "Major Risk":
+                    major += int(conflicts)
+                else:
+                    pass
+    row = 2
+    col = 5
+    worksheet.write(row, col, negligible, cell_format1)
+    row += 1
+    worksheet.write(row, col, minor, cell_format1)
+    row += 1
+    worksheet.write(row, col, considerable, cell_format1)
+    row += 1
+    worksheet.write(row, col, major, cell_format1)
+    row += 1
+    worksheet.write(row, col, "=SUM(F3:F6)", cell_format1)
+
+    # Column G (Density of Known Conflict Incidents)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=F3/C3", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F4/C4", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F5/C5", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F6/C6", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F7/C7", cell_format2)
+
+    # Column H (Percent of Total Conflicts)
+    row = 2
+    col = 7
+    worksheet.write(row, col, "=F3/$F$7", percent2)
+    row += 1
+    worksheet.write(row, col, "=F4/$F$7", percent2)
+    row += 1
+    worksheet.write(row, col, "=F5/$F$7", percent2)
+    row += 1
+    worksheet.write(row, col, "=F6/$F$7", percent2)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format2)
+
+    # Column K (Electivity Index)
+    row = 2
+    col = 8
+    worksheet.write(row, col, "=(F3/C3)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=(F4/C4)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=(F5/C5)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=(F6/C6)", cell_format2)
     row += 1
     worksheet.write(row, col, "N/A", cell_format2)
 
