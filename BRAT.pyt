@@ -7,7 +7,8 @@ import Veg_FIS
 import Comb_FIS
 import Constraints_Opportunities
 import BRAT_Braid_Handler
-import Data_Capture_Validation
+import Capacity_Validation
+import Risk_Validation
 import Drainage_Area_Check
 import StreamObjects
 import Layer_Package_Generator
@@ -22,8 +23,8 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [BRAT_project_tool, BRAT_table_tool, BRAT_braid_handler, iHyd_tool, Veg_FIS_tool, Comb_FIS_tool,
-                        Constraints_Opportunities_tool, Data_Capture_Validation_tool, Drainage_Area_Check_tool,
-                        Layer_Package_Generator_tool, Collect_Summary_Products_tool]
+                        Constraints_Opportunities_tool, Capacity_Validation_tool, Risk_Validation_tool,
+						Drainage_Area_Check_tool, Layer_Package_Generator_tool, Collect_Summary_Products_tool]
 
 class BRAT_project_tool(object):
     def __init__(self):
@@ -684,10 +685,10 @@ class Constraints_Opportunities_tool(object):
                                       p[5].valueAsText)
         return
 
-class Data_Capture_Validation_tool(object):
+class Capacity_Validation_tool(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Step 7. Data Capture Validation (Optional)"
+        self.label = "Step 7. Capacity Model Validation (Optional)"
         self.description = "Tests the results of BRAT against data on beaver dam sites"
         self.canRunInBackground = False
 
@@ -703,12 +704,12 @@ class Data_Capture_Validation_tool(object):
         param0.filter.list = ["Polyline"]
 
         param1 = arcpy.Parameter(
-            displayName="Name the data validation output",
+            displayName="Name the capacity model validation output",
             name="out_name",
             datatype="GPString",
             parameterType="Required",
             direction="Input")
-        param1.value = "Data_Capture_Validation"
+        param1.value = "Capacity_Validation"
 
         param2 = arcpy.Parameter(
             displayName="Select beaver dam shape file",
@@ -743,8 +744,75 @@ class Data_Capture_Validation_tool(object):
 
     def execute(self, p, messages):
         """The source code of the tool."""
-        reload(Data_Capture_Validation)
-        Data_Capture_Validation.main(p[0].valueAsText,
+        reload(Capacity_Validation)
+        Capacity_Validation.main(p[0].valueAsText,
+                                     p[1].valueAsText,
+                                     p[2].valueAsText,
+									 p[3].valueAsText)
+
+
+class Risk_Validation_tool(object):
+    def __init__(self):
+        """Define the tool (tool name is the name of the class)."""
+        self.label = "Step 8. Risk Model Validation (Optional)"
+        self.description = "Tests the results of BRAT risk against known sites of human-beaver dam conflict"
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+
+        param0 = arcpy.Parameter(
+            displayName="Select constraints and opportunities model output network",
+            name="in_network",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+        param0.filter.list = ["Polyline"]
+
+        param1 = arcpy.Parameter(
+            displayName="Name the risk model validation output",
+            name="out_name",
+            datatype="GPString",
+            parameterType="Required",
+            direction="Input")
+        param1.value = "Risk_Validation"
+
+        param2 = arcpy.Parameter(
+            displayName="Select shapefile with known human-beaver dam conflict sites",
+            name="dams",
+            datatype="DEFeatureClass",
+            parameterType="Required",
+            direction="Input")
+        param2.filter.list = ["Points"]
+
+        param3 = arcpy.Parameter(
+            displayName="Maximum DA threshold (in square kilometers)",
+            name="DA_threshold",
+            datatype="GPDouble",
+            parameterType="Optional",
+            direction="Input")
+
+        return [param0, param1, param2, param3]
+
+    def isLicensed(self):
+        """Set whether the tool is licensed to execute."""
+        return True
+
+    def updateParameters(self, parameters):
+        """Modify the values and properties of parameters before internal
+        validation is performed.  This method is called whenever a parameter
+        has been changed."""
+        return
+
+    def updateMessages(self, parameters):
+        """Modify the messages created by internal validation for each tool
+        parameter.  This method is called after internal validation."""
+        return
+
+    def execute(self, p, messages):
+        """The source code of the tool."""
+        reload(Risk_Validation)
+        Risk_Validation.main(p[0].valueAsText,
                                      p[1].valueAsText,
                                      p[2].valueAsText,
 									 p[3].valueAsText)
