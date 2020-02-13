@@ -140,11 +140,12 @@ def write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams
         unsuitable_worksheet = workbook.add_worksheet("Unsuitable or Limited")
         write_unsuitable_worksheet(unsuitable_worksheet, stream_network, watershed_name, workbook)
     else:
-        arcpy.AddWarning(
-            "Unsuitable/limited dam opportunities worksheet could not be built because oPBRC_UD not in fields")
+        arcpy.AddWarning("Unsuitable/limited dam opportunities worksheet could not be built because oPBRC_UD not in fields")
     if 'oPBRC_UI' in fields:
         risk_worksheet = workbook.add_worksheet("Undesirable Dams")
         write_risk_worksheet(risk_worksheet, stream_network, watershed_name, workbook)
+        risk_capacity_worksheet = workbook.add_worksheet("Risk By Capacity")
+        write_risk_capacity_worksheet(risk_capacity_worksheet, stream_network, watershed_name, workbook)
     else:
         arcpy.AddWarning("Risk worksheet could not be built because oPBRC_UI not in fields")
     if 'ConsVRest' in fields:
@@ -165,52 +166,12 @@ def write_capacity_sheets(workbook, stream_network, watershed_name, fields, dams
     if 'Conf_Ct' in fields:
         risk_validation_worksheet = workbook.add_worksheet("Risk Validation")
         write_risk_validation_worksheet(risk_validation_worksheet, stream_network, watershed_name, workbook)
+        risk_distance_worksheet = workbook.add_worksheet("Risk By Distance")
+        write_risk_distance_worksheet(risk_distance_worksheet, stream_network, watershed_name, workbook)
+        risk_landuse_worksheet = workbook.add_worksheet("Risk By Land Use")
+        write_risk_landuse_worksheet(risk_landuse_worksheet, stream_network, watershed_name, workbook)
     else:
         arcpy.AddMessage("Risk validation worksheet could bit be built because Conf_Ct not in fields")
-
-
-# Maggie's code
-def make_capacity_table(output_network, mcc_hpe):
-    brat_table = arcpy.da.TableToNumPyArray(output_network,
-                                            ['iGeo_Len', 'mCC_EX_CT', 'oCC_EX', 'ExCategor', 'oCC_HPE', 'mCC_HPE_CT',
-                                             'HpeCategor'], skip_nulls=True)
-    tot_length = brat_table['iGeo_Len'].sum()
-    total_ex_capacity = brat_table['mCC_EX_CT'].sum()
-    total_hpe_capacity = brat_table[mcc_hpe].sum()
-    capacity_table = []
-
-    ex_pervasive = add_capacity_category(brat_table, 'Existing', 'Pervasive', tot_length)
-    # ex_frequent_pervasive = add_capacity_category(brat_table, 'Existing', 'Frequent-Pervasive', tot_length)
-    ex_frequent = add_capacity_category(brat_table, 'Existing', 'Frequent', tot_length)
-    # ex_occasional_frequent = add_capacity_category(brat_table, 'Existing', 'Occasional-Frequent', tot_length)
-    ex_occasional = add_capacity_category(brat_table, 'Existing', 'Occasional', tot_length)
-    # ex_rare_occasional = add_capacity_category(brat_table, 'Existing', 'Rare-Occasional', tot_length)
-    ex_rare = add_capacity_category(brat_table, 'Existing', 'Rare', tot_length)
-    # ex_none_rare = add_capacity_category(brat_table, 'Existing', 'None-Rare', tot_length)
-    ex_none = add_capacity_category(brat_table, 'Existing', 'None', tot_length)
-
-    hist_pervasive = add_capacity_category(brat_table, 'Historic', 'Pervasive', tot_length)
-    # hist_frequent_pervasive = add_capacity_category(brat_table, 'Historic', 'Frequent-Pervasive', tot_length)
-    hist_frequent = add_capacity_category(brat_table, 'Historic', 'Frequent', tot_length)
-    # hist_occasional_frequent = add_capacity_category(brat_table, 'Historic', 'Occasional-Frequent', tot_length)
-    hist_occasional = add_capacity_category(brat_table, 'Historic', 'Occasional', tot_length)
-    # hist_rare_occasional = add_capacity_category(brat_table, 'Historic', 'Rare-Occasional', tot_length)
-    hist_rare = add_capacity_category(brat_table, 'Historic', 'Rare', tot_length)
-   #  hist_none_rare = add_capacity_category(brat_table, 'Historic', 'None-Rare', tot_length)
-    hist_none = add_capacity_category(brat_table, 'Historic', 'None', tot_length)
-
-
-# Maggie's code
-def add_capacity_category(brat_table, type, category, tot_length):
-    if type == 'Existing':
-        cat_tbl = brat_table[brat_table['ExCategor'] == category]
-    else:
-        cat_tbl = brat_table[brat_table['HpeCategor'] == category]
-    length = cat_tbl['iGeo_Len'].sum()
-    length_km = length / 1000
-    network_prop = 100 * length / tot_length
-    est_dams = cat_tbl['mCC_EX_CT'].sum()
-    return length, length_km, network_prop, est_dams
 
 
 # Writing the side headers for complex size
@@ -1963,7 +1924,6 @@ def write_validation_worksheet(worksheet, stream_network, watershed_name, workbo
 
 def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbook):
     # Formatting
-
     worksheet.set_column('A:A', column_calc(20, watershed_name))
     worksheet.set_column('B:B', 20)
     worksheet.set_column('C:C', 20)
@@ -2238,7 +2198,7 @@ def write_electivity_worksheet(worksheet, stream_network, watershed_name, workbo
     worksheet.write(row, col, "N/A", cell_format2)
 
 
-def write_risk_validation_worksheet(risk_validation_worksheet, stream_network, watershed_name, workbook)
+def write_risk_validation_worksheet(risk_validation_worksheet, stream_network, watershed_name, workbook):
     # Formatting
     worksheet.set_column('A:A', column_calc(20, watershed_name))
     worksheet.set_column('B:B', 20)
@@ -2411,18 +2371,656 @@ def write_risk_validation_worksheet(risk_validation_worksheet, stream_network, w
     row += 1
     worksheet.write(row, col, "N/A", cell_format2)
 
-    # Column K (Electivity Index)
+    # Column I (Electivity Index)
     row = 2
     col = 8
-    worksheet.write(row, col, "=(F3/C3)", cell_format2)
+    worksheet.write(row, col, "=(H3/E3)", cell_format2)
     row += 1
-    worksheet.write(row, col, "=(F4/C4)", cell_format2)
+    worksheet.write(row, col, "=(H4/E4)", cell_format2)
     row += 1
-    worksheet.write(row, col, "=(F5/C5)", cell_format2)
+    worksheet.write(row, col, "=(H5/E5)", cell_format2)
     row += 1
-    worksheet.write(row, col, "=(F6/C6)", cell_format2)
+    worksheet.write(row, col, "=(H6/E6)", cell_format2)
     row += 1
     worksheet.write(row, col, "N/A", cell_format2)
+
+
+def write_risk_capacity_worksheet(worksheet, stream_network, watershed_name, workbook):
+    # Formatting
+    worksheet.set_column('A:A', column_calc(20, watershed_name))
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
+    worksheet.set_column('D:D', 20)
+    worksheet.set_column('E:E', 22)
+    worksheet.set_column('F:F', 40)
+    worksheet.set_column('G:G', 35)
+    worksheet.set_column('H:H', 25)
+    worksheet.set_column('I:I', 15)
+    header_format = workbook.add_format()
+    header_format.set_align('center')
+    header_format.set_bold()
+    worksheet.set_row(0, None, header_format)
+    worksheet.set_row(1, None, header_format)
+    percent_format = workbook.add_format({'num_format': '0.00%'})
+    percent_format.set_align('right')
+    percent1 = worksheet.set_column('E:E', 22, percent_format)
+    percent2 = worksheet.set_column('H:H', 25, percent_format)
+    color = workbook.add_format()
+    color.set_bg_color('C0C0C0')
+    cell_format1 = workbook.add_format()
+    cell_format1.set_num_format(0x03)
+    cell_format1.set_align('right')
+    cell_format2 = workbook.add_format()
+    cell_format2.set_num_format('0.0000')
+    cell_format2.set_align('right')
+
+    # Create Column Labels
+    row = 0
+    col = 0
+    worksheet.write(row, col, watershed_name)
+    row += 1
+    worksheet.write(row, col, "Segment Type")
+    col += 1
+    worksheet.write(row, col, "Stream Length (m)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (km)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (mi)")
+    col += 1
+    worksheet.write(row, col, "% of Drainage Network")
+    col += 1
+    worksheet.write(row, col, "Known Human-Beaver Dam Conflict Incidents (#)")
+    col += 1
+    worksheet.write(row, col, "Average Density of Incidents (#/Km)")
+    col += 1
+    worksheet.write(row, col, "% Total Incidents")
+    col += 1
+    worksheet.write(row, col, "Electivity Index")
+
+    # Create Row Labels
+    row = 2
+    col = 0
+    worksheet.write(row, col, "None")
+    row += 1
+    worksheet.write(row, col, "Rare")
+    row += 1
+    worksheet.write(row, col, "Occasional")
+    row += 1
+    worksheet.write(row, col, "Frequent")
+    row += 1
+    worksheet.write(row, col, "Pervasive")
+    row += 1
+    worksheet.write(row, col, "Total")
+    row += 1
+
+    # Column B (Stream Length Meters) 
+    row = 2
+    col = 1
+    worksheet.write(row, col, "=C3*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C4*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C5*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C6*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C7*1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=C8*1000", cell_format1)
+
+    # Column C (Stream Length Kilometers) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    row = 2
+    col = 2
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!B3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!B4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!B5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!B6", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!B7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=='Existing Dam Building Capacity'!B8", cell_format1)
+
+    # Column D (Stream Length Miles) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    row = 2
+    col = 3
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!C3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!C4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!C5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!C6", cell_format1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!C7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=='Existing Dam Building Capacity'!C8", cell_format1)
+
+    # Column E (Percent of Drainage Network) These values have already been calculated, so I'm just pulling them from the other Worksheet
+    row = 2
+    col = 4
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!D3", percent1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!D4", percent1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!D5", percent1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!D6", percent1)
+    row += 1
+    worksheet.write(row, col, "='Existing Dam Building Capacity'!D7", percent1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
+
+    # Column F (Number of Human-Beaver Dam Conflict Incidences)
+    none = 0.0
+    rare = 0.0
+    occ = 0.0
+    freq = 0.0
+    per = 0.0
+
+    split_input = stream_network.split(";")
+    fields = ['oCC_EX', 'Conf_Ct']
+    for streams in split_input:
+        with arcpy.da.SearchCursor(streams, fields) as cursor:
+            for capacity, conflicts in cursor:
+                if capacity == 0:
+                    none += int(conflicts)
+                elif capacity <= 1:
+                    rare += int(conflicts)
+                elif capacity <= 5:
+                    occ += int(conflicts)
+                elif capacity <= 15:
+                    freq += int(conflicts)
+                else:
+                    per += int(conflicts)
+    row = 2
+    col = 5
+    worksheet.write(row, col, none, cell_format1)
+    row += 1
+    worksheet.write(row, col, rare, cell_format1)
+    row += 1
+    worksheet.write(row, col, occ, cell_format1)
+    row += 1
+    worksheet.write(row, col, freq, cell_format1)
+    row += 1
+    worksheet.write(row, col, per, cell_format1)
+    row += 1
+    worksheet.write(row, col, "=SUM(F3:F7)", cell_format1)
+
+    # Column G (Density of Known Conflict Incidents)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=F3/C3", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F4/C4", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F5/C5", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F6/C6", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F7/C7", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=F8/C8", cell_format2)
+
+    # Column H (Percent of Total Conflicts)
+    row = 2
+    col = 7
+    worksheet.write(row, col, "=F3/$F$8", percent2)
+    row += 1
+    worksheet.write(row, col, "=F4/$F$8", percent2)
+    row += 1
+    worksheet.write(row, col, "=F5/$F$8", percent2)
+    row += 1
+    worksheet.write(row, col, "=F6/$F$8", percent2)
+    row += 1
+    worksheet.write(row, col, "=F7/$F$8", percent2)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format2)
+
+    # Column I (Electivity Index)
+    row = 2
+    col = 8
+    worksheet.write(row, col, "=(H3/E3)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=(H4/E4)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=(H5/E5)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=(H6/E6)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "=(H7/E7)", cell_format2)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format2)
+
+
+def write_risk_distance_worksheet(worksheet, stream_network, watershed_name, workbook):
+    # Formatting
+    worksheet.set_column('A:A', column_calc(20, watershed_name))
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
+    worksheet.set_column('D:D', 20)
+    worksheet.set_column('E:E', 22)
+    worksheet.set_column('F:F', 42)
+    worksheet.set_column('G:G', 35)
+    worksheet.set_column('H:H', 22)
+    worksheet.set_column('I:I', 15)
+    header_format = workbook.add_format()
+    header_format.set_align('center')
+    header_format.set_bold()
+    worksheet.set_row(0, None, header_format)
+    worksheet.set_row(1, None, header_format)
+    percent_format = workbook.add_format({'num_format': '0.00%'})
+    percent_format.set_align('right')
+    percent1 = worksheet.set_column('E:E', 22, percent_format)
+    percent2 = worksheet.set_column('H:H', 22, percent_format)
+    color = workbook.add_format()
+    color.set_bg_color('C0C0C0')
+    cell_format1 = workbook.add_format()
+    cell_format1.set_num_format(0x03)
+    cell_format1.set_align('right')
+    cell_format2 = workbook.add_format()
+    cell_format2.set_num_format('0.0000')
+    cell_format2.set_align('right')
+
+    # Create Column Labels
+    row = 0
+    col = 0
+    worksheet.write(row, col, watershed_name)
+    row += 1
+    worksheet.write(row, col, "Nearest Infrastructure")
+    col += 1
+    worksheet.write(row, col, "Stream Length (m)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (Km)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (mi)")
+    col += 1
+    worksheet.write(row, col, "% of Drainage Network")
+    col += 1
+    worksheet.write(row, col, "Known Human-Beaver Dam Conflict Incidents (#)")
+    col += 1
+    worksheet.write(row, col, "Average Density of Incidents (#/Km)")
+    col += 1
+    worksheet.write(row, col, "% Total Incidents")
+    col += 1
+    worksheet.write(row, col, "Electivity Index")
+
+    # Create Row Labels
+    row = 2
+    col = 0
+    worksheet.write(row, col, "0 meters")
+    row += 1
+    worksheet.write(row, col, "> 0 - 30 meters")
+    row += 1
+    worksheet.write(row, col, "> 30 - 100 meters")
+    row += 1
+    worksheet.write(row, col, "> 100 - 300 meters")
+    row += 1
+    worksheet.write(row, col, "> 300 meters")
+    row += 1
+    worksheet.write(row, col, "Total")
+    row += 1
+
+    # Column B (Stream Length Meters)
+    row = 2
+    col = 2
+    length_0 = 0.0
+    length_0_30 = 0.0
+    length_30_100 = 0.0
+    length_100_00 = 0.0
+    length_300 = 0.0
+    length_total = 0.0
+    conf_0 = 0
+    conf_0_30 = 0
+    conf_30_100 = 0
+    conf_100_300 = 0
+    conf_300 = 0
+    
+    split_input = stream_network.split(";")
+    fields = ["oPC_Dist", "SHAPE@Length", "Conf_Ct"]
+    with arcpy.da.SearchCursor(streams, fields) as cursor:
+        for distance, length, conflicts in cursor:
+            if distance == 0:
+                length_0 += length
+                length_total += length
+                conf_0 += conflicts
+            elif distance <= 30:
+                length_0_30 += length
+                length_total += length
+                conf_0_30 += conflicts
+            elif distance <= 100:
+                length_30_100 += length
+                length_total += length
+                conf_30_100 += conflicts
+            elif distance <= 300:
+                length_100_300 += length
+                length_total += length
+                conf_100_300 += conflicts
+            else:
+                length_300 += length
+                length_total += length
+                conf_300 += conflicts
+
+    worksheet.write(row, col, length_0, cell_format1)
+    row += 1
+    worksheet.write(row, col, length_0_30, cell_format1)
+    row += 1
+    worksheet.write(row, col, length_30_100, cell_format1)
+    row += 1
+    worksheet.write(row, col, length_100_300, cell_format1)
+    row += 1
+    worksheet.write(row, col, length_300, cell_format1)
+    row += 1
+    worksheet.write(row, col, length_total, cell_format1)
+
+    # Column C (Stream Length Kilometers)
+    row = 2
+    col = 3
+    worksheet.write(row, col, "=B3/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B4/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B5/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B6/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B7/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B8/1000", cell_format1)
+
+    # Column D (Stream Length Miles)
+    row = 2
+    col = 4
+    worksheet.write(row, col, "=C3*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C4*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C5*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C6*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C7*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C8*0.621371", cell_format1)
+
+    # Column E (% of Total Network)
+    row = 2
+    col = 5
+    worksheet.write(row, col, "=D3/$D$8", percent1)
+    row += 1
+    worksheet.write(row, col, "=D4/$D$8", percent1)
+    row += 1
+    worksheet.write(row, col, "=D5/$D$8", percent1)
+    row += 1
+    worksheet.write(row, col, "=D6/$D$8", percent1)
+    row += 1
+    worksheet.write(row, col, "=D7/$D$8", percent1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
+
+    # Column F (Number of Known Human-Beaver Dam Conflict Incidents)
+    row = 2
+    col = 5
+    worksheet.write(row, col, conf_0, cell_format1)
+    row += 1
+    worksheet.write(row, col, conf_0-30, cell_format1)
+    row += 1
+    worksheet.write(row, col, conf_30-100, cell_format1)
+    row += 1
+    worksheet.write(row, col, conf_100-300, cell_format1)
+    row += 1
+    worksheet.write(row, col, conf_300, cell_format1)
+    row += 1
+    worksheet.write(row, col, "=SUM(F3:F7)", cell_format1)
+
+    # Column G (Density of Known Conflicts)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=F3/C3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F4/C4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F5/C5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F6/C6", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F7/C7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F8/C8", cell_format1)
+
+    # Column H (% of Total Incidents)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=F3/$F$8", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F4/$F$8", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F5/$F$8", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F6/$F$8", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F7/$F$8", cell_format1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
+
+    # Column I (Selection Index)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=H3/E3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=H4/E4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=H5/E5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=H6/E6", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=H7/E7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
+
+
+def write_risk_landuse_worksheet(worksheet, stream_network, watershed_name, workbook):
+    # Formatting
+    worksheet.set_column('A:A', column_calc(20, watershed_name))
+    worksheet.set_column('B:B', 20)
+    worksheet.set_column('C:C', 20)
+    worksheet.set_column('D:D', 20)
+    worksheet.set_column('E:E', 22)
+    worksheet.set_column('F:F', 42)
+    worksheet.set_column('G:G', 35)
+    worksheet.set_column('H:H', 22)
+    worksheet.set_column('I:I', 15)
+    header_format = workbook.add_format()
+    header_format.set_align('center')
+    header_format.set_bold()
+    worksheet.set_row(0, None, header_format)
+    worksheet.set_row(1, None, header_format)
+    percent_format = workbook.add_format({'num_format': '0.00%'})
+    percent_format.set_align('right')
+    percent1 = worksheet.set_column('E:E', 22, percent_format)
+    percent2 = worksheet.set_column('H:H', 22, percent_format)
+    color = workbook.add_format()
+    color.set_bg_color('C0C0C0')
+    cell_format1 = workbook.add_format()
+    cell_format1.set_num_format(0x03)
+    cell_format1.set_align('right')
+    cell_format2 = workbook.add_format()
+    cell_format2.set_num_format('0.0000')
+    cell_format2.set_align('right')
+
+    # Create Column Labels
+    row = 0
+    col = 0
+    worksheet.write(row, col, watershed_name)
+    row += 1
+    worksheet.write(row, col, "Land Use Intensity")
+    col += 1
+    worksheet.write(row, col, "Stream Length (m)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (Km)")
+    col += 1
+    worksheet.write(row, col, "Stream Length (mi)")
+    col += 1
+    worksheet.write(row, col, "% of Drainage Network")
+    col += 1
+    worksheet.write(row, col, "Known Human-Beaver Dam Conflict Incidents (#)")
+    col += 1
+    worksheet.write(row, col, "Average Density of Incidents (#/Km)")
+    col += 1
+    worksheet.write(row, col, "% Total Incidents")
+    col += 1
+    worksheet.write(row, col, "Electivity Index")
+
+    # Create Row Labels
+    row = 2
+    col = 0
+    worksheet.write(row, col, "Natural/Undeveloped (< 0.33)")
+    row += 1
+    worksheet.write(row, col, "Low Intensity Agriculture (0.33 - < 0.66")
+    row += 1
+    worksheet.write(row, col, "High Intensity Agriculture (0.66 - < 1.0")
+    row += 1
+    worksheet.write(row, col, "Urban/Developed (1.0)")
+    row += 1
+    worksheet.write(row, col, "Total")
+    row += 1
+
+    # Column B (Stream Length Meters)
+    row = 2
+    col = 2
+    natural_ln = 0.0
+    low_ag_ln = 0.0
+    high_ag_ln = 0.0
+    urban_ln = 0.0
+    length_total = 0.0
+    natural = 0
+    low_ag = 0
+    high_ag = 0
+    urban = 0
+    
+    split_input = stream_network.split(";")
+    fields = ["iPC_LU", "SHAPE@Length", "Conf_Ct"]
+    with arcpy.da.SearchCursor(streams, fields) as cursor:
+        for landuse, length, conflicts in cursor:
+            if landuse < 0.33:
+                natural_ln += length
+                length_total += length
+                natural += conflicts
+            elif landuse < 0.66:
+                low_ag_ln += length
+                length_total += length
+                low_ag += conflicts
+            elif landuse < 0.90:
+                high_ag_ln += length
+                length_total += length
+                high_ag += conflicts
+            else:
+                urban_ln += length
+                length_total += length
+                urban += conflicts
+
+    worksheet.write(row, col, natural_ln, cell_format1)
+    row += 1
+    worksheet.write(row, col, low_ag_ln, cell_format1)
+    row += 1
+    worksheet.write(row, col, high_ag_ln, cell_format1)
+    row += 1
+    worksheet.write(row, col, urban_ln, cell_format1)
+    row += 1
+    worksheet.write(row, col, length_total, cell_format1)
+
+    # Column C (Stream Length Kilometers)
+    row = 2
+    col = 3
+    worksheet.write(row, col, "=B3/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B4/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B5/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B6/1000", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=B7/1000", cell_format1)
+
+    # Column D (Stream Length Miles)
+    row = 2
+    col = 4
+    worksheet.write(row, col, "=C3*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C4*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C5*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C6*0.621371", percent1)
+    row += 1
+    worksheet.write(row, col, "=C7*0.621371", percent1)
+
+    # Column E (% of Total Network)
+    row = 2
+    col = 5
+    worksheet.write(row, col, "=D3/$D$7", percent1)
+    row += 1
+    worksheet.write(row, col, "=D4/$D$7", percent1)
+    row += 1
+    worksheet.write(row, col, "=D5/$D$7", percent1)
+    row += 1
+    worksheet.write(row, col, "=D6/$D$7", percent1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
+
+    # Column F (Number of Known Human-Beaver Dam Conflict Incidents)
+    row = 2
+    col = 5
+    worksheet.write(row, col, natural, cell_format1)
+    row += 1
+    worksheet.write(row, col, low_ag, cell_format1)
+    row += 1
+    worksheet.write(row, col, high_ag, cell_format1)
+    row += 1
+    worksheet.write(row, col, urban, cell_format1)
+    row += 1
+    worksheet.write(row, col, "=SUM(F3:F6)", cell_format1)
+
+    # Column G (Density of Known Conflicts)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=F3/C3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F4/C4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F5/C5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F6/C6", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F7/C7", cell_format1)
+
+    # Column H (% of Total Incidents)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=F3/$F$7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F4/$F$7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F5/$F$7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=F6/$F$7", cell_format1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
+
+    # Column I (Selection Index)
+    row = 2
+    col = 6
+    worksheet.write(row, col, "=H3/E3", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=H4/E4", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=H5/E5", cell_format1)
+    row += 1
+    worksheet.write(row, col, "=H6/E6", cell_format1)
+    row += 1
+    worksheet.write(row, col, "N/A", cell_format1)
 
 
 def write_header(worksheet, watershed_name):
@@ -2504,6 +3102,51 @@ def copy_all_files(folder, files, name):
     for file in files:
         shutil.copy(file, folder)
 
+"""Old Code
+# Maggie's code
+def make_capacity_table(output_network, mcc_hpe):
+    brat_table = arcpy.da.TableToNumPyArray(output_network,
+                                            ['iGeo_Len', 'mCC_EX_CT', 'oCC_EX', 'ExCategor', 'oCC_HPE', 'mCC_HPE_CT',
+                                             'HpeCategor'], skip_nulls=True)
+    tot_length = brat_table['iGeo_Len'].sum()
+    total_ex_capacity = brat_table['mCC_EX_CT'].sum()
+    total_hpe_capacity = brat_table[mcc_hpe].sum()
+    capacity_table = []
+
+    ex_pervasive = add_capacity_category(brat_table, 'Existing', 'Pervasive', tot_length)
+    # ex_frequent_pervasive = add_capacity_category(brat_table, 'Existing', 'Frequent-Pervasive', tot_length)
+    ex_frequent = add_capacity_category(brat_table, 'Existing', 'Frequent', tot_length)
+    # ex_occasional_frequent = add_capacity_category(brat_table, 'Existing', 'Occasional-Frequent', tot_length)
+    ex_occasional = add_capacity_category(brat_table, 'Existing', 'Occasional', tot_length)
+    # ex_rare_occasional = add_capacity_category(brat_table, 'Existing', 'Rare-Occasional', tot_length)
+    ex_rare = add_capacity_category(brat_table, 'Existing', 'Rare', tot_length)
+    # ex_none_rare = add_capacity_category(brat_table, 'Existing', 'None-Rare', tot_length)
+    ex_none = add_capacity_category(brat_table, 'Existing', 'None', tot_length)
+
+    hist_pervasive = add_capacity_category(brat_table, 'Historic', 'Pervasive', tot_length)
+    # hist_frequent_pervasive = add_capacity_category(brat_table, 'Historic', 'Frequent-Pervasive', tot_length)
+    hist_frequent = add_capacity_category(brat_table, 'Historic', 'Frequent', tot_length)
+    # hist_occasional_frequent = add_capacity_category(brat_table, 'Historic', 'Occasional-Frequent', tot_length)
+    hist_occasional = add_capacity_category(brat_table, 'Historic', 'Occasional', tot_length)
+    # hist_rare_occasional = add_capacity_category(brat_table, 'Historic', 'Rare-Occasional', tot_length)
+    hist_rare = add_capacity_category(brat_table, 'Historic', 'Rare', tot_length)
+   #  hist_none_rare = add_capacity_category(brat_table, 'Historic', 'None-Rare', tot_length)
+    hist_none = add_capacity_category(brat_table, 'Historic', 'None', tot_length)
+
+
+# Maggie's code
+def add_capacity_category(brat_table, type, category, tot_length):
+    if type == 'Existing':
+        cat_tbl = brat_table[brat_table['ExCategor'] == category]
+    else:
+        cat_tbl = brat_table[brat_table['HpeCategor'] == category]
+    length = cat_tbl['iGeo_Len'].sum()
+    length_km = length / 1000
+    network_prop = 100 * length / tot_length
+    est_dams = cat_tbl['mCC_EX_CT'].sum()
+    return length, length_km, network_prop, est_dams
+
+"""
 
 if __name__ == "__main__":
     main(
