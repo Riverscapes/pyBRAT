@@ -76,6 +76,8 @@ The BRAT [devleopment team]({{ site.baseurl }}/support.html) are actively seekin
   - Present transparent ranking of level of BRAT model curation or [dataset rank](https://riverscapes.xyz/Data_Warehouses/#dataset-rank) and facilitate community commenting
   - Facilitate users paying modest prices (i.e. commercial) to have new runs or more carefully curated (validated, resolved, etc.) for a specific watershed and then share them with broader community
 
+![reports_TRL_BRAT]({{ site.baseurl }}\assets\images\tools\TRL_badges_pngs\reports_TRL_BRAT.jpg)
+
 The development team at this point has already produced a beta version of a **Production-Grade** <img  src="{{ site.baseurl }}/assets/images/tools/TRL_badges_pngs/TRL_orange/2_badges+status/24px/TRL_4_orange_24.png"> version of BRAT ([sqlBRAT](https://github.com/Riverscapes/sqlBRAT) with no release yet), which will be necessary to support the **Commercial-Grade**  <img src="{{ site.baseurl }}/assets/images/tools/TRL_badges_pngs/TRL_orange/2_badges+status/24px/TRL_6_orange_24.png"> product. 
 
 If you share this [vision]({{ site.baseurl }}/Vision.html), get in touch with the developers to support/fund the effort. 
