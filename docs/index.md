@@ -24,7 +24,7 @@ BRAT 1.x through 3.x were developed by the [Wheaton ET-AL lab](http://etal.joewh
 [![ETAL]({{ site.baseurl }}/assets/images/logos/Ecogeomorphology-&-Topographic-Analysis-Laboratory2-05_WEB.png)](http://etal.joewheaton.org)
 
 <div class="float-right"><a href="http://riverscapes.xyz"><img src="{{ site.baseurl }}/assets/images/logos/RiverscapesConsortium_Logo_Black_BHS_200w.png"></a></div>BRAT is one of a suite of network models that are part of the [Riverscapes Consortium's](http://riverscapes.xyz) suite of open-source tools for better understanding, studying and managing our riverscapes.
+
 ------
 ### Learn More About Beaver
 <div class="float-left"><a href="http://beaver.joewheaton.org"><img src="{{ site.baseurl }}/assets/images/logos/Restoration-PAIRED-05_Horizontal_BlueOnWhite.png"/></a></div> For more information on beaver and workshops we  teach through Utah State University's Restoration Consortium and the [Department of Watershed Sciences](http://www.cnr.usu.edu/wats/), see [here](http://beaver.joewheaton.org/).
-
