@@ -5,7 +5,7 @@ weight: 1
 
 ## BRAT
 
-<a href="http://brat.riverscapes.xyz"><img class="float-right" src="{{ site.baseurl }}/assets/images/BRAT_Logo-wGrayTxt.png"></a> The current version of pyBRAT is a series of Python scripts with ArcPy dependencies deployed currently as an ArcGIS 10.4 or later toolbox. There are a few dependencies ([described here]({{ site.baseurl }}/Documentation/Download/ComputerSetup.html) such as [NumPy_mkl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy). Additionally, the fuzzy inference system (FIS) in pyBRAT uses the [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy) python library. The latest version of pyBRAT can be found here:
+<a href="http://brat.riverscapes.xyz"><img class="float-right" src="{{ site.baseurl }}/assets/images/BRAT_Logo-wGrayTxt.png"></a> The current version of pyBRAT is a series of Python scripts with ArcPy dependencies deployed currently as an ArcGIS 10.4 or later toolbox. There are a few dependencies ([described here]({{ site.baseurl }}/Documentation/Download/ComputerSetup) such as [NumPy_mkl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy). Additionally, the fuzzy inference system (FIS) in pyBRAT uses the [scikit-fuzzy](https://pypi.python.org/pypi/scikit-fuzzy) python library. The latest version of pyBRAT can be found here:
 
 <div align="center">
 	<a class="button large" href="https://github.com/Riverscapes/pyBRAT/releases/latest">
