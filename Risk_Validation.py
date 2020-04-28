@@ -65,7 +65,7 @@ def main(in_network, output_name, conflict_points, da_threshold=None):
     write_xml(proj_path, in_network, output_network)
 
     #make_layers(output_network, conflict_points)
-    make_electivity_table(output_network)
+    make_electivity_table(output_network, None)
 
 
 def copy_points_to_inputs(proj_path, conflict_points, in_network):
@@ -111,17 +111,17 @@ def set_conflict_attributes(brat_output, output_path, conflict_points, req_field
         above_threshold_shp = os.path.join(temp_dir, 'tmp_above_da_threshold.shp')
         tmp_below_threshold = arcpy.MakeFeatureLayer_management(brat_output, 'tmp_below_threshold')
         below_threshold_shp = os.path.join(temp_dir, 'tmp_below_da_threshold.shp')
-        quer_above = """"{}" >= {}""".format('iGeo_DA', 65)
-        quer_below = """"{}" < {}""".format('iGeo_DA', 65)
+        quer_above = """"{}" >= {}""".format('iGeo_DA', da_threshold)
+        quer_below = """"{}" < {}""".format('iGeo_DA', da_threshold)
         arcpy.SelectLayerByAttribute_management(tmp_above_threshold, 'NEW_SELECTION', quer_above)
         arcpy.CopyFeatures_management(tmp_above_threshold, above_threshold_shp)
         arcpy.SelectLayerByAttribute_management(tmp_below_threshold, 'NEW_SELECTION', quer_below)
         arcpy.CopyFeatures_management(tmp_below_threshold, below_threshold_shp)
-        arcpy.Snap_edit(conflict_points, [[above_threshold_shp, 'EDGE', '5 Meters']])
-        arcpy.Snap_edit(conflict_points, [[below_threshold_shp, 'EDGE', '60 Meters']])
+        arcpy.Snap_edit(conflict_points, [[above_threshold_shp, 'EDGE', '20 Meters']])
+        arcpy.Snap_edit(conflict_points, [[below_threshold_shp, 'EDGE', '200 Meters']])
     # snap all points within 60 meters to network if no DA threshold provided
     else:
-        arcpy.Snap_edit(conflict_points, [[brat_output, 'EDGE', '60 Meters']])
+        arcpy.Snap_edit(conflict_points, [[brat_output, 'EDGE', '200 Meters']])
 
     # should select all points snapped to network
     arcpy.SpatialJoin_analysis(brat_output, conflict_points, output_path,
@@ -144,9 +144,9 @@ def set_conflict_attributes(brat_output, output_path, conflict_points, req_field
             # Conf_Dens: calculate density of known conflict incidents
             row[1] = join_ct / seg_length * 1000
             # ConfCategr: categories relating to conflict frequency along reach
-            if row[0] == 1:
-                row[2] = "No Conflict"
-            elif row[1] == 1:
+            if row[0] == 0:
+                row[2] = "No conflict"
+            elif row[0] == 1:
                 row[2] = "One incident"
             else:
                 row[2] = "Multiple incidents"
@@ -167,8 +167,8 @@ def add_snapped_attribute(conflict_points, brat_output):
     out_pts = os.path.join(os.path.dirname(conflict_points), 'ConflictPoints_Snapped.shp')
     arcpy.SpatialJoin_analysis(conflict_points, brat_output, out_pts,
                                join_operation='JOIN_ONE_TO_ONE', join_type='KEEP_ALL', match_option='INTERSECT')
-    arcpy.AddField_management(out_pts, 'Snapped', 'TEXT')
-    with arcpy.da.UpdateCursor(out_pts, ['Join_Count', 'Snapped']) as cursor:
+    arcpy.AddField_management(out_pts, 'SNAPPED', 'TEXT')
+    with arcpy.da.UpdateCursor(out_pts, ['Join_Count', 'SNAPPED']) as cursor:
         for row in cursor:
             if row[0] > 0:
                 row[1] = 'Snapped to network'
@@ -177,7 +177,7 @@ def add_snapped_attribute(conflict_points, brat_output):
             cursor.updateRow(row)
     # clean up points fields
     conflict_fields = [f.name for f in arcpy.ListFields(conflict_points)]
-    conflict_fields.append('Snapped')
+    conflict_fields.append('SNAPPED')
     out_fields = [f.name for f in arcpy.ListFields(out_pts)]
     for field in out_fields:
         if field not in conflict_fields:
@@ -258,25 +258,19 @@ def make_layers(output_network, dams):
                    occupancy_symbology, is_raster=False, symbology_field="e_DamPcC")
 
         
-def make_electivity_table(output_network):
+def make_electivity_table(output_network, out_csv_path):
     """
-    Makes table with totals and electivity indices for modeled capacity categories
-    (i.e., none, rare, occasional, frequent, pervasive)
+    Makes table with totals and electivity indices for modeled undesirable dams categories
+    (i.e., negligible, minor, some, considerable)
     :param output_network: The stream network output by the BRAT model with fields added from capacity tools
     :return:
     """
     # convert network data to numpy table
-    brat_table = arcpy.da.TableToNumPyArray(output_network,
-                                            ['iGeo_Len', 'ConfCt', 'ConfDens', 'oPBRC_UI'],
-                                            skip_nulls=True)
+    brat_table = arcpy.da.TableToNumPyArray(output_network, ['iGeo_Len', 'Conf_Ct', 'Conf_Dens', 'oPBRC_UI'], skip_nulls=True)
     tot_length = brat_table['iGeo_Len'].sum()
-    tot_known_conflict = brat_table['ConfCt'].sum()
+    tot_known_conflict = brat_table['Conf_Ct'].sum()
     avg_conf_dens = tot_known_conflict/(tot_length/1000)
-    electivity_table = ['', 'm', 'km', '%', '# of incidents', 'incidents/km', '%']
-    #add_electivity_category(brat_table, 'Negligible Risk', electivity_table, tot_length, tot_known_conflict)
-    #add_electivity_category(brat_table, 'Minor Risk', electivity_table, tot_length, tot_known_conflict)
-    #add_electivity_category(brat_table, 'Considerable Risk', electivity_table, tot_length, tot_known_conflict)
-    #add_electivity_category(brat_table, 'Major Risk', electivity_table, tot_length, tot_known_conflict)
+    electivity_table = [['', 'm', 'km', '%', '# of incidents', 'incidents/km', '%']]
     add_electivity_category(brat_table, 'Negligible Risk', electivity_table, tot_length, tot_known_conflict)
     add_electivity_category(brat_table, 'Minor Risk', electivity_table, tot_length, tot_known_conflict)
     add_electivity_category(brat_table, 'Some Risk', electivity_table, tot_length, tot_known_conflict)
@@ -288,7 +282,10 @@ def make_electivity_table(output_network):
     project_folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(output_network))))
     summary_folder = make_folder(project_folder, "Summary_Products")
     tables_folder = make_folder(summary_folder, "SummaryTables")
-    out_csv = os.path.join(tables_folder, 'Electivity_Index.csv')
+    if out_csv_path is None:
+        out_csv = os.path.join(tables_folder, 'Risk_Table.csv')
+    else:
+        out_csv = out_csv_path
     np.savetxt(out_csv, electivity_table, fmt='%s', delimiter=',',
                header="Segment Type, Stream Length, Stream Length,"
                       " % of Drainage Network, Known Conflict,"
@@ -310,12 +307,11 @@ def add_electivity_category(brat_table, category, output_table, tot_length, tot_
     length_km = length/1000
     network_prop = 100*cat_tbl['iGeo_Len'].sum()/tot_length
     conf_pts = cat_tbl['Conf_Ct'].sum()
-    conf_dens = pts/length_km
-    brat_dens = brat_cc/length_km
+    conf_dens = conf_pts/length_km
     prop_conf = 100*conf_pts/tot_known_conflict
     #electivity = (surv_dams/tot_surv_dams)/(network_prop/100)
-    output_table.append([category, length, length_km, network_prop, conf_pts,
-                         conf_dens, prop_conf])
+    new_row = category, length, length_km, network_prop, conf_pts, conf_dens, prop_conf
+    output_table.append([category, length, length_km, network_prop, conf_pts, conf_dens, prop_conf])
 
 
 def write_xml(proj_path, in_network, out_network):
