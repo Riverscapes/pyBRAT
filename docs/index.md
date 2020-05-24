@@ -18,12 +18,12 @@ title: Beaver Restoration Assessment Tool Home
 
 ### A Riverscapes Network Model
 
-<a href="{{ site.baseurl }}/Documentation/Status/Tool_ReportCard_3-1-00"><img class="float-left" src="{{ site.baseurl }}/assets/images/tools/TRL_badges_pngs/TRL_orange/3_badges+status+text/128w/TRL_(128px)4-orange-text.png"></a>
+<a href="{{ site.baseurl }}/Documentation/Status/Tool_ReportCard_3-1-00"><img class="float-left" src="https://riverscapes.xyz/assets/images/tools/grade/TRL_4_128w.png"></a>
 BRAT 1.x through 3.x were developed by the [Wheaton ET-AL lab](http://etal.joewheaton.org) at Utah State University.  The Riverscapes Consoritum has given pyBRAT 3.1.0 a **operational grade** ranking (see [grading here]({{ site.baseurl }}/Documentation/Status/Tool_ReportCard_3-1-00))
 
 [![ETAL]({{ site.baseurl }}/assets/images/logos/Ecogeomorphology-&-Topographic-Analysis-Laboratory2-05_WEB.png)](http://etal.joewheaton.org)
 
-<div class="float-right"><a href="http://riverscapes.xyz"><img src="{{ site.baseurl }}/assets/images/logos/RiverscapesConsortium_Logo_Black_BHS_200w.png"></a></div>BRAT is one of a suite of network models that are part of the [Riverscapes Consortium's](http://riverscapes.xyz) suite of open-source tools for better understanding, studying and managing our riverscapes.
+<div class="float-right"><a href="http://riverscapes.xyz"><img src="{{ site.baseurl }}/assets/images/logos/RiverscapesConsortium_Logo_Black_BHS_200w.png"></a></div> BRAT is one of a suite of network models that are part of the [Riverscapes Consortium's](http://riverscapes.xyz) suite of open-source tools for better understanding, studying and managing our riverscapes.
 
 ------
 ### Learn More About Beaver
