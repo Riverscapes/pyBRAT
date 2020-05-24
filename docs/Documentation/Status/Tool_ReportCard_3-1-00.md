@@ -70,7 +70,7 @@ The BRAT [devleopment team]({{ site.baseurl }}/support.html) are actively seekin
 
 ![reports_TRL_BRAT]({{ site.baseurl }}\assets\images\tools\TRL_badges_pngs\reports_TRL_BRAT.jpg)
 
-The development team at this point has already produced a beta version of a **Production-Grade** <img  src="{{ site.baseurl }}/assets/images/tools/TRL_badges_pngs/TRL_orange/2_badges+status/24px/TRL_4_orange_24.png"> version of BRAT ([sqlBRAT](https://github.com/Riverscapes/sqlBRAT) with no release yet), which will be necessary to support the **Commercial-Grade**  <img src="{{ site.baseurl }}/assets/images/tools/TRL_badges_pngs/TRL_orange/2_badges+status/24px/TRL_6_orange_24.png"> product. 
+The development team at this point has already produced a beta version of a **Production-Grade** <img  src="https://riverscapes.xyz/assets/images/tools/grade/TRL_6_32p.png"> version of BRAT ([sqlBRAT](https://github.com/Riverscapes/sqlBRAT) with no release yet), which will be necessary to support the **Commercial-Grade**  <img src="https://riverscapes.xyz/assets/images/tools/grade/TRL_7_32p.png"> product. 
 
 If you share this [vision]({{ site.baseurl }}/Vision.html), get in touch with the developers to support/fund the effort. 
 
