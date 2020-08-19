@@ -21,8 +21,8 @@ Figure 1: BRAT Constraints and Opportunities tool interface.
 
 The optional **beaver dam management strategies map** requires the following additional inputs:
 
-* A shapefile for surveyed beaver dam locations
-* A shapefile for conservation protection areas
+* A shapefile for surveyed beaver dam locations (optional)
+* A shapefile for conservation protection areas (optional)
 * A shapefile for conservation easements (optional)
 
 ## Output of the Tool
@@ -44,7 +44,7 @@ The tool produces seven new fields. Three of these fields come from the optional
   * *Naturally Vegetation Limited* - historic and existing vegetation capacity are both zero
   * *Slope Limited* - slope is greater than 23%
   * *Anthropogenically Limited* - landuse is at least agricultural and no dams can be supported
-  * *Stream Power Limited* - baseflow stream power is at least 190 cfs or high flow stream power is at least 2400 cfs and therefore no dams can be supported
+  * *Stream Power Limited* - baseflow stream power is more than 190 watts or high flow stream power is more than 2400 watts and therefore no dams can be supported
   * *Stream Size Limited* - areas where combined dam building capacity was set to zero because of the drainage area threshold set in the [Combined Capacity Model](/Documentation/Tutorials/7-BRATCombinedFIS)
   * *Potential Reservoir or Landuse Conversion* - historic vegetation capacity is zero but existing vegetation capacity is greater than zero
   * *Dam Building Possible* - existing capacity is not none
@@ -54,7 +54,7 @@ The tool produces seven new fields. Three of these fields come from the optional
   * *Strategic - Long-Term Investment* - Reaches where long-term riparian vegetation re-establishment is the only option based on low existing dam capacity, high historic dam capacity, and low intensity land use
   * *NA* - Any reaches that do not fit into the above categories due to high risk, no existing capacity, or high land use intensity
 
-**Strategies Map Fields**
+**Strategies Map Fields (Optional)**
 
 * `ConsArea` - Binary field designating "Yes" if the reach occurs within a conservation/protection area and "No" otherwide
 * `ConsEase` - Binary field designating "Yes" if the reach occurs within a conservation easement and "No" otherwise
