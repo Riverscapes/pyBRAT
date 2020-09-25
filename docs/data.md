@@ -8,9 +8,11 @@ title: BRAT Data
 </div>
 <div align="center">
 	<a class="hollow button" href="https://usu.box.com/s/idfage4655eqlf6ks74wljgqqf231t8r"><i class="fa fa-download"></i> Greater Yellowstone Area  BRAT Data</a>
-	<a class="hollow button" href="https://usu.box.com/s/qee873uj2tnt1yzxqxdzn1fuf8gmi5ur"><i class="fa fa-download"></i> Oregon BRAT Data</a>
-    <a class="hollow button" href="https://usu.box.com/v/Yakama-Nation-BRAT-Deliverable"><i class="fa fa-download"></i> Washington BRAT Data </a>
+	<a class="hollow button" href="https://usu.box.com/s/qee873uj2tnt1yzxqxdzn1fuf8gmi5ur"><i class="fa fa-download"></i> John Day BRAT Data</a>
+    <a class="hollow button" href="https://usu.box.com/v/Yakama-Nation-BRAT-Deliverable"><i class="fa fa-download"></i> Yakama Nation BRAT Data </a>
+    <a class="hollow button" href="https://usu.app.box.com/folder/62385120293?s=ldptbyilj618n8yf0tnr7c2yroevc8v3"><i class="fa fa-download"></i> North Fork Burnt BRAT Data </a>
 </div>
+
 
 
 

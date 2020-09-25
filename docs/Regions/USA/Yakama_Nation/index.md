@@ -4,7 +4,13 @@ weight: 4
 
 ---
 
-# Yakama Nation Project
+# Yakama Nation BRAT
+
+<div align="center">
+	<a class="hollow button" href="https://www.researchgate.net/publication/332057997_John_Day_Basin_BRAT_Final_Report?ev=project"><i class="fa fa-map"></i>  Download Report </a> 
+	<a class="hollow button" href="http://etal.joewheaton.org/brat-yakama.html"><i class="fa fa-map"></i> View Interactive Map </a> 
+	<a class="hollow button" href="https://usu.box.com/v/Yakama-Nation-BRAT-Deliverable"><i class="fa fa-map"></i>  Download Data </a> 
+</div>
 
 #### Executive Summary
 

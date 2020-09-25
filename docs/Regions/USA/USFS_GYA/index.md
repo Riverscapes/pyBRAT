@@ -4,6 +4,11 @@ weight: 5
 ---
 # Greater Yellowstone Area BRAT
 
+<div align="center">
+	<a class="hollow button" href="https://usu.box.com/s/g0gmxua5gym6jj8axxdukoqqd4ez3yg4"><i class="fa fa-map"></i>  Download Report </a> 
+	<a class="hollow button" href="https://usuonline.maps.arcgis.com/apps/Cascade/index.html?appid=87b2ef2a149b4cec918573db36fd5edc"><i class="fa fa-map"></i> View Interactive Map </a> 
+	<a class="hollow button" href="https://usu.box.com/s/idfage4655eqlf6ks74wljgqqf231t8r"><i class="fa fa-map"></i>  Download Data </a> 
+</div>
 
 This report presents an application of the [Beaver Restoration Assessment Tool 3.1.00](https://github.com/Riverscapes/pyBRAT/releases/tag/3.1.00)  (BRAT; [brat.riverscapes.xyz](http://brat.riverscapes.xyz/)) a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In this application, we analyzed all the perennial rivers and streams of the Greater Yellowstone Area (GYA) outside of Montana. The Montana portion is currently being run by Montana Natural Heritage Program with Bureau of Land Management funding.
 

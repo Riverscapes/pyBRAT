@@ -4,7 +4,11 @@ weight: 5
 ---
 # North Fork Burnt River BRAT 
 
-
+<div align="center">
+	<a class="hollow button" href="https://www.researchgate.net/publication/332058009_North_Fork_Brunt_River_BRAT_Final_Report?channel=doi&linkId=5c9ce79e45851506d7306119&showFulltext=true"><i class="fa fa-map"></i>  Download Report </a> 
+	<a class="hollow button" href="http://etal.joewheaton.org/brat-nf-burnt-river.html"><i class="fa fa-map"></i> View Interactive Map </a> 
+	<a class="hollow button" href="https://usu.app.box.com/folder/62385120293?s=ldptbyilj618n8yf0tnr7c2yroevc8v3"><i class="fa fa-map"></i>  Download Data </a> 
+</div>
 
 This website presents an application of the Beaver Restoration Assessment Tool [3.0.20](https://github.com/Riverscapes/pyBRAT/releases/tag/3.0.20) (BRAT; [http://brat.riverscapes.xyz/](http://brat.riverscapes.xyz/)), a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In [this application](http://etal.joewheaton.org/brat-nf-burnt-river.html), we analyzed all the perennial rivers and streams within the Burnt River watershed (8-digit USGS Hydrologic Unit Code (HUC 8)). The primary focus of this analysis as on the North Fork Burnt River watershed (HUC 10) which is the spatial extent of this project and contract.
 

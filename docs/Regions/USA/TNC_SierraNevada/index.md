@@ -4,6 +4,12 @@ weight: 2
 ---
 # California BRAT
 
+<div align="center">
+	<a class="hollow button" href="https://www.researchgate.net/publication/267096045_The_Utah_Beaver_Restoration_Assessment_Tool_A_Decision_Support_Planning_Tool"><i class="fa fa-map"></i>  Download Report </a> 
+	<a class="hollow button" href="http://etal.joewheaton.org/brat-tnc.html"><i class="fa fa-map"></i> View Interactive Map </a> 
+	<a class="hollow button" href="https://usu.box.com/s/nngn8j4l92wtleob47wzdaoxvb9vdq52"><i class="fa fa-map"></i>  Download Data </a> 
+</div>
+
 In [this application](http://etal.joewheaton.org/brat-tnc.html) of the Beaver Restoration Assessment Tool (BRAT), we analyzed 78,835 km perennial rivers and streams in 80 HUC 8 level watersheds within the Sierra Nevada, Cascades, Coast, and Klamath mountains of California. 
 
 The backbone to BRAT is a capacity model developed to assess the upper limits of riverscapes to support beaver dam-building activities. It outputs an estimated density of dams (i.e. dams per length of stream) and a rough count of an upper limit (i.e. capacity) of how many dams the conditions in and surrounding a reach could support. Both existing and historic capacity were estimated using readily available spatial datasets to evaluate seven lines of evidence: (1) a reliable water source; (2) stream bank vegetation conducive to foraging and dam building; (3) vegetation within 100 m of edge of stream to support expansion of dam complexes and maintain large beaver colonies; (4) likelihood that dams could be built across the channel during low flows; (5) the likelihood that a beaver dam on a river or stream is capable of withstanding typical floods; (6) evidence of suitable stream gradient; and (7) evidence that river is too large to allow dams to be built and to persist. Fuzzy inference systems were used to combine these lines of evidence while accounting for categorical ambiguity and uncertainty in the continuous inputs driving the models. The existing model estimate of capacity was driven with LANDFIRE 30 m resolution vegetation data from 2014, whereas the ‘historic’ estimate represents a pre-European settlement model of vegetation, also from LANDFIRE. 

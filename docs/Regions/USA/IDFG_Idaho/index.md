@@ -4,6 +4,11 @@ weight: 5
 ---
 # Idaho BRAT
 
+<div align="center">
+	<a class="hollow button" href="https://www.researchgate.net/publication/332057997_John_Day_Basin_BRAT_Final_Report?ev=project"><i class="fa fa-map"></i>  Download Report </a> 
+	<a class="hollow button" href="http://etal.joewheaton.org/brat-idaho.html"><i class="fa fa-map"></i> View Interactive Map </a> 
+	<a class="hollow button" href="https://usu.box.com/s/prdjqq7jcu7vp3gr255qx4fyob5cnph6"><i class="fa fa-map"></i>  Download Data </a> 
+</div>
 
 In [this application](http://etal.joewheaton.org/brat-idaho.html) of the [Beaver Restoration Assessment Tool (BRAT)](http://brat.riverscapes.xyz/) (Macfarlane et al., 2017) we analyzed all the perennial rivers and streams within the
 state of Idaho.

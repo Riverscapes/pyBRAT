@@ -5,6 +5,12 @@ weight: 1
 
 # Utah BRAT 2014
 
+<div align="center">
+	<a class="hollow button" href="https://www.researchgate.net/publication/267096045_The_Utah_Beaver_Restoration_Assessment_Tool_A_Decision_Support_Planning_Tool"><i class="fa fa-map"></i>  Download Report </a> 
+	<a class="hollow button" href="https://databasin.org/datasets/1420ffb7e9674753a5fb626e2b830c1f"><i class="fa fa-map"></i> View Interactive Map </a> 
+	<a class="hollow button" href="https://usu.app.box.com/folder/5435923929?v=UtahBRATData"><i class="fa fa-map"></i>  Download Data </a> 
+</div>
+
 This project focused on the development and application of the Beaver Restoration Assessment Tool (BRAT), a decision support and planning tool for beaver management, to analyze all perennial rivers and streams in Utah. The backbone to BRAT is a capacity model developed to assess the upper limits of riverscapes to support beaver dam-building activities. Both existing and historic capacity were estimated with readily available spatial datasets to evaluate five key lines of evidence: 1) a perennial water source, 2) availability of dam building materials, 3) ability to build a dam at baseflow, 4) likelihood of dams to withstand a typical flood, and 5) likelihood that stream gradient would limit or completely eliminate dam building by beaver. Fuzzy inference systems were used to combine these lines of evidence while accounting for uncertainty. 
 
 The capacity model estimated existing statewide capacity at 226,939 beaver dams (8.3 dams/km) and the historic capacity at 320,658 dams (11.7 dams/km), reflecting a 29% loss compared to historic capacity. Nearly all of this capacity loss can be explained in terms of vegetation loss and degradation associated with land use including: i) urbanization along the Wasatch Front and Cache Valley, ii) conversion of other valley bottoms to agricultural land uses, and iii) overgrazing in upland areas. Despite the losses, the relatively high proportion of publicly owned lands in the state and reasonable condition of many streams in the state mean Utah’s watersheds are still capable of supporting and sustaining a substantial amount of beaver dam- building activity. Dam capacity was found to be well distributed throughout each of the five Utah Division of Wildlife Resources (UDWR) regions in the state with slightly higher proportional capacity in the Northern and Central regions. 
