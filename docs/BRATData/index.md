@@ -16,15 +16,6 @@ title: BRAT Data
 
 BRAT has been run by [ETAL](http://etal.joewheaton.org/) for all of [Utah]({{ site.baseurl }}/BRATData/USA/UDWR_Utah/ ) and [Idaho]({{ site.baseurl }}/BRATData/USA/IDFG_Idaho ), most of [California]({{ site.baseurl }}/BRATData/USA/TNC_SierraNevada/ ), and Wyoming, some of Arizona, Colorado, New Mexico, Nevada, New York, [Oregon]({{ site.baseurl }}/BRATData/USA/NFJDWC_JohnDay/ ) and  [Washington]({{ site.baseurl }}/BRATData/USA/Yakama_Nation/ ), and by others in Montana, New Mexico, Colorado, United Kingdom, and Canada. We also provide [descriptions of BRAT outputs](/BRATData/Outputs), including a [glossary](BRATData/Outputs/Glossary.html) for all fields in the BRAT attribute table.  
 
-
-[](),
-[](),
-[](),
-[](),
-[](), and
-[]()
-
-
 As of 2019, these are the areas where BRAT has been run by the [ETAL group](http://etal.joewheaton.org) or collaborators: 
 
 <div align="center">
