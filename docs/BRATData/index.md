@@ -6,8 +6,11 @@ BRAT has been run by [ETAL](http://etal.joewheaton.org/) for all of [Utah]({{ si
 
 [Idaho BRAT Data](https://usu.box.com/s/prdjqq7jcu7vp3gr255qx4fyob5cnph6),
 [California BRAT Data](https://usu.box.com/s/nngn8j4l92wtleob47wzdaoxvb9vdq52),
+[Utah BRAT Data](https://usu.app.box.com/folder/5435923929?v=UtahBRATData),
+[Greater Yellowstone Area  BRAT Data](https://usu.box.com/s/idfage4655eqlf6ks74wljgqqf231t8r),
 [Oregon BRAT Data](https://usu.box.com/s/qee873uj2tnt1yzxqxdzn1fuf8gmi5ur), and
 [Washington BRAT Data](https://usu.box.com/v/Yakama-Nation-BRAT-Deliverable)
+
 
 As of 2019, these are the areas where BRAT has been run by the [ETAL group](http://etal.joewheaton.org) or collaborators: 
 
