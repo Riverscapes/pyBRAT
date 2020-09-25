@@ -2,13 +2,14 @@
 title: John Day Basin BRAT
 weight: 4
 ---
-</div>
+
+# John Day Basin BRAT
+
 <div align="center">
 	<a class="hollow button" href="PUTLINKHERE"><i class="fa fa-map"></i>  Download Report </a> 
 	<a class="hollow button" href="PUTLINKHERE"><i class="fa fa-map"></i> View Interactive Map </a> 
 	<a class="hollow button" href="PUTLINKHERE"><i class="fa fa-map"></i>  Download Data </a> 
 </div>
-# John Day Basin BRAT
 
 In [this application](http://etal.joewheaton.org/brat-john-day.html) of the Beaver Restoration Assessment Tool (BRAT), we analyzed all the perennial rivers and streams within the John Day basin (6-digit USGS Hydrologic Unit Code (HUC 6)). The John Day basin was subset into four smaller watersheds for running the BRAT model: Lower John Day, Middle Fork John Day, North Fork John Day, and Upper John Day watersheds (8-digit USGS Hydrologic Unit Code (HUC 8)). 
 
