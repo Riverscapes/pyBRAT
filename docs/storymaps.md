@@ -10,7 +10,7 @@ weight: 2
 	<a class="hollow button" href="http://etal.joewheaton.org/brat-yakama.html"><i class="fa fa-map"></i>  Yakama Nation BRAT StoryMap </a> 
 	<a class="hollow button" href="https://usuonline.maps.arcgis.com/apps/Cascade/index.html?appid=87b2ef2a149b4cec918573db36fd5edc"><i class="fa fa-map"></i>  Greater Yellowstone Area BRAT StoryMap </a> 
 	<a class="hollow button" href="http://etal.joewheaton.org/brat-idaho.html"><i class="fa fa-map"></i>  Idaho BRAT StoryMap </a> 
-	<a class="hollow button" href="http://etal.joewheaton.org/brat-nf-burnt-river.html"><i class="fa fa-map"></i>  North Fork Burn River BRAT StoryMap </a> 
+	<a class="hollow button" href="http://etal.joewheaton.org/brat-nf-burnt-river.html"><i class="fa fa-map"></i>  North Fork Burnt River BRAT StoryMap </a> 
 </div>
 
 
