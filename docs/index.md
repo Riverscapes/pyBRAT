@@ -5,7 +5,7 @@ title: Beaver Restoration Assessment Tool Home
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/reports"><i class="fa fa-map"></i>  BRAT Reports </a> 
 	<a class="hollow button" href="{{ site.baseurl }}/storymaps"><i class="fa fa-map"></i>  BRAT Maps </a> 
-	<a class="hollow button" href="{{ site.baseurl }}/BRATData"><i class="fa fa-map"></i>  BRAT Data </a> 
+	<a class="hollow button" href="{{ site.baseurl }}/data"><i class="fa fa-map"></i>  BRAT Data </a> 
 </div>
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Documentation/Download"><i class="fa fa-download"></i> Download BRAT Model</a>
