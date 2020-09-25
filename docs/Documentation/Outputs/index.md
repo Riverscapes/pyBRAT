@@ -1,5 +1,5 @@
 ---
-title: pyBRAT Outputs
+title: Understanding pyBRAT Outputs
 weight: 1
 ---
 
