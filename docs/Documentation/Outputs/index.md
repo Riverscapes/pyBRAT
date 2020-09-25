@@ -1,6 +1,6 @@
 ---
 title: Understanding pyBRAT Outputs
-weight: 1
+weight: 4
 ---
 
 Using the navigation menu, pyBRAT outputs (by version) are listed here for reference. Each Output page describes the outputs for the given version of BRAT and possible user interrogation techniques of the outputs.  For further information on how to conduct your own BRAT analysis please refer to the [BRAT Workshops](http://brat.riverscapes.xyz/Workshops/) page for in person instructions or the [Tutorials](http://brat.riverscapes.xyz/Documentation/Tutorials/) page for instructions on how to work through your own data. 
