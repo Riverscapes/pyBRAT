@@ -2,8 +2,9 @@
 title: John Day Basin BRAT
 weight: 4
 ---
-
+<div align="center">
 # John Day Basin BRAT
+</div>
 
 <div align="center">
 	<a class="hollow button" href="PUTLINKHERE"><i class="fa fa-map"></i>  Download Report </a> 
