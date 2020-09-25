@@ -1,12 +1,11 @@
 ---
-title: BRAT References
+title: BRAT Reports
 weight: 2
 --- 
 
 <div align="center">
 	<a class="hollow button" href="https://www.researchgate.net/project/BRAT-Beaver-Restoration-Assessment-Tool" ><img src="{{ site.baseurl }}/assets/images/RG_Icon_24.png">&nbsp;&nbsp; Check out BRAT ResearchGate Project for Publications</a>
 </div>
-
 <a href="https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/AU3QW4W5"><img class="float-left" src="{{ site.baseurl }}/assets/images/orgs/Zotero.png"></a>  We maintain a [Riverscapes Consortium BRAT Zotero collection](https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/AU3QW4W5)  hosted on Zotero and available for download. 
 
 ## Peer-Reviewed Publication 
