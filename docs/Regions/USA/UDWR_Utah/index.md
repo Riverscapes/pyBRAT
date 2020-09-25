@@ -1,5 +1,5 @@
 ---
-title: Utah BRAT Data
+title: Utah BRAT
 weight: 1
 ---
 
