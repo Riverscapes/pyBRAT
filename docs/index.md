@@ -3,7 +3,7 @@ title: Beaver Restoration Assessment Tool Home
 ---
 
 <div align="center">
-	<a class="hollow button" href="{{ site.baseurl }}/reports"><i class="fas fa-flag-usa"></i> BRAT By State </a> 
+	<a class="hollow button" href="{{ site.baseurl }}/reports"><i class="fa fa-map"></i> BRAT By State </a> 
 </div>
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/reports"><i class="fa fa-map"></i>  BRAT Reports </a> 
