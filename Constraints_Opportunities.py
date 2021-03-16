@@ -66,6 +66,10 @@ def main(proj_path, in_network, out_name, surveyed_dams=None, conservation_areas
               'iPC_VLowLU', 'iPC_HighLU', 'oPC_Dist', 'iPC_LU', 'iHyd_SPLow', 'iHyd_SP2', 'DamStrat', 'iPC_RoadX',
               'iPC_Canal', 'ObsDam', 'ConsArea', 'ConsEase']
 
+    for field in fields:
+        if field not in [f.name for f in arcpy.ListFields(out_network)]:
+            arcpy.AddWarning('Missing {} Field!'.format(field))
+
     # add arbitrarily large value to avoid error
     if 'iPC_Canal' not in old_fields:
         arcpy.AddField_management(out_network, "iPC_Canal", "DOUBLE")
