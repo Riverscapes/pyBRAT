@@ -177,7 +177,7 @@ def main(proj_path, in_network, out_name, surveyed_dams=None, conservation_areas
                 # 'oCC_HPE' Frequent or Pervasive
                 # 'ipc_vlow_lu'(i.e., Natural) > 75
                 # 'ipc_high_lu' (i.e., Developed) < 10
-                elif occ_hpe >= 5 > occ_ex > 0 and ipc_vlow_lu > 75 and ipc_high_lu < 10:
+                elif occ_hpe >= 5 and occ_ex > 0 and ipc_vlow_lu > 75 and ipc_high_lu < 10:
                     row[2] = 'Strategic - Long-Term Investment'
                 else:
                     row[2] = 'NA'
