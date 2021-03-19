@@ -570,7 +570,8 @@ def write_summary_worksheet(worksheet, stream_network, watershed_name, workbook,
     for streams in split_input:
         with arcpy.da.SearchCursor(streams, fields) as cursor:
             for length, in cursor:
-                total_stream_length_km += length
+                if length is not None:
+                    total_stream_length_km += length
 
     total_stream_length_km /= 1000
     total_stream_length_mi = total_stream_length_km / 1.609344
