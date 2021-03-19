@@ -546,7 +546,10 @@ def igeo_attributes(out_network, in_DEM, flow_acc, midpoint_buffer, scratch, is_
         if is_verbose:
             arcpy.AddMessage("Calculating iGeo_Slope...")
         for row in cursor:
-            row[3] = (abs(row[0] - row[1]))/row[2]
+            if row[2] == 0:
+                row[3] = 0.0001
+            else:
+                row[3] = (abs(row[0] - row[1]))/row[2]
             if row[3] == 0.0:
                 row[3] = 0.0001
             cursor.updateRow(row)
