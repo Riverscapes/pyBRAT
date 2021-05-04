@@ -5,7 +5,7 @@ weight: 2
 # California BRAT
 
 <div align="center">
-	<a class="hollow button" href="https://www.researchgate.net/publication/267096045_The_Utah_Beaver_Restoration_Assessment_Tool_A_Decision_Support_Planning_Tool"><i class="fa fa-map"></i>  Download Report </a> 
+	<a class="hollow button" href="https://www.researchgate.net/publication/344076249_CALIFORNIA_BEAVER_RESTORATION_ASSESSMENT_TOOL_Building_Realistic_Expectations_for_Partnering_with_Beaver_in_Conservation_and_Restoration_Recommended_Citation"><i class="fa fa-map"></i>  Download Report </a> 
 	<a class="hollow button" href="http://etal.joewheaton.org/brat-tnc.html"><i class="fa fa-map"></i> View Interactive Map </a> 
 	<a class="hollow button" href="https://usu.box.com/s/nngn8j4l92wtleob47wzdaoxvb9vdq52"><i class="fa fa-map"></i>  Download Data </a> 
 </div>
