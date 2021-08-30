@@ -7,7 +7,7 @@ Using the navigation menu, pyBRAT outputs (by version) are listed here for refer
 
 ## Contents 
 
-1. [BRAT v2.0 Outputs](/BRATData/Outputs/WorkingWithBRATOutputs.html)
+1. [BRAT v2.0 Outputs]({{ site.baseurl }}/BRATData/Outputs/WorkingWithBRATOutputs.html)
 2. [BRAT v3X Outputs](/BRATData/Outputs/WorkingWithBRATv3XOutputs.html)
 3. [BRAT Attribute Fields](/BRATData/Outputs/Glossary.html)
 
