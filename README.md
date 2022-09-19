@@ -9,5 +9,5 @@ The last stable release of pyBRAT (with ArcPy 10.x depenencies) was 3.1.0 ([late
 A Riverscapes Consortium [Report Card for v 3.1.00 is available here](http://brat.riverscapes.xyz/Documentation/Status/Tool_ReportCard_3-1-00.html). 
 
 ## Next Versions
-Note pyBRAT as an ArcGIS toolbox is no longer supported as we have shifted our development focust to [sqlBRAT](http://tools.riverscapes.xyz/BRAT) and ESRI is sunsetting support for 10.X. 
+Note pyBRAT as an ArcGIS toolbox is no longer supported as we have shifted our development focus to a Production-Grade [sqlBRAT](http://tools.riverscapes.xyz/BRAT) and ESRI is sunsetting support for 10.X. sqlBRAT is currently a command-line tool. 
 
