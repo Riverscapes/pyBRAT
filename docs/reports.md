@@ -1,16 +1,35 @@
 ---
-title: BRAT Reports
+title: BRAT Publications & Reports
 weight: 2
 --- 
 
 <div align="center">
 	<a class="hollow button" href="https://www.researchgate.net/project/BRAT-Beaver-Restoration-Assessment-Tool" ><img src="{{ site.baseurl }}/assets/images/RG_Icon_24.png">&nbsp;&nbsp; Check out BRAT ResearchGate Project for Publications</a>
 </div>
-<a href="https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/AU3QW4W5"><img class="float-left" src="{{ site.baseurl }}/assets/images/orgs/Zotero.png"></a>  We maintain a [Riverscapes Consortium BRAT Zotero collection](https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/AU3QW4W5)  hosted on Zotero and available for download. 
+<a href="https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/AU3QW4W5"><img class="float-left" src="{{ site.baseurl }}/assets/images/orgs/Zotero.png"></a>  We maintain a [Riverscapes Consortium BRAT Zotero collection](https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/AU3QW4W5)  hosted on Zotero and available for download.  If we are missing your contribution, let us know and we will add it!
 
-## Peer-Reviewed Publication 
-
+----
+## Peer-Reviewed Publications 
+<a href="https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/N4LBB98E"><img class="float-right" src="{{ site.baseurl }}/assets/images/orgs/Zotero.png"></a> 
 - Macfarlane W.W. , Wheaton J.M., Bouwes N., Jensen M., Gilbert J.T., Hough-Snee N., and Shivick J. 2015. [Modeling the capacity of riverscapes to support beaver dams](https://www.researchgate.net/publication/285590037_Modeling_the_capacity_of_riverscapes_to_support_beaver_dams). Geomorphology. DOI: [10.1016/j.geomorph.2015.11.019](http://dx.doi.org/10.1016/j.geomorph.2015.11.019).
+- Graham HA, Puttock A, Macfarlane WW, Wheaton JM, Gilbert JT, Campbell-Palmer R, Elliott M, Gaywood MJ, Anderson K, Brazier RE. 2020. Modelling Eurasian beaver foraging habitat and dam suitability, for predicting the location and number of dams throughout catchments in Great Britain. European Journal of Wildlife Research 66 : 42. DOI: [10.1007/s10344-020-01379-w](http://dx.doi.org/10.1007/s10344-020-01379-w)
+
+### Publications by Others Using BRAT
+
+-  Kornse Z, Wohl E. 2020. Assessing restoration potential for beaver (Castor canadensis) in the semiarid foothills of the Southern Rockies, USA. River Research and Applications n/a DOI: [10.1002/rra.3719](http://dx.doi.org/10.1002/rra.3719) 
+-  Scamardo JE, Marshall S, Wohl E. 2022. Estimating widespread beaver dam loss: Habitat decline and surface storage loss at a regional scale. Ecosphere 13 : e3962. DOI: [10.1002/ecs2.3962](http://dx.doi.org/10.1002/ecs2.3962)
+
+### Theses & Dissertations
+
+-  Hafen K. 2017. To what extent might beaver dam building buffer water storage losses associated with a declining snowpack?, M.S. Thesis. Utah State University: Logan, UT [online] Available from: https://digitalcommons.usu.edu/etd/6503/
+-   Stoll N-L. 2019. [Beaver Dam Capacity in the Canadian Boreal Plains Ecozone: An Analysis of Riding Mountain National Park](https://harvest.usask.ca/handle/10388/12540), PhD Thesis, University of Saskatchewan.
+- Suplick S. 2019. [Beaver (Castor Canadensis) of the Salinas River: A Human Dimensions-Inclusive Overview for Assessing Landscape-Scale Beaver-Assisted Restoration Opportunities](https://digitalcommons.calpoly.edu/nrmsp/57), B.S. Thesis, California Polytechnic State University: San Louis Obispo, California.
+
+----
+
+## BRAT Source Code
+
+- Jordan Gilbert, Joe Wheaton, Wally Macfarlane, & Margaret Hallerud. (2019). pyBRAT - Beaver Restoration Assessment Tool (Python) (3.1.0). Zenodo. DOI: [10.5281/zenodo.7086388](https://doi.org/10.5281/zenodo.7086388)
 
 ## [ETAL](http://etal.joewheaton.org) BRAT Project Reports
 <a href="https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/LZ4KMGDK"><img class="float-right" src="{{ site.baseurl }}/assets/images/orgs/Zotero.png"></a> 
@@ -33,12 +52,6 @@ weight: 2
 - Wheaton JM. 2013. [Scoping Study and Recommendations for an Adaptive Beaver Management Plan](http://etal.usu.edu/Reports/Beaver_Management_Plan_Recc_Park_City_%20Report_FINAL.pdf). Prepared for Park City  Municipal Corporation. Logan, Utah, 30 pp.  DOI: [10.6084/m9.figshare.903648](http://dx.doi.org/10.6084/m9.figshare.903648).
 - Macfarlane W.W., Wheaton J.M., and Jensen, M.L. 2014. The Beaver Restoration Assessment Tool: A Decision Support & Planning Tool for Utah. Ecogeomorphology and Topographic Analysis Lab, Utah State University, Prepared for Utah Division of Wildlife Resources, Logan, Utah, 72 pp.
 - Macfarlane WW and Wheaton J.M. 2013. [Modeling the Capacity of Riverscapes to Support Dam-Building Beaver - Case Study: Escalante River Watershed](http://etal.usu.edu/GCT/BRAT_Final_Report.pdf), Final Report Prepared for Grand Canyon Trust and the Walton Family Foundation, Logan, UT, 78 pp.
-
-## Other BRAT Examples
-<a href="https://www.zotero.org/groups/2438806/riverscapesconsortium/collections/N4LBB98E"><img class="float-right" src="{{ site.baseurl }}/assets/images/orgs/Zotero.png"></a> 
-
--   Stoll N-L. 2019. [Beaver Dam Capacity in the Canadian Boreal Plains Ecozone: An Analysis of Riding Mountain National Park](https://harvest.usask.ca/handle/10388/12540), PhD Thesis, University of Saskatchewan.
-- Suplick S. 2019. [Beaver (Castor Canadensis) of the Salinas River: A Human Dimensions-Inclusive Overview for Assessing Landscape-Scale Beaver-Assisted Restoration Opportunities](https://digitalcommons.calpoly.edu/nrmsp/57), B.S. Thesis, California Polytechnic State University: San Louis Obispo, California.
 
 
 
