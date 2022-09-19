@@ -1,6 +1,7 @@
 ---
-title: Beaver Restoration Assessment Tool Home
+title: pyBRAT - Beaver Restoration Assessment Tool (Legacy Tool) Home
 ---
+**Note**: pyBRAT v 3.1.00  has been superseded by [sqlBRAT](http://tools.riverscapes.xyz/BRAT). These pages will be left up for reference for old ArcPY ArcGIS 10.X users and for documentation purposes. 
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Regions"><i class="fa fa-map"></i> BRAT By Region </a> 
@@ -33,6 +34,12 @@ BRAT 1.x through 3.x were developed by the [Wheaton ET-AL lab](http://etal.joewh
 [![ETAL]({{ site.baseurl }}/assets/images/logos/Ecogeomorphology-&-Topographic-Analysis-Laboratory2-05_WEB.png)](http://etal.joewheaton.org)
 
 <div class="float-right"><a href="http://riverscapes.xyz"><img src="{{ site.baseurl }}/assets/images/logos/RiverscapesConsortium_Logo_Black_BHS_200w.png"></a></div> BRAT is one of a suite of network models that are part of the [Riverscapes Consortium's](http://riverscapes.xyz) suite of open-source tools for better understanding, studying and managing our riverscapes.
+
+<div align="center">
+	<a class="button large" href="{{ site.baseurl }}/Documentation/Download/">
+	    <i class="fa fa-download"></i>
+	    &nbsp;&nbsp;pyBRAT Download</a>
+</div>
 
 ------
 ### Learn More About Beaver
