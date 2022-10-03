@@ -86,7 +86,7 @@ To build ownership of the models, we discussed what could be done by the group t
 
 #### Recap & Next Steps
 
-We reviewed what we covered in the workshop and opened it up to questions. We also covered some background context on [Riverscapes](http://riverscapes.xyz), valley settings, using fish capacity & life cycle modelling, 
+We reviewed what we covered in the workshop and opened it up to questions. We also covered some background context on [Riverscapes](http://riverscapes.net), valley settings, using fish capacity & life cycle modelling, 
 
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTJOa2NNSjsl1jTNkMJxpVC_zzSCoyvChnk5LBunZS726MjRg6UDku7zkFkqDSE_Pz8rvnWYF5wonXm/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>

@@ -5,10 +5,10 @@ weight: 4
 
 ![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_13.png)
 
-[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_14.png)](http://brat.riverscapes.xyz/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_14.png)
+[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_14.png)](http://brat.riverscapes.net/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_14.png)
 
-[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_15.png)](http://brat.riverscapes.xyz/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_15.png)
+[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_15.png)](http://brat.riverscapes.net/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_15.png)
 
-[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_16.png)](http://brat.riverscapes.xyz/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_16.png)
+[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_16.png)](http://brat.riverscapes.net/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_16.png)
 
-[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_17.png)](http://brat.riverscapes.xyz/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_17.png)
+[![]({{ site.baseurl }}/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_17.png)](http://brat.riverscapes.net/assets/images/YakamaNationAtlas/YakamaNation_BRAT_Atlas_Page_17.png)

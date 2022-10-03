@@ -26,7 +26,7 @@ If you find a bug, or simply want to report an issue with the software, please l
 
 Anyone in the BRAT community and a member of GitHub  can respond, and the development team will recieve a notification. Please be patient for a response. We do not have any budget for supporting users, but we do try and respond to issues when we can. 
 
-This video shows you how to post an issue (for [GCD](http://gcd.riverscapes.xyz), but process is similar) and some helpful things to include:
+This video shows you how to post an issue (for [GCD](http://gcd.riverscapes.net), but process is similar) and some helpful things to include:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/EFAQgvZQY0s?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 

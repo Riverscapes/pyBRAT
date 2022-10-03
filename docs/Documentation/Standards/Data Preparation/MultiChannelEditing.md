@@ -17,12 +17,12 @@ If tasked with running the anabranch handler tool you should follow these steps:
 
 1. Make sure to check the 'Find Clusters' box on the BRAT Table tool 
 2. If there are any major rivers that don't originate in the watershed add the upstream drainage area value to the 'iGeo_DA' field
-3. Run the ['Drainage Area Check'](http://brat.riverscapes.xyz/Documentation/Tutorials/StepByStep/3.1-DrainageAreaCheck) tool
+3. Run the ['Drainage Area Check'](http://brat.riverscapes.net/Documentation/Tutorials/StepByStep/3.1-DrainageAreaCheck) tool
 4. Manually edit the BRAT network classifying whether anabranched segments are the main channel vs side channel.  There are some general tips in [this video](https://youtu.be/JFzYE_Cnjjw).
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JFzYE_Cnjjw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
-5. Run the ['Anabranch Handler'](http://brat.riverscapes.xyz/Documentation/Tutorials/StepByStep/3.2-BRATBraidHandler.html)  tool (formerly called the 'Braid Handler' tool)
+5. Run the ['Anabranch Handler'](http://brat.riverscapes.net/Documentation/Tutorials/StepByStep/3.2-BRATBraidHandler.html)  tool (formerly called the 'Braid Handler' tool)
 
 ------
 <div align="center">

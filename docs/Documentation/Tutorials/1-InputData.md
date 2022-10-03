@@ -63,7 +63,7 @@ The requisite inputs to the Constraints and Opportunities Model include:
 - Landuse raster
 
 ### Valley Bottom Layer
-The valley bottom is a polygon feature class. We use it to check if roads or railroads are in the valley bottom as they may have a higher probability of being flooded or impacted by nearby beaver dam building activity. The [Valley Bottom Extraction Tool (V-BET)](http://rcat.riverscapes.xyz/Documentation/Version_1.0/VBET.html) is what we typically use to derive this.
+The valley bottom is a polygon feature class. We use it to check if roads or railroads are in the valley bottom as they may have a higher probability of being flooded or impacted by nearby beaver dam building activity. The [Valley Bottom Extraction Tool (V-BET)](http://rcat.riverscapes.net/Documentation/Version_1.0/VBET.html) is what we typically use to derive this.
 
 ### Roads Layer
 

@@ -14,7 +14,7 @@ weight: 2
 </div>
 
 
-The outputs of BRAT are best viewed as interactive maps. For every complete run of BRAT, our lab produces an interactive StoryMap, powered by ESRI (with the exception of Utah, where the map is powered by DataBasin.org). Please explore all of these BRAT outputs, and feel free to delve deeper into the actual data [here](http://brat.riverscapes.xyz/data.html) , or read the reports [here](http://brat.riverscapes.xyz/reports.html).
+The outputs of BRAT are best viewed as interactive maps. For every complete run of BRAT, our lab produces an interactive StoryMap, powered by ESRI (with the exception of Utah, where the map is powered by DataBasin.org). Please explore all of these BRAT outputs, and feel free to delve deeper into the actual data [here](http://brat.riverscapes.net/data.html) , or read the reports [here](http://brat.riverscapes.net/reports.html).
 
 
 

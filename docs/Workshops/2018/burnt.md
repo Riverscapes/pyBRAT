@@ -79,7 +79,7 @@ To build ownership of the models, we discussed what could be done by the group t
 -----
 
 ### Extra Slides for Reference
-In these slides, we have some background context on [Riverscapes](http://riverscapes.xyz), valley settings, using fish capacity & life cycle modelling, the [Birch Creek Restoration Anecdote from Jay Wilde](http://beaver.joewheaton.org/logan-workshop-materials.html), and some of [Konrad Hafen's](http://etal.joewheaton.org/konrad-hafen.html) work on modelling water storage associated with beaver dams. We didn't get to any of these in our workshop, but provide them here for your reference.
+In these slides, we have some background context on [Riverscapes](http://riverscapes.net), valley settings, using fish capacity & life cycle modelling, the [Birch Creek Restoration Anecdote from Jay Wilde](http://beaver.joewheaton.org/logan-workshop-materials.html), and some of [Konrad Hafen's](http://etal.joewheaton.org/konrad-hafen.html) work on modelling water storage associated with beaver dams. We didn't get to any of these in our workshop, but provide them here for your reference.
 
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQX4eejoK6MIt_-4irST29MeLllPq4zJkPao8XTXjUUmCw2wM9XVEGl6PW1isJgfwyKdwdlyqO9bp3R/embed?start=false&loop=false&delayms=3000" frameborder="0" width="550" height="450" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 

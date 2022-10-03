@@ -10,7 +10,7 @@
 # Created:          2014-Sept-30                                                    #
 # Version:          2.0 beta                                                        #
 # Modified:         2017-Feb-16                                                     #
-# Documentation:    http://gnat.riverscapes.xyz/                                    #
+# Documentation:    http://gnat.riverscapes.net/                                    #
 #                                                                                   #
 # Copyright:        (c) Kelly Whitehead, Jesse Langdon 2017                         #
 #                                                                                   #

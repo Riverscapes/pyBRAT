@@ -10,7 +10,7 @@ weight: 5
 	<a class="hollow button" href="https://usu.app.box.com/folder/62385120293?s=ldptbyilj618n8yf0tnr7c2yroevc8v3"><i class="fa fa-map"></i>  Download Data </a> 
 </div>
 
-This website presents an application of the Beaver Restoration Assessment Tool [3.0.20](https://github.com/Riverscapes/pyBRAT/releases/tag/3.0.20) (BRAT; [http://brat.riverscapes.xyz/](http://brat.riverscapes.xyz/)), a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In [this application](http://etal.joewheaton.org/brat-nf-burnt-river.html), we analyzed all the perennial rivers and streams within the Burnt River watershed (8-digit USGS Hydrologic Unit Code (HUC 8)). The primary focus of this analysis as on the North Fork Burnt River watershed (HUC 10) which is the spatial extent of this project and contract.
+This website presents an application of the Beaver Restoration Assessment Tool [3.0.20](https://github.com/Riverscapes/pyBRAT/releases/tag/3.0.20) (BRAT; [http://brat.riverscapes.net/](http://brat.riverscapes.net/)), a tool for building realistic expectations for partnering with beaver in conservation and restoration (Macfarlane et al., 2017). In [this application](http://etal.joewheaton.org/brat-nf-burnt-river.html), we analyzed all the perennial rivers and streams within the Burnt River watershed (8-digit USGS Hydrologic Unit Code (HUC 8)). The primary focus of this analysis as on the North Fork Burnt River watershed (HUC 10) which is the spatial extent of this project and contract.
 
  
 

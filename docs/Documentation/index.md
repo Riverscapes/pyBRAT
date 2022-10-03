@@ -16,7 +16,7 @@ weight: 2
 </div>
 
 
-Thank you for your interest in BRAT. Most BRAT users only interact with the output GIS layers.  As such, pyBRAT is not a polished [professional grade](https://riverscapes.xyz/Tools/#model-discrimination) tool, with an easy-to-use GUI interface or Add-In to ArcGIS. Instead, PyBRAT is a compilation of scripts housed in an  [operational grade](http://brat.riverscapes.xyz/Documentation/Status/Tool_ReportCard_3-1-00)  Arc Toolbox designed to make it easier for our own analysts to run the model . Nevertheless, we do provide [pyBRAT download](/Documentation/Download) and [step-by-step instructions](http://brat.riverscapes.xyz/Documentation/Tutorials) to allow those with good geoprocessing skills to successfully run BRAT on their own. 
+Thank you for your interest in BRAT. Most BRAT users only interact with the output GIS layers.  As such, pyBRAT is not a polished [professional grade](https://riverscapes.net/Tools/#model-discrimination) tool, with an easy-to-use GUI interface or Add-In to ArcGIS. Instead, PyBRAT is a compilation of scripts housed in an  [operational grade](http://brat.riverscapes.net/Documentation/Status/Tool_ReportCard_3-1-00)  Arc Toolbox designed to make it easier for our own analysts to run the model . Nevertheless, we do provide [pyBRAT download](/Documentation/Download) and [step-by-step instructions](http://brat.riverscapes.net/Documentation/Tutorials) to allow those with good geoprocessing skills to successfully run BRAT on their own. 
 
 Note that pyBRAT 3.x is now superseded by a Beta [production grade sqlBRAT](https://riverscapes.github.io/sqlBRAT/), and pending proposals are in to make it Commerical Grade.
 

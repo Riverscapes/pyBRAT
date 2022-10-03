@@ -35,8 +35,8 @@
 # pybrat_path - folder path holding the BRAT tool scripts
 # proj_name - name of project (used in XML)#  define parent folder path and run folder name for directory search
 # find_clusters - True/False for whether to find clusters of braided network
-# should_segment_network - True/False for whether to segment network where they intersect with roads (recommended against - see website: http://brat.riverscapes.xyz/Documentation/Tutorials/4-BRATTableTool.html)
-# segment_by_ownership - True/False for whether to segment network where it intersects with different land ownership categories (recommended against - see website: http://brat.riverscapes.xyz/Documentation/Tutorials/4-BRATTableTool.html)
+# should_segment_network - True/False for whether to segment network where they intersect with roads (recommended against - see website: http://brat.riverscapes.net/Documentation/Tutorials/4-BRATTableTool.html)
+# segment_by_ownership - True/False for whether to segment network where it intersects with different land ownership categories (recommended against - see website: http://brat.riverscapes.net/Documentation/Tutorials/4-BRATTableTool.html)
 
 pf_path = 'C:/Users/ETAL/Desktop/GYE_BRAT/wrk_Data'
 run_folder = 'BatchRun_01'

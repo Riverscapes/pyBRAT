@@ -2,7 +2,7 @@
 title: BRAT by Region
 ---
 
-On this page you can find all BRAT outputs (Reports, Storymaps, Data, etc.) grouped by region. If you need help understanding the outputs, please visit our page on [understanding pyBRAT outputs](https://brat.riverscapes.xyz/Documentation/Outputs/)
+On this page you can find all BRAT outputs (Reports, Storymaps, Data, etc.) grouped by region. If you need help understanding the outputs, please visit our page on [understanding pyBRAT outputs](https://brat.riverscapes.net/Documentation/Outputs/)
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Regions/USA/UDWR_Utah"><i class="fa fa-map"></i> Utah</a> 

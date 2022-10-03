@@ -15,7 +15,7 @@
 #                 those that start with a '00_*' (e.g., '00_Projectwide')
 #               - The tool expects an input CSV with the following columns and calculated values for each basin:
 #                       - HUC8Dir -- must match basin sub-directory exactly (e.g., BigChicoCreekSacramentoRiver_18020157)
-#                       - DA_Threshold -- values corresponding to the drainage area thresholds used in the Combined FIS (see website - http://brat.riverscapes.xyz/Documentation/Tutorials/7-BRATCombinedFIS.html)
+#                       - DA_Threshold -- values corresponding to the drainage area thresholds used in the Combined FIS (see website - http://brat.riverscapes.net/Documentation/Tutorials/7-BRATCombinedFIS.html)
 #
 # Date: March 2019
 # Author: Sara Bangen (sara.bangen@gmail.com)

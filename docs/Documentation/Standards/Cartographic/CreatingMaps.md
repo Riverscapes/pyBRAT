@@ -70,6 +70,6 @@ The atlas map is a simple group of maps that can be given to the client for revi
 
 ### Exporting Map as a PNG
 
-After all the editing and final touch ups on your map, you will export your work as a PNG. For further detail on this process, refer to this [page.](http://brat.riverscapes.xyz/Documentation/Standards/Cartographic/Additionaldetailsandtechniques.html) Otherwise, below is a video that walks through the basic process. 
+After all the editing and final touch ups on your map, you will export your work as a PNG. For further detail on this process, refer to this [page.](http://brat.riverscapes.net/Documentation/Standards/Cartographic/Additionaldetailsandtechniques.html) Otherwise, below is a video that walks through the basic process. 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Y2ZyBAgiq-8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
