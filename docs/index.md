@@ -1,7 +1,7 @@
 ---
 title: pyBRAT - Beaver Restoration Assessment Tool (Legacy Tool) Home
 ---
-**Note**: pyBRAT v 3.1.00  has been superseded by [sqlBRAT](https://tools.riverscapes.net/brat/). These pages will be left up for reference for old ArcPY ArcGIS 10.X users and for documentation purposes. We donot advise users running pyBRAT. Please check [Data Exchange for avaialblity of sqlBRAT runs](https://data.riverscapes.net/s?type=Project&projectTypeId=brat) in your area first. sqlBRAT is run in CodeSpaces or [CyberCastor](https://developer.riverscapes.net/dev-tools/cyber-castor/) and not something most users run themselves. See [this Knowledge Base Article]((https://riverscapes.freshdesk.com/support/solutions/articles/153000021050-pybrat-3-0-and-earlier-has-been-deprecated) for more information.
+**Note**: pyBRAT v 3.1.00  has been superseded by [sqlBRAT](https://tools.riverscapes.net/brat/). These pages will be left up for reference for old ArcPY ArcGIS 10.X users and for documentation purposes. We donot advise users running pyBRAT. Please check [Data Exchange for avaialblity of sqlBRAT runs](https://data.riverscapes.net/s?type=Project&projectTypeId=brat) in your area first. sqlBRAT is run in CodeSpaces or [CyberCastor](https://developer.riverscapes.net/dev-tools/cyber-castor/) and not something most users run themselves. See [this Knowledge Base Article](https://riverscapes.freshdesk.com/support/solutions/articles/153000021050-pybrat-3-0-and-earlier-has-been-deprecated) for more information.
 
 <div align="center">
 	<a class="hollow button" href="{{ site.baseurl }}/Regions"><i class="fa fa-map"></i> BRAT By Region </a> 
